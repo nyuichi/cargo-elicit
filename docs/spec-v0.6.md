@@ -1,217 +1,217 @@
-# cargo-elicit — 仕様書 v0.6
+# cargo-elicit — Specification v0.6
 
 *Agentic specification and verification for Rust crates*
 
-## 1. 目的と初版の範囲
+## 1. Purpose and scope of the first release
 
-`cargo-elicit`は、AIエージェントにRustの形式仕様化・形式検証を継続的に進めさせるCargoサブコマンドです。作業対象の選択、進捗の永続化、変更の影響追跡、検証結果の再利用を担当します。
+`cargo-elicit` is a Cargo subcommand that lets an AI agent continuously develop formal specifications and proofs for Rust crates. It selects work targets, persists progress, tracks the effects of changes, and reuses verification results.
 
-初版は、ローカルの既存Rustプロジェクト、Codex app-server、単一worker、CreusotまたはKani一種類を対象にします。Contract・型不変条件・証明コードは元のソースツリーに記述します。
+The first release targets existing local Rust projects, the Codex app-server, a single worker, and one verifier: either Creusot or Kani. Contracts, type invariants, and proof code are written in the original source tree.
 
-仕様の有用性を重視しますが、AIが記述した仕様が利用者の意図を正しく表現していることまで、自動的に保証するものではありません。
+Useful specifications are a priority, but the tool does not automatically guarantee that AI-written specifications correctly express the user's intent.
 
-## 2. 設定と完了条件
+## 2. Configuration and completion criteria
 
-`elicit.toml`の設定は次の3項目です。
+`elicit.toml` contains three settings:
 
 ```toml
 [agent]
 provider = "codex"
 
 [verification]
-tool = "creusot" # "creusot" または "kani"
+tool = "creusot" # "creusot" or "kani"
 required = false
 ```
 
-モデル・推論努力量・認証はCodex自身の設定を使用します。検証器とツールチェーンは検出し、対応バージョンと必要機能を実行前に確認します。検証器の途中変更は初版では対応せず、既存状態を消さずにエラーにします。
+The model, reasoning effort, and authentication use Codex's own configuration. The verifier and toolchain are detected, and supported versions and required capabilities are checked before execution. Changing the verifier partway through is unsupported in the first release and produces an error without deleting existing state.
 
-### 仕様化モード：`required = false`
+### Specification mode: `required = false`
 
-対象のcontractや不変条件を整備し、選択した検証器向けの構文・型・参照の確認を行います。証明探索は必須にしません。Creusotではすべてtrustedでも構いません。
+Develop contracts and invariants for the targets, and check their syntax, types, and references with the selected verifier. Proof search is not required. With Creusot, all definitions may be trusted.
 
-ただし、「仕様が書かれている」「検証器がその記述を処理できる」「実装が仕様を満たすと証明された」は区別します。表現できなかった性質や処理できない仕様を、完了として隠しません。
+However, distinguish between a specification being written, the verifier being able to process it, and the implementation being proved to satisfy it. Properties that could not be expressed, or specifications that could not be processed, must not be hidden as completed work.
 
-### 検証必須モード：`required = true`
+### Verification-required mode: `required = true`
 
-仕様化に加えて、**記述したcontract全体について検証が完了し、対象プロジェクト内の未証明仮定への依存が解消されていること**を完了条件にします。
+In addition to specification work, completion requires **verification of the entire written contract, with dependencies on unproved assumptions within the target project resolved**.
 
-特定の型・入力範囲だけの成功、未証明のhelperやlemmaへの依存が残る成功は保存しますが、検証完了には数えません。検証範囲を自動的に狭めたり、未証明部分を対象外に移して完了扱いにしたりしてはいけません。
+Successful results limited to particular types or input ranges, or results that still depend on unproved helpers or lemmas, are retained but do not count as verification completion. The tool must not automatically narrow the verification scope or move unproved parts out of scope to declare completion.
 
-検証器・論理基盤・標準モデルなど、使用する信頼基盤は明示して記録します。プロジェクト固有のtrusted宣言や独自の外部仕様を、自動的に信頼基盤へ移すことは禁止します。Contractに明記された正当な事前条件やtraitの要求と、実装について未解消の仮定を置くことは区別します。
+The trusted base in use, including the verifier, logical foundations, and standard models, must be explicitly recorded. Project-specific trusted declarations and custom external specifications must not automatically be promoted into the trusted base. Legitimate preconditions and trait requirements stated in contracts must be distinguished from unresolved assumptions about the implementation.
 
-証明できない対象が残れば、成果を保持して「未完了」として終了できます。`false`から`true`への変更では、既存の仕様を再利用します。
+If some targets cannot be proved, the tool may preserve the work and exit as incomplete. Changing `false` to `true` reuses existing specifications.
 
-## 3. 初期化・解析対象
+## 3. Initialization and analysis targets
 
-設定がない場合は、次のように初期化します。
+If no configuration exists, initialize it as follows:
 
 ```bash
 cargo elicit init --tool creusot
 ```
 
-初期設定は`required = false`です。既存の設定や台帳は上書き・消去しません。`init`の再実行は、現在のソースとの照合・更新です。
+The initial setting is `required = false`. Existing configuration and the ledger are not overwritten or deleted. Running `init` again reconciles and updates the ledger against the current sources.
 
-対象範囲は**一つのパッケージと、一つのビルド構成**です。パッケージ・features・targetは初期化時に指定でき、省略時に解決された値も保存・表示します。複数パッケージが候補なら明示指定を要求します。全features・全targetを網羅したとは表示しません。rust-analyzerの意味解析もcfgとfeaturesが適用されたcrateに対応するため、この範囲を解析と検証で揃えます。[1]
+The scope is **one package and one build configuration**. Package, features, and target can be specified at initialization; resolved values for omitted options are also saved and displayed. If multiple packages are candidates, explicit selection is required. The tool must not claim coverage of all features or all targets. Because rust-analyzer's semantic analysis also represents a crate with cfg and features applied, analysis and verification must use the same scope. [1]
 
-| 対象 | 作業 |
+| Target | Work |
 |---|---|
-| Struct / Enum | 型不変条件を記述します |
-| Trait | メソッドのcontractと、実装が満たすべき法則を記述します |
-| Function / Method | Contractを記述し、設定に応じて検証します |
-| Trait Impl | 実装メソッドとtraitの要求を対応付け、適合を確認します |
+| Struct / Enum | Write type invariants |
+| Trait | Write method contracts and laws that implementations must satisfy |
+| Function / Method | Write contracts and verify them as configured |
+| Trait Impl | Associate implementation methods with trait requirements and check conformance |
 
-型・traitの仕様自体を独立した証明タスクにはしません。ただし、不変条件の保存や複数メソッド間の法則は、必要な実装上の証明義務・補助ハーネスに結び付けます。CreusotとKaniの対応機能が同一であるとは仮定しません。[2]
+Specifications of types and traits are not independent proof tasks. However, invariant preservation and laws spanning multiple methods must be connected to the necessary implementation proof obligations and auxiliary harnesses. Do not assume that Creusot and Kani support identical capabilities. [2]
 
-公開APIを主目標にし、必要な内部関数・型・補題も管理します。公開API、内部対象、追加した証明用補助定義は区別し、進捗率の分母に補助定義を混ぜません。
+Public APIs are the primary goal, with necessary internal functions, types, and lemmas also managed. Distinguish public APIs, internal targets, and added auxiliary proof definitions. Auxiliary definitions must not be included in the progress denominator.
 
-解析にはrust-analyzerを使用します。再エクスポートを考慮し、同じ定義の公開名は別名として扱います。IDは行番号や表示名だけに依存させず、implと定義元を区別します。改名・削除・マクロ生成などで対応が不明な場合は、以前の完了状態を勝手に引き継がず、解析不完全・要確認として表示します。
+Use rust-analyzer for analysis. Account for re-exports, treating public names for the same definition as aliases. IDs must not depend solely on line numbers or display names; they must distinguish impls and definition origins. If correspondence is unclear because of renaming, deletion, macro generation, or similar changes, do not silently inherit earlier completion state. Display incomplete analysis and a need for review.
 
-コールグラフと解析結果はキャッシュします。実行中は解析状態を再利用し、ソースや解析設定の変更時に更新します。未解決の呼び出しを「依存なし」と扱ってはいけません。
+Cache the call graph and analysis results. Reuse analysis state during a run, updating it when sources or analysis settings change. Unresolved calls must not be treated as having no dependencies.
 
-## 4. 成果物と検証器の操作
+## 4. Artifacts and verifier operation
 
-**Contractも証明も、検証対象の元のソースを直接編集します。** 別プロジェクトへ関数を複製して、そのコピーだけを検証することは禁止します。元の関数を呼ぶハーネス、ghost code、lemma、モデル定義の追加は認めます。
+**Edit contracts and proofs directly in the original sources being verified.** Duplicating functions into a separate project and verifying only those copies is prohibited. Harnesses that call the original functions, ghost code, lemmas, and model definitions may be added.
 
-元の実装の実行時の振る舞いは変更しません。実装変更が必要なら問題として報告します。エージェントが追加・変更した実装本文は差分検査の対象とし、未承認の変更を含む状態では目標完了にしません。
+Do not change the runtime behavior of the original implementation. If an implementation change is needed, report it as an issue. Implementation bodies added or changed by the agent are subject to diff checks, and a state containing unapproved changes must not count as goal completion.
 
-検証を通すためだけのcontractの弱化は禁止します。一方、誤った仕様は理由を記録して修正できます。検証タスクで仕様の問題を発見した場合は、再確認タスクへ戻します。
+Weakening a contract solely to make verification pass is prohibited. Incorrect specifications may be corrected with a recorded reason. If a verification task discovers a specification problem, return it to a review task.
 
-### 検証器アダプター
+### Verifier adapters
 
-アダプターは、記法・準備確認・対象列挙・記述の構文／型確認・検証実行・結果解析・入力fingerprintを担当します。未対応機能は黙って省略しません。
+Adapters handle notation, readiness checks, target enumeration, syntax and type checking of specifications, verification execution, result parsing, and input fingerprints. Unsupported capabilities must not be silently omitted.
 
-Creusotのtrusted宣言から本文の証明成功を作ってはいけません。Kaniでも、ハーネス・型のインスタンス・追加の入力制限を記録し、選択した一つのハーネスの成功を汎用API全体の成功に昇格させません。`stub_verified`という名前だけを根拠に依存先の証明済み判定をしません。[3][4]
+Creusot trusted declarations must not produce successful body-proof results. For Kani, record harnesses, type instantiations, and additional input restrictions; success for one selected harness must not be promoted to success for an entire generic API. The name `stub_verified` alone is not evidence that a dependency is proved. [3][4]
 
-### 正式な検証結果の記録
+### Recording official verification results
 
-正式な結果は、**cargo-elicitの検証ラッパーが実行・収集したものだけ**を採用します。エージェントが直接実行する試行は許しますが、成功の自己申告だけでは台帳を更新できません。
+Accept official results **only from executions performed and collected by cargo-elicit's verification wrapper**. Agents may run experiments directly, but a self-reported success alone cannot update the ledger.
 
-ラッパーは検証対象と入力状態を固定し、実行中のエージェント編集を止め、終了後に入力を照合します。入力が途中で変わった実行は現行結果として採用しません。
+The wrapper fixes the targets and input state, stops agent editing during execution, and checks the inputs afterward. Runs whose inputs changed during execution are not accepted as current results.
 
-成功、反例・未解決、タイムアウト、中断、ビルド／環境エラー、対象未実行・スキップを区別します。終了コード0や証明義務0件だけでは成功にしません。必要な義務の網羅性、仮定、入力制限を確認できない結果は「範囲不明」として残します。
+Distinguish success, counterexamples or unresolved obligations, timeouts, interruptions, build or environment errors, and targets not executed or skipped. An exit code of 0 or zero proof obligations alone must not count as success. Results whose required obligation coverage, assumptions, or input restrictions cannot be established are retained with unknown scope.
 
-これは誤記録を防ぐ仕組みであり、同じ作業ツリーや台帳を改ざんできるエージェントに対する安全境界ではありません。
+This mechanism prevents incorrect recording. It is not a security boundary against an agent that can modify the same working tree or ledger.
 
-## 5. 台帳と検証結果
+## 5. Ledger and verification results
 
-APIの状態と、検証器の実行結果を分離します。多数の進捗状態や汎用タスク管理システムは導入しません。
+Keep API state separate from verifier execution results. Do not introduce numerous progress states or a general-purpose task management system.
 
-| 記録 | 主な内容 |
+| Record | Main contents |
 |---|---|
-| 対象 | ID、種別、公開／内部の区別、ソースの所在、仕様化完了、仕様のfingerprint、既知の仕様依存、メモ |
-| 検証結果 | 対象ID、実際のハーネス・証明義務、検証範囲、仮定、入力fingerprint、ツール／設定、結果 |
-| 実行状態 | 現在のタスク、開始時の入力、Codex thread、最後の結果と再試行抑制情報 |
+| Target | ID, kind, public/internal classification, source location, specification completion, specification fingerprint, known specification dependencies, notes |
+| Verification result | Target ID, actual harnesses and proof obligations, verification scope, assumptions, input fingerprint, tool/configuration, outcome |
+| Run state | Current task, starting inputs, Codex thread, last outcome, retry suppression information |
 
-一つのAPIに複数の検証結果が対応して構いません。必要な検証単位とその網羅状況を管理し、`verified`は手動設定するbooleanではなく、**現行の結果が第2節の完了条件を満たすか**から導出します。
+An API may have multiple verification results. Track required verification units and their coverage. Derive `verified` from **whether current results satisfy the completion criteria in Section 2**, rather than exposing it as a manually set boolean.
 
-仕様化完了は「現在の内容について仕様化作業が一段落し、記述を処理できる」という意味です。意図への適合を機械的に保証する意味ではありません。型・traitには独立した`verified`を表示しません。
+Specification completion means that specification work on the current contents has reached a stable point and the written specification can be processed. It does not mechanically guarantee correspondence to intent. Types and traits do not display an independent `verified` status.
 
-### Staleの規則
+### Stale rules
 
-Staleは「要再確認」であり、成果物の削除ではありません。仕様と検証結果を分け、理由を保存します。
+Stale means that review is required; it does not mean deleting artifacts. Track specifications and verification results separately, preserving reasons.
 
-| 変更・事象 | 処理 |
+| Change or event | Action |
 |---|---|
-| 自身のcontract・不変条件・仕様に使う論理定義の変更 | 自身の仕様を再確認し、対応する証明をstaleにします |
-| 既知の仕様依存先の変更 | 直接依存する仕様を再確認します |
-| 実装の変更 | 対応する仕様との一致を確認し、影響する検証結果をstaleにします |
-| 検証器・設定・依存入力の変更 | 影響する検証結果をstaleにします |
-| 検証失敗・タイムアウト | 失敗を記録します。仕様の誤りとは即断しません |
-| 具体的な仕様の問題が報告された | 修正前でも対象を再確認に戻し、その証明を現行の完了に数えません |
-| メモ・ログだけの変更 | 仕様や証明を無効化しません |
+| A target's contract, invariant, or logical definition used in specifications changes | Review that specification and mark corresponding proofs stale |
+| A known specification dependency changes | Review directly dependent specifications |
+| An implementation changes | Check consistency with its specification and mark affected verification results stale |
+| A verifier, configuration, or dependency input changes | Mark affected verification results stale |
+| Verification fails or times out | Record the failure without immediately concluding that the specification is wrong |
+| A concrete specification problem is reported | Return the target to review even before a fix, and exclude its proof from current completion |
+| Only notes or logs change | Do not invalidate specifications or proofs |
 
-**仕様がstaleなら、その仕様に対応する証明もstaleです。** 既存のcontract、証明コード、過去の結果は保持します。
+**If a specification is stale, its corresponding proofs are stale too.** Preserve existing contracts, proof code, and historical results.
 
-### 変更伝播を止める規則
+### Stopping change propagation
 
-BがAの仕様を利用し、CがBの仕様を利用する場合、Aの変更後はまずBを再確認します。
+If B uses A's specification and C uses B's specification, review B first after A changes.
 
-Bの仕様を変更する必要がなければ、参照したAのfingerprintだけを更新し、B経由の仕様変更の伝播はそこで止めます。Bを変更した場合にCを再確認します。CがAも直接参照していれば、その依存は別に処理します。
+If B's specification does not need to change, update only the recorded fingerprint of A and stop specification-change propagation through B. Review C if B changes. If C also directly references A, handle that dependency separately.
 
-Bが未確認の間、Bを前提とする証明は仮定が未解消として扱いますが、Cの仕様の再生成は先走って行いません。再確認によって前提が回復し、検証入力も一致していれば、保存済み結果を再利用できます。
+While B is awaiting review, proofs that assume B have unresolved assumptions, but do not preemptively regenerate C's specification. Once review restores the assumptions, saved results can be reused if verification inputs also match.
 
-仕様依存はエージェントの申告を許容します。ただし、**申告がないことを検証キャッシュ再利用の根拠にしてはいけません。** 検証成功も、意味上必要な仕様再確認を自動的に省略する根拠にはしません。
+Agents may declare specification dependencies. However, **the absence of a declaration must not justify verification cache reuse**. Successful verification also does not automatically waive specification review that is semantically necessary.
 
-### 検証キャッシュ
+### Verification cache
 
-検証器から十分な依存入力を取得できれば、そのfingerprintを使います。取得できなければ、パッケージ・ローカル依存・manifest／lockfile・ビルド設定・ツール／モデル等を広めに含めます。追跡できない外部入力がある結果は、再利用を制限します。
+Use dependency-input fingerprints from the verifier if it provides sufficient information. Otherwise, include the package, local dependencies, manifests and lockfiles, build settings, tools, models, and other inputs broadly. Restrict reuse of results with external inputs that cannot be tracked.
 
-台帳、ログ、キャッシュ、実行時刻は検証入力から除きます。証明のためのソース変更は含めます。相互依存する証明を、循環する未証明仮定だけで完了にしてはいけません。
+Exclude the ledger, logs, caches, and execution timestamps from verification inputs. Include source changes made for proofs. Mutually dependent proofs must not be considered complete solely through circular unproved assumptions.
 
-広いfingerprintが変わっても、既存の全APIを直ちにAIで再生成しません。必要な検証をまとめ、ソースが落ち着いた時点で再実行します。全体の完了判定では、同じ現行状態に対応する結果が必要です。
+A change to a broad fingerprint must not immediately trigger AI regeneration of every existing API. Batch the required verification work and rerun it once sources have stabilized. Overall completion requires results corresponding to the same current state.
 
-## 6. 作業の制御
+## 6. Work control
 
-Schedulerがタスクを選択し、エージェントには「何をするか」を渡します。「どう記述・証明するか」はエージェントに任せます。
+The scheduler selects tasks and tells the agent what to do. The agent decides how to write specifications and proofs.
 
-タスクは仕様化、再確認、検証の3種類です。未確認の仕様の修復を優先し、通常は型・traitの仕様を先に用意してから、コールグラフのcallee-firstで進めます。循環はSCCにまとめ、同順位では安定したID順で選択します。
+There are three task kinds: specification, review, and verification. Prioritize repairing specifications awaiting review. Normally prepare type and trait specifications first, then follow the call graph in callee-first order. Group cycles into strongly connected components (SCCs), and select equal-priority targets in stable ID order.
 
-ただし、型・traitの作業が未完了であることを、クレート全体の絶対的な待機条件にはしません。必要なモデル関数等を先に整備できます。
+However, unfinished type or trait work must not be an absolute barrier for the whole crate. Necessary model functions and similar definitions may be prepared first.
 
-検証必須モードは、基本的に**一つの対象グループの仕様化 → 検証 → 次のグループ**とします。未仕様化の対象が大量にあるため検証が始まらない、という優先順位にはしません。証明が困難なら、引き継ぎを保存して別対象へ進みます。
+Verification-required mode generally follows **specify one target group → verify it → move to the next group**. A large backlog of unspecified targets must not prevent verification from starting. If a proof is difficult, save a handoff and continue with other targets.
 
-失敗した同一タスクを同一入力で無条件に選び直しません。関連入力の変更、別の証明方針を伴う明示的な再試行、またはユーザーの再試行要求がある場合に限って戻します。再試行にはタスク全体の有限な実行上限・無進捗上限を適用し、run全体にも作業量または時間の上限を設けます。補助ファイルを変更するだけで無限に上限をリセットできないようにします。既定値は実装内で定義してヘルプに表示し、必要な上書きはCLI引数で行います。
+Do not unconditionally reselect the same failed task on the same inputs. Return to it only after related inputs change, an explicit retry with a different proof strategy, or a user retry request. Apply finite total-attempt and no-progress limits to each task, and a work or time limit to the entire run. Changing auxiliary files alone must not allow limits to reset indefinitely. Define defaults in the implementation, display them in help, and expose necessary overrides as CLI arguments.
 
-仕様化モードは新たな証明を必須タスクにしません。検証必須モードは、最後に有効な結果が不足する対象をまとめて確認し、完了または未解決を報告します。
+Specification mode does not require new proofs as mandatory tasks. Verification-required mode finishes by checking targets that lack valid results in a batch and reporting completion or unresolved work.
 
-## 7. Codex app-server連携
+## 7. Codex app-server integration
 
-初版はstdio接続、単一thread、同時に一つのturnです。接続初期化、threadの作成／再開、turnの開始・終了・中断をアダプターに閉じ込めます。`turn/completed`の通知だけでは成功とせず、終了状態と実際の成果を確認します。[5]
+The first release uses stdio, a single thread, and at most one active turn. Encapsulate connection initialization, thread creation and resumption, and turn start, completion, and interruption in the adapter. A `turn/completed` notification alone is not success; check both the final status and actual accepted work. [5]
 
-共通指示には、検証器の記法、モード、元ソースの編集、仕様変更の規則、台帳ツールの使い方を含めます。各turnには、タスク種別・対象・関連仕様・完了条件・入力リビジョンだけを追加します。タスクごとに長い仕様書を再送しません。
+Shared instructions include verifier notation, the mode, editing original sources, specification-change rules, and ledger tool usage. Each turn adds only the task kind, targets, related specifications, completion criteria, and input revision. Do not resend a long specification document for every task.
 
-threadは複数タスクで再利用します。圧縮・再接続・thread喪失後も台帳から再開できるようにします。セッション再利用でPrompt Cacheのヒットを保証せず、取得できる入力・キャッシュ済み入力・出力トークンと時間を記録して評価します。キャッシュヒット率を上げるためだけに不要な履歴を保持しません。[6]
+Reuse a thread across tasks. Resumption from the ledger must work after compaction, reconnection, or thread loss. Session reuse does not guarantee Prompt Cache hits. Record available input, cached-input, and output token counts, along with time, for evaluation. Do not retain unnecessary history solely to increase cache hit rates. [6]
 
-エージェント用CLIは、対象照会、仕様化／再確認結果の提出、依存・問題の報告、検証ラッパーの実行を提供します。書き込みは入力リビジョンを照合して受理します。エージェントの報告だけで検証済みに昇格させません。
+The agent CLI provides target queries, specification and review submissions, dependency and issue reporting, and execution of the verification wrapper. Writes are accepted only after checking the input revision. Agent reports alone cannot promote a target to verified.
 
-承認要求は既存のCodexの権限設定に従います。対話端末では提示し、無人実行では必要な承認を得られなければ理由を残して停止します。自動承認・権限拡大は行いません。初版では書き込みを行う並列サブエージェントを許可しません。
+Approval requests follow existing Codex permission settings. Present them in an interactive terminal. During unattended execution, stop with a recorded reason if required approval cannot be obtained. Do not approve automatically or expand permissions. The first release does not allow parallel subagents that perform writes.
 
-## 8. CLI・保存・中断
+## 8. CLI, persistence, and interruption
 
-| コマンド | 用途 |
+| Command | Purpose |
 |---|---|
-| `cargo elicit init` | 設定生成、対象解析、既存台帳との照合です |
-| `cargo elicit run` | 保存状態から作業を実行・再開します |
-| `cargo elicit status` | 対象範囲、仕様化・検証の集計、未解決、現在の作業を表示します |
-| `cargo elicit list` | 公開／内部、仕様化状況、証明の範囲・仮定・stale理由を一覧表示します |
+| `cargo elicit init` | Generate configuration, analyze targets, and reconcile with an existing ledger |
+| `cargo elicit run` | Execute or resume work from saved state |
+| `cargo elicit status` | Display scope, specification and verification counts, unresolved work, and the current task |
+| `cargo elicit list` | List public/internal targets, specification status, proof scope, assumptions, and stale reasons |
 
-明示的な再試行は`run --retry`で可能にします。`status`と`list`には機械可読出力を用意し、型・traitの仕様化数と、関数・メソッドの検証数を分けます。部分的な証明を「検証完了数」に混ぜません。状態表示と再開時にも現在のソースと照合し、外部で編集されたコードに古い完了表示を残しません。
+Explicit retries use `run --retry`. Provide machine-readable output for `status` and `list`, separating type/trait specification counts from function/method verification counts. Partial proofs must not be included in completed-verification counts. Reconcile current sources when displaying state and when resuming, so externally edited code does not retain an outdated completion display.
 
 ```text
 my-crate/
 ├── Cargo.toml
 ├── elicit.toml
-├── src/                    # 元の実装・contract・証明コード
+├── src/                    # Original implementation, contracts, and proof code
 └── .elicit/
-    ├── state.toml           # 対象、進捗、検証結果の要約・fingerprint
-    ├── runtime/            # 実行ロック、現在タスク、thread情報、イベント
-    └── cache/              # 解析データ、詳細ログ、再生成可能な検証データ
+    ├── state.toml           # Targets, progress, result summaries, and fingerprints
+    ├── runtime/            # Run locks, current task, thread information, and events
+    └── cache/              # Analysis data, detailed logs, and regenerable verification data
 ```
 
-APIごとの状態ファイルは作りません。`state.toml`はスキーマバージョンを持ち、Git管理できます。成功記録の要約はキャッシュと分離し、詳細ログの削除だけで進捗を失わないようにします。ただし、再利用判定に必要な情報が失われた結果は再確認します。
+Do not create a separate state file per API. `state.toml` has a schema version and can be tracked in Git. Keep successful-result summaries separate from the cache so deleting detailed logs alone does not lose progress. However, results must be rechecked if information required to decide reuse has been lost.
 
-台帳の更新は専用CLI経由で行い、ロックと原子的置換を使います。同じ作業ツリーでの`run`の多重起動も別途防ぎます。ログや会話履歴に認証情報を永続化しません。
+Update the ledger through the dedicated CLI, using locks and atomic replacement. Separately prevent multiple `run` processes in the same working tree. Do not persist credentials in logs or conversation history.
 
-中断時は可能な範囲で子プロセスを停止し、現在タスクと成果を保存します。クラッシュ後はソースとの照合から再開し、開始済み・未確定の検証を成功とみなしません。ユーザーの未コミット変更は保持し、自動commit・reset・cleanは行いません。
+On interruption, stop child processes where possible and save the current task and work. After a crash, resume by reconciling sources; started but unfinalized verification must not be treated as successful. Preserve the user's uncommitted changes without automatically committing, resetting, or cleaning them.
 
-`run`の終了コードは、目標完了を0、未解決ありを1、設定・環境エラーを2、中断を130とします。`status`や`list`は読み取り成功なら、未解決の有無によらず0を返します。
+The `run` exit codes are 0 for goal completion, 1 for unresolved work, 2 for configuration or environment errors, and 130 for interruption. `status` and `list` return 0 on a successful read, regardless of unresolved work.
 
-## 9. 完了条件と将来機能
+## 9. Implementation acceptance criteria and future features
 
-初版の実装完了には、Creusot・Kaniそれぞれの小規模fixtureで、両モードの実行と中断・再開を確認します。特に次の回帰テストを必須にします。
+Acceptance of the first release requires checking both modes and interruption/resumption with a small fixture for each of Creusot and Kani. In particular, the following regression tests are required:
 
-- 対象未実行、trustedによる義務省略、型・入力範囲限定の成功を、検証完了に昇格させません。
-- 内部helperの未証明仮定が残る結果は保存しますが、検証必須モードを完了にしません。
-- A変更後にBが変更不要なら、B経由でCの仕様再生成を要求しません。証明の現行性は別に判定します。
-- 未申告依存の変更でも不正なキャッシュ再利用を防ぎ、メモ更新ではキャッシュを無効化しません。
-- 仕様・証明のstale化でコードを削除せず、再初期化・クラッシュ・中断でも成果を失いません。
-- 同一失敗の無限再試行、未仕様化タスクによる検証の飢餓、台帳更新の競合を防ぎます。
+- Unexecuted targets, obligations omitted through `trusted`, and success restricted to particular types or input ranges must not be promoted to verification completion.
+- Results with unproved assumptions about internal helpers are retained but do not complete verification-required mode.
+- If B does not need to change after A changes, specification regeneration for C must not be requested through B. Proof validity is checked separately.
+- Changes to undeclared dependencies must prevent invalid cache reuse, while note updates must not invalidate the cache.
+- Stale specifications or proofs must not delete code. Reinitialization, crashes, and interruptions must not lose work.
+- Prevent infinite retries of the same failure, verification starvation due to unspecified tasks, and conflicting ledger updates.
 
-並列worker、Git worktreeによる隔離・逐次統合、TUIの`cargo elicit top`、proofs.rs連携、クラウド実行、他エージェント対応は将来機能です。初版では実装せず、Schedulerとエージェント接続を分離して拡張に備えます。
+Parallel workers, isolation and sequential integration through Git worktrees, the `cargo elicit top` TUI, proofs.rs integration, cloud execution, and support for other agents are future features. Do not implement them in the first release. Keep the scheduler separate from agent connections to support later extension.
 
-## 参考資料
+## References
 
-外部ツールの記法・プロトコルの根拠です。cargo-elicit自身の動作は、この仕様で定める設計です。
+These sources describe notation and protocols for external tools. cargo-elicit's own behavior is defined by this specification.
 
 [1] rust-analyzer HIR: https://rust-lang.github.io/rust-analyzer/hir/index.html
 
