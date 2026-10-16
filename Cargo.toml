@@ -1,0 +1,27 @@
+[package]
+name = "cargo-elicit"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.86"
+license = "MIT OR Apache-2.0"
+description = "Persistent agentic specification and verification for Rust crates"
+repository = "https://github.com/nyuichi/cargo-elicit"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.9"
+sha2 = "0.10"
+fs2 = "0.4"
+tempfile = "3"
+syn = { version = "2", features = ["full", "visit", "extra-traits"] }
+quote = "1"
+proc-macro2 = { version = "1", features = ["span-locations"] }
+walkdir = "2"
+ctrlc = "3"
+libc = "0.2"
+petgraph = "0.8"
+url = { version = "2", features = ["serde"] }
+

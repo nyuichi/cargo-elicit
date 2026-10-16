@@ -1,0 +1,1 @@
+{"packages":["creusot"],"provers":["Alt-Ergo@2.6.4"],"tactics":["compute_specified","split_vc","compute_specified","split_vc"],"time":2}

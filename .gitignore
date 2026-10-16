@@ -1,0 +1,7 @@
+/target/
+/.elicit/
+/.why3find/
+**/target/
+**/.elicit/
+**/.why3find/
+
