@@ -162,11 +162,16 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
         PathBuf::from(&s.scope.manifest_path).parent().unwrap(),
         &Selection::from_scope(&s.scope),
     )?;
-    let (targets, incomplete) = engine.analyze(&package, s.tool)?;
-    s.scope = package.scope;
     let version =
         fingerprint::tool_version(s.tool).unwrap_or_else(|_| "verifier unavailable".into());
-    let input = fingerprint::input(&s.scope, s.tool, &version)?;
+    let input = fingerprint::input(&package.scope, s.tool, &version)?;
+    // The ledger caches definition identities, aliases, call edges and unresolved
+    // analysis. Reuse it across CLI invocations only for identical complete inputs.
+    if input == s.input && package.scope == s.scope {
+        return Ok(s);
+    }
+    let (targets, incomplete) = engine.analyze(&package, s.tool)?;
+    s.scope = package.scope;
     s.reconcile(targets, incomplete, input);
     if previous != serde_json::to_vec(&s)? {
         store.save(&mut s)?;
@@ -575,6 +580,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         }
         let mut after = sync(store, engine)?;
         let mut proof_ok = false;
+        let mut proof_environment_error = false;
         if result.is_ok() && task.kind == TaskKind::Verify && !process::interrupted() {
             let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
             if remaining > 0 {
@@ -584,8 +590,13 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                     Some(after.revision),
                     limits.verify_seconds.min(remaining),
                 );
-                if let Ok(r) = results {
-                    proof_ok = r.iter().all(|r| r.outcome == Outcome::Success);
+                match results {
+                    Ok(r) => {
+                        proof_ok = r.iter().all(|r| r.outcome == Outcome::Success);
+                        proof_environment_error =
+                            r.iter().any(|r| r.outcome == Outcome::EnvironmentError);
+                    }
+                    Err(_) => proof_environment_error = true,
                 }
                 after = sync(store, engine)?;
             }
@@ -602,8 +613,31 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                         .all(|id| after.targets.get(id).is_some_and(Target::ready))
             };
         let failure = result.is_err();
-        store.transaction(None,|s|{s.run.active=None;let a=s.run.attempts.entry(key.clone()).or_default();a.failed= !success;a.no_progress=if progress{0}else{a.no_progress+1};a.last_input=s.input.clone();a.last_result=if success{"completed with accepted work"}else if failure{"worker failed, interrupted, approval needed, or disconnected; partial work retained"}else{"unresolved; same task/input suppressed"}.into();s.run.last_result=a.last_result.clone();s.run.elapsed_ms=start.elapsed().as_millis() as u64;if let Some(c)=&codex{s.run.input_tokens=c.usage.0;s.run.cached_input_tokens=c.usage.1;s.run.output_tokens=c.usage.2;}Ok(())})?;
-        if failure {
+        store.transaction(None, |s| {
+            s.run.active = None;
+            let attempt = s.run.attempts.entry(key.clone()).or_default();
+            attempt.failed = !success;
+            attempt.no_progress = if progress { 0 } else { attempt.no_progress + 1 };
+            attempt.last_input = s.input.clone();
+            attempt.last_result = if success {
+                "completed with accepted work"
+            } else if failure {
+                "worker failed, interrupted, approval needed, or disconnected; partial work retained"
+            } else if proof_environment_error {
+                "verification build/environment error; partial work retained"
+            } else {
+                "unresolved; same task/input suppressed"
+            }.into();
+            s.run.last_result = attempt.last_result.clone();
+            s.run.elapsed_ms = start.elapsed().as_millis() as u64;
+            if let Some(c) = &codex {
+                s.run.input_tokens = c.usage.0;
+                s.run.cached_input_tokens = c.usage.1;
+                s.run.output_tokens = c.usage.2;
+            }
+            Ok(())
+        })?;
+        if failure || proof_environment_error {
             if process::interrupted() {
                 break;
             }
@@ -631,7 +665,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             .map(|t| t.id.clone())
             .collect::<Vec<_>>();
         if !ids.is_empty() && start.elapsed().as_secs() < limits.max_seconds {
-            let _ = verifier::verify(
+            let result = verifier::verify(
                 store,
                 &ids,
                 Some(s.revision),
@@ -639,7 +673,14 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                     .verify_seconds
                     .min(limits.max_seconds - start.elapsed().as_secs()),
             );
+            let environment_error = result.as_ref().map_or(true, |rs| {
+                rs.iter().any(|r| r.outcome == Outcome::EnvironmentError)
+            });
             s = sync(store, engine)?;
+            if environment_error {
+                display(&s, &config, false, false, false)?;
+                return Ok(if process::interrupted() { 130 } else { 2 });
+            }
         }
     }
     display(&s, &config, false, false, false)?;

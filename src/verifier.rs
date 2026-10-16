@@ -69,12 +69,19 @@ fn compile_command(s: &State, out: &Path, prove: bool, version: &str) -> Result<
             }
         }
         Tool::Creusot => {
-            c.args(["creusot", "--only", "coma", "--output-dir"])
-                .arg(out)
-                .arg("--erasure-check-dir")
-                .arg(out.join("erasure"))
-                .arg("--")
-                .args(s.scope.cargo_args());
+            c.args([
+                "creusot",
+                "--package",
+                &s.scope.package,
+                "--only",
+                "coma",
+                "--output-dir",
+            ])
+            .arg(out)
+            .arg("--erasure-check-dir")
+            .arg(out.join("erasure"))
+            .arg("--")
+            .args(s.scope.cargo_args());
             c.env(
                 "CARGO_TARGET_DIR",
                 Path::new(&s.scope.manifest_path)
@@ -163,6 +170,8 @@ pub fn verify(
                     &s.scope.package,
                     "--manifest-path",
                     &s.scope.manifest_path,
+                    "--target",
+                    &s.scope.target,
                 ])
                 .env(
                     "CARGO_TARGET_DIR",
@@ -188,7 +197,12 @@ pub fn verify(
                 .ok()
                 .and_then(|b| serde_json::from_slice(&b).ok()),
             Tool::Creusot => {
-                if o.code == Some(0) {
+                if o.code == Some(0)
+                    && walkdir::WalkDir::new(dir.as_path())
+                        .into_iter()
+                        .filter_map(|e| e.ok())
+                        .any(|e| e.path().extension().is_some_and(|v| v == "coma"))
+                {
                     let mut cmd = why3_command(&store.root, dir.as_path())?;
                     o = process::run(
                         &mut cmd,
@@ -231,15 +245,33 @@ pub fn verify(
                 } else {
                     r.outcome = Outcome::UnknownScope;
                     r.summary = "tool completed; contract coverage not established".into();
-                    match s.tool {
-                        Tool::Kani => {
-                            if let Some(e) = evidence {
-                                kani_evidence(&s, &s.targets[&r.target], e, &mut r)?;
+                    let parsed = if after.as_ref().ok() != Some(&before) {
+                        Ok(())
+                    } else {
+                        match s.tool {
+                            Tool::Kani => {
+                                if let Some(e) = evidence {
+                                    kani_evidence(&s, &s.targets[&r.target], e, &mut r)
+                                } else {
+                                    Ok(())
+                                }
                             }
+                            Tool::Creusot => creusot_evidence(
+                                &s,
+                                &s.targets[&r.target],
+                                &store.root,
+                                dir.as_path(),
+                                &mut r,
+                            ),
                         }
-                        Tool::Creusot => {
-                            creusot_evidence(&s, &s.targets[&r.target], dir.as_path(), &mut r)?
-                        }
+                    };
+                    if parsed.is_err() {
+                        r.outcome = Outcome::UnknownScope;
+                        r.scope = Coverage::Unknown;
+                        r.reusable = false;
+                        r.summary =
+                            "tool completed; native evidence could not be mapped to the contract"
+                                .into();
                     }
                 }
             }
@@ -460,6 +492,11 @@ fn kani_evidence(s: &State, t: &Target, e: &Value, r: &mut Verification) -> Resu
         "Kani 0.68 compiler and contract transformation".into(),
         "CBMC bit-vector logic and standard Rust/Kani models".into(),
     ];
+    r.assumptions.extend(
+        t.calls
+            .iter()
+            .map(|id| format!("callee proof coverage not certified by this adapter: {id}")),
+    );
     if e["metadata"]["version"] != "1.0"
         || !e["metadata"]["kani_version"]
             .as_str()
@@ -664,16 +701,7 @@ fn kani_unrestricted_harness(h: &syn::ItemFn, f: &syn::ItemFn) -> bool {
             .all(|(e, n)| e.to_token_stream().to_string() == n)
 }
 fn creusot_home() -> Result<PathBuf> {
-    if let Some(p) = std::env::var_os("CREUSOT_DATA_HOME") {
-        return Ok(PathBuf::from(p));
-    }
-    if let Some(p) = std::env::var_os("XDG_DATA_HOME") {
-        return Ok(PathBuf::from(p).join("creusot"));
-    }
-    Ok(
-        PathBuf::from(std::env::var_os("HOME").context("HOME missing; set CREUSOT_DATA_HOME")?)
-            .join(".local/share/creusot"),
-    )
+    fingerprint::creusot_home().context("cannot locate Creusot installation; set CREUSOT_DATA_HOME")
 }
 fn why3_command(root: &Path, out: &Path) -> Result<Command> {
     if !root.join("why3find.json").is_file() {
@@ -726,11 +754,22 @@ fn why3_command(root: &Path, out: &Path) -> Result<Command> {
         );
     Ok(c)
 }
-fn creusot_evidence(s: &State, t: &Target, out: &Path, r: &mut Verification) -> Result<()> {
+fn creusot_evidence(
+    s: &State,
+    t: &Target,
+    root: &Path,
+    out: &Path,
+    r: &mut Verification,
+) -> Result<()> {
     r.trusted_base = vec![
         "Creusot 0.14 compiler, erasure checks and standard models".into(),
         "Why3 1.8.2+git, Why3find 1.3 and configured SMT provers".into(),
     ];
+    r.assumptions.extend(
+        t.calls
+            .iter()
+            .map(|id| format!("callee proof coverage not certified by this adapter: {id}")),
+    );
     if t.trusted {
         r.outcome = Outcome::Skipped;
         r.assumptions
@@ -750,12 +789,7 @@ fn creusot_evidence(s: &State, t: &Target, out: &Path, r: &mut Verification) -> 
         && original
             .as_ref()
             .is_some_and(|f| contract_closed(f, Tool::Creusot));
-    let config: Value = serde_json::from_slice(&fs::read(
-        Path::new(&s.scope.manifest_path)
-            .parent()
-            .unwrap()
-            .join("why3find.json"),
-    )?)?;
+    let config: Value = serde_json::from_slice(&fs::read(root.join("why3find.json"))?)?;
     let standard_config = config.as_object().is_some_and(|c| {
         c.keys().all(|k| {
             matches!(
@@ -885,9 +919,12 @@ fn proof_complete(p: &Value) -> bool {
     ) {
         return false;
     }
+    // A known sound transformation may discharge an existing VC completely.
+    // The caller still requires a fresh mapped vc_FUNCTION and nonempty contract;
+    // an absent VC or an empty run is never accepted.
     p["children"]
         .as_array()
-        .is_some_and(|cs| !cs.is_empty() && cs.iter().all(proof_complete))
+        .is_some_and(|cs| cs.iter().all(proof_complete))
 }
 
 #[cfg(test)]
@@ -1039,6 +1076,28 @@ mod tests {
             }
         );
         assert!(!crate::analysis::closed_primitive(&f));
+    }
+    #[test]
+    fn creusot_trusted_and_absent_target_are_not_proof() {
+        let (d, mut s, mut t, _) = case();
+        s.tool = Tool::Creusot;
+        t.trusted = true;
+        let mut r = base(&s, &t.id, "0.14");
+        creusot_evidence(&s, &t, d.path(), d.path(), &mut r).unwrap();
+        assert_eq!(r.outcome, Outcome::Skipped);
+        assert!(!r.assumptions.is_empty());
+        t.trusted = false;
+        fs::write(
+            d.path().join("why3find.json"),
+            r#"{"packages":["creusot"],"tactics":["compute_specified"]}"#,
+        )
+        .unwrap();
+        let out = d.path().join("empty");
+        fs::create_dir(&out).unwrap();
+        let mut r = base(&s, &t.id, "0.14");
+        creusot_evidence(&s, &t, d.path(), &out, &mut r).unwrap();
+        assert_eq!(r.outcome, Outcome::Skipped);
+        assert!(r.obligations.is_empty());
     }
     #[test]
     fn unknown_or_stuck_why3_tree_is_not_complete() {

@@ -293,3 +293,102 @@ fn interruption_resume_and_run_lock_both_verifiers() {
         assert!(p.state().complete(false));
     }
 }
+
+#[test]
+fn workspace_requires_explicit_single_package() {
+    let d = tempfile::tempdir().unwrap();
+    fs::write(
+        d.path().join("Cargo.toml"),
+        "[workspace]\nmembers=[\"a\",\"b\"]\nresolver=\"2\"\n",
+    )
+    .unwrap();
+    for name in ["a", "b"] {
+        fs::create_dir_all(d.path().join(name).join("src")).unwrap();
+        fs::write(
+            d.path().join(name).join("Cargo.toml"),
+            format!("[package]\nname=\"{name}\"\nversion=\"0.0.0\"\nedition=\"2021\"\n"),
+        )
+        .unwrap();
+        fs::write(d.path().join(name).join("src/lib.rs"), "pub fn f() {}\n").unwrap();
+    }
+    let mut c = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"));
+    let o = c
+        .current_dir(d.path())
+        .args(["init", "--tool", "kani"])
+        .output()
+        .unwrap();
+    assert_eq!(o.status.code(), Some(2));
+    assert!(!d.path().join(".elicit/state.toml").exists());
+    let o = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"))
+        .current_dir(d.path())
+        .args(["init", "--package", "a"])
+        .output()
+        .unwrap();
+    assert!(o.status.success(), "{}", String::from_utf8_lossy(&o.stderr));
+    let s: State =
+        toml::from_str(&fs::read_to_string(d.path().join(".elicit/state.toml")).unwrap()).unwrap();
+    assert_eq!(s.scope.package, "a");
+    assert!(s.targets.keys().all(|id| id.starts_with("a::")));
+}
+
+#[test]
+fn formal_verifier_environment_failure_exits_two() {
+    let p = Project::new("kani", SOURCE);
+    p.ok(&["run"]);
+    p.required();
+    let o = p
+        .cmd()
+        .env("MOCK_PROOF_FAIL", "1")
+        .arg("run")
+        .output()
+        .unwrap();
+    assert_eq!(
+        o.status.code(),
+        Some(2),
+        "{}",
+        String::from_utf8_lossy(&o.stderr)
+    );
+    assert!(
+        p.state()
+            .results
+            .iter()
+            .any(|r| r.outcome == cargo_elicit::model::Outcome::EnvironmentError)
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn unchanged_status_reuses_persisted_semantic_analysis() {
+    let p = Project::new("kani", SOURCE);
+    use std::os::unix::fs::PermissionsExt;
+    let external = tempfile::tempdir().unwrap();
+    let executable = external.path().join("rust-analyzer");
+    fs::write(&executable, "#!/bin/sh\nexit 99\n").unwrap();
+    fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
+    let original = p
+        .cmd()
+        .get_envs()
+        .find(|(k, _)| *k == "PATH")
+        .unwrap()
+        .1
+        .unwrap()
+        .to_owned();
+    let out = p
+        .cmd()
+        .env(
+            "PATH",
+            format!(
+                "{}:{}",
+                external.path().display(),
+                original.to_string_lossy()
+            ),
+        )
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+}

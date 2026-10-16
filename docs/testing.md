@@ -12,6 +12,8 @@ cargo test --release --locked --test native -- --ignored --test-threads=1
 
 各テストはfixture package全体を一時ディレクトリへコピーし、元の関数を検証します。検証用に実装関数のコピーを別crateへ作ってはいません。中断・再開、仕様化モード（証明探索なし）、検証必須モード、cache削除後のinitと証明結果再利用を確認します。失敗時の一時ディレクトリは診断のため保持します。
 
+再構築時にはLinux x86_64で通常テスト39件とnativeテスト2件が成功し、fmt・Clippy・Rust 1.86のビルド確認も通過しています。
+
 再構築時のツール構成:
 
 - Rust stable 1.99.1 / MSRV 1.86.0

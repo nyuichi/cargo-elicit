@@ -217,6 +217,7 @@ fn cannot_shrink_denominator_by_reclassifying() {
     fresh[0].visibility = Visibility::Auxiliary;
     s.reconcile(fresh, vec![], "current".into());
     assert_eq!(s.targets["a"].visibility, Visibility::Public);
+    assert!(s.targets["a"].implementation_changed);
     assert!(!s.complete(false));
 }
 #[test]
@@ -302,4 +303,19 @@ fn callee_first_and_scc_order() {
     s.targets.get_mut("c").unwrap().calls.insert("b".into());
     let g = scheduler::groups(&s);
     assert_eq!(g[0], vec!["b", "c"]);
+}
+
+#[test]
+fn equal_rank_components_use_id_order() {
+    let mut s = state();
+    s.targets.remove("c");
+    for id in ["y", "z"] {
+        s.targets.insert(id.into(), target(id, Kind::Function));
+    }
+    s.targets.get_mut("a").unwrap().calls.insert("z".into());
+    s.targets.get_mut("b").unwrap().calls.insert("y".into());
+    assert_eq!(
+        scheduler::groups(&s),
+        vec![vec!["y"], vec!["z"], vec!["a"], vec!["b"]]
+    );
 }

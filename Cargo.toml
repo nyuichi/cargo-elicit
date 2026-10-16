@@ -25,3 +25,10 @@ libc = "0.2"
 petgraph = "0.8"
 url = { version = "2", features = ["serde"] }
 
+
+# Broad content fingerprints also cover installed verifier/model files. Keep
+# hashing practical in debug CLI and native test builds.
+[profile.dev.package.sha2]
+opt-level = 3
+[profile.dev.package.digest]
+opt-level = 3

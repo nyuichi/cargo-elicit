@@ -6,7 +6,7 @@
 
 IDはpackage、module path、定義種別、名前、impl headerのhashから構成します。impl self typeとtraitを区別し、行番号は照合位置としてのみ使います。対応が不明な削除・改名は旧対象の成果を残して要確認とします。旧対象を補助定義へ変えて進捗の分母を縮めることも拒否します。
 
-解析は完全なrustc HIRの抽出ではありません。未解決のローカル呼び出し、マクロによる定義、glob re-export、build.rsの生成物は解析不完全として表示し、全体完了を防ぎます。cfgは選択target/featuresと検証器cfgを適用しますが、任意の属性マクロやbuild scriptの独自cfgの完全な再現は未対応です。公開名の同一性が曖昧な場合も完了を引き継ぎません。
+解析は完全なrustc HIRの抽出ではありません。未解決のローカル呼び出し、マクロによる定義、glob re-export、build.rsの生成物は解析不完全として表示し、全体完了を防ぎます。cfgは選択target/featuresと検証器cfgを適用しますが、任意の属性マクロやbuild scriptの独自cfgの完全な再現は未対応です。公開名の同一性が曖昧な場合も完了を引き継ぎません。独自compiler flags、cfgを変えるCargo設定、属性マクロによる生成物、workspaceのfeature統合が選択構成を広げる場合も要確認として表示します。
 
 `model` は対象と正式な検証結果を分離します。verifiedは、仕様が現行で、既知の仕様依存が再確認済みで、同じ広い入力fingerprintに対して、全required unitが制限・未証明仮定なしに証明済みかどうかから導出します。型・traitに独立したverifiedはありません。循環した未確認の仕様依存を証明根拠にできません。
 
@@ -36,7 +36,7 @@ Creusotはcargo-elicit専用build cache内の対象パッケージだけを、Cr
 
 自身の仕様hashが変わると、その仕様と直接依存する仕様を再確認に戻します。BがAを参照し、CがBを参照する場合、Bの仕様内容を変更せずAの参照hashだけ更新すれば、Cの仕様を再生成しません。Bが未確認の間はCの証明完了も保留します。依存が回復し入力も同一なら、既存の証明結果は再利用できます。
 
-未申告依存の変更を見逃さないため、検証fingerprintはソース、proof/model、packageとlocal dependencyのファイル、workspace/ancestor manifestとlockfile、Cargo設定、選択構成、compiler flags、toolchain・検証器・標準モデル等を広く含めます。台帳、runtime、cache、`.git`、Why3findのcache、Cargo metadataが返す実際のtarget directoryは除外します。メモだけの更新では入力を変えません。ソース入力のsymlinkは追跡できない入力としてエラーにします。
+未申告依存の変更を見逃さないため、検証fingerprintはソース、proof/model、packageとlocal dependencyのファイル、workspace/ancestor manifestとlockfile、Cargo設定、選択構成、cargo-elicit自身の実行ファイル、compiler flags、toolchain・検証器・標準モデル等を広く含めます。台帳、runtime、cache、`.git`、Why3findのcache、Cargo metadataが返す実際のtarget directoryは除外します。メモだけの更新では入力を変えません。ソース入力のsymlinkは追跡できない入力としてエラーにします。
 
 build scriptや外部モデルなどの追跡が十分でない結果は、全contractの完了として再利用しません。全features・全targetの網羅を示すものではありません。
 

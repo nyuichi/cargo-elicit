@@ -313,6 +313,7 @@ impl State {
                     && new.visibility == Visibility::Auxiliary
                 {
                     new.visibility = old.visibility;
+                    new.implementation_changed = true;
                     new.stale
                         .push("existing API reclassified as proof helper; review required".into());
                 }

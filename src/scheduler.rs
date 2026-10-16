@@ -1,6 +1,6 @@
 use crate::model::*;
 use petgraph::{algo::tarjan_scc, graph::DiGraph};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 #[derive(Debug, Clone, clap::Args)]
 pub struct Limits {
     #[arg(long, default_value_t = 32)]
@@ -52,16 +52,44 @@ pub fn groups(s: &State) -> Vec<Vec<String>> {
             }
         }
     }
-    // Tarjan emits sinks first for caller -> callee edges.
-    tarjan_scc(&graph)
+    let components: Vec<Vec<String>> = tarjan_scc(&graph)
         .into_iter()
         .map(|ns| {
             let mut ids = ns.iter().map(|n| graph[*n].clone()).collect::<Vec<_>>();
             ids.sort();
             ids
         })
-        .collect()
+        .collect();
+    let mut remaining: BTreeSet<usize> = (0..components.len()).collect();
+    let owners = components
+        .iter()
+        .enumerate()
+        .flat_map(|(i, ids)| ids.iter().map(move |id| (id.clone(), i)))
+        .collect::<BTreeMap<_, _>>();
+    let mut ordered = vec![];
+    while !remaining.is_empty() {
+        let mut sinks = remaining
+            .iter()
+            .copied()
+            .filter(|i| {
+                components[*i].iter().all(|id| {
+                    s.targets[id].calls.iter().all(|call| {
+                        owners
+                            .get(call)
+                            .is_none_or(|j| j == i || !remaining.contains(j))
+                    })
+                })
+            })
+            .collect::<Vec<_>>();
+        sinks.sort_by(|a, b| components[*a].cmp(&components[*b]));
+        for i in sinks {
+            remaining.remove(&i);
+            ordered.push(components[i].clone());
+        }
+    }
+    ordered
 }
+
 pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
     let groups = groups(s);
     for g in &groups {

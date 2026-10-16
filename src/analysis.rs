@@ -71,13 +71,13 @@ pub fn package(root: &Path, selection: &Selection) -> Result<Package> {
     let candidates: Vec<_> = packages
         .iter()
         .filter(|p| {
-            if let Some(name) = &selection.package {
-                p["name"].as_str() == Some(name)
-            } else {
-                meta["workspace_members"]
-                    .as_array()
-                    .is_some_and(|m| m.contains(&p["id"]))
-            }
+            meta["workspace_members"]
+                .as_array()
+                .is_some_and(|m| m.contains(&p["id"]))
+                && selection
+                    .package
+                    .as_ref()
+                    .is_none_or(|name| p["name"].as_str() == Some(name))
         })
         .collect();
     if candidates.len() != 1 {
@@ -198,6 +198,58 @@ impl Analyzer {
             incomplete: vec![],
             visited: BTreeSet::new(),
         };
+        if p.metadata["workspace_members"]
+            .as_array()
+            .is_some_and(|v| v.len() > 1)
+        {
+            if let Some(package) = p.metadata["packages"]
+                .as_array()
+                .and_then(|ps| ps.iter().find(|v| v["name"] == p.scope.package))
+            {
+                let definitions = package["features"].as_object();
+                let mut expected = BTreeSet::new();
+                if let Some(definitions) = definitions {
+                    if p.scope.all_features {
+                        expected.extend(definitions.keys().cloned());
+                    }
+                    if !p.scope.no_default_features && definitions.contains_key("default") {
+                        expected.insert("default".to_string());
+                    }
+                    for feature in &p.scope.features {
+                        if let Some((pkg, f)) = feature.split_once('/') {
+                            if pkg == p.scope.package {
+                                expected.insert(f.to_string());
+                            }
+                        } else {
+                            expected.insert(feature.clone());
+                        }
+                    }
+                    loop {
+                        let old = expected.clone();
+                        for feature in old.iter() {
+                            if let Some(items) = definitions.get(feature).and_then(Value::as_array)
+                            {
+                                for value in items.iter().filter_map(Value::as_str) {
+                                    if definitions.contains_key(value) {
+                                        expected.insert(value.to_string());
+                                    } else if let Some((dep, _)) = value.split_once('/') {
+                                        if !dep.ends_with('?') && definitions.contains_key(dep) {
+                                            expected.insert(dep.to_string());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if expected == old {
+                            break;
+                        }
+                    }
+                }
+                if expected != p.scope.resolved_features.iter().cloned().collect() {
+                    ix.incomplete.push("workspace feature unification differs from the selected package configuration; scope review required".into());
+                }
+            }
+        }
         if Path::new(&p.scope.manifest_path)
             .parent()
             .unwrap()
@@ -207,6 +259,24 @@ impl Analyzer {
             ix.incomplete.push(
                 "build.rs may generate source or cfg; generated definitions require review".into(),
             );
+        }
+        if ["RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS"]
+            .iter()
+            .any(|k| std::env::var(k).is_ok_and(|v| !v.trim().is_empty()))
+        {
+            ix.incomplete.push(
+                "custom compiler flags may change cfg; semantic/structural scope needs review"
+                    .into(),
+            );
+        }
+        for parent in Path::new(&p.scope.manifest_path).ancestors().skip(1) {
+            for name in [".cargo/config", ".cargo/config.toml"] {
+                let path = parent.join(name);
+                if path.is_file() && fs::read_to_string(path)?.contains("rustflags") {
+                    ix.incomplete
+                        .push("Cargo config rustflags may change cfg; scope needs review".into());
+                }
+            }
         }
         for entry in &p.entries {
             ix.file(entry, &[], true)?;
@@ -361,6 +431,60 @@ fn trusted(a: &[syn::Attribute]) -> bool {
             || (a.path().is_ident("cfg_attr") && tokens(a).contains("trusted"))
     })
 }
+fn known_attribute(meta: &syn::Meta) -> bool {
+    let Some(name) = meta.path().segments.last().map(|s| s.ident.to_string()) else {
+        return false;
+    };
+    if name == "cfg_attr" {
+        use syn::parse::Parser;
+        let syn::Meta::List(l) = meta else {
+            return false;
+        };
+        let Ok(ms) = syn::punctuated::Punctuated::<syn::Meta, syn::Token![,]>::parse_terminated
+            .parse2(l.tokens.clone())
+        else {
+            return false;
+        };
+        return ms.len() >= 2
+            && ms
+                .iter()
+                .skip(1)
+                .all(|m| !m.path().is_ident("cfg") && known_attribute(m));
+    }
+    matches!(
+        name.as_str(),
+        "cfg"
+            | "doc"
+            | "allow"
+            | "warn"
+            | "deny"
+            | "forbid"
+            | "expect"
+            | "inline"
+            | "cold"
+            | "must_use"
+            | "deprecated"
+            | "no_mangle"
+            | "export_name"
+            | "link_section"
+            | "repr"
+            | "non_exhaustive"
+            | "requires"
+            | "ensures"
+            | "invariant"
+            | "variant"
+            | "maintains"
+            | "trusted"
+            | "terminates"
+            | "open"
+            | "logic"
+            | "predicate"
+            | "ghost"
+            | "lemma"
+            | "proof"
+            | "proof_for_contract"
+    )
+}
 struct Index {
     package: String,
     cfg: BTreeSet<String>,
@@ -387,6 +511,14 @@ impl Index {
                             .push(format!("unsupported cfg: {}", tokens(a))),
                     }
                 }
+            }
+        }
+        for attr in a {
+            if !known_attribute(&attr.meta) {
+                self.incomplete.push(format!(
+                    "attribute may generate or hide definitions; review required: {}",
+                    tokens(attr)
+                ));
             }
         }
         true

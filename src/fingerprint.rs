@@ -103,6 +103,7 @@ pub fn input(scope: &Scope, tool: Tool, version: &str) -> Result<String> {
     h.update(tool.to_string());
     h.update(version);
     h.update(env!("CARGO_PKG_VERSION"));
+    h.update(hash(fs::read(std::env::current_exe()?)?));
     h.update(version_cached()?);
     tcb_inputs(tool, &mut h)?;
     for (k, v) in std::env::vars().filter(|(k, _)| {
@@ -147,10 +148,23 @@ pub fn kani_home() -> Option<PathBuf> {
     root.is_dir().then_some(root)
 }
 pub fn creusot_home() -> Option<PathBuf> {
-    std::env::var_os("CREUSOT_DATA_HOME")
-        .map(PathBuf::from)
-        .or_else(|| std::env::var_os("XDG_DATA_HOME").map(|p| PathBuf::from(p).join("creusot")))
-        .or_else(|| std::env::var_os("HOME").map(|p| PathBuf::from(p).join(".local/share/creusot")))
+    if let Some(path) = std::env::var_os("CREUSOT_DATA_HOME") {
+        return Some(PathBuf::from(path));
+    }
+    // Match Creusot's directories::ProjectDirs::from("", "creusot", "creusot").
+    #[cfg(target_os = "macos")]
+    {
+        std::env::var_os("HOME")
+            .map(|p| PathBuf::from(p).join("Library/Application Support/creusot.creusot"))
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        std::env::var_os("XDG_DATA_HOME")
+            .map(|p| PathBuf::from(p).join("creusot"))
+            .or_else(|| {
+                std::env::var_os("HOME").map(|p| PathBuf::from(p).join(".local/share/creusot"))
+            })
+    }
 }
 pub fn tcb_tracked(tool: Tool) -> bool {
     match tool {
