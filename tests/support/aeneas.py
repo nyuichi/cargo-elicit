@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Deterministic protocol fixtures; native tests separately exercise the Lean kernel.
-import sys, os, pathlib, json
+import sys, os, pathlib, json, time
 name=pathlib.Path(sys.argv[0]).name
 args=sys.argv[1:]
 if name=='charon':
@@ -12,6 +12,9 @@ if name=='charon':
  out=pathlib.Path(args[args.index('--dest-file')+1])
  root=pathlib.Path(args[args.index('--manifest-path')+1]).parent
  source=(root/'src/lib.rs').read_text()
+ if os.environ.get('MOCK_AENEAS')=='wait':
+  (root/'.elicit/runtime/mock-checker-started').touch()
+  time.sleep(60)
  data=({'charon_version':'0.1.293','has_errors':False,'translated':{
   'runtime_checks':{'overflow_checks':True},'target_information':[{'key':args[args.index('--target')+1]}],
   'files':[{'id':0,'name':{'Local':'src/lib.rs'},'contents':source}],

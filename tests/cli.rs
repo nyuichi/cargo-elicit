@@ -633,3 +633,123 @@ fn simple_aeneas_cargo_selector_and_overridden_lean_path_are_not_source_changes(
     assert!(with.status.success());
     assert_eq!(original, p.state().input);
 }
+
+#[test]
+fn prepared_proofs_are_checked_before_unrelated_worker_tasks() {
+    let p = Project::new(
+        "aeneas",
+        "pub fn identity(x:u32)->u32 { x }\npub fn unfinished(x:u32)->u32 { x }\n",
+    );
+    let proof = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&proof).unwrap();
+    fs::write(proof.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
+    fs::write(proof.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    // A retained contract for a removed target must not panic during collection.
+    use std::io::Write;
+    writeln!(fs::OpenOptions::new().append(true).open(proof.join("contracts.toml")).unwrap(), "[contracts.\"fixture::removed::Function\"]\nensures=\"fun x r => r = x\"\ntheorem=\"Proofs.old\"").unwrap();
+    let show = p.ok(&["agent", "show", "fixture::identity::Function"]);
+    let data: serde_json::Value = serde_json::from_slice(&show.stdout).unwrap();
+    p.ok(&[
+        "agent",
+        "submit",
+        "fixture::identity::Function",
+        "--revision",
+        &data["revision"].to_string(),
+        "--note",
+        "Reviewed identity while unrelated work remains",
+    ]);
+    p.required();
+    let out = p
+        .cmd()
+        .env("MOCK_CASE", "noop")
+        .args(["run", "--max-tasks", "1"])
+        .output()
+        .unwrap();
+    assert_eq!(
+        out.status.code(),
+        Some(1),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(p.state().verified("fixture::identity::Function"));
+    assert!(!p.state().targets["fixture::unfinished::Function"].specified);
+    let events: Vec<serde_json::Value> =
+        fs::read_to_string(p.dir.path().join(".elicit/events.jsonl"))
+            .unwrap()
+            .lines()
+            .map(|l| serde_json::from_str(l).unwrap())
+            .collect();
+    let checked = events
+        .iter()
+        .position(|e| e["event"] == "verification_finished")
+        .unwrap();
+    let worker = events
+        .iter()
+        .position(|e| e["event"] == "worker_started")
+        .unwrap();
+    assert!(
+        checked < worker,
+        "saved proof must be recorded before opening unrelated AI work"
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn interrupted_checker_is_retained_as_interrupted_without_fingerprint_errors() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let proof = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&proof).unwrap();
+    fs::write(proof.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
+    fs::write(proof.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    p.ok(&["run"]);
+    let before = p.state();
+    let mut process = p
+        .cmd()
+        .env("MOCK_AENEAS", "wait")
+        .args([
+            "agent",
+            "verify",
+            "fixture::identity::Function",
+            "--revision",
+            &before.revision.to_string(),
+        ])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(30);
+    while !p
+        .dir
+        .path()
+        .join(".elicit/runtime/mock-checker-started")
+        .exists()
+    {
+        if Instant::now() >= deadline {
+            let _ = process.kill();
+            panic!("checker did not start");
+        }
+        thread::sleep(Duration::from_millis(50));
+    }
+    unsafe {
+        libc::kill(process.id() as i32, libc::SIGINT);
+    }
+    let out = process.wait_with_output().unwrap();
+    assert_eq!(
+        out.status.code(),
+        Some(130),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(
+        out.stderr.is_empty(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let after = p.state();
+    assert_eq!(before.input, after.input);
+    assert_eq!(
+        after.results.last().unwrap().outcome,
+        cargo_elicit::model::Outcome::Interrupted
+    );
+    assert!(!after.verified("fixture::identity::Function"));
+}

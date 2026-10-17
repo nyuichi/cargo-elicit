@@ -119,6 +119,17 @@ fn base(s: &State, id: &str, version: &str) -> Verification {
         elapsed_ms: 0,
     }
 }
+fn final_input_outcome(after: &Result<String>, before: &str, interrupted: bool) -> Option<Outcome> {
+    if interrupted {
+        Some(Outcome::Interrupted)
+    } else {
+        match after {
+            Err(_) => Some(Outcome::EnvironmentError),
+            Ok(input) if input != before => Some(Outcome::InputChanged),
+            Ok(_) => None,
+        }
+    }
+}
 pub fn verify(
     store: &Store,
     ids: &[String],
@@ -230,7 +241,11 @@ pub fn verify(
         };
         Ok((o, evidence))
     })();
-    let after = fingerprint::input(&s.scope, s.tool, &version);
+    let after = if process::interrupted() {
+        Ok(before.clone())
+    } else {
+        fingerprint::input(&s.scope, s.tool, &version)
+    };
     let mut results = vec![];
     for p in pending {
         let mut r = p;
@@ -296,11 +311,17 @@ pub fn verify(
                 }
             }
         }
-        if after.as_ref().ok() != Some(&before) {
-            r.outcome = Outcome::InputChanged;
+        if let Some(outcome) = final_input_outcome(&after, &before, process::interrupted()) {
+            r.outcome = outcome;
             r.reusable = false;
-            r.summary =
-                "verification inputs changed during execution; result is not current".into();
+            r.summary = match outcome {
+                Outcome::Interrupted => "verification interrupted; no new proof accepted",
+                Outcome::EnvironmentError => {
+                    "verification inputs could not be inspected; no new proof accepted"
+                }
+                _ => "verification inputs changed during execution; result is not current",
+            }
+            .into();
         }
         if r.outcome != Outcome::Success {
             let phase = execute
@@ -318,7 +339,7 @@ pub fn verify(
     }
     // The Aeneas invocation audits every eligible contract. Preserve all its
     // independent successful results, not only the scheduler's requested root.
-    if s.tool == Tool::Aeneas && after.as_ref().ok() == Some(&before) {
+    if s.tool == Tool::Aeneas && !process::interrupted() && after.as_ref().ok() == Some(&before) {
         if let Ok((_, Some(evidence))) = &execute {
             for t in s.targets.values().filter(|t| {
                 t.ready()
@@ -983,6 +1004,25 @@ fn proof_complete(p: &Value) -> bool {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn interrupted_inspection_is_not_a_source_change() {
+        use super::*;
+        let failure: Result<String> = Err(anyhow::anyhow!("compiler interrupted"));
+        assert_eq!(
+            final_input_outcome(&failure, "old", true),
+            Some(Outcome::Interrupted)
+        );
+        assert_eq!(
+            final_input_outcome(&failure, "old", false),
+            Some(Outcome::EnvironmentError)
+        );
+        assert_eq!(
+            final_input_outcome(&Ok("new".into()), "old", false),
+            Some(Outcome::InputChanged)
+        );
+        assert_eq!(final_input_outcome(&Ok("old".into()), "old", false), None);
+    }
+
     use super::*;
     fn case() -> (tempfile::TempDir, State, Target, Value) {
         let d = tempfile::tempdir().unwrap();

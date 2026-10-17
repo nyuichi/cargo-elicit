@@ -50,6 +50,33 @@ fn manifest(scope: &Scope) -> Result<Manifest> {
 pub fn contract_name(id: &str) -> String {
     format!("ElicitContracts.c_{}", &fingerprint::hash(id)[..16])
 }
+// Collect existing declared proofs before opening unrelated specification work.
+// Names are only candidates: fresh extraction, kernel checks and axiom audits
+// remain mandatory, including for previously successful roots after proof edits.
+pub fn prepared_targets(s: &State) -> Result<Vec<String>> {
+    if !proof_root(&s.scope).join("Proofs.lean").is_file() {
+        return Ok(vec![]);
+    }
+    let m = manifest(&s.scope)?;
+    Ok(m.contracts
+        .iter()
+        .filter(|(id, c)| {
+            c.theorem
+                .as_ref()
+                .is_some_and(|name| !name.trim().is_empty())
+                && s.targets.contains_key(*id)
+                && s.schedulable(id)
+                && s.dependencies_ready(id)
+                && s.targets[*id].kind.proof()
+                && !s.verified(id)
+                && !s
+                    .results
+                    .iter()
+                    .any(|r| &r.target == *id && r.input == s.input)
+        })
+        .map(|(id, _)| id.clone())
+        .collect())
+}
 pub fn check_submission(scope: &Scope, t: &Target) -> Result<()> {
     if t.kind.proof() {
         let m = manifest(scope)?;

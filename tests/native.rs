@@ -200,6 +200,27 @@ fn exercise_fixture(tool: &str, fixture: &str) {
         let mut source = fs::read_to_string(&proof).unwrap();
         source.push_str("\n-- Proof artifact update: recheck without an AI turn.\n");
         fs::write(&proof, source).unwrap();
+        if fixture == "aeneas-rich" {
+            ok(&root, &["status"]);
+            let current = state(&root);
+            let id = current
+                .targets
+                .values()
+                .find(|t| t.kind.proof())
+                .unwrap()
+                .id
+                .clone();
+            ok(
+                &root,
+                &[
+                    "agent",
+                    "verify",
+                    &id,
+                    "--revision",
+                    &current.revision.to_string(),
+                ],
+            );
+        }
         ok(&root, &["run"]);
         assert!(state(&root).complete(true));
         assert_eq!(

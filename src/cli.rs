@@ -131,8 +131,12 @@ pub fn entry() -> i32 {
             }
         }
         Err(e) => {
-            eprintln!("cargo-elicit: {e:#}");
-            if process::interrupted() { 130 } else { 2 }
+            if process::interrupted() {
+                130
+            } else {
+                eprintln!("cargo-elicit: {e:#}");
+                2
+            }
         }
     }
 }
@@ -155,6 +159,9 @@ fn root(cli: &Cli) -> Result<PathBuf> {
         .to_path_buf())
 }
 pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
+    if process::interrupted() {
+        bail!("interrupted");
+    }
     let _lock = store.state_lock()?;
     let mut s = store.load()?;
     let previous = serde_json::to_vec(&s)?;
@@ -171,7 +178,13 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
     if input == s.input && package.scope == s.scope {
         return Ok(s);
     }
+    if process::interrupted() {
+        bail!("interrupted");
+    }
     let (targets, incomplete) = engine.analyze(&package, s.tool)?;
+    if process::interrupted() {
+        bail!("interrupted");
+    }
     s.scope = package.scope;
     let changed: Vec<_> = input_files
         .keys()
@@ -497,7 +510,9 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
             };
             let r = verifier::verify(store, &ids, Some(revision), seconds)?;
             println!("{}", serde_json::to_string_pretty(&r)?);
-            return Ok(if r.iter().all(|r| r.outcome == Outcome::Success) {
+            return Ok(if process::interrupted() {
+                130
+            } else if r.iter().all(|r| r.outcome == Outcome::Success) {
                 0
             } else {
                 1
@@ -566,6 +581,43 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         if s.complete(config.verification.required) {
             break;
         }
+        // Persist prepared proof work while it exists, before unrelated stale
+        // specifications can consume the remaining budget. This does not ask an
+        // AI to solve any API ahead of another; it only checks saved artifacts.
+        if config.verification.required && s.tool == Tool::Aeneas {
+            let ids = crate::aeneas::prepared_targets(&s)?;
+            if !ids.is_empty() {
+                let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
+                if remaining == 0 {
+                    break;
+                }
+                store.event(
+                    "artifact_checkpoint",
+                    json!({"targets":ids,"input":s.input}),
+                )?;
+                let results = verifier::verify(
+                    store,
+                    &ids,
+                    Some(s.revision),
+                    limits.verify_seconds.min(remaining),
+                )?;
+                if process::interrupted() {
+                    return Ok(130);
+                }
+                s = sync(store, engine)?;
+                if results
+                    .iter()
+                    .any(|r| r.outcome == Outcome::EnvironmentError)
+                {
+                    bail!(
+                        "verification environment failed during artifact checkpoint; inspect the recorded phase/cache"
+                    );
+                }
+            }
+        }
+        if start.elapsed().as_secs() >= limits.max_seconds {
+            break;
+        }
         let Some(task) = scheduler::next(&s, config.verification.required, limits) else {
             break;
         };
@@ -625,6 +677,9 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                     .iter()
                     .any(|r| &r.target == id && r.outcome == Outcome::Success)
             });
+            if process::interrupted() {
+                return Ok(130);
+            }
             s = sync(store, engine)?;
         }
         if process::interrupted() {
@@ -694,6 +749,9 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                     }
                     Err(_) => proof_environment_error = true,
                 }
+                if process::interrupted() {
+                    return Ok(130);
+                }
                 after = sync(store, engine)?;
             }
         }
@@ -742,6 +800,9 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         }
     }
     drop(codex);
+    if process::interrupted() {
+        return Ok(130);
+    }
     s = sync(store, engine)?;
     // Final batch refresh only for ready APIs whose current input has no formal
     // execution yet. This does not regenerate already stable specifications.

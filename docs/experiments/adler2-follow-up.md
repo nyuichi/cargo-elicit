@@ -1,6 +1,6 @@
 # Adler-32 follow-up after workflow repairs
 
-**Status: ordinary arm completed; repaired product rerun pending.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
+**Status: ordinary arm audited; first complete repaired trial retained; additional checkpoint repair under validation.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
 
 ## Changes under test
 
@@ -30,6 +30,12 @@ Independently check unchanged original sources, fresh extracted model correspond
 
 A candidate product trial was stopped after 517.39 seconds, before scoring. Identical source files acquired different fingerprints through Cargo versus direct invocation: environment iteration order, Cargo’s Rustup selector and an overridden Lean path were being hashed as effective inputs. The additional repair canonicalizes environment order, ignores the overridden path, and uses the resolved compiler identity for simple crates while retaining selectors for complex builds. An isolated Cargo/direct/Cargo probe now produces identical fingerprints. Context events now identify hashed context components as well as changed files, without exposing environment values. This interrupted trial is retained as diagnostic cost, not silently counted as a valid paired result. Its proof/specification artifacts are not reused. The completed ordinary arm remains the control because it does not use product fingerprints.
 
+## First complete repaired trial and additional repair
+
+The ordinary arm completed in 860.09 seconds and independently proved 3/5 selected APIs, with 27 audited theorem roots across API, conditional and mathematical support results. The first complete repaired product trial used source `86271b9df690eb5e3be95eeb2839535aa1e0811a` and ran for 1,806.74 seconds including terminal observation. It submitted meaningful specifications and saved nine valid method proofs, including the same three selected APIs, but its timed ledger accepted none: rechecks of other specifications delayed the first official check until 27 seconds before the work deadline. Interruption was then incorrectly labeled as input change. These are measured results, not excluded observations.
+
+A post-trial wrapper check of the untouched saved proof module accepted all nine method contracts. This does not turn the frozen timed result into 3/5. Two further repairs address the mechanism: check declared, ready proof artifacts before opening unrelated specification work, without asking an AI to solve a different API first; and classify interruption or failed input inspection separately from actual input changes. Interrupted checks accept no new proof and exit cleanly with code 130. Fresh extraction, exact propositions, kernel checking and standard-axiom restrictions remain mandatory.
+
 ## Results
 
-Pending actual authoring and independent artifact audits. Do not substitute the first pair, native fixtures or existing proof solutions for this measurement.
+Final checkpoint-repaired authoring trial and independent artifact audit pending. Preserve both the historical first pair and the measured intermediate trial. No prepared proof or specification is imported into the next fresh case.
