@@ -62,6 +62,23 @@ impl Store {
             }
         }
     }
+    pub fn event(&self, event: &str, data: serde_json::Value) -> Result<()> {
+        let path = self.root.join(".elicit/events.jsonl");
+        fs::create_dir_all(path.parent().unwrap())?;
+        let timestamp = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)?
+            .as_millis();
+        let mut line = serde_json::to_vec(
+            &serde_json::json!({"timestamp_ms":timestamp,"event":event,"data":data}),
+        )?;
+        line.push(b'\n');
+        OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)?
+            .write_all(&line)?;
+        Ok(())
+    }
     pub fn config(&self) -> Result<Config> {
         let c: Config = toml::from_str(&fs::read_to_string(self.root.join("elicit.toml"))?)?;
         c.validate()?;

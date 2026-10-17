@@ -175,6 +175,54 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             )
             .all(|t| s.verified(&t.id))
     );
+    if tool == "aeneas" {
+        let events = || {
+            fs::read_to_string(root.join(".elicit/events.jsonl"))
+                .unwrap()
+                .lines()
+                .map(|l| serde_json::from_str::<serde_json::Value>(l).unwrap())
+                .collect::<Vec<_>>()
+        };
+        let original_input = state(&root).input;
+        fs::write(
+            root.join("PROGRESS.md"),
+            "Report-only update after successful proofs.\n",
+        )
+        .unwrap();
+        ok(&root, &["status"]);
+        assert_eq!(original_input, state(&root).input);
+        assert!(state(&root).complete(true));
+        let workers_before = events()
+            .iter()
+            .filter(|e| e["event"] == "worker_started")
+            .count();
+        let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
+        let mut source = fs::read_to_string(&proof).unwrap();
+        source.push_str("\n-- Proof artifact update: recheck without an AI turn.\n");
+        fs::write(&proof, source).unwrap();
+        ok(&root, &["run"]);
+        assert!(state(&root).complete(true));
+        assert_eq!(
+            workers_before,
+            events()
+                .iter()
+                .filter(|e| e["event"] == "worker_started")
+                .count()
+        );
+        if fixture == "aeneas-rich" {
+            let last = events()
+                .into_iter()
+                .rev()
+                .find(|e| e["event"] == "verification_finished")
+                .unwrap();
+            assert_eq!(last["data"]["requested"].as_array().unwrap().len(), 1);
+            assert_eq!(
+                last["data"]["results"].as_array().unwrap().len(),
+                5,
+                "all checked ready contracts must be recorded"
+            );
+        }
+    }
     if fixture == "aeneas" {
         let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
         let original = fs::read_to_string(&proof).unwrap();

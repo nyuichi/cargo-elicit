@@ -164,7 +164,8 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
     )?;
     let version =
         fingerprint::tool_version(s.tool).unwrap_or_else(|_| "verifier unavailable".into());
-    let input = fingerprint::input(&package.scope, s.tool, &version)?;
+    let (input, context_input, input_files) =
+        fingerprint::inputs(&package.scope, s.tool, &version)?;
     // The ledger caches definition identities, aliases, call edges and unresolved
     // analysis. Reuse it across CLI invocations only for identical complete inputs.
     if input == s.input && package.scope == s.scope {
@@ -172,6 +173,17 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
     }
     let (targets, incomplete) = engine.analyze(&package, s.tool)?;
     s.scope = package.scope;
+    let changed: Vec<_> = input_files
+        .keys()
+        .chain(s.input_files.keys())
+        .filter(|p| input_files.get(*p) != s.input_files.get(*p))
+        .collect::<std::collections::BTreeSet<_>>()
+        .into_iter()
+        .cloned()
+        .collect();
+    store.event("input_changed", json!({"previous":s.input,"current":input,"changed_files":changed,"context_changed":s.context_input != context_input}))?;
+    s.context_input = context_input;
+    s.input_files = input_files;
     s.reconcile(targets, incomplete, input);
     if previous != serde_json::to_vec(&s)? {
         store.save(&mut s)?;
@@ -229,7 +241,9 @@ fn execute(cli: Cli) -> Result<i32> {
         let (targets, incomplete) = engine.analyze(&package, s.tool)?;
         s.scope = package.scope;
         let v = fingerprint::tool_version(s.tool).unwrap_or_else(|_| "verifier unavailable".into());
-        let input = fingerprint::input(&s.scope, s.tool, &v)?;
+        let (input, context_input, input_files) = fingerprint::inputs(&s.scope, s.tool, &v)?;
+        s.context_input = context_input;
+        s.input_files = input_files;
         s.reconcile(targets, incomplete, input);
         store.save(&mut s)?;
         println!(
@@ -279,7 +293,7 @@ fn execute(cli: Cli) -> Result<i32> {
     }
 }
 fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Result<()> {
-    let targets:Vec<_>=s.targets.values().filter(|t|!public || t.visibility==Visibility::Public).map(|t|{let mut v=serde_json::to_value(t).unwrap();if t.kind.proof(){v["verified"]=json!(s.verified(&t.id));}v["verification_results"]=json!(s.results.iter().filter(|r|r.target==t.id).map(|r|json!({"result":r,"stale":r.input!=s.input || !s.dependencies_ready(&t.id)})).collect::<Vec<_>>());v}).collect();
+    let targets:Vec<_>=s.targets.values().filter(|t|!public || t.visibility==Visibility::Public).map(|t|{let mut v=serde_json::to_value(t).unwrap();if t.kind.proof(){v["verified"]=json!(s.verified(&t.id));}v["unsupported"]=json!(s.unsupported(&t.id));v["verification_results"]=json!(s.results.iter().filter(|r|r.target==t.id).map(|r|json!({"result":r,"stale":r.input!=s.input || !s.dependencies_ready(&t.id)})).collect::<Vec<_>>());v}).collect();
     let active: Vec<_> = s
         .targets
         .values()
@@ -287,7 +301,7 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
         .collect();
     let types: Vec<_> = active.iter().filter(|t| !t.kind.proof()).collect();
     let functions: Vec<_> = active.iter().filter(|t| t.kind.proof()).collect();
-    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"complete":s.complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"analysis_incomplete":s.analysis_incomplete,"run":s.run});
+    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"complete":s.complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"blocked":active.iter().filter(|t| t.blocker.is_some() || s.unsupported(&t.id).is_some()).map(|t| json!({"id":t.id,"reason":s.unsupported(&t.id).map(str::to_string).or_else(||t.blocker.as_ref().map(|b|b.reason.clone()))})).collect::<Vec<_>>(),"analysis_incomplete":s.analysis_incomplete,"run":s.run});
     if as_json {
         println!(
             "{}",
@@ -325,6 +339,15 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
             functions.iter().filter(|t| s.verified(&t.id)).count(),
             functions.len()
         );
+        for t in &active {
+            if let Some(reason) = s
+                .unsupported(&t.id)
+                .map(str::to_string)
+                .or_else(|| t.blocker.as_ref().map(|b| b.reason.clone()))
+            {
+                println!("Blocked: {}: {reason}", t.id);
+            }
+        }
         for issue in &s.analysis_incomplete {
             println!("Analysis incomplete: {issue}");
         }
@@ -346,7 +369,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
             println!(
                 "{}",
                 serde_json::to_string_pretty(&if let Some(id) = id {
-                    json!({"revision":s.revision,"input":s.input,"target":s.targets.get(&id).context("unknown target")?,"verified":s.verified(&id),"aeneas_contract":if s.tool == Tool::Aeneas {Some(crate::aeneas::contract_name(&id))} else {None}})
+                    json!({"revision":s.revision,"input":s.input,"target":s.targets.get(&id).context("unknown target")?,"verified":s.verified(&id),"verification_results":s.results.iter().filter(|r| r.target == id).collect::<Vec<_>>(),"unsupported":s.unsupported(&id),"aeneas_contract":if s.tool == Tool::Aeneas && matches!(s.targets[&id].kind, Kind::Function | Kind::Method) {Some(crate::aeneas::contract_name(&id))} else {None}})
                 } else {
                     serde_json::to_value(&s)?
                 })?
@@ -409,6 +432,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
                     t.required_units = units;
                 }
                 t.specified = true;
+                t.blocker = None;
                 t.stale.clear();
                 t.notes.push(note);
                 s.processing_input = input;
@@ -430,6 +454,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
                     .clone();
                 let t = s.targets.get_mut(&id).context("unknown target")?;
                 t.dependencies.insert(dependency, h);
+                t.blocker = None;
                 t.stale
                     .push("new specification dependency requires review".into());
                 Ok(())
@@ -441,10 +466,18 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
             reason,
         } => {
             store.transaction(Some(revision), |s| {
-                let t = s.targets.get_mut(&id).context("unknown target")?;
-                t.stale
-                    .push(format!("reported specification issue: {reason}"));
-                t.notes.push(reason);
+                if !s.targets.contains_key(&id) {
+                    bail!("unknown target");
+                }
+                let input = s.target_input(&id);
+                let t = s.targets.get_mut(&id).unwrap();
+                t.blocker = Some(Blocker {
+                    reason: reason.clone(),
+                    input,
+                });
+                if t.notes.last() != Some(&reason) {
+                    t.notes.push(reason);
+                }
                 Ok(())
             })?;
         }
@@ -494,6 +527,9 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
     store.transaction(None, |s| {
         if retry {
             s.run.attempts.clear();
+            for t in s.targets.values_mut() {
+                t.blocker = None;
+            }
         }
         if s.run.active.take().is_some() {
             s.run.last_result =
@@ -533,8 +569,8 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         let Some(task) = scheduler::next(&s, config.verification.required, limits) else {
             break;
         };
-        let before = scheduler::progress(&s);
-        let input = s.input.clone();
+        let before = s.clone();
+        let input = scheduler::task_input(&s, &task);
         let key = task.key();
         store.transaction(None, |s| {
             s.run.active = Some(Active {
@@ -550,7 +586,58 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             Ok(())
         })?;
         s = store.load()?;
+        store.event(
+            "task_started",
+            json!({"task":task,"input":s.input,"task_input":input,"revision":s.revision}),
+        )?;
+        // A fresh input with existing proof artifacts needs a checker, not an AI
+        // turn. Failed proofs still enter the worker for actual repair.
+        let refresh = task.kind == TaskKind::Verify
+            && s.tool == Tool::Aeneas
+            && store
+                .root
+                .join("elicit-proofs/aeneas/Proofs.lean")
+                .is_file()
+            && task.targets.iter().all(|id| {
+                !s.results
+                    .iter()
+                    .any(|r| &r.target == id && r.input == s.input)
+            });
+        let mut refreshed = false;
+        if refresh {
+            let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
+            let results = verifier::verify(
+                store,
+                &task.targets,
+                Some(s.revision),
+                limits.verify_seconds.min(remaining),
+            )?;
+            if results
+                .iter()
+                .any(|r| r.outcome == Outcome::EnvironmentError)
+            {
+                bail!(
+                    "verification environment failed before worker repair; inspect the recorded phase/cache"
+                );
+            }
+            refreshed = task.targets.iter().all(|id| {
+                results
+                    .iter()
+                    .any(|r| &r.target == id && r.outcome == Outcome::Success)
+            });
+            s = sync(store, engine)?;
+        }
+        if process::interrupted() {
+            return Ok(130);
+        }
+        if start.elapsed().as_secs() >= limits.max_seconds {
+            store.event("budget_exhausted", json!({"task":task,"input":s.input}))?;
+            break;
+        }
         let result = (|| -> Result<String> {
+            if refreshed {
+                return Ok("checked existing proof artifacts without an AI turn".into());
+            }
             let _worker = store.lock("worker")?;
             if codex.is_none() {
                 codex = Some(Codex::connect(store, &s, config.verification.required)?);
@@ -562,12 +649,17 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 s = store.load()?;
             }
             let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
+            store.event("worker_started", json!({"task":task,"input":s.input}))?;
             codex.as_mut().unwrap().run(
                 &s,
                 &task,
                 Duration::from_secs(limits.task_seconds.min(remaining)),
             )
         })();
+        store.event(
+            "worker_finished",
+            json!({"task":task,"called":!refreshed,"completed":result.is_ok()}),
+        )?;
         // A failed/interrupted worker is killed before releasing work to a verifier.
         if result.is_err() {
             codex = None;
@@ -582,9 +674,10 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             return Ok(130);
         }
         let mut after = sync(store, engine)?;
-        let mut proof_ok = false;
+        let mut proof_ok = refreshed;
         let mut proof_environment_error = false;
-        if result.is_ok() && task.kind == TaskKind::Verify && !process::interrupted() {
+        if result.is_ok() && !refreshed && task.kind == TaskKind::Verify && !process::interrupted()
+        {
             let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
             if remaining > 0 {
                 let results = verifier::verify(
@@ -604,7 +697,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 after = sync(store, engine)?;
             }
         }
-        let progress = before != scheduler::progress(&after);
+        let progress = scheduler::advanced(&before, &after);
         let success = result.is_ok()
             && if task.kind == TaskKind::Verify {
                 proof_ok
@@ -621,7 +714,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             let attempt = s.run.attempts.entry(key.clone()).or_default();
             attempt.failed = !success;
             attempt.no_progress = if progress { 0 } else { attempt.no_progress + 1 };
-            attempt.last_input = s.input.clone();
+            attempt.last_input = scheduler::task_input(&after, &task);
             attempt.last_result = if success {
                 "completed with accepted work"
             } else if failure {
@@ -640,6 +733,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             }
             Ok(())
         })?;
+        store.event("task_finished", json!({"task":task,"input":after.input,"success":success,"forward_progress":progress,"checker_only":refreshed}))?;
         if failure || proof_environment_error {
             if process::interrupted() {
                 break;

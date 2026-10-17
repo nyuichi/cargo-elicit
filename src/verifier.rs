@@ -115,6 +115,7 @@ fn base(s: &State, id: &str, version: &str) -> Verification {
         reusable: false,
         outcome: Outcome::Interrupted,
         summary: "verification started, not finalized".into(),
+        diagnostic: None,
         elapsed_ms: 0,
     }
 }
@@ -152,6 +153,10 @@ pub fn verify(
     })?;
     s = store.load()?;
     let started = Instant::now();
+    store.event(
+        "verification_started",
+        serde_json::json!({"requested":ids,"input":before}),
+    )?;
     let cache = store.root.join(".elicit/cache");
     fs::create_dir_all(&cache)?;
     let dir = tempfile::Builder::new()
@@ -297,7 +302,38 @@ pub fn verify(
             r.summary =
                 "verification inputs changed during execution; result is not current".into();
         }
+        if r.outcome != Outcome::Success {
+            let phase = execute
+                .as_ref()
+                .ok()
+                .and_then(|(_, e)| e.as_ref())
+                .and_then(|e| e["phase"].as_str())
+                .unwrap_or("extraction-or-build");
+            r.diagnostic = Some(Diagnostic {
+                phase: phase.into(),
+                cache: dir.to_string_lossy().into_owned(),
+            });
+        }
         results.push(r);
+    }
+    // The Aeneas invocation audits every eligible contract. Preserve all its
+    // independent successful results, not only the scheduler's requested root.
+    if s.tool == Tool::Aeneas && after.as_ref().ok() == Some(&before) {
+        if let Ok((_, Some(evidence))) = &execute {
+            for t in s.targets.values().filter(|t| {
+                t.ready()
+                    && s.dependencies_ready(&t.id)
+                    && !ids.contains(&t.id)
+                    && !s.verified(&t.id)
+            }) {
+                let mut r = base(&s, &t.id, &version);
+                r.elapsed_ms = started.elapsed().as_millis() as u64;
+                crate::aeneas::evidence(&s, t, Some(evidence), &mut r)?;
+                if r.outcome == Outcome::Success {
+                    results.push(r);
+                }
+            }
+        }
     }
     // Keep only a typed, bounded summary in the ledger. Native tool output can
     // contain source excerpts or environment secrets and is deliberately not logged.
@@ -305,10 +341,13 @@ pub fn verify(
         for r in &results {
             if let Some(old) = state.results.iter_mut().find(|p| p.id == r.id) {
                 *old = r.clone();
+            } else {
+                state.results.push(r.clone());
             }
         }
         Ok(())
     })?;
+    store.event("verification_finished", serde_json::json!({"requested":ids,"input":before,"results":results.iter().map(|r| serde_json::json!({"target":r.target,"outcome":r.outcome,"scope":r.scope,"elapsed_ms":r.elapsed_ms})).collect::<Vec<_>>()}))?;
     Ok(results)
 }
 pub(crate) fn safe_project(s: &State) -> Result<bool> {
@@ -972,6 +1011,7 @@ mod tests {
             original_body: "body".into(),
             source_hash: "source".into(),
             specified: true,
+            blocker: None,
             stale: vec![],
             dependencies: Default::default(),
             calls: Default::default(),

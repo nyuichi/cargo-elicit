@@ -19,6 +19,7 @@ fn target(id: &str, kind: Kind) -> Target {
         original_body: "body".into(),
         source_hash: "source".into(),
         specified: true,
+        blocker: None,
         stale: vec![],
         dependencies: BTreeMap::new(),
         calls: BTreeSet::new(),
@@ -59,6 +60,7 @@ fn proof(id: &str) -> Verification {
         reusable: true,
         outcome: Outcome::Success,
         summary: "".into(),
+        diagnostic: None,
         elapsed_ms: 0,
     }
 }
@@ -346,4 +348,77 @@ fn state_transaction_waits_for_concurrent_status_reconciliation() {
         .unwrap();
     release.join().unwrap();
     assert_eq!(store.load().unwrap().run.last_result, "serialized");
+}
+
+#[test]
+fn unsupported_traits_remain_visible_without_scheduling_retries() {
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.targets.clear();
+    let mut t = target("trait", Kind::TraitImpl);
+    t.specified = false;
+    t.stale.push("unsupported mapping".into());
+    s.targets.insert(t.id.clone(), t);
+    assert!(scheduler::next(&s, true, &Limits::default()).is_none());
+    s.input = "unrelated proof update".into();
+    assert!(scheduler::next(&s, true, &Limits::default()).is_none());
+    assert_eq!(s.targets.len(), 1);
+    assert!(!s.complete(true));
+}
+
+#[test]
+fn issue_blocks_until_semantic_context_changes() {
+    let mut s = state();
+    s.context_input = "rust-and-tools".into();
+    let input = s.target_input("a");
+    s.targets.get_mut("a").unwrap().blocker = Some(Blocker {
+        reason: "counterexample".into(),
+        input,
+    });
+    let fresh = s.targets.values().cloned().collect();
+    s.reconcile(fresh, vec![], "unrelated-proof-edit".into());
+    assert!(!s.schedulable("a"));
+    s.context_input = "changed-rust-or-toolchain".into();
+    let fresh = s.targets.values().cloned().collect();
+    s.reconcile(fresh, vec![], "new".into());
+    assert!(s.schedulable("a"));
+}
+
+#[test]
+fn recheck_failure_is_not_reopened_by_other_proof_edits() {
+    let mut s = state();
+    s.context_input = "stable-context".into();
+    let task = Task {
+        kind: TaskKind::Recheck,
+        targets: vec!["a".into()],
+    };
+    s.run.attempts.insert(
+        task.key(),
+        Attempt {
+            total: 1,
+            failed: true,
+            last_input: scheduler::task_input(&s, &task),
+            ..Attempt::default()
+        },
+    );
+    s.input = "changed-unrelated-proof-module".into();
+    assert!(!scheduler::eligible(&s, &task, &Limits::default()));
+    s.targets.get_mut("a").unwrap().spec_hash = "actually-changed-contract".into();
+    assert!(scheduler::eligible(&s, &task, &Limits::default()));
+}
+
+#[test]
+fn additional_diagnostics_and_regressions_are_not_forward_progress() {
+    let before = state();
+    let mut after = before.clone();
+    after
+        .targets
+        .get_mut("a")
+        .unwrap()
+        .stale
+        .push("new diagnostic".into());
+    assert!(!scheduler::advanced(&before, &after));
+    let mut fixed = after.clone();
+    fixed.targets.get_mut("a").unwrap().stale.clear();
+    assert!(scheduler::advanced(&after, &fixed));
 }

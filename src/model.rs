@@ -113,6 +113,12 @@ pub enum Visibility {
     Auxiliary,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Blocker {
+    pub reason: String,
+    pub input: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Target {
     pub id: String,
     pub name: String,
@@ -127,6 +133,8 @@ pub struct Target {
     pub original_body: String,
     pub source_hash: String,
     pub specified: bool,
+    #[serde(default)]
+    pub blocker: Option<Blocker>,
     pub stale: Vec<String>,
     pub dependencies: BTreeMap<String, String>,
     pub calls: BTreeSet<String>,
@@ -140,7 +148,11 @@ pub struct Target {
 }
 impl Target {
     pub fn ready(&self) -> bool {
-        self.specified && self.stale.is_empty() && !self.removed && !self.implementation_changed
+        self.specified
+            && self.blocker.is_none()
+            && self.stale.is_empty()
+            && !self.removed
+            && !self.implementation_changed
     }
 }
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -163,6 +175,11 @@ pub enum Coverage {
     Unknown,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Diagnostic {
+    pub phase: String,
+    pub cache: String,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Verification {
     pub id: String,
     pub target: String,
@@ -178,6 +195,8 @@ pub struct Verification {
     pub reusable: bool,
     pub outcome: Outcome,
     pub summary: String,
+    #[serde(default)]
+    pub diagnostic: Option<Diagnostic>,
     pub elapsed_ms: u64,
 }
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -230,6 +249,10 @@ pub struct State {
     pub scope: Scope,
     pub input: String,
     pub processing_input: String,
+    #[serde(default)]
+    pub context_input: String,
+    #[serde(default)]
+    pub input_files: BTreeMap<String, String>,
     pub targets: BTreeMap<String, Target>,
     pub results: Vec<Verification>,
     pub analysis_incomplete: Vec<String>,
@@ -244,23 +267,62 @@ impl State {
             scope,
             input: String::new(),
             processing_input: String::new(),
+            context_input: String::new(),
+            input_files: BTreeMap::new(),
             targets: BTreeMap::new(),
             results: vec![],
             analysis_incomplete: vec![],
             run: RunState::default(),
         }
     }
+    pub fn unsupported(&self, id: &str) -> Option<&'static str> {
+        (self.tool == Tool::Aeneas && self.targets.get(id).is_some_and(|t| t.kind == Kind::TraitImpl))
+            .then_some("Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations")
+    }
+    pub fn target_input(&self, id: &str) -> String {
+        let t = &self.targets[id];
+        let context = if self.context_input.is_empty() {
+            &self.input
+        } else {
+            &self.context_input
+        };
+        let dependencies: Vec<_> = t
+            .dependencies
+            .keys()
+            .map(|id| {
+                (
+                    id,
+                    self.targets.get(id).map(|d| (&d.spec_hash, &d.body_hash)),
+                )
+            })
+            .collect();
+        crate::fingerprint::hash(
+            serde_json::to_vec(&(
+                context,
+                self.tool,
+                &t.id,
+                &t.spec_hash,
+                &t.body_hash,
+                dependencies,
+            ))
+            .unwrap(),
+        )
+    }
+    pub fn schedulable(&self, id: &str) -> bool {
+        self.unsupported(id).is_none() && self.targets[id].blocker.is_none()
+    }
     pub fn dependencies_ready(&self, id: &str) -> bool {
         fn visit(s: &State, id: &str, path: &mut BTreeSet<String>) -> bool {
             if !path.insert(id.into()) {
                 return false;
             }
-            let ok = s.targets.get(id).is_some_and(|t| {
-                t.ready()
-                    && t.dependencies.iter().all(|(d, h)| {
-                        s.targets.get(d).is_some_and(|v| &v.spec_hash == h) && visit(s, d, path)
-                    })
-            });
+            let ok = s.unsupported(id).is_none()
+                && s.targets.get(id).is_some_and(|t| {
+                    t.ready()
+                        && t.dependencies.iter().all(|(d, h)| {
+                            s.targets.get(d).is_some_and(|v| &v.spec_hash == h) && visit(s, d, path)
+                        })
+                });
             path.remove(id);
             ok
         }
@@ -306,6 +368,7 @@ impl State {
         for mut new in fresh {
             if let Some(old) = self.targets.get(&new.id) {
                 new.specified = old.specified;
+                new.blocker = old.blocker.clone();
                 new.dependencies = old.dependencies.clone();
                 new.notes = old.notes.clone();
                 new.stale = old.stale.clone();
@@ -371,6 +434,19 @@ impl State {
             t.stale.dedup();
         }
         self.input = input;
+        let unblocked: Vec<_> = self
+            .targets
+            .iter()
+            .filter_map(|(id, t)| {
+                t.blocker
+                    .as_ref()
+                    .filter(|b| b.input != self.target_input(id))
+                    .map(|_| id.clone())
+            })
+            .collect();
+        for id in unblocked {
+            self.targets.get_mut(&id).unwrap().blocker = None;
+        }
         self.analysis_incomplete = incomplete;
     }
 }

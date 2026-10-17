@@ -28,11 +28,25 @@ impl Default for Limits {
         }
     }
 }
+pub fn task_input(s: &State, t: &Task) -> String {
+    if t.kind == TaskKind::Verify {
+        return s.input.clone();
+    }
+    crate::fingerprint::hash(
+        serde_json::to_vec(
+            &t.targets
+                .iter()
+                .map(|id| s.target_input(id))
+                .collect::<Vec<_>>(),
+        )
+        .unwrap(),
+    )
+}
 pub fn eligible(s: &State, t: &Task, l: &Limits) -> bool {
     s.run.attempts.get(&t.key()).is_none_or(|a| {
         a.total < l.max_attempts
             && a.no_progress < l.max_no_progress
-            && !(a.failed && a.last_input == s.input)
+            && !(a.failed && a.last_input == task_input(s, t))
     })
 }
 pub fn groups(s: &State) -> Vec<Vec<String>> {
@@ -95,7 +109,7 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
     for g in &groups {
         let ids = g
             .iter()
-            .filter(|id| !s.targets[*id].stale.is_empty())
+            .filter(|id| s.schedulable(id) && !s.targets[*id].stale.is_empty())
             .cloned()
             .collect::<Vec<_>>();
         if !ids.is_empty() {
@@ -112,7 +126,9 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
     // are suppressed, so a hard proof never blocks all remaining specification work.
     if required {
         for g in &groups {
-            if g.iter().all(|id| s.targets[id].ready()) {
+            if g.iter()
+                .all(|id| s.schedulable(id) && s.targets[id].ready())
+            {
                 let ids = g
                     .iter()
                     .filter(|id| s.targets[*id].kind.proof() && !s.verified(id))
@@ -136,7 +152,8 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
                 .iter()
                 .filter(|id| {
                     let t = &s.targets[*id];
-                    !t.specified
+                    s.schedulable(id)
+                        && !t.specified
                         && t.stale.is_empty()
                         && matches!(t.kind, Kind::Struct | Kind::Enum | Kind::Trait) == fundamental
                 })
@@ -155,23 +172,10 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
     }
     None
 }
-pub fn progress(s: &State) -> String {
-    crate::fingerprint::hash(
-        serde_json::to_vec(
-            &s.targets
-                .values()
-                .map(|t| {
-                    (
-                        &t.id,
-                        t.specified,
-                        &t.spec_hash,
-                        &t.stale,
-                        t.implementation_changed,
-                        s.verified(&t.id),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        )
-        .unwrap(),
-    )
+// Diagnostic text changes and regressions are not forward progress.
+pub fn advanced(before: &State, after: &State) -> bool {
+    after.targets.iter().any(|(id, t)| {
+        let was_ready = before.targets.get(id).is_some_and(Target::ready);
+        (!was_ready && t.ready()) || (!before.verified(id) && after.verified(id))
+    })
 }

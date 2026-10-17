@@ -59,7 +59,7 @@ pub fn check_submission(scope: &Scope, t: &Target) -> Result<()> {
             .context("Aeneas contract missing from elicit-proofs/aeneas/contracts.toml")?;
         if !matches!(t.kind, Kind::Function | Kind::Method) {
             bail!(
-                "trait implementation laws require explicit method obligations; record an agent issue"
+                "unsupported Aeneas trait implementation mapping; this target remains blocked even when explicit method obligations are proved"
             );
         }
         if c.ensures.trim().is_empty() {
@@ -417,7 +417,7 @@ pub fn execute(
                 // helper cannot be promoted merely because its caller translated.
                 let full = !t.trusted;
                 eligible.insert(t.id.clone(), (c, full));
-            } else if !prove && t.kind.proof() {
+            } else if !prove && t.kind.proof() && s.unsupported(&t.id).is_none() {
                 bail!(
                     "Aeneas contract has no fresh original-function mapping: {}",
                     t.id

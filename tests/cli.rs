@@ -487,3 +487,127 @@ fn aeneas_requires_matching_kernel_proof_and_standard_axioms() {
     assert_ne!(old, s.targets["fixture::identity::Function"].spec_hash);
     assert!(!s.targets["fixture::identity::Function"].stale.is_empty());
 }
+
+#[test]
+fn issue_does_not_create_a_recheck_loop() {
+    let p = Project::new("kani", SOURCE);
+    let s = p.state();
+    let id = s.targets.keys().next().unwrap();
+    p.ok(&[
+        "agent",
+        "issue",
+        id,
+        "--revision",
+        &s.revision.to_string(),
+        "--reason",
+        "unsupported external model",
+    ]);
+    assert!(p.state().targets[id].blocker.is_some());
+    assert_eq!(p.call(&["run"]).status.code(), Some(1));
+    assert!(p.state().run.attempts.is_empty());
+    fs::write(p.dir.path().join("PROGRESS.md"), "No new evidence.\n").unwrap();
+    assert_eq!(p.call(&["run"]).status.code(), Some(1));
+    assert!(p.state().run.attempts.is_empty());
+    p.ok(&["run", "--retry"]);
+    assert!(p.state().targets[id].blocker.is_none());
+}
+
+#[test]
+fn operational_reports_do_not_change_simple_crate_inputs() {
+    let p = Project::new("kani", SOURCE);
+    fs::create_dir(p.dir.path().join("benches")).unwrap();
+    fs::write(
+        p.dir.path().join("benches/unused.rs"),
+        "unknown_benchmark_macro!();\n",
+    )
+    .unwrap();
+    p.ok(&["status"]);
+    let original = p.state().input;
+    fs::write(p.dir.path().join("PROGRESS.md"), "Progress only.\n").unwrap();
+    fs::write(p.dir.path().join("verification-inventory.json"), "{}\n").unwrap();
+    p.ok(&["status"]);
+    assert_eq!(original, p.state().input);
+    fs::write(
+        p.dir.path().join("other-input.txt"),
+        "Unknown compiler input.\n",
+    )
+    .unwrap();
+    p.ok(&["status"]);
+    assert_ne!(original, p.state().input);
+}
+
+#[test]
+fn build_scripts_and_file_input_macros_keep_report_invalidation() {
+    for extra in [
+        "pub const REPORT: &str = include_str!(\"../PROGRESS.md\");",
+        "",
+    ] {
+        let p = Project::new("kani", &format!("{SOURCE}\n{extra}\n"));
+        if extra.is_empty() {
+            fs::write(p.dir.path().join("build.rs"), "fn main() {}\n").unwrap();
+        }
+        fs::write(p.dir.path().join("PROGRESS.md"), "one\n").unwrap();
+        p.ok(&["status"]);
+        let original = p.state().input;
+        fs::write(p.dir.path().join("PROGRESS.md"), "two\n").unwrap();
+        p.ok(&["status"]);
+        assert_ne!(original, p.state().input);
+    }
+}
+
+#[test]
+fn unsupported_aeneas_trait_contract_does_not_poison_method_submission() {
+    let p = Project::new(
+        "aeneas",
+        "pub fn identity(x:u32)->u32 { x }\npub struct S;\nimpl core::ops::AddAssign<u32> for S { fn add_assign(&mut self, _:u32) {} }\n",
+    );
+    let state = p.state();
+    let trait_id = state
+        .targets
+        .values()
+        .find(|t| t.kind == cargo_elicit::model::Kind::TraitImpl)
+        .unwrap()
+        .id
+        .clone();
+    let proof = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&proof).unwrap();
+    fs::write(proof.join("contracts.toml"), format!("schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x r => r = x\"\ntheorem=\"Proofs.identity_spec\"\n[contracts.\"{trait_id}\"]\nensures=\"fun _ => True\"\n")).unwrap();
+    assert_eq!(p.call(&["run"]).status.code(), Some(1));
+    let state = p.state();
+    assert!(state.targets["fixture::identity::Function"].specified);
+    assert!(state.unsupported(&trait_id).is_some());
+    assert!(state.run.attempts.keys().all(|k| !k.contains(&trait_id)));
+    assert!(!state.complete(false));
+}
+
+#[test]
+fn lean_file_reading_and_rust_path_attributes_keep_report_invalidation() {
+    for lean in [true, false] {
+        let p = Project::new("kani", SOURCE);
+        fs::write(p.dir.path().join("PROGRESS.md"), "pub fn report() {}\n").unwrap();
+        if lean {
+            let root = p.dir.path().join("elicit-proofs/aeneas");
+            fs::create_dir_all(&root).unwrap();
+            fs::write(
+                root.join("Proofs.lean"),
+                "import Lean\n#eval IO.FS.readFile \"PROGRESS.md\"\n",
+            )
+            .unwrap();
+        } else {
+            fs::write(
+                p.dir.path().join("src/lib.rs"),
+                format!("{SOURCE}\n#[path = \"../PROGRESS.md\"] pub mod report;\n"),
+            )
+            .unwrap();
+        }
+        p.ok(&["status"]);
+        let old = p.state().input;
+        fs::write(
+            p.dir.path().join("PROGRESS.md"),
+            "pub fn changed_report() {}\n",
+        )
+        .unwrap();
+        p.ok(&["status"]);
+        assert_ne!(old, p.state().input);
+    }
+}

@@ -624,6 +624,7 @@ impl Index {
             original_body: body_hash,
             source_hash: hash(format!("{spec_hash}{body}")),
             specified: false,
+            blocker: None,
             stale: vec![],
             dependencies: BTreeMap::new(),
             calls: BTreeSet::new(),

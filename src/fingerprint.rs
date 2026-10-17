@@ -44,6 +44,14 @@ pub fn tool_version(tool: Tool) -> Result<String> {
     Ok(v)
 }
 pub fn input(scope: &Scope, tool: Tool, version: &str) -> Result<String> {
+    Ok(inputs(scope, tool, version)?.0)
+}
+// Keep proof-module edits separate from the context used to retry blocked work.
+pub fn inputs(
+    scope: &Scope,
+    tool: Tool,
+    version: &str,
+) -> Result<(String, String, std::collections::BTreeMap<String, String>)> {
     let mut files = BTreeSet::new();
     let target = Path::new(&scope.target_directory);
     for root in &scope.local_roots {
@@ -90,15 +98,40 @@ pub fn input(scope: &Scope, tool: Tool, version: &str) -> Result<String> {
             }
         }
     }
+    let reports_are_independent = reports_are_independent(scope, &files)?;
+    let mut input_files = std::collections::BTreeMap::new();
     let mut h = Sha256::new();
+    let mut proofs = Sha256::new();
+    let proof_root = Path::new(&scope.manifest_path)
+        .parent()
+        .unwrap()
+        .join("elicit-proofs");
     for f in files {
         if f.file_name().is_some_and(|v| v == "elicit.toml") {
             continue;
         } // completion policy is not a verifier input
-        h.update(f.to_string_lossy().as_bytes());
-        h.update([0]);
-        h.update(fs::read(f)?);
-        h.update([0]);
+        if reports_are_independent
+            && scope.local_roots.iter().any(|root| {
+                f.parent() == Some(Path::new(root))
+                    && matches!(
+                        f.file_name().and_then(|n| n.to_str()),
+                        Some("PROGRESS.md" | "verification-inventory.json")
+                    )
+            })
+        {
+            continue;
+        }
+        let digest = if tool == Tool::Aeneas && f.starts_with(&proof_root) {
+            &mut proofs
+        } else {
+            &mut h
+        };
+        digest.update(f.to_string_lossy().as_bytes());
+        digest.update([0]);
+        let bytes = fs::read(&f)?;
+        input_files.insert(f.to_string_lossy().into_owned(), hash(&bytes));
+        digest.update(bytes);
+        digest.update([0]);
     }
     h.update(serde_json::to_vec(scope)?);
     h.update(tool.to_string());
@@ -128,8 +161,265 @@ pub fn input(scope: &Scope, tool: Tool, version: &str) -> Result<String> {
         h.update(k);
         h.update(v);
     }
-    Ok(format!("{:x}", h.finalize()))
+    let context = format!("{:x}", h.finalize());
+    proofs.update(context.as_bytes());
+    Ok((format!("{:x}", proofs.finalize()), context, input_files))
 }
+// Only ignore the two named operational reports in demonstrably simple crates.
+// Arbitrary files, build scripts, dependencies/proc macros, file-input macros and
+// custom compiler hooks retain conservative whole-package invalidation.
+fn dependency_active(
+    manifest: &toml::Value,
+    scope: &Scope,
+    name: &str,
+    dependency: &toml::Value,
+) -> bool {
+    if dependency.get("optional").and_then(|v| v.as_bool()) != Some(true) {
+        return true;
+    }
+    scope
+        .resolved_features
+        .iter()
+        .chain(&scope.features)
+        .any(|feature| {
+            feature == name
+                || feature == &format!("dep:{name}")
+                || manifest
+                    .get("features")
+                    .and_then(|v| v.get(feature))
+                    .and_then(|v| v.as_array())
+                    .is_some_and(|values| {
+                        values.iter().filter_map(|v| v.as_str()).any(|v| {
+                            v == name
+                                || v == format!("dep:{name}")
+                                || v.starts_with(&format!("{name}/"))
+                                || v.starts_with(&format!("{name}?/"))
+                        })
+                    })
+        })
+}
+fn reports_are_independent(scope: &Scope, files: &BTreeSet<PathBuf>) -> Result<bool> {
+    use syn::visit::Visit;
+    struct Macros(bool);
+    impl<'ast> Visit<'ast> for Macros {
+        fn visit_macro(&mut self, m: &'ast syn::Macro) {
+            let name = m
+                .path
+                .segments
+                .last()
+                .map(|s| s.ident.to_string())
+                .unwrap_or_default();
+            if ![
+                "assert",
+                "assert_eq",
+                "assert_ne",
+                "debug_assert",
+                "debug_assert_eq",
+                "debug_assert_ne",
+                "panic",
+                "unreachable",
+                "unimplemented",
+                "todo",
+                "format_args",
+                "write",
+                "writeln",
+                "vec",
+                "matches",
+                "cfg",
+            ]
+            .contains(&name.as_str())
+            {
+                self.0 = false;
+            }
+            syn::visit::visit_macro(self, m);
+        }
+    }
+    fn file_input(tokens: proc_macro2::TokenStream) -> bool {
+        tokens.into_iter().any(|t| match t {
+            proc_macro2::TokenTree::Ident(i) => [
+                "path",
+                "include",
+                "include_str",
+                "include_bytes",
+                "env",
+                "option_env",
+            ]
+            .contains(&i.to_string().as_str()),
+            proc_macro2::TokenTree::Group(g) => file_input(g.stream()),
+            _ => false,
+        })
+    }
+    if [
+        "RUSTC",
+        "RUSTC_WRAPPER",
+        "RUSTC_WORKSPACE_WRAPPER",
+        "RUSTFLAGS",
+        "CARGO_ENCODED_RUSTFLAGS",
+    ]
+    .iter()
+    .any(|k| std::env::var_os(k).is_some_and(|v| !v.is_empty()))
+    {
+        return Ok(false);
+    }
+    fn compiler_hook(v: &toml::Value) -> bool {
+        v.as_table().is_some_and(|t| {
+            t.iter().any(|(k, v)| {
+                [
+                    "rustc",
+                    "rustdoc",
+                    "rustc-wrapper",
+                    "rustc-workspace-wrapper",
+                    "rustflags",
+                    "rustdocflags",
+                    "linker",
+                ]
+                .contains(&k.as_str())
+                    || compiler_hook(v)
+            })
+        })
+    }
+    for f in files.iter().filter(|f| {
+        matches!(
+            f.file_name().and_then(|n| n.to_str()),
+            Some("config" | "config.toml")
+        )
+    }) {
+        let Ok(config) = toml::from_str::<toml::Value>(&fs::read_to_string(f)?) else {
+            return Ok(false);
+        };
+        if compiler_hook(&config) {
+            return Ok(false);
+        }
+    }
+    let proof_root = Path::new(&scope.manifest_path)
+        .parent()
+        .unwrap()
+        .join("elicit-proofs");
+    if proof_root.exists() {
+        for e in WalkDir::new(&proof_root) {
+            let e = e?;
+            if e.path().extension().is_some_and(|x| x == "lean") {
+                let source = fs::read_to_string(e.path())?;
+                let words: Vec<_> = source
+                    .split(|c: char| !c.is_alphanumeric() && c != '_')
+                    .collect();
+                if words.iter().any(|w| {
+                    [
+                        "IO",
+                        "System",
+                        "readFile",
+                        "readBinFile",
+                        "readDir",
+                        "getEnv",
+                        "run_cmd",
+                        "run_tac",
+                        "run_meta",
+                        "run_elab",
+                        "unsafe",
+                        "implemented_by",
+                        "extern",
+                        "elab",
+                        "macro",
+                        "syntax",
+                        "initialize",
+                        "builtin_initialize",
+                        "eval",
+                        "include_str",
+                    ]
+                    .contains(w)
+                }) {
+                    return Ok(false);
+                }
+                for line in source
+                    .lines()
+                    .filter(|l| l.trim_start().starts_with("import "))
+                {
+                    for module in line.split_whitespace().skip(1) {
+                        if ![
+                            "ElicitGenerated",
+                            "ElicitContracts",
+                            "Specs",
+                            "Aeneas",
+                            "Mathlib",
+                            "Std",
+                            "Lean",
+                            "Init",
+                        ]
+                        .iter()
+                        .any(|m| module == *m || module.starts_with(&format!("{m}.")))
+                        {
+                            return Ok(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for root in &scope.local_roots {
+        let root = Path::new(root);
+        let m: toml::Value = toml::from_str(&fs::read_to_string(root.join("Cargo.toml"))?)?;
+        if root.join("build.rs").exists()
+            || m.get("package")
+                .and_then(|p| p.get("build"))
+                .is_some_and(|v| v.as_bool() != Some(false))
+            || m.get("lib")
+                .and_then(|p| p.get("proc-macro"))
+                .and_then(|v| v.as_bool())
+                == Some(true)
+            || ["target", "patch", "replace", "workspace"].iter().any(|k| {
+                m.get(k)
+                    .is_some_and(|v| v.as_table().is_none_or(|v| !v.is_empty()))
+            })
+        {
+            return Ok(false);
+        }
+        // Default verification builds the library/binaries, not Cargo benches,
+        // integration tests or examples. Custom target paths stay conservative.
+        if m.get("lib")
+            .and_then(|v| v.get("path"))
+            .and_then(|v| v.as_str())
+            .is_some_and(|p| !p.starts_with("src/"))
+            || m.get("bin").and_then(|v| v.as_array()).is_some_and(|bins| {
+                bins.iter().any(|b| {
+                    b.get("path")
+                        .and_then(|v| v.as_str())
+                        .is_some_and(|p| !p.starts_with("src/"))
+                })
+            })
+        {
+            return Ok(false);
+        }
+        for key in ["dependencies", "dev-dependencies", "build-dependencies"] {
+            if let Some(ds) = m.get(key).and_then(|v| v.as_table()) {
+                if ds
+                    .iter()
+                    .any(|(name, v)| dependency_active(&m, scope, name, v))
+                {
+                    return Ok(false);
+                }
+            }
+        }
+        if !root.join("src").is_dir() {
+            return Ok(false);
+        }
+        for e in WalkDir::new(root.join("src")) {
+            let e = e?;
+            if e.path().extension().is_some_and(|e| e == "rs") {
+                let source = fs::read_to_string(e.path())?;
+                let Ok(ast) = syn::parse_file(&source) else {
+                    return Ok(false);
+                };
+                let mut macros = Macros(true);
+                macros.visit_file(&ast);
+                if !macros.0 || file_input(source.parse().unwrap_or_default()) {
+                    return Ok(false);
+                }
+            }
+        }
+    }
+    Ok(true)
+}
+
 fn version_cached() -> Result<String> {
     version("rustc", &["-vV"])
 }
@@ -359,5 +649,38 @@ mod tests {
             digests.read(&path, Tool::Aeneas).unwrap(),
             hash(b"new").into_bytes()
         );
+    }
+}
+
+#[cfg(test)]
+mod report_dependencies {
+    use super::*;
+    #[test]
+    fn namespaced_optional_dependencies_are_not_mistaken_for_inactive_inputs() {
+        let manifest: toml::Value = toml::from_str("[features]\ndefault=['enabled']\nenabled=['dep:external']\n[dependencies.external]\nversion='1'\noptional=true\n").unwrap();
+        let mut scope = Scope {
+            resolved_features: vec!["default".into(), "enabled".into()],
+            ..Scope::default()
+        };
+        assert!(dependency_active(
+            &manifest,
+            &scope,
+            "external",
+            &manifest["dependencies"]["external"]
+        ));
+        scope.resolved_features.clear();
+        assert!(!dependency_active(
+            &manifest,
+            &scope,
+            "external",
+            &manifest["dependencies"]["external"]
+        ));
+        scope.features.push("dep:external".into());
+        assert!(dependency_active(
+            &manifest,
+            &scope,
+            "external",
+            &manifest["dependencies"]["external"]
+        ));
     }
 }

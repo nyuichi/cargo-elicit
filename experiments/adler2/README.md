@@ -21,3 +21,7 @@ Telemetry records resolved settings, item kinds, turn status and actual token-us
 Raw run diagnostics and readiness errors are private experiment artifacts: review before publishing them. Publish sanitized evidence and explicit missing metrics. A single pair is exploratory, and overall cargo-elicit completion must remain separate from the five selected core APIs.
 
 The recorded proof artifacts are withheld solutions for any future authoring trial. `audit-baseline.py` independently re-extracts and rebuilds the specifically recorded ordinary-arm proof; see the result README for setup and interpretation. It is not a general-purpose contract acceptance tool.
+
+The follow-up runner additionally captures a preplanned first-success checkpoint for any helper/API, so helper progress is observed even before a selected API succeeds. It freezes the terminal event stream and ledger before post-trial auditing. The fixed scheduler's event stream records task IDs, checker-only refreshes and all audited roots; compare these with the earlier reconstructed timeline rather than assuming every repeated target is a new proof.
+
+The [workflow-repair follow-up](../../docs/experiments/adler2-follow-up.md) records the new implementation, validation and fresh comparison separately from the first pair.

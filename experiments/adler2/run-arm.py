@@ -22,7 +22,7 @@ def source_hashes():
 before=source_hashes()
 os.environ['ELICIT_BENCH_TELEMETRY']=str(out/'telemetry.jsonl')
 os.environ['PATH']=str(root/'bin')+':'+os.environ['PATH']
-start=time.monotonic();observations=[];done=set();milestones=set();last_scan=0
+start=time.monotonic();start_unix=time.time();observations=[];done=set();milestones=set();any_proof=False;last_scan=0
 common={'new','checksum','from_checksum','write_slice','adler32_slice'}
 def snapshot(reason):
  observed_start=time.monotonic()
@@ -71,9 +71,11 @@ with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as st
      s=tomllib.loads((root/'.elicit/state.toml').read_text())
      for r in s.get('results',[]):
       name=r['target'].split('::')[-2]
+      if r['outcome']=='success' and r['scope']=='full_contract':any_proof=True
       if r['outcome']=='success' and r['scope']=='full_contract' and name in common:milestones.add(name)
     except (FileNotFoundError,KeyError,tomllib.TOMLDecodeError):pass
    triggers=[]
+   if any_proof:triggers.append('first_verified_record')
    if len(milestones)>=1:triggers.append('first_api_proof')
    if len(milestones)>=3:triggers.append('halfway_coverage')
    if elapsed>=600:triggers.append('ten_minutes')
@@ -83,5 +85,9 @@ with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as st
  finally:
   if proc.poll() is None:os.killpg(proc.pid,signal.SIGTERM);proc.wait()
 stop=time.monotonic();snapshot('termination');finished=time.monotonic()
-metrics={'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
+if args.arm=='with':
+ for name in ['events.jsonl','state.toml']:
+  source=root/'.elicit'/name
+  if source.exists():shutil.copyfile(source,out/('terminal-'+name))
+metrics={'start_unix':start_unix,'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
 (out/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')
