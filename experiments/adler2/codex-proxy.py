@@ -14,9 +14,12 @@ threading.Thread(target=incoming,daemon=True).start()
 with log.open('a') as f:
  for line in child.stdout:
   try:
-   v=json.loads(line);r={'at':time.time(),'method':v.get('method'),'response_id':v.get('id')}
+   v=json.loads(line);r={'at':time.time(),'method':v.get('method'),'response_id':v.get('id'),'peer_pid':child.pid}
+   if isinstance(v.get('params'),dict) and 'threadId' in v['params']:r['thread_id']=v['params']['threadId']
    if isinstance(v.get('result'),dict):
-    result=v['result'];r['settings']={k:result[k] for k in ['model','modelProvider','reasoningEffort','serviceTier','approvalPolicy','sandbox'] if k in result}
+    result=v['result']
+    if isinstance(result.get('thread'),dict):r['thread_id']=result['thread'].get('id')
+    r['settings']={k:result[k] for k in ['model','modelProvider','reasoningEffort','serviceTier','approvalPolicy','sandbox'] if k in result}
    if v.get('method')=='thread/tokenUsage/updated':r['usage']=v['params'].get('tokenUsage')
    if v.get('method') in ['item/started','item/completed']:r['item_type']=v['params'].get('item',{}).get('type')
    if v.get('method')=='turn/completed':r['turn_status']=v['params'].get('turn',{}).get('status')
