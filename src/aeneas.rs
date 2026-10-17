@@ -95,17 +95,196 @@ pub fn check_submission(scope: &Scope, t: &Target) -> Result<()> {
     }
     Ok(())
 }
+#[derive(Clone, Serialize, Deserialize)]
+struct ModelInputs {
+    models: BTreeMap<String, String>,
+    contracts: BTreeMap<String, BTreeMap<String, String>>,
+}
+#[derive(Serialize, Deserialize)]
+struct ModelCache {
+    key: String,
+    inputs: Option<ModelInputs>,
+}
+fn parse_model_inputs(text: &str) -> Option<ModelInputs> {
+    let mut lines = text
+        .lines()
+        .filter_map(|line| line.strip_prefix("ELICIT_MODEL_INPUTS="));
+    let data: Value = serde_json::from_str(lines.next()?).ok()?;
+    if lines.next().is_some() || data["supported"] != true {
+        return None;
+    }
+    fn rows(data: &Value) -> Option<BTreeMap<String, String>> {
+        let mut result = BTreeMap::new();
+        for row in data.as_array()? {
+            let values = row.as_array()?;
+            if values.len() != 6
+                || values[4] != false
+                || values[1].as_str().is_none()
+                || values[3].as_str().is_none()
+                || !(values[2].is_null() || values[2].as_str().is_some())
+                || !matches!(
+                    values[5].as_str(),
+                    Some("definition" | "theorem" | "opaque" | "axiom")
+                )
+            {
+                return None;
+            }
+            let name = format!("decl:{}", values[0].as_str()?);
+            if result
+                .insert(name, fingerprint::hash(serde_json::to_vec(row).ok()?))
+                .is_some()
+            {
+                return None;
+            }
+        }
+        Some(result)
+    }
+    let models = rows(&data["models"])?;
+    let mut contracts = BTreeMap::new();
+    for contract in data["contracts"].as_array()? {
+        let pair = contract.as_array()?;
+        if pair.len() != 2 {
+            return None;
+        }
+        let name = pair[0].as_str()?.to_owned();
+        let dependencies = rows(&pair[1])?;
+        let root = format!("decl:{name}");
+        if !name.starts_with("ElicitContracts.c_")
+            || !dependencies.contains_key(&root)
+            || dependencies
+                .iter()
+                .any(|(key, value)| key != &root && models.get(key) != Some(value))
+            || contracts.insert(name, dependencies).is_some()
+        {
+            return None;
+        }
+    }
+    Some(ModelInputs { models, contracts })
+}
+fn model_inputs(scope: &Scope, targets: &[Target]) -> Result<Option<ModelInputs>> {
+    let source = proof_root(scope).join("Specs.lean");
+    if !source.is_file() {
+        return Ok(None);
+    }
+    // Static source/model inputs only. File-reading, custom compiler hooks,
+    // custom imports and metaprograms retain whole-file invalidation.
+    version()?;
+    let (before, context, files) = fingerprint::inputs(scope, Tool::Aeneas, "model-inputs-v1")?;
+    let paths = files
+        .keys()
+        .filter(|path| !path.starts_with('@'))
+        .map(PathBuf::from)
+        .collect();
+    if !fingerprint::reports_are_independent(scope, &paths)? {
+        return Ok(None);
+    }
+    let m = manifest(scope)?;
+    let contracts: Vec<_> = m
+        .contracts
+        .iter()
+        .map(|(id, c)| (id, &c.requires, &c.ensures))
+        .collect();
+    let key = fingerprint::hash(serde_json::to_vec(&(
+        &context,
+        fs::read(&source)?,
+        contracts,
+    ))?);
+    let cache = Path::new(&scope.manifest_path)
+        .parent()
+        .unwrap()
+        .join(".elicit/cache");
+    fs::create_dir_all(&cache)?;
+    let cache_file = cache.join("model-inputs.json");
+    if let Ok(bytes) = fs::read(&cache_file) {
+        if let Ok(cached) = serde_json::from_slice::<ModelCache>(&bytes) {
+            if cached.key == key {
+                return Ok(cached.inputs);
+            }
+        }
+    }
+    let dir = tempfile::Builder::new()
+        .prefix("model-inputs-")
+        .tempdir_in(&cache)?;
+    let mut snapshot = State::new(Tool::Aeneas, scope.clone());
+    snapshot.targets = targets.iter().cloned().map(|t| (t.id.clone(), t)).collect();
+    let mut inputs = match execute(&snapshot, dir.path(), false, 600) {
+        Ok((output, _)) if output.code == Some(0) && !output.timeout && !output.interrupted => {
+            fs::write(
+                dir.path().join("ElicitModelInputs.lean"),
+                include_str!("lean/ElicitModelInputs.lean"),
+            )?;
+            let output = process::run(
+                &mut lean_command(dir.path(), "ElicitModelInputs")?,
+                Duration::from_secs(60),
+            )?;
+            if output.code == Some(0) && !output.timeout && !output.interrupted {
+                parse_model_inputs(&output.stdout)
+            } else {
+                None
+            }
+        }
+        _ => None,
+    };
+    if let Some(inputs) = &mut inputs {
+        // Source/tool inputs select the cache, but unrelated documentation is
+        // not part of a model's meaning. Retain the actual freshly translated
+        // Rust model and imported toolchain as conservative semantic inputs.
+        let rust_model = fingerprint::hash(fs::read(dir.path().join("ElicitGenerated.lean"))?);
+        let tcb = fingerprint::hash(serde_json::to_vec(&(
+            files.get("@installed_tcb"),
+            files.get("@rustc_version"),
+        ))?);
+        inputs
+            .models
+            .insert("@rust_model".into(), rust_model.clone());
+        inputs.models.insert("@tcb".into(), tcb.clone());
+        for contract in inputs.contracts.values_mut() {
+            contract.insert("@rust_model".into(), rust_model.clone());
+            contract.insert("@tcb".into(), tcb.clone());
+        }
+    }
+    if process::interrupted()
+        || fingerprint::input(scope, Tool::Aeneas, "model-inputs-v1")? != before
+    {
+        return Ok(None);
+    }
+    crate::store::atomic_write(
+        &cache_file,
+        &serde_json::to_vec(&ModelCache {
+            key,
+            inputs: inputs.clone(),
+        })?,
+    )?;
+    Ok(inputs)
+}
+
 pub fn attach_specs(scope: &Scope, targets: &mut [Target]) -> Result<()> {
     let m = manifest(scope)?;
     let models = fs::read(proof_root(scope).join("Specs.lean")).unwrap_or_default();
+    let semantic = model_inputs(scope, targets).unwrap_or(None);
     for t in targets {
         let c = m.contracts.get(&t.id);
-        // Proof terms and theorem names affect proof freshness, not contract staleness.
-        t.spec_hash = fingerprint::hash(serde_json::to_vec(&(
+        t.model_base_hash = fingerprint::hash(serde_json::to_vec(&(
             &t.spec_hash,
             c.map(|c| (&c.requires, &c.ensures)),
-            &models,
         ))?);
+        t.model_inputs = match &semantic {
+            Some(inputs) if !t.kind.proof() => inputs.models.clone(),
+            Some(inputs) => inputs
+                .contracts
+                .get(&contract_name(&t.id))
+                .cloned()
+                .unwrap_or_else(|| {
+                    BTreeMap::from([("@source".into(), fingerprint::hash(&models))])
+                }),
+            None => BTreeMap::from([("@source".into(), fingerprint::hash(&models))]),
+        };
+        t.model_bindings = if t.kind.proof() {
+            None
+        } else {
+            Some(t.model_inputs.keys().cloned().collect())
+        };
+        t.spec_hash = t.model_hash();
     }
     Ok(())
 }
@@ -547,6 +726,22 @@ pub fn evidence(_s: &State, t: &Target, e: Option<&Value>, r: &mut Verification)
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn malformed_or_unsupported_model_metadata_falls_back_conservatively() {
+        use super::parse_model_inputs;
+        for text in [
+            "",
+            "ELICIT_MODEL_INPUTS={}",
+            "ELICIT_MODEL_INPUTS={\"supported\":false,\"models\":[],\"contracts\":[]}",
+            "ELICIT_MODEL_INPUTS={\"supported\":true,\"models\":[[\"unsafe\",\"type\",null,\"[]\",true,\"definition\"]],\"contracts\":[]}",
+        ] {
+            assert!(parse_model_inputs(text).is_none());
+        }
+        let valid = "ELICIT_MODEL_INPUTS={\"supported\":true,\"models\":[],\"contracts\":[]}";
+        assert!(parse_model_inputs(valid).is_some());
+        assert!(parse_model_inputs(&format!("{valid}\n{valid}")).is_none());
+    }
+
     use super::*;
     #[test]
     fn axiom_audit_excludes_admitted_and_project_proofs() {

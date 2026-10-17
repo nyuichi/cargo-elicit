@@ -129,6 +129,12 @@ pub struct Target {
     pub column: usize,
     pub aliases: Vec<String>,
     pub spec_hash: String,
+    #[serde(default)]
+    pub model_base_hash: String,
+    #[serde(default)]
+    pub model_inputs: BTreeMap<String, String>,
+    #[serde(default)]
+    pub model_bindings: Option<BTreeSet<String>>,
     pub body_hash: String,
     pub original_body: String,
     pub source_hash: String,
@@ -147,6 +153,35 @@ pub struct Target {
     pub trusted: bool,
 }
 impl Target {
+    pub fn model_hash(&self) -> String {
+        // If a bound declaration disappeared, or model collection fell back to
+        // a whole-source stamp, retain that stamp rather than hashing only
+        // missing keys. Further semantic edits must still reopen blocked work.
+        let inputs = match &self.model_bindings {
+            Some(names)
+                if names
+                    .iter()
+                    .all(|name| self.model_inputs.contains_key(name)) =>
+            {
+                names
+                    .iter()
+                    .map(|name| (name, self.model_inputs.get(name)))
+                    .collect::<BTreeMap<_, _>>()
+            }
+            _ => self
+                .model_inputs
+                .iter()
+                .map(|(name, value)| (name, Some(value)))
+                .collect(),
+        };
+        crate::fingerprint::hash(serde_json::to_vec(&(&self.model_base_hash, inputs)).unwrap())
+    }
+    pub fn bind_models(&mut self) {
+        if !self.model_base_hash.is_empty() && !self.kind.proof() {
+            self.model_bindings = Some(self.model_inputs.keys().cloned().collect());
+            self.spec_hash = self.model_hash();
+        }
+    }
     pub fn ready(&self) -> bool {
         self.specified
             && self.blocker.is_none()
@@ -367,6 +402,10 @@ impl State {
         let seen: BTreeSet<_> = fresh.iter().map(|t| t.id.clone()).collect();
         for mut new in fresh {
             if let Some(old) = self.targets.get(&new.id) {
+                if old.specified && !new.kind.proof() && !new.model_base_hash.is_empty() {
+                    new.model_bindings = old.model_bindings.clone();
+                    new.spec_hash = new.model_hash();
+                }
                 new.specified = old.specified;
                 new.blocker = old.blocker.clone();
                 new.dependencies = old.dependencies.clone();

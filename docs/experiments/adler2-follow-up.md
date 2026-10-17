@@ -1,6 +1,6 @@
 # Adler-32 follow-up after workflow repairs
 
-**Status: ordinary arm audited; first complete repaired trial retained; additional checkpoint repair under validation.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
+**Status: model-dependency repair validated; fresh final authoring trial pending.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
 
 ## Changes under test
 
@@ -14,7 +14,7 @@ Whole-package obligations, source identity, contract meaning, theorem matching a
 
 ## Validation before timing
 
-Rust regression coverage includes issue blockers, unsupported mappings, semantic retry keys, diagnostic-only changes, report-only changes and conservative build/macro/Lean-I/O fallbacks. Native Aeneas/Lean fixtures exercise methods, structs, mutation, slices and helpers, interruption/resume, cache deletion, status during verification, shared audit recording and checker-only refresh. The negative sorry/project-axiom/wrong-contract cases remain mandatory. Formatting, Clippy and Rust 1.86 checks pass.
+Rust regression coverage includes issue blockers, unsupported mappings, semantic retry keys, diagnostic-only changes, report-only changes and conservative build/macro/Lean-I/O fallbacks. Native Aeneas/Lean fixtures exercise methods, structs, mutation, slices and helpers, interruption/resume, cache deletion, status during verification, shared audit recording and checker-only refresh. The negative sorry/project-axiom/wrong-contract cases remain mandatory. Formatting, Clippy, Rust 1.86 and 61 regular tests pass. Both real Aeneas fixtures passed together in 801.82 seconds with model-extension retention, changed-model rejection, unsupported-declaration fallback, proof negatives and cache deletion/resume. A final real-tool documentation regression passed in 102.55 seconds: a README edit changes the conservative proof input while keeping existing specification fingerprints and readiness unchanged.
 
 Both freshly prepared upstream cases pass six unit tests and four doctests. Their Rust sources, manifest, lockfile and common benchmark task match the first pair exactly. Tool installation and these validation runs are outside authoring time.
 
@@ -38,4 +38,8 @@ A post-trial wrapper check of the untouched saved proof module accepted all nine
 
 ## Results
 
-Final checkpoint-repaired authoring trial and independent artifact audit pending. Preserve both the historical first pair and the measured intermediate trial. No prepared proof or specification is imported into the next fresh case.
+The checkpoint-repaired trial (`5ea3258a684596b597c16f61f0ad7eb991e60c58`) finished in 1,807.70 seconds. It recorded nine method contracts during the timer and observed selected API coverage of 3/5 at 1,576.2 seconds. Actual status snapshots were taken after the first helper (523.1 seconds), at ten minutes, after the first selected API (1,106.0 seconds), at 3/5 coverage and at termination. Observation cost was 43.88 seconds, included in elapsed time. No unsupported trait task or arithmetic-helper reauthoring turn occurred.
+
+The last `compute` task appended eleven independent model/lemma declarations to `Specs.lean`. Whole-file model hashing then marked every existing specification stale, leaving the terminal ledger at 0/19 current despite nine earlier successes. A fresh wrapper check accepted all nine unchanged saved method proofs against the final models. Comparing Lean's elaborated declarations found no changed prior model or contract, confirming that those rechecks were unnecessary. This is another retained measurement, not an excluded result.
+
+The additional repair tracks elaborated contract/model dependencies and preserves type-review bindings under independent model extensions. It retains fresh proof checks and conservative fallbacks for dynamic or unsupported inputs. Its actual fresh authoring trial and final audit are pending. All earlier candidate costs/results remain part of the report; no prepared specification or proof is imported into the next case.

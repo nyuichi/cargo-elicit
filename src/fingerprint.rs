@@ -225,7 +225,7 @@ fn dependency_active(
                     })
         })
 }
-fn reports_are_independent(scope: &Scope, files: &BTreeSet<PathBuf>) -> Result<bool> {
+pub(crate) fn reports_are_independent(scope: &Scope, files: &BTreeSet<PathBuf>) -> Result<bool> {
     use syn::visit::Visit;
     struct Macros(bool);
     impl<'ast> Visit<'ast> for Macros {

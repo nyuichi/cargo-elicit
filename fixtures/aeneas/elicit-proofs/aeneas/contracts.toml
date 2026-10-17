@@ -1,5 +1,5 @@
 schema_version = 1
 
 [contracts."elicit-aeneas-fixture::identity::Function"]
-ensures = "fun x result => result = x"
+ensures = "fun x result => result = FixtureModel.identity x"
 theorem = "Proofs.identity_spec"

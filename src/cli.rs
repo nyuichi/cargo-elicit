@@ -444,10 +444,26 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
                     }
                     t.required_units = units;
                 }
+                t.bind_models();
                 t.specified = true;
                 t.blocker = None;
                 t.stale.clear();
                 t.notes.push(note);
+                let changed_id = t.id.clone();
+                let changed_hash = t.spec_hash.clone();
+                for target in s.targets.values_mut() {
+                    if target
+                        .dependencies
+                        .get(&changed_id)
+                        .is_some_and(|h| h != &changed_hash)
+                    {
+                        target
+                            .stale
+                            .push(format!("specification dependency changed: {changed_id}"));
+                        target.stale.sort();
+                        target.stale.dedup();
+                    }
+                }
                 s.processing_input = input;
                 Ok(())
             })?;

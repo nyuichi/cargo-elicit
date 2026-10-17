@@ -36,7 +36,7 @@ fn ok(root: &Path, args: &[&str]) {
 fn state(root: &Path) -> State {
     toml::from_str(&fs::read_to_string(root.join(".elicit/state.toml")).unwrap()).unwrap()
 }
-fn exercise_fixture(tool: &str, fixture: &str) {
+fn prepare_fixture(tool: &str, fixture: &str) -> PathBuf {
     let root = tempfile::Builder::new()
         .prefix(&format!("elicit-native-{tool}-"))
         .tempdir()
@@ -74,6 +74,10 @@ fn exercise_fixture(tool: &str, fixture: &str) {
         use std::os::unix::fs::PermissionsExt;
         fs::set_permissions(&p, fs::Permissions::from_mode(0o755)).unwrap();
     }
+    root
+}
+fn exercise_fixture(tool: &str, fixture: &str) {
+    let root = prepare_fixture(tool, fixture);
     ok(&root, &["init", "--tool", tool]);
     #[cfg(unix)]
     {
@@ -175,6 +179,97 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             )
             .all(|t| s.verified(&t.id))
     );
+    if fixture == "aeneas" {
+        let specs = root.join("elicit-proofs/aeneas/Specs.lean");
+        let original = fs::read_to_string(&specs).unwrap();
+        let before = state(&root);
+        let worker_count = || {
+            fs::read_to_string(root.join(".elicit/events.jsonl"))
+                .unwrap()
+                .lines()
+                .filter(|line| line.contains("\"worker_started\""))
+                .count()
+        };
+        let workers = worker_count();
+        fs::write(
+            &specs,
+            format!(
+                "{original}\nnamespace FixtureModel\ndef unrelated : Nat := 7\nend FixtureModel\n"
+            ),
+        )
+        .unwrap();
+        ok(&root, &["status"]);
+        let extended = state(&root);
+        let id = "elicit-aeneas-fixture::identity::Function";
+        assert!(
+            extended.targets[id].ready(),
+            "unrelated model extension reopened accepted specification"
+        );
+        assert_eq!(before.targets[id].spec_hash, extended.targets[id].spec_hash);
+        let marker = "elicit-aeneas-fixture::Marker::Struct";
+        assert!(
+            extended.targets[marker].ready(),
+            "unrelated extension reopened type invariant review"
+        );
+        assert_eq!(
+            before.targets[marker].spec_hash,
+            extended.targets[marker].spec_hash
+        );
+        assert!(
+            !extended.verified(id),
+            "proof input edits still require a fresh kernel check"
+        );
+        ok(&root, &["run"]);
+        assert!(state(&root).complete(true));
+        assert_eq!(
+            workers,
+            worker_count(),
+            "unrelated model extension invoked an AI worker"
+        );
+        let extended_source = fs::read_to_string(&specs).unwrap();
+        fs::write(
+            &specs,
+            extended_source.replace("(x : U32) : U32 := x", "(x : U32) : U32 := 0#u32"),
+        )
+        .unwrap();
+        ok(&root, &["status"]);
+        assert!(
+            !state(&root).targets[id].ready(),
+            "changed reachable model meaning was not marked stale"
+        );
+        assert!(!state(&root).verified(id));
+        let revision = state(&root).revision.to_string();
+        assert_eq!(
+            cmd(&root)
+                .args(["agent", "verify", id, "--revision", &revision])
+                .output()
+                .unwrap()
+                .status
+                .code(),
+            Some(1),
+            "old identity proof accepted for constant-zero model"
+        );
+        fs::write(&specs, &extended_source).unwrap();
+        ok(&root, &["run", "--retry"]);
+        assert!(state(&root).complete(true));
+        fs::write(&specs, format!("{extended_source}\nnamespace FixtureModel\ninductive Extra where | first | second\nend FixtureModel\n")).unwrap();
+        ok(&root, &["status"]);
+        assert!(
+            !state(&root).targets[id].ready(),
+            "unsupported inductive metadata must fall back to whole-model review"
+        );
+        let cache: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(root.join(".elicit/cache/model-inputs.json")).unwrap(),
+        )
+        .unwrap();
+        assert!(
+            cache["inputs"].is_null(),
+            "inductive declaration metadata was approximated"
+        );
+        fs::write(&specs, extended_source).unwrap();
+        ok(&root, &["run", "--retry"]);
+        assert!(state(&root).complete(true));
+    }
     if tool == "aeneas" {
         let events = || {
             fs::read_to_string(root.join(".elicit/events.jsonl"))
@@ -311,4 +406,38 @@ fn aeneas_both_modes_interruption_resume() {
 #[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
 fn aeneas_methods_structs_slices_and_helpers() {
     exercise_fixture("aeneas", "aeneas-rich");
+}
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
+fn aeneas_model_dependencies_do_not_turn_documentation_into_specification_changes() {
+    let root = prepare_fixture("aeneas", "aeneas");
+    ok(&root, &["init", "--tool", "aeneas"]);
+    ok(&root, &["run"]);
+    let before = state(&root);
+    assert!(before.complete(false));
+    let id = "elicit-aeneas-fixture::identity::Function";
+    assert!(
+        before.targets[id].model_inputs.contains_key("@rust_model"),
+        "native model dependency collection was not exercised"
+    );
+    fs::write(
+        root.join("README.md"),
+        "Documentation-only change; the Rust and logical model are unchanged.\n",
+    )
+    .unwrap();
+    ok(&root, &["status"]);
+    let after = state(&root);
+    assert_ne!(
+        before.input, after.input,
+        "this test must exercise conservative whole-proof invalidation"
+    );
+    for (id, target) in &before.targets {
+        assert_eq!(
+            target.spec_hash, after.targets[id].spec_hash,
+            "documentation reopened {id}"
+        );
+        assert!(after.targets[id].ready(), "documentation made {id} stale");
+    }
+    fs::remove_dir_all(root).unwrap();
 }

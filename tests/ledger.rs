@@ -15,6 +15,9 @@ fn target(id: &str, kind: Kind) -> Target {
         column: 0,
         aliases: vec![],
         spec_hash: format!("spec-{id}"),
+        model_base_hash: String::new(),
+        model_inputs: BTreeMap::new(),
+        model_bindings: None,
         body_hash: "body".into(),
         original_body: "body".into(),
         source_hash: "source".into(),
@@ -421,4 +424,50 @@ fn additional_diagnostics_and_regressions_are_not_forward_progress() {
     let mut fixed = after.clone();
     fixed.targets.get_mut("a").unwrap().stale.clear();
     assert!(scheduler::advanced(&after, &fixed));
+}
+
+#[test]
+fn type_model_review_survives_extension_but_not_changed_definitions() {
+    let mut s = State::new(Tool::Aeneas, Scope::default());
+    let mut original = target("Type", Kind::Struct);
+    original.model_base_hash = "type declaration".into();
+    original
+        .model_inputs
+        .insert("Model.invariant".into(), "first meaning".into());
+    original.bind_models();
+    s.targets.insert(original.id.clone(), original.clone());
+    let mut extended = original.clone();
+    extended
+        .model_inputs
+        .insert("Model.unrelated".into(), "new model".into());
+    extended.bind_models();
+    s.reconcile(vec![extended.clone()], vec![], "new proof input".into());
+    assert!(s.targets["Type"].ready());
+    assert_eq!(s.targets["Type"].spec_hash, original.spec_hash);
+    assert_eq!(s.targets["Type"].model_bindings.as_ref().unwrap().len(), 1);
+    extended
+        .model_inputs
+        .insert("Model.invariant".into(), "changed meaning".into());
+    extended.bind_models();
+    s.reconcile(vec![extended], vec![], "changed semantic input".into());
+    assert!(!s.targets["Type"].ready());
+    assert!(
+        s.targets["Type"]
+            .stale
+            .contains(&"specification changed".into())
+    );
+}
+
+#[test]
+fn fallback_model_stamps_continue_tracking_changes_after_a_bound_name_disappears() {
+    let mut t = target("Type", Kind::Struct);
+    t.model_base_hash = "type".into();
+    t.model_inputs
+        .insert("decl:Model.invariant".into(), "meaning".into());
+    t.bind_models();
+    t.model_inputs = BTreeMap::from([("@source".into(), "first unsupported model source".into())]);
+    let first = t.model_hash();
+    t.model_inputs
+        .insert("@source".into(), "changed unsupported model source".into());
+    assert_ne!(first, t.model_hash());
 }
