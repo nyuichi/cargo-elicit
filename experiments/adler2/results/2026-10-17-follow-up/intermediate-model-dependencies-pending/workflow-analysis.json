@@ -1,0 +1,516 @@
+{
+  "worker_turns": 14,
+  "repeated_worker_targets": {
+    "adler2::Adler32::Struct": 3
+  },
+  "unsupported_trait_worker_turns": 0,
+  "worker_turn_wall_seconds": 1457.167000055313,
+  "formal_checks": 9,
+  "formal_check_event_wall_seconds": 229.88000011444092,
+  "timeline": [
+    {
+      "start_seconds": 17.883179903030396,
+      "task": {
+        "kind": "specify",
+        "targets": [
+          "adler2::Adler32::Struct"
+        ]
+      },
+      "end_seconds": 188.86217999458313,
+      "elapsed_seconds": 170.97900009155273,
+      "completed": true
+    },
+    {
+      "start_seconds": 193.23717999458313,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::U32X4::Struct"
+        ]
+      },
+      "end_seconds": 257.42418003082275,
+      "elapsed_seconds": 64.18700003623962,
+      "completed": true
+    },
+    {
+      "start_seconds": 261.9511799812317,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::Adler32::Struct"
+        ]
+      },
+      "end_seconds": 296.61917996406555,
+      "elapsed_seconds": 34.66799998283386,
+      "completed": true
+    },
+    {
+      "start_seconds": 300.9211800098419,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        ]
+      },
+      "end_seconds": 499.51817989349365,
+      "elapsed_seconds": 198.59699988365173,
+      "completed": true
+    },
+    {
+      "start_seconds": 524.4111800193787,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        ]
+      },
+      "end_seconds": 716.0181798934937,
+      "elapsed_seconds": 191.606999874115,
+      "completed": true
+    },
+    {
+      "start_seconds": 744.7521800994873,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        ]
+      },
+      "end_seconds": 830.4071800708771,
+      "elapsed_seconds": 85.65499997138977,
+      "completed": true
+    },
+    {
+      "start_seconds": 861.0341799259186,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[6f07fcfab3542315]::default::Method"
+        ]
+      },
+      "end_seconds": 921.849179983139,
+      "elapsed_seconds": 60.81500005722046,
+      "completed": true
+    },
+    {
+      "start_seconds": 954.5821800231934,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        ]
+      },
+      "end_seconds": 1072.2881801128387,
+      "elapsed_seconds": 117.70600008964539,
+      "completed": true
+    },
+    {
+      "start_seconds": 1106.583179950714,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        ]
+      },
+      "end_seconds": 1216.6121799945831,
+      "elapsed_seconds": 110.02900004386902,
+      "completed": true
+    },
+    {
+      "start_seconds": 1252.9011800289154,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        ]
+      },
+      "end_seconds": 1327.628180027008,
+      "elapsed_seconds": 74.72699999809265,
+      "completed": true
+    },
+    {
+      "start_seconds": 1365.9651799201965,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+        ]
+      },
+      "end_seconds": 1433.7121798992157,
+      "elapsed_seconds": 67.74699997901917,
+      "completed": true
+    },
+    {
+      "start_seconds": 1473.7141799926758,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::new::Method"
+        ]
+      },
+      "end_seconds": 1535.296180009842,
+      "elapsed_seconds": 61.58200001716614,
+      "completed": true
+    },
+    {
+      "start_seconds": 1577.7941799163818,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+        ]
+      },
+      "end_seconds": 1774.4681799411774,
+      "elapsed_seconds": 196.67400002479553,
+      "completed": true
+    },
+    {
+      "start_seconds": 1778.8631799221039,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::Adler32::Struct"
+        ]
+      },
+      "end_seconds": 1801.057179927826,
+      "elapsed_seconds": 22.194000005722046,
+      "completed": false
+    }
+  ],
+  "checkpoints": [
+    {
+      "start_seconds": 505.88718008995056,
+      "end_seconds": 522.4001801013947,
+      "elapsed_seconds": 16.513000011444092,
+      "results": [
+        {
+          "elapsed_ms": 16511,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 722.809180021286,
+      "end_seconds": 742.6711800098419,
+      "elapsed_seconds": 19.861999988555908,
+      "results": [
+        {
+          "elapsed_ms": 19860,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 19860,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 836.9671800136566,
+      "end_seconds": 858.7731800079346,
+      "elapsed_seconds": 21.805999994277954,
+      "results": [
+        {
+          "elapsed_ms": 21804,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 21804,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 21804,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 928.6861801147461,
+      "end_seconds": 952.4431800842285,
+      "elapsed_seconds": 23.756999969482422,
+      "results": [
+        {
+          "elapsed_ms": 23755,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 23755,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 23755,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 23755,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 1078.9421799182892,
+      "end_seconds": 1104.2771799564362,
+      "elapsed_seconds": 25.335000038146973,
+      "results": [
+        {
+          "elapsed_ms": 25333,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 25333,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 25333,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 25333,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        },
+        {
+          "elapsed_ms": 25333,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 1223.1201798915863,
+      "end_seconds": 1250.6631801128387,
+      "elapsed_seconds": 27.54300022125244,
+      "results": [
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        },
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        },
+        {
+          "elapsed_ms": 27540,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 1333.9201800823212,
+      "end_seconds": 1363.811180114746,
+      "elapsed_seconds": 29.891000032424927,
+      "results": [
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        },
+        {
+          "elapsed_ms": 29888,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 1439.8801801204681,
+      "end_seconds": 1471.514179944992,
+      "elapsed_seconds": 31.633999824523926,
+      "results": [
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        },
+        {
+          "elapsed_ms": 31632,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        }
+      ]
+    },
+    {
+      "start_seconds": 1542.0121800899506,
+      "end_seconds": 1575.5511801242828,
+      "elapsed_seconds": 33.539000034332275,
+      "results": [
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[6f07fcfab3542315]::default::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        },
+        {
+          "elapsed_ms": 33537,
+          "outcome": "success",
+          "scope": "full_contract",
+          "target": "adler2::impl[ff6e69000b04949b]::new::Method"
+        }
+      ]
+    }
+  ],
+  "terminal_installed_tcb": "e2b6f9618563b6472ed6fc5579365f8636897bee7eac3f38b71d6d4b4448eeb2"
+}

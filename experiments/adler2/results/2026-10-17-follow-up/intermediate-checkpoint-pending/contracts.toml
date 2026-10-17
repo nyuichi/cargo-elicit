@@ -1,0 +1,53 @@
+schema_version = 1
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+requires = "fun _ quotient => quotient.val ≠ 0"
+ensures = "fun self quotient result => result.val.map (fun x => x.val) = self.val.map (fun x => x.val % quotient.val)"
+theorem = "AdlerSpec.rem_assign_correct"
+
+[contracts."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+requires = "fun self rhs => ∀ x ∈ self.val, x.val * rhs.val < 4294967296"
+ensures = "fun self rhs result => result.val.map (fun x => x.val) = self.val.map (fun x => x.val * rhs.val)"
+theorem = "AdlerSpec.mul_assign_correct"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun self other => ∀ p ∈ self.val.zip other.val, p.1.val + p.2.val < 4294967296"
+ensures = "fun self other result => result.val.map (fun x => x.val) = List.zipWith (fun x y => x.val + y.val) self.val other.val"
+theorem = "AdlerSpec.add_assign_correct"
+
+[contracts."adler2::impl[6f07fcfab3542315]::default::Method"]
+ensures = "fun result => result.a.val = 1 ∧ result.b.val = 0"
+theorem = "AdlerSpec.default_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self result => result.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerSpec.checksum_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+ensures = "fun sum result => result.a.val = sum.val % 65536 ∧ result.b.val = sum.val / 65536"
+theorem = "AdlerSpec.from_checksum_correct"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun bytes => 4 ≤ bytes.val.length"
+ensures = "fun bytes result => result.val.map (fun x => x.val) = (bytes.val.take 4).map (fun x => x.val)"
+theorem = "AdlerSpec.lanes_from_correct"
+
+[contracts."adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+ensures = "fun self result => result.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerSpec.finish_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun result => result.a.val = 1 ∧ result.b.val = 0"
+theorem = "AdlerSpec.new_correct"
+
+[contracts."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+ensures = "fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val"
+
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun data result => let final := AdlerSpec.Update 1 0 (data.val.map (fun byte => byte.val)); result.val = AdlerSpec.Checksum final.1 final.2"
+
+[contracts."adler2::impl[c15b331ca2ffd1e4]::write::Method"]
+ensures = "fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val"

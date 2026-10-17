@@ -1,0 +1,30 @@
+{
+  "start_unix": 1792250002.8290675,
+  "arm": "without",
+  "command": [
+    "python3",
+    "/workspace/cargo-elicit/experiments/adler2/baseline.py",
+    "/workspace/elicit-comparison/round2-cases/adler2-without"
+  ],
+  "exit": 0,
+  "end_to_end_seconds": 860.0921962469947,
+  "timed_work_seconds": 860.0908600339972,
+  "terminal_observation_seconds": 0.0013362129975575954,
+  "observation_seconds_total": 0.0017871150048449636,
+  "observation_seconds_during_run": 0.0006638199993176386,
+  "historical_api_proof_milestones": [],
+  "tokens": null,
+  "human_proof_hints": 0,
+  "original_sources_unchanged": true,
+  "source_hashes_before": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "source_hashes_after": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+}

@@ -1,0 +1,200 @@
+{
+  "target": "adler2::Adler32::Struct",
+  "status": "specification prepared; no official API proof evidence",
+  "proof_modules": [
+    "elicit-proofs/aeneas/Specs.lean"
+  ],
+  "theorem_roots": [
+    "AdlerSpec.state_invariant",
+    "AdlerSpec.representation_preserved",
+    "AdlerSpec.encoded_bound",
+    "AdlerSpec.normalized_representable"
+  ],
+  "mapped_rust_api": "Adler32 representation only",
+  "contract": "Every original translated Adler32 has two halves below 65536; no normalized-seed assumption",
+  "preconditions": [],
+  "diagnostic_commands": [
+    "charon cargo --preset=aeneas --sysroot=default --dest-file .elicit/cache/representation/crate.llbc -- --target x86_64-unknown-linux-gnu",
+    "aeneas -backend lean -namespace ElicitGenerated -dest .elicit/cache/representation .elicit/cache/representation/crate.llbc",
+    "lake env lean --root=<workspace>/.elicit/cache/representation -o <workspace>/.elicit/cache/representation/ElicitGenerated.olean <workspace>/.elicit/cache/representation/ElicitGenerated.lean",
+    "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Specs.lean"
+  ],
+  "remaining_obligations": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice including all optimized compute loops and helpers",
+    "adler32_slice",
+    "codec roundtrips",
+    "split-update equivalence with concatenated slice representability",
+    "save/restore/resume equivalence",
+    "official wrapper audit"
+  ],
+  "unverified_out_of_scope": [
+    "generic BufRead",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "trusted_boundaries": [
+    "pinned Charon extraction",
+    "pinned Aeneas translation",
+    "Lean kernel and pinned Aeneas scalar model"
+  ],
+  "runtime_changes": false,
+  "additional_struct_specification": {
+    "target": "adler2::algo::U32X4::Struct",
+    "predicate": "AdlerSpec.VectorInvariant: exactly four lanes, each below 2^32",
+    "theorem_roots": [
+      "AdlerSpec.vector_invariant",
+      "AdlerSpec.vector_representation_preserved"
+    ],
+    "safety_predicates": [
+      "AdlerSpec.LaneAddSafe",
+      "AdlerSpec.LaneMulSafe",
+      "AdlerSpec.LaneRemSafe"
+    ],
+    "limitation": "Arithmetic success and method correctness remain separate pending obligations; no trait implementation proof is claimed."
+  },
+  "method_proofs": [
+    {
+      "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "contract": "ElicitContracts.c_f321f3834d6c15c0",
+      "theorem": "AdlerProof.rem_assign_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "divisor.val != 0",
+      "postcondition": "output lane values equal original lane values modulo divisor, preserving lane order",
+      "coverage": "original translated method, all four checked indexing, remainder, and update operations",
+      "status": "local Lean check passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "contract": "ElicitContracts.c_6c7496278e307fe7",
+      "theorem": "AdlerProof.mul_assign_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "For every original lane, lane.val * rhs.val <= 4294967295",
+      "postcondition": "Output lane values equal original lane values times rhs, in order",
+      "coverage": "Original method, including four checked multiplications, array indexing and updates",
+      "status": "local Lean check passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "contract": "ElicitContracts.c_20b5198a3591154d",
+      "theorem": "AdlerProof.add_assign_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "Every pair of corresponding lane values sums to at most 4294967295",
+      "postcondition": "Output values equal zipWith addition of the two original lane lists",
+      "coverage": "Original method, four checked additions and all indexing and updates",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::impl[6f07fcfab3542315]::default::Method",
+      "contract": "ElicitContracts.c_2fa15a7d1ba5a684",
+      "theorem": "AdlerProof.default_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "True",
+      "postcondition": "a.val = 1 and b.val = 0",
+      "coverage": "Original default method body",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "contract": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "AdlerProof.checksum_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "True; every representable pair of u16 halves",
+      "postcondition": "result.val = 65536 * before.b.val + before.a.val",
+      "coverage": "Original method including widening casts, checked shift and bitwise OR",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "contract": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "theorem": "AdlerProof.from_checksum_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "True; every u32 input",
+      "postcondition": "a.val = sum.val % 65536 and b.val = sum.val / 65536",
+      "coverage": "Original method including truncating casts and checked right shift",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "contract": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "AdlerProof.vector_from_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "Input byte slice has at least four elements; no upper length bound",
+      "postcondition": "Each of the four output lanes equals the corresponding original byte value",
+      "coverage": "Original method including four checked reads, widening conversions and array construction",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+      "contract": "ElicitContracts.c_375e1cdaf1f944d2",
+      "theorem": "AdlerProof.finish_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "True; every representable Adler32 state",
+      "postcondition": "u64 result value = 65536*b+a",
+      "coverage": "Original finish method, original checksum helper through checksum_correct, and pinned u32-to-u64 conversion",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "limitation": "Does not establish Hasher trait laws",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "contract": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "AdlerProof.new_correct",
+      "module": "elicit-proofs/aeneas/Proofs.lean",
+      "precondition": "True",
+      "postcondition": "a.val = 1 and b.val = 0",
+      "coverage": "Original new method and original default helper via default_correct",
+      "status": "local Lean diagnostic passes; official wrapper audit pending",
+      "diagnostic_command": "LEAN_PATH=<workspace>/.elicit/cache/representation lake env lean --root=<workspace>/.elicit/cache/representation <workspace>/.elicit/cache/representation/Proofs.lean"
+    }
+  ],
+  "support_laws": {
+    "roots": [
+      "AdlerProof.checksum_codec_roundtrip",
+      "AdlerProof.state_codec_roundtrip",
+      "AdlerProof.save_restore_resume"
+    ],
+    "module": "elicit-proofs/aeneas/Proofs.lean",
+    "status": "local Lean diagnostic passes; no separate official law audit recorded",
+    "scope": "Both codec roundtrips quantify all representable inputs; resume states equality of original write_slice computations after exact state restoration, not successful update execution or scalar recurrence correctness."
+  },
+  "compute_specification": {
+    "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+    "contract": "ElicitContracts.c_a058c96663922dc4",
+    "precondition": "True; every original Adler32 and representable byte slice",
+    "postcondition": "Output halves equal AdlerSpec.ScalarAdler from original halves over every byte, and both are below 65521",
+    "model_module": "elicit-proofs/aeneas/Specs.lean",
+    "model_roots": [
+      "AdlerSpec.ScalarStep",
+      "AdlerSpec.ScalarAdler",
+      "AdlerSpec.scalar_adler_normalized",
+      "AdlerSpec.scalar_adler_empty",
+      "AdlerSpec.scalar_adler_append",
+      "AdlerSpec.scalar_slice_split"
+    ],
+    "implementation_theorem": null,
+    "status": "full specification prepared; original implementation correctness proof unresolved",
+    "remaining_obligations": [
+      "Exact chunk decomposition and iterator progress",
+      "Inner lane sums and weighted sums with overflow bounds",
+      "Outer chunk loop modular preservation and termination",
+      "Remainder chunk and serial tail",
+      "Weighted lane recombination and final casts",
+      "Full generated compute contract theorem and official audit"
+    ],
+    "diagnostic_attempt": ".elicit/cache/representation/ComputeAttempt.lean",
+    "diagnostic_result": "Lean reports unresolved original optimized computation after checked prefix arithmetic and split; no implementation proof evidence",
+    "split_law_scope": "Model-only law with concatenated slice length <= Usize.max; original split-update correctness remains open"
+  }
+}

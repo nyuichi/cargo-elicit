@@ -1,0 +1,191 @@
+{
+  "elapsed_seconds": 24.25978478899924,
+  "fresh_model_byte_identical": true,
+  "charon_has_errors": false,
+  "original_sources_unchanged": true,
+  "source_hashes": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "audited_roots": [
+    "Verification.new_correct",
+    "Verification.from_checksum_eq",
+    "Verification.from_checksum_correct",
+    "Verification.checksum_eq",
+    "Verification.encode_val",
+    "Verification.checksum_correct",
+    "Verification.codec_decode_encode",
+    "Verification.codec_encode_decode",
+    "Verification.checksum_save_restore",
+    "Verification.checksum_restore_save",
+    "Verification.save_restore_resume",
+    "Verification.normalize_idem",
+    "Verification.scalarStep_normalized",
+    "Verification.scalarAdler_normalized",
+    "Verification.scalarAdler_split",
+    "Verification.loader_correct",
+    "Verification.vector_rem_correct",
+    "Verification.vector_add_correct",
+    "Verification.vector_mul_correct",
+    "Verification.lane_accumulator_bound",
+    "Verification.scalar_chunk_seed_bound",
+    "Verification.convenience_of_write",
+    "Verification.split_of_write",
+    "Verification.chunk_loop0_empty",
+    "Verification.chunk_loop1_empty",
+    "Verification.four_lane_step",
+    "Verification.complement_correction"
+  ],
+  "axioms": {
+    "Verification.new_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.from_checksum_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.from_checksum_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.checksum_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.encode_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.checksum_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.codec_decode_encode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.codec_encode_decode": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.checksum_save_restore": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.checksum_restore_save": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.save_restore_resume": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.normalize_idem": [
+      "propext"
+    ],
+    "Verification.scalarStep_normalized": [
+      "propext"
+    ],
+    "Verification.scalarAdler_normalized": [
+      "propext"
+    ],
+    "Verification.scalarAdler_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.loader_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.vector_rem_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.vector_add_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.vector_mul_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.lane_accumulator_bound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.scalar_chunk_seed_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.convenience_of_write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.split_of_write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.chunk_loop0_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.chunk_loop1_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Verification.four_lane_step": [
+      "propext"
+    ],
+    "Verification.complement_correction": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "accepted_apis": [
+    "Adler32::new",
+    "Adler32::checksum",
+    "Adler32::from_checksum"
+  ],
+  "unproved_apis": [
+    "Adler32::write_slice",
+    "adler32_slice"
+  ],
+  "selected_coverage": "3/5",
+  "notes": [
+    "All-state checksum and from_checksum theorems include successful Result outcomes and exact numeric results.",
+    "save_restore_resume preserves exact effects but does not establish write_slice success.",
+    "convenience_of_write and split_of_write assume the unproved WriteSliceCorrect contract.",
+    "Empty iterator exit and mathematical lane identities are support results, not unrestricted optimized update correctness."
+  ],
+  "overflow_checks": true,
+  "original_api_bodies_transparent": true,
+  "extraction_options_safe": true,
+  "llbc_source_contents_identical": true,
+  "proof_sha256": {
+    "Proofs": "95127784a4c09a4ecae1625ccaa03f60ae8093d5cbce0e69a5533c41b91badd8",
+    "CoreLemmas": "41d2412a676a062dd74734b9dda911f9a0f1622035b64cd80ea09574a5c8e3bb",
+    "Empty": "b718466f526a393ba2b9b3eeaad226277800967e1bdf6ab4226e8afea944d3b4",
+    "LaneAlgebra": "e5106d2c140e33e8b51340fbdf13b6d65d12936eb690722c23622427b5c02a19"
+  }
+}

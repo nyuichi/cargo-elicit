@@ -1,0 +1,92 @@
+Verification.new_correct : adler2.Adler32.new = Aeneas.Std.Result.ok { a := 1#u16, b := 0#u16 }
+'Verification.new_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.from_checksum_eq : ∀ (s : Aeneas.Std.U32),
+  adler2.Adler32.from_checksum s = Aeneas.Std.Result.ok (Verification.decode s)
+'Verification.from_checksum_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.from_checksum_correct : ∀ (s : Aeneas.Std.U32),
+  ∃ t, adler2.Adler32.from_checksum s = Aeneas.Std.Result.ok t ∧ ↑t.a = ↑s % 65536 ∧ ↑t.b = ↑s / 65536
+'Verification.from_checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.checksum_eq : ∀ (t : adler2.Adler32), t.checksum = Aeneas.Std.Result.ok (Verification.encode t)
+'Verification.checksum_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.encode_val : ∀ (t : adler2.Adler32), ↑(Verification.encode t) = 65536 * ↑t.b + ↑t.a
+'Verification.encode_val' depends on axioms: [propext, Quot.sound]
+Verification.checksum_correct : ∀ (t : adler2.Adler32),
+  ∃ s, t.checksum = Aeneas.Std.Result.ok s ∧ ↑s = 65536 * ↑t.b + ↑t.a
+'Verification.checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.codec_decode_encode : ∀ (t : adler2.Adler32), Verification.decode (Verification.encode t) = t
+'Verification.codec_decode_encode' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.codec_encode_decode : ∀ (s : Aeneas.Std.U32), Verification.encode (Verification.decode s) = s
+'Verification.codec_encode_decode' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.checksum_save_restore : ∀ (t : adler2.Adler32),
+  (do
+      let s ← t.checksum
+      adler2.Adler32.from_checksum s) =
+    Aeneas.Std.Result.ok t
+'Verification.checksum_save_restore' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.checksum_restore_save : ∀ (s : Aeneas.Std.U32),
+  (do
+      let t ← adler2.Adler32.from_checksum s
+      t.checksum) =
+    Aeneas.Std.Result.ok s
+'Verification.checksum_restore_save' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.save_restore_resume : ∀ (t : adler2.Adler32) (xs : Aeneas.Std.Slice Aeneas.Std.U8),
+  (do
+      let s ← t.checksum
+      let u ← adler2.Adler32.from_checksum s
+      u.write_slice xs) =
+    t.write_slice xs
+'Verification.save_restore_resume' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.normalize_idem : ∀ (s : ℕ × ℕ),
+  Verification.normalize (Verification.normalize s) = Verification.normalize s
+'Verification.normalize_idem' depends on axioms: [propext]
+Verification.scalarStep_normalized : ∀ (s : ℕ × ℕ) (x : ℕ),
+  Verification.normalize (Verification.scalarStep s x) = Verification.scalarStep s x
+'Verification.scalarStep_normalized' depends on axioms: [propext]
+Verification.scalarAdler_normalized : ∀ (s : ℕ × ℕ) (xs : List ℕ),
+  Verification.normalize (Verification.scalarAdler s xs) = Verification.scalarAdler s xs
+'Verification.scalarAdler_normalized' depends on axioms: [propext]
+Verification.scalarAdler_split : ∀ (s : ℕ × ℕ) (xs ys : List ℕ),
+  Verification.scalarAdler s (xs ++ ys) = Verification.scalarAdler (Verification.scalarAdler s xs) ys
+'Verification.scalarAdler_split' depends on axioms: [propext, Quot.sound]
+Verification.loader_correct : ∀ (xs : Aeneas.Std.Slice Aeneas.Std.U8) (h : (↑xs).length ≥ 4),
+  Aeneas.Std.WP.spec (adler2.algo.U32X4.from xs) fun r => ∀ (i : ℕ) (hi : i < 4), ↑(↑r)[i] = ↑(↑xs)[i]
+'Verification.loader_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.vector_rem_correct : ∀ (v : adler2.algo.U32X4) (q : Aeneas.Std.U32),
+  ↑q > 0 →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign v q) fun r =>
+      ∀ (j : ℕ) (hj : j < 4), ↑(↑r)[j] = ↑(↑v)[j] % ↑q
+'Verification.vector_rem_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.vector_add_correct : ∀ (v w : adler2.algo.U32X4),
+  (∀ (i : ℕ) (hi : i < 4), ↑(↑v)[i] + ↑(↑w)[i] ≤ Aeneas.Std.U32.max) →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign v w) fun r =>
+      ∀ (j : ℕ) (hj : j < 4), ↑(↑r)[j] = ↑(↑v)[j] + ↑(↑w)[j]
+'Verification.vector_add_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.vector_mul_correct : ∀ (v : adler2.algo.U32X4) (q : Aeneas.Std.U32),
+  (∀ (i : ℕ) (hi : i < 4), ↑(↑v)[i] * ↑q ≤ Aeneas.Std.U32.max) →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign v q) fun r =>
+      ∀ (j : ℕ) (hj : j < 4), ↑(↑r)[j] = ↑(↑v)[j] * ↑q
+'Verification.vector_mul_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.lane_accumulator_bound : ∀ n ≤ 5552, 65520 + n * 65520 + 255 * n * (n + 1) / 2 ≤ 4294967295
+'Verification.lane_accumulator_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.scalar_chunk_seed_bound : ∀ (a b n : ℕ), a ≤ 65535 → b ≤ 65535 → n ≤ 22208 → b + n * a ≤ 4294967295
+'Verification.scalar_chunk_seed_bound' depends on axioms: [propext, Quot.sound]
+Verification.convenience_of_write : Verification.WriteSliceCorrect → Verification.ConvenienceCorrect
+'Verification.convenience_of_write' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.split_of_write : Verification.WriteSliceCorrect → Verification.SplitUpdateCorrect
+'Verification.split_of_write' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.chunk_loop0_empty : ∀ (i : Aeneas.Std.Usize) (a b : Aeneas.Std.U32) (av bv : adler2.algo.U32X4)
+  (rem : Aeneas.Std.Slice Aeneas.Std.U8),
+  adler2.algo.Adler32.compute_loop0 i { chunks := [], remainder := rem } a b av bv = Aeneas.Std.Result.ok (b, av, bv)
+'Verification.chunk_loop0_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.chunk_loop1_empty : ∀ (av bv : adler2.algo.U32X4) (rem : Aeneas.Std.Slice Aeneas.Std.U8),
+  adler2.algo.Adler32.compute_loop1 { chunks := [], remainder := rem } av bv = Aeneas.Std.Result.ok (av, bv)
+'Verification.chunk_loop1_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+@Verification.four_lane_step : ∀ {R : Type u_1} [inst : CommRing R] (a b a0 a1 a2 a3 b0 b1 b2 b3 x0 x1 x2 x3 : R),
+  Verification.combineLanes a (b + 4 * a) (a0 + x0) (a1 + x1) (a2 + x2) (a3 + x3) (b0 + a0 + x0) (b1 + a1 + x1)
+      (b2 + a2 + x2) (b3 + a3 + x3) =
+    List.foldl Verification.ringStep (Verification.combineLanes a b a0 a1 a2 a3 b0 b1 b2 b3) [x0, x1, x2, x3]
+'Verification.four_lane_step' depends on axioms: [propext]
+Verification.complement_correction : ∀ (a1 a2 a3 b0 b1 b2 b3 : ZMod 65521),
+  4 * b0 + (4 * b1 + (65521 - a1)) + (4 * b2 + 2 * (65521 - a2)) + (4 * b3 + 3 * (65521 - a3)) =
+    4 * (b0 + b1 + b2 + b3) - a1 - 2 * a2 - 3 * a3
+'Verification.complement_correction' depends on axioms: [propext, Quot.sound]

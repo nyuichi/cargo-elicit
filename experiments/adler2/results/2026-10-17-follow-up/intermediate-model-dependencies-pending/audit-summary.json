@@ -1,0 +1,87 @@
+{
+  "elapsed_seconds": 11.747119806997944,
+  "fresh_cache": "/workspace/elicit-comparison/round3-cases/adler2-with/.elicit/cache/verification-e9JTHQ",
+  "separate_kernel_rebuild": true,
+  "llbc_original_sources_identical": true,
+  "overflow_checks": true,
+  "original_api_bodies_transparent": true,
+  "audited_contracts": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": "AdlerProof.rem_assign_correct",
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": "AdlerProof.mul_assign_correct",
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": "AdlerProof.add_assign_correct",
+    "adler2::impl[6f07fcfab3542315]::default::Method": "AdlerProof.default_correct",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": "AdlerProof.checksum_correct",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "AdlerProof.from_checksum_correct",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": "AdlerProof.vector_from_correct",
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": "AdlerProof.finish_correct",
+    "adler2::impl[ff6e69000b04949b]::new::Method": "AdlerProof.new_correct"
+  },
+  "axioms": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[6f07fcfab3542315]::default::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::new::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "proof_sha256": {
+    "Specs.lean": "321f24b3815c7d8737e679c9289067e32928556bc16e336b285d703ef1259f02",
+    "ElicitContracts.lean": "fdac65e33344d6728a3076b17950a4d4ed7f0dfbc785c321a8bbd35af47804a2",
+    "IndependentAudit.lean": "bf7200827838d529da5acf579d3724b29431f6ad0eed891f9333acdb59e6e485",
+    "ElicitGenerated.lean": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+    "Proofs.lean": "acb8cea6781e7479d10347a44a40daa3ea443f6d8bbc16f070c53e1e0edf004a",
+    "ElicitAdapter.lean": "630ae0d08d8eeeabb039e00c472829b7091a9ad2762658466f19086fc769a1d6"
+  },
+  "acceptance_note": "These roots prove their emitted exact contracts. API coverage still requires manual semantic review; theorem names alone are insufficient.",
+  "accepted_apis": [
+    "Adler32::new",
+    "Adler32::checksum",
+    "Adler32::from_checksum"
+  ],
+  "unproved_apis": [
+    "Adler32::write_slice",
+    "adler32_slice"
+  ],
+  "selected_coverage": "3/5",
+  "accepted_method_contracts": 9,
+  "timed_ledger_not_retroactively_changed": true
+}

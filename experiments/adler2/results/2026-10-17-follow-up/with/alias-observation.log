@@ -1,0 +1,6 @@
+/workspace/elicit-comparison/results/round4-independent-audit/kernel/AliasObservation.lean:4:74: warning: Unused tactic linter: `intros` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+def AuditNewGoal : Prop :=
+True → ∃ result, ElicitGenerated.Adler32.new = Aeneas.Std.Result.ok result ∧ (fun out => ↑out.a = 1 ∧ ↑out.b = 0) result
+'AuditDefaultAsNew' depends on axioms: [propext, Classical.choice, Quot.sound]

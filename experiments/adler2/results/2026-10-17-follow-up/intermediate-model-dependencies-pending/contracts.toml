@@ -1,0 +1,44 @@
+schema_version = 1
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+requires = "fun _ divisor => divisor.val ≠ 0"
+ensures = "fun before divisor after => after.val.map (fun x => x.val) = before.val.map (fun x => x.val % divisor.val)"
+theorem = "AdlerProof.rem_assign_correct"
+
+[contracts."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+requires = "fun before rhs => ∀ lane ∈ before.val, lane.val * rhs.val ≤ 4294967295"
+ensures = "fun before rhs after => after.val.map (fun x => x.val) = before.val.map (fun x => x.val * rhs.val)"
+theorem = "AdlerProof.mul_assign_correct"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun before other => ∀ i (hi : i < before.val.length) (hj : i < other.val.length), before.val[i].val + other.val[i].val ≤ 4294967295"
+ensures = "fun before other after => after.val.map (fun x => x.val) = List.zipWith (fun x y => x.val + y.val) before.val other.val"
+theorem = "AdlerProof.add_assign_correct"
+
+[contracts."adler2::impl[6f07fcfab3542315]::default::Method"]
+ensures = "fun after => after.a.val = 1 ∧ after.b.val = 0"
+theorem = "AdlerProof.default_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun before result => result.val = 65536 * before.b.val + before.a.val"
+theorem = "AdlerProof.checksum_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+ensures = "fun sum after => after.a.val = sum.val % 65536 ∧ after.b.val = sum.val / 65536"
+theorem = "AdlerProof.from_checksum_correct"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun bytes => 4 ≤ bytes.val.length"
+ensures = "fun bytes after => ∀ i (hi : i < after.val.length) (hj : i < bytes.val.length), after.val[i].val = bytes.val[i].val"
+theorem = "AdlerProof.vector_from_correct"
+
+[contracts."adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+ensures = "fun before result => result.val = 65536 * before.b.val + before.a.val"
+theorem = "AdlerProof.finish_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun after => after.a.val = 1 ∧ after.b.val = 0"
+theorem = "AdlerProof.new_correct"
+
+[contracts."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+ensures = "fun before bytes after => (after.a.val, after.b.val) = AdlerSpec.ScalarAdler (before.a.val, before.b.val) bytes.val ∧ AdlerSpec.Normalized after.a.val after.b.val"

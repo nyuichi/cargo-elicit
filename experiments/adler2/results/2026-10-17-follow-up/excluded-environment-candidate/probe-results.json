@@ -1,0 +1,35 @@
+[
+  {
+    "entry": "cargo",
+    "input": "563782d0b78317fea0f2f31d96dca74c18c60150c06868f1aaab3764e1d5fb37",
+    "context": "f452468f0f3dd27bb6c34b770e68aa5508f31d4c79b503a0de8a407b7b7b5a86",
+    "files": {
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.lock": "6c12e08499900e3c56b99cb7c2aac79202ea6417305c906a1ff93684200c5398",
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+      "/workspace/elicit-comparison/fingerprint-probe/src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+      "/workspace/elicit-comparison/fingerprint-probe/src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+    }
+  },
+  {
+    "entry": "/workspace/toolchain/cargo/bin/cargo-elicit",
+    "input": "44dee18874f8329d91342f388878e6de875245bd75ae30d01789a0906372f525",
+    "context": "1cbeece2a9a77ad5db0ec619b84ee69257f1b6a1d1ba3e757ea37126c4b9914e",
+    "files": {
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.lock": "6c12e08499900e3c56b99cb7c2aac79202ea6417305c906a1ff93684200c5398",
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+      "/workspace/elicit-comparison/fingerprint-probe/src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+      "/workspace/elicit-comparison/fingerprint-probe/src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+    }
+  },
+  {
+    "entry": "cargo",
+    "input": "563782d0b78317fea0f2f31d96dca74c18c60150c06868f1aaab3764e1d5fb37",
+    "context": "f452468f0f3dd27bb6c34b770e68aa5508f31d4c79b503a0de8a407b7b7b5a86",
+    "files": {
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.lock": "6c12e08499900e3c56b99cb7c2aac79202ea6417305c906a1ff93684200c5398",
+      "/workspace/elicit-comparison/fingerprint-probe/Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+      "/workspace/elicit-comparison/fingerprint-probe/src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+      "/workspace/elicit-comparison/fingerprint-probe/src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+    }
+  }
+]

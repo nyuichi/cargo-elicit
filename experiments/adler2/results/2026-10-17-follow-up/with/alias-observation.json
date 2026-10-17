@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "benchmark_primary_count_unchanged": true,
+  "new_contract_submitted_during_trial": false,
+  "observation": "A saved default-method proof is assigned directly to the exact new goal by kernel definitional equality; no proof tactic or new proof search is used.",
+  "definitional_alias_checked": true
+}

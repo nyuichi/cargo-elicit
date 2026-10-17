@@ -1,0 +1,232 @@
+{
+  "worker_turns": 17,
+  "repeated_worker_targets": {
+    "adler2::Adler32::Struct": 2
+  },
+  "unsupported_trait_worker_turns": 0,
+  "worker_turn_wall_seconds": 1675.190999507904,
+  "formal_checks": 1,
+  "formal_check_event_wall_seconds": 27.098000049591064,
+  "timeline": [
+    {
+      "start_seconds": 23.853222370147705,
+      "task": {
+        "kind": "specify",
+        "targets": [
+          "adler2::Adler32::Struct"
+        ]
+      },
+      "end_seconds": 145.21122241020203,
+      "elapsed_seconds": 121.35800004005432,
+      "completed": true
+    },
+    {
+      "start_seconds": 149.53822255134583,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::U32X4::Struct"
+        ]
+      },
+      "end_seconds": 200.65122246742249,
+      "elapsed_seconds": 51.11299991607666,
+      "completed": true
+    },
+    {
+      "start_seconds": 204.7922224998474,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::Adler32::Struct"
+        ]
+      },
+      "end_seconds": 236.06922245025635,
+      "elapsed_seconds": 31.276999950408936,
+      "completed": true
+    },
+    {
+      "start_seconds": 240.41122245788574,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        ]
+      },
+      "end_seconds": 480.6642224788666,
+      "elapsed_seconds": 240.25300002098083,
+      "completed": true
+    },
+    {
+      "start_seconds": 484.9742224216461,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+        ]
+      },
+      "end_seconds": 584.2812223434448,
+      "elapsed_seconds": 99.3069999217987,
+      "completed": true
+    },
+    {
+      "start_seconds": 588.488222360611,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        ]
+      },
+      "end_seconds": 666.0382225513458,
+      "elapsed_seconds": 77.55000019073486,
+      "completed": true
+    },
+    {
+      "start_seconds": 670.1802225112915,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[6f07fcfab3542315]::default::Method"
+        ]
+      },
+      "end_seconds": 723.9492223262787,
+      "elapsed_seconds": 53.76899981498718,
+      "completed": true
+    },
+    {
+      "start_seconds": 728.0842225551605,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        ]
+      },
+      "end_seconds": 917.6392223834991,
+      "elapsed_seconds": 189.55499982833862,
+      "completed": true
+    },
+    {
+      "start_seconds": 922.0522224903107,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        ]
+      },
+      "end_seconds": 1075.4182224273682,
+      "elapsed_seconds": 153.3659999370575,
+      "completed": true
+    },
+    {
+      "start_seconds": 1079.5252225399017,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        ]
+      },
+      "end_seconds": 1171.075222492218,
+      "elapsed_seconds": 91.54999995231628,
+      "completed": true
+    },
+    {
+      "start_seconds": 1175.1652224063873,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+        ]
+      },
+      "end_seconds": 1250.8492224216461,
+      "elapsed_seconds": 75.68400001525879,
+      "completed": true
+    },
+    {
+      "start_seconds": 1255.3272223472595,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::new::Method"
+        ]
+      },
+      "end_seconds": 1317.2742223739624,
+      "elapsed_seconds": 61.94700002670288,
+      "completed": true
+    },
+    {
+      "start_seconds": 1321.698222398758,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+        ]
+      },
+      "end_seconds": 1465.1462223529816,
+      "elapsed_seconds": 143.44799995422363,
+      "completed": true
+    },
+    {
+      "start_seconds": 1469.381222486496,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+        ]
+      },
+      "end_seconds": 1558.9472224712372,
+      "elapsed_seconds": 89.56599998474121,
+      "completed": true
+    },
+    {
+      "start_seconds": 1563.3262224197388,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::adler32::Function"
+        ]
+      },
+      "end_seconds": 1603.4172224998474,
+      "elapsed_seconds": 40.09100008010864,
+      "completed": true
+    },
+    {
+      "start_seconds": 1607.4742224216461,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::adler32_slice::Function"
+        ]
+      },
+      "end_seconds": 1699.658222436905,
+      "elapsed_seconds": 92.18400001525879,
+      "completed": true
+    },
+    {
+      "start_seconds": 1703.8482224941254,
+      "task": {
+        "kind": "recheck",
+        "targets": [
+          "adler2::impl[c15b331ca2ffd1e4]::write::Method"
+        ]
+      },
+      "end_seconds": 1767.0212223529816,
+      "elapsed_seconds": 63.1729998588562,
+      "completed": true
+    }
+  ],
+  "checkpoints": [
+    {
+      "start_seconds": 1773.3352224826813,
+      "end_seconds": 1800.4332225322723,
+      "elapsed_seconds": 27.098000049591064,
+      "results": [
+        {
+          "elapsed_ms": 27095,
+          "outcome": "input_changed",
+          "scope": "unknown",
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+        }
+      ]
+    }
+  ],
+  "terminal_installed_tcb": "e2b6f9618563b6472ed6fc5579365f8636897bee7eac3f38b71d6d4b4448eeb2"
+}

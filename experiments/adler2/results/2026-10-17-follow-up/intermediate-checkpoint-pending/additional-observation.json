@@ -1,0 +1,37 @@
+{
+  "reason": "Additional artifact-progress status requested by user; observer has seen prepared helper and API proof modules, not yet official verification records. No proof hints supplied.",
+  "start_unix": 1792253527.905815,
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "elicit",
+        "status"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.629183515004115
+    },
+    {
+      "argv": [
+        "cargo",
+        "elicit",
+        "status",
+        "--json"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.341018481994979
+    },
+    {
+      "argv": [
+        "cargo",
+        "elicit",
+        "list",
+        "--json"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.377067224995699
+    }
+  ],
+  "included_in_live_wall_time": true,
+  "preplanned": false
+}

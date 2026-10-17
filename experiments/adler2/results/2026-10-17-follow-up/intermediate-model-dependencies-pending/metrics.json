@@ -1,0 +1,38 @@
+{
+  "start_unix": 1792254214.95382,
+  "arm": "with",
+  "command": [
+    "cargo",
+    "elicit",
+    "run",
+    "--max-seconds",
+    "1800",
+    "--max-tasks",
+    "32"
+  ],
+  "exit": 130,
+  "end_to_end_seconds": 1807.7038090830029,
+  "timed_work_seconds": 1801.083459276997,
+  "terminal_observation_seconds": 6.620349806005834,
+  "observation_seconds_total": 43.87646382000821,
+  "observation_seconds_during_run": 37.25652146201173,
+  "historical_api_proof_milestones": [
+    "checksum",
+    "from_checksum",
+    "new"
+  ],
+  "tokens": null,
+  "human_proof_hints": 0,
+  "original_sources_unchanged": true,
+  "source_hashes_before": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "source_hashes_after": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+}

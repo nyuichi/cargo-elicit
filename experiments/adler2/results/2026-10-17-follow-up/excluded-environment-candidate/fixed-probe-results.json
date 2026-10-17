@@ -1,0 +1,17 @@
+[
+  {
+    "entry": "cargo",
+    "input": "6cb6d13b4e5bf71d7875da5912f98844fa7e97045a2b6f6a99068ef43e186fbe",
+    "context": "93439f8ee867c7b4c1cee286321494cc68c692255a2bc1a2c1d14c2234728175"
+  },
+  {
+    "entry": "/workspace/toolchain/cargo/bin/cargo-elicit",
+    "input": "6cb6d13b4e5bf71d7875da5912f98844fa7e97045a2b6f6a99068ef43e186fbe",
+    "context": "93439f8ee867c7b4c1cee286321494cc68c692255a2bc1a2c1d14c2234728175"
+  },
+  {
+    "entry": "cargo",
+    "input": "6cb6d13b4e5bf71d7875da5912f98844fa7e97045a2b6f6a99068ef43e186fbe",
+    "context": "93439f8ee867c7b4c1cee286321494cc68c692255a2bc1a2c1d14c2234728175"
+  }
+]

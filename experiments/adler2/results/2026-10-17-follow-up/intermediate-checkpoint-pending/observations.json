@@ -1,0 +1,74 @@
+[
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.3252938540099,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.0756444150028983
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.1233749230013927
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.1219835149968276
+      }
+    ],
+    "elapsed_seconds": 6.321025397002813
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1800.4701919140061,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.0743633880047128
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.0716175800043857
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.1230625239986693
+      }
+    ],
+    "elapsed_seconds": 6.2690644140093355
+  }
+]

@@ -1,0 +1,103 @@
+[
+  {
+    "argv": [
+      "charon",
+      "cargo",
+      "--preset=aeneas",
+      "--sysroot=default",
+      "--exclude",
+      "adler2::adler32",
+      "--exclude",
+      "adler2::{core::fmt::Debug for adler2::Adler32}",
+      "--dest",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+      "--",
+      "--manifest-path",
+      "Cargo.toml",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--lib"
+    ],
+    "cwd": "/workspace/elicit-comparison/round2-cases/adler2-without",
+    "exit": 0,
+    "seconds": 0.30396508899866603
+  },
+  {
+    "argv": [
+      "/workspace/toolchain/aeneas-src/bin/aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+      "-no-progress-bar",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/adler2.llbc"
+    ],
+    "cwd": "/workspace/elicit-comparison/round2-cases/adler2-without",
+    "exit": 0,
+    "seconds": 13.589798241999233
+  },
+  {
+    "argv": [
+      "lean",
+      "-o",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Adler2.olean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Adler2.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 1.658039349000319
+  },
+  {
+    "argv": [
+      "lean",
+      "-o",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Proofs.olean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Proofs.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 1.4899001340090763
+  },
+  {
+    "argv": [
+      "lean",
+      "-o",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/CoreLemmas.olean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/CoreLemmas.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 2.5626972440077225
+  },
+  {
+    "argv": [
+      "lean",
+      "-o",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Empty.olean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/Empty.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 1.3428991670079995
+  },
+  {
+    "argv": [
+      "lean",
+      "-o",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/LaneAlgebra.olean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/LaneAlgebra.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 1.349714291995042
+  },
+  {
+    "argv": [
+      "lean",
+      "/workspace/elicit-comparison/results/round2-independent-audit/plain/IndependentAudit.lean"
+    ],
+    "cwd": "/workspace/elicit-comparison/results/round2-independent-audit/plain",
+    "exit": 0,
+    "seconds": 1.2977810730080819
+  }
+]

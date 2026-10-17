@@ -1,0 +1,97 @@
+{
+  "elapsed_seconds": 11.071707866009092,
+  "fresh_cache": "/workspace/elicit-comparison/round4-cases/adler2-with/.elicit/cache/verification-zWvefj",
+  "separate_kernel_rebuild": true,
+  "llbc_original_sources_identical": true,
+  "overflow_checks": true,
+  "original_api_bodies_transparent": true,
+  "audited_contracts": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": "AdlerProof.rem_assign_contract",
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": "AdlerProof.mul_assign_contract",
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": "AdlerProof.add_assign_contract",
+    "adler2::impl[6f07fcfab3542315]::default::Method": "AdlerProof.default_contract",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": "AdlerProof.checksum_contract",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "AdlerProof.from_checksum_contract",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": "AdlerProof.from_bytes_contract",
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": "AdlerProof.finish_contract"
+  },
+  "axioms": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[6f07fcfab3542315]::default::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "proof_sha256": {
+    "Specs.lean": "9bec68c16a37eee20788ed13589e27b4d0cfd2c8fba3ad05f7843f3f0b714ba6",
+    "ElicitContracts.lean": "ff877dd4e04511257b95c9e87e202c8f2634a0cad6faf99233ce0ef348c46315",
+    "IndependentAudit.lean": "e669d6f21d0162c91e17d612205a4404eb2e5b47e87437e8608d92d9e0a4202e",
+    "ElicitGenerated.lean": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+    "Proofs.lean": "c976901bc0efb842e3145b611af668fbf9bb304eac37e20f76455e213c3f20ff",
+    "ElicitAdapter.lean": "630ae0d08d8eeeabb039e00c472829b7091a9ad2762658466f19086fc769a1d6"
+  },
+  "acceptance_note": "These roots prove their emitted exact contracts. API coverage still requires manual semantic review; theorem names alone are insufficient.",
+  "accepted_apis": [
+    "Adler32::checksum",
+    "Adler32::from_checksum"
+  ],
+  "selected_coverage": "2/5",
+  "accepted_method_contracts": 8,
+  "additional_audited_support_roots": [
+    "AdlerProof.checksum_decode_roundtrip",
+    "AdlerProof.decode_checksum_roundtrip"
+  ],
+  "semantic_review_notes": [
+    "Both accepted selected APIs have no user precondition and establish successful execution plus exact numeric results for all machine-representable inputs.",
+    "Four lower-level helpers have explicit nonzero/overflow/length preconditions; their callers and optimized loops are not proved.",
+    "Default and Hasher.finish are additional method contracts, outside the five selected API IDs.",
+    "No contract or named proof was submitted for new before the deadline; the benchmark does not add a post-trial API proof."
+  ],
+  "unrecorded_selected_apis": [
+    "Adler32::new",
+    "Adler32::write_slice",
+    "adler32_slice"
+  ],
+  "non_scored_definitional_alias": {
+    "api": "Adler32::new",
+    "existing_proof": "AdlerProof.default_contract",
+    "kernel_checked": true,
+    "proof_tactics_or_new_search": false,
+    "primary_metric_unchanged": true
+  }
+}

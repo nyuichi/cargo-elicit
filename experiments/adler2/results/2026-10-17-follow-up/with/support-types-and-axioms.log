@@ -1,0 +1,8 @@
+AdlerProof.checksum_decode_roundtrip : ∀ (sum : Aeneas.Std.U32),
+  ∃ state,
+    ElicitGenerated.Adler32.from_checksum sum = Aeneas.Std.Result.ok state ∧ state.checksum = Aeneas.Std.Result.ok sum
+'AdlerProof.checksum_decode_roundtrip' depends on axioms: [propext, Classical.choice, Quot.sound]
+AdlerProof.decode_checksum_roundtrip : ∀ (state : ElicitGenerated.Adler32),
+  ∃ sum,
+    state.checksum = Aeneas.Std.Result.ok sum ∧ ElicitGenerated.Adler32.from_checksum sum = Aeneas.Std.Result.ok state
+'AdlerProof.decode_checksum_roundtrip' depends on axioms: [propext, Classical.choice, Quot.sound]

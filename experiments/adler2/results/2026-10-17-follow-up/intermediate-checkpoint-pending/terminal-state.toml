@@ -1,0 +1,795 @@
+schema_version = 1
+revision = 77
+tool = "aeneas"
+input = "88fb58eb413f04ad2c8caa81efc29e7ca3f84bdc54cebd4c8e7890df1dcf224d"
+processing_input = "88fb58eb413f04ad2c8caa81efc29e7ca3f84bdc54cebd4c8e7890df1dcf224d"
+context_input = "d255f512fb70c6a4ce4cc447c8e3a65506d1592fe02ae74f3417572342e31624"
+analysis_incomplete = [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]",
+]
+
+[scope]
+package = "adler2"
+manifest_path = "/workspace/elicit-comparison/round2b-cases/adler2-with/Cargo.toml"
+workspace_root = "/workspace/elicit-comparison/round2b-cases/adler2-with"
+target_directory = "/workspace/elicit-comparison/round2b-cases/adler2-with/target"
+features = []
+resolved_features = [
+    "default",
+    "std",
+]
+all_features = false
+no_default_features = false
+target = "x86_64-unknown-linux-gnu"
+local_roots = ["/workspace/elicit-comparison/round2b-cases/adler2-with"]
+
+[input_files]
+"/workspace/elicit-comparison/round2b-cases/adler2-with/.cargo_vcs_info.json" = "08071a308400282ad18ca2de0df6d1f2dc270475f69aa483740ce311af3f63e0"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/AGENTS.md" = "52258f62b28a6e60dd43fa54ce02fe581a5a53a94530a4d65e76859634b58ef3"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/BENCHMARK_TASK.md" = "63e6e1ad5df43e100528ed47210532c1c6e97c60c51d998b00ee28763ad3e0db"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/CHANGELOG.md" = "04fa29ec6eb6b05b706247ecac2cbc7075792dbfcea0bf52715782cf42132e94"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/Cargo.lock" = "6c12e08499900e3c56b99cb7c2aac79202ea6417305c906a1ff93684200c5398"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/Cargo.toml" = "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/Cargo.toml.orig" = "077df9094ac86443a4d05305f74782bd237c1f15fa39640463e4c62e9e4a310a"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/LICENSE-0BSD" = "861399f8c21c042b110517e76dc6b63a2b334276c8cf17412fc3c8908ca8dc17"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/LICENSE-APACHE" = "8ada45cd9f843acf64e4722ae262c622a2b3b3007c7310ef36ac1061a30f6adb"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/LICENSE-MIT" = "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/README.md" = "cd955d5d6a49161e6f7a04df4a5963581b66ed43fd5096b2dedca8e295efe4f9"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/RELEASE_PROCESS.md" = "a86cd10fc70f167f8d00e9e4ce0c6b4ebdfa1865058390dffd1e0ad4d3e68d9d"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/benches/bench.rs" = "d67bef1c7f36ed300a8fbcf9d50b9dfdead1fd340bf87a4d47d99a0c1c042c04"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/bin/codex" = "78da9963993bb48fc1f5a514088dbae0d8360a444c4a70a1a5dda6016a4be0aa"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/elicit-proofs/aeneas/ComputeObligations.md" = "a922ae9ba086df27b95cd7c71c93108bf9c0647f4dcd25a0f57a38ff27f9fb50"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/elicit-proofs/aeneas/Proofs.lean" = "ecb44ba2b72dec1a08335a833ba9b7ad11fae978d04af6c8861cd15914b33e7c"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/elicit-proofs/aeneas/Specs.lean" = "30468af64fba13e8d64636ff61c42f24f3fd5f12906eb1bca3222b57797cf6a0"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/elicit-proofs/aeneas/contracts.toml" = "d979a98ff8e2bc397fece422f6d20b9b90529411b27f2ca39e5f08af21186929"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs" = "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded"
+"/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs" = "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+"@binary" = "fb2bacbeef9969a273ea69646dacc983461f6589b8baa5125f59198830f923de"
+"@env:AENEAS_HOME" = "58a9bdc7a8a8d08de5c2e796aa1215d0846d23ee25adf146e2c81246e853ddf2"
+"@env:ELAN_HOME" = "c45d160bea2b21e8713e8530fb651155d82fae75afe9f988dd970016b08f0cc5"
+"@installed_tcb" = "e2b6f9618563b6472ed6fc5579365f8636897bee7eac3f38b71d6d4b4448eeb2"
+"@rustc_version" = "8d024f010cb129e859e7cd10c88d4dd52656fa49294e77ca0309e7ed72c452b4"
+"@scope" = "115a68000071599c14ff6af6e29148e28b53213e8ca8247b757a6bfd60cf277c"
+"@verifier_version" = "8ad7219c62718827594880dc37f074b007783e816719c19975ce47ec14b61794"
+
+[targets."adler2::Adler32::Struct"]
+id = "adler2::Adler32::Struct"
+name = "Adler32"
+kind = "struct"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 87
+column = 11
+aliases = []
+spec_hash = "2a6ee0e265dc77c02100f3f5d5c62f41fbc2e7d4bc5cd06a328292e73bbf6887"
+body_hash = "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b"
+original_body = "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b"
+source_hash = "58b0f9283ab6b7be92fc750b5829eb6089081a552d3e472604943a7beeac01c2"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = []
+notes = [
+    "Specified full u16-pair invariant and separate normalization, scalar recurrence and preservation schema; support proofs prepared, API preservation outstanding.",
+    "Rechecked existing full u16-pair invariant after shared U32X4 model additions. Supporting proofs remain prepared; original API preservation is outstanding.",
+]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::Adler32::Struct".dependencies]
+
+[targets."adler2::adler32::Function"]
+id = "adler2::adler32::Function"
+name = "adler32"
+kind = "function"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 206
+column = 7
+aliases = []
+spec_hash = "f8573a25cc7cd05817d9fe45d6f083551f48056f77ca2c58e9f630194c05946e"
+body_hash = "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982"
+original_body = "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982"
+source_hash = "0024fcf38cca85f0b0d1a295b1d20585d5bd21005525df02fcf4c71afc253b3c"
+specified = false
+stale = ["specification changed"]
+calls = [
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Generic BufRead I/O is outside the common goal and remains unverified: pinned original translation introduces axiom ElicitGenerated.core.io.error.Error : Type, forbidden by benchmark axiom policy; arbitrary reader dictionaries also lack progress/content laws for a total stream specification. No replacement model or weakened contract submitted."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::adler32::Function".blocker]
+reason = "Generic BufRead I/O is outside the common goal and remains unverified: pinned original translation introduces axiom ElicitGenerated.core.io.error.Error : Type, forbidden by benchmark axiom policy; arbitrary reader dictionaries also lack progress/content laws for a total stream specification. No replacement model or weakened contract submitted."
+input = "b508ed6b96ab2a757d823eb8c2336cfbade6fd7b908aedd87e3d5f07201be5d8"
+
+[targets."adler2::adler32::Function".dependencies]
+
+[targets."adler2::adler32_slice::Function"]
+id = "adler2::adler32_slice::Function"
+name = "adler32_slice"
+kind = "function"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 170
+column = 7
+aliases = []
+spec_hash = "b7112f65ceb3dcde511908f34f0cbd84b771f9073e420cebfe4da88e60d9ffd2"
+body_hash = "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555"
+original_body = "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555"
+source_hash = "97d4504776e2772c6da9e92efd39b035f87ced72c2f6b1c51267fa8786f28c5f"
+specified = true
+stale = []
+calls = [
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Full unconditional scalar recurrence checksum contract from seed (1,0). Original method composition proved conditionally on full write_slice contract; complete module scratch check passed. Unconditional optimized-update/slice correctness remains outstanding, no proof binding claimed."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::adler32_slice::Function".dependencies]
+"adler2::impl[ff6e69000b04949b]::checksum::Method" = "d4a8802f5b465889a6a525ef7c0b48c4d9ec15a190a72cba851d4f6f8bc3741b"
+"adler2::impl[ff6e69000b04949b]::new::Method" = "d8ba31d889edf8e5a83b7a7957b7af3f9a28c45c3154bcf3087ae7d70b036f7f"
+"adler2::impl[ff6e69000b04949b]::write_slice::Method" = "33b475f049f3758cd6fa1d91befc747f5d89a8aeeafb2c3d043713de10a4046d"
+
+[targets."adler2::algo::U32X4::Struct"]
+id = "adler2::algo::U32X4::Struct"
+name = "U32X4"
+kind = "struct"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 112
+column = 7
+aliases = []
+spec_hash = "c37eb1d4e587166062ad7a11055251ed2b72e6c4f55d1355a6d6ee9a4b9adaa8"
+body_hash = "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf"
+original_body = "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf"
+source_hash = "d35cb9265b34caa4947340633fa9980a02e097c51ffb32730ec706445971d5fb"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = []
+notes = ["Specified four u32 lanes and explicit overflow/divisor preservation obligations; prepared mathematical support proofs, original method correspondence remains outstanding."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::U32X4::Struct".dependencies]
+
+[targets."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+id = "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+name = "from"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 116
+column = 7
+aliases = []
+spec_hash = "d6c63a29b85e5091e591517df8af692505eee95da12302bbd29c6606094deaba"
+body_hash = "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea"
+original_body = "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea"
+source_hash = "4fb1338e13355312d8a5ba10ccd12839d66100e152cd3f2e6b28d69e5f2358df"
+specified = true
+stale = []
+calls = ["adler2::algo::U32X4::Struct"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["At-least-four-byte precondition and exact first-four-byte widening contract; lanes_from_correct covers original checked slice indexing, conversions and array construction. Complete proof module scratch check passed; official verification pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[16f54fa5277eca59]::from::Method".dependencies]
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::TraitImpl"]
+id = "adler2::algo::impl[334e2f0b7170a532]::TraitImpl"
+name = "impl[334e2f0b7170a532]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 137
+column = 0
+aliases = []
+spec_hash = "150457a0bcec26dfbf6cd8a5fef9219df989617dda20b1dc86a4bbf98f8b81e5"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "f639ac78d3dfda9f7b13291c795f9fdc0518fb5d0f68618baa0cf3775cea04ae"
+specified = false
+stale = ["specification changed"]
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+id = "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+name = "rem_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 139
+column = 7
+aliases = []
+spec_hash = "52ec83d52499dbcb2b1dbe2fd7308373e1b6195a157eeda004f2499cbd925eca"
+body_hash = "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b"
+original_body = "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b"
+source_hash = "66db39952f9f71f02df8e55372adaafe962cfab79ef72d5093873b017a71cbd8"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = [
+    "Nonzero-divisor exact lane-wise remainder contract; rem_assign_correct unfolds original translated body including all four checked indexing, remainder and array updates. Scratch Lean check succeeded; official proof audit pending.",
+    "Exact original-source remainder proof prepared; complete Proofs.lean scratch check passed after unfolding Representable in an earlier support lemma. Ready for official wrapper and axiom audit.",
+]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[6142b20c00108117]::TraitImpl"]
+id = "adler2::algo::impl[6142b20c00108117]::TraitImpl"
+name = "impl[6142b20c00108117]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 147
+column = 0
+aliases = []
+spec_hash = "64059171fbd367c85bd5607926a24c57e16ca97098227fc6422ce36fb8ee2658"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "b2eeee3e5d2da95501ada435b5deb639911e17793bddcb7ac15432cdc5bb46c2"
+specified = false
+stale = ["specification changed"]
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[6142b20c00108117]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+id = "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+name = "mul_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 149
+column = 7
+aliases = []
+spec_hash = "f648973506050f0b226cbded6cab2edeac0a6cef57765020f84d56c9d97e8f94"
+body_hash = "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154"
+original_body = "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154"
+source_hash = "e8e926372320ab99a0b7769523ebf530467a0cce58d99ef4a556ba1dc29345f0"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Exact lane product contract under per-lane u32 overflow bounds; mul_assign_correct proves original translated checked arithmetic and indexing/update body. Complete proof module scratch check passed; official verification pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[6142b20c00108117]::mul_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::TraitImpl"]
+id = "adler2::algo::impl[a6c2352d886692d1]::TraitImpl"
+name = "impl[a6c2352d886692d1]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 126
+column = 0
+aliases = []
+spec_hash = "c0e629c791950f8794fa5c500406c0feff55adede3ea35fa076dfaff5321db6a"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "b967d2cd18f50044f492de85c8b56fe1fe158369080a8ad734ceddb0de347d0a"
+specified = false
+stale = ["specification changed"]
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+id = "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+name = "add_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 128
+column = 7
+aliases = []
+spec_hash = "e7c81961ca3fae9c8ecbe76acd8d167640d9b286c56282ab77b8876948f4da00"
+body_hash = "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0"
+original_body = "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0"
+source_hash = "b97cc042f57de2ad09112f844e27619c0efc689108b4dbc9e75b348812aa8f65"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Exact lane sums under per-lane u32 overflow bounds; add_assign_correct proves original translated checked addition and all indexing/update operations. Complete proof module scratch check passed; official verification pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+id = "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+name = "compute"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/algo.rs"
+line = 5
+column = 18
+aliases = []
+spec_hash = "ad650c79b817b1846e358aafe54039447e35818665b623bb76d5d80786489895"
+body_hash = "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7"
+original_body = "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7"
+source_hash = "606f4c14f15bae2bfe2f969661aa94e0a5a5407ae42814400964a6c9d4fe9391"
+specified = true
+stale = []
+calls = [
+    "adler2::algo::U32X4::Struct",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Full unconditional exact scalar recurrence and normalization contract, including arbitrary u16 seeds and empty updates. Model normalization/split lemmas prepared; original optimized loop correctness remains outstanding with explicit obligations recorded, no theorem binding or proof claim."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[ff6e69000b04949b]::compute::Method".dependencies]
+"adler2::algo::impl[16f54fa5277eca59]::from::Method" = "d6c63a29b85e5091e591517df8af692505eee95da12302bbd29c6606094deaba"
+"adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method" = "52ec83d52499dbcb2b1dbe2fd7308373e1b6195a157eeda004f2499cbd925eca"
+"adler2::algo::impl[6142b20c00108117]::mul_assign::Method" = "f648973506050f0b226cbded6cab2edeac0a6cef57765020f84d56c9d97e8f94"
+"adler2::algo::impl[a6c2352d886692d1]::add_assign::Method" = "e7c81961ca3fae9c8ecbe76acd8d167640d9b286c56282ab77b8876948f4da00"
+
+[targets."adler2::impl[6f07fcfab3542315]::TraitImpl"]
+id = "adler2::impl[6f07fcfab3542315]::TraitImpl"
+name = "impl[6f07fcfab3542315]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 147
+column = 0
+aliases = []
+spec_hash = "f7b447ce3f4e92591e0e621b414745d34ce6930fe8ab79acd2cbe69b85fe70b1"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "44fff493a12db58fbe145c83b0ac6bf2d2469e3ee2205b012aca95c476ecb538"
+specified = false
+stale = ["specification changed"]
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[6f07fcfab3542315]::TraitImpl".dependencies]
+
+[targets."adler2::impl[6f07fcfab3542315]::default::Method"]
+id = "adler2::impl[6f07fcfab3542315]::default::Method"
+name = "default"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 149
+column = 7
+aliases = []
+spec_hash = "b77c67f78aa274ecf57be780b988b83b9877ea22bfc353de59e1be152c427a0a"
+body_hash = "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de"
+original_body = "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de"
+source_hash = "400cc3fbd43f61f54249cf655e813cad1afe405c5579f115d2475d84284bbc3e"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Unconditional exact seed contract and default_correct proof by reduction of original translated method. Complete proof module passes scratch Lean check; official verification pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[6f07fcfab3542315]::default::Method".dependencies]
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::TraitImpl"]
+id = "adler2::impl[c15b331ca2ffd1e4]::TraitImpl"
+name = "impl[c15b331ca2ffd1e4]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 154
+column = 0
+aliases = []
+spec_hash = "ba4d167151dcf5f4df8304ef323b13dd8090a5aa085e2975cd0c01b109105253"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "a2fe3639f2d37af3db4cceb10328cc43b72d1330910b83c83dbe074f36011f65"
+specified = false
+stale = ["specification changed"]
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::TraitImpl".dependencies]
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+id = "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+name = "finish"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 156
+column = 7
+aliases = []
+spec_hash = "e559ce752f827942c13d9497be832f691d4d75f2990ce9c3de9216f886cb9db9"
+body_hash = "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f"
+original_body = "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f"
+source_hash = "1505a87e2f073c6988c54eb4df9ad54d253f2346c37ca26fe21755b67f63c8db"
+specified = true
+stale = []
+calls = ["adler2::impl[ff6e69000b04949b]::checksum::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Unconditional exact widened-checksum method contract; finish_correct uses original checksum proof and standard widening model. Complete module scratch check passed. Hasher laws remain unverified; official wrapper pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::finish::Method".dependencies]
+"adler2::impl[ff6e69000b04949b]::checksum::Method" = "d4a8802f5b465889a6a525ef7c0b48c4d9ec15a190a72cba851d4f6f8bc3741b"
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::write::Method"]
+id = "adler2::impl[c15b331ca2ffd1e4]::write::Method"
+name = "write"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 160
+column = 7
+aliases = []
+spec_hash = "9809964c76e40c2e02fcc2aec26cae59c2f1b5179937c4cad892cf1ec9426517"
+body_hash = "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9"
+original_body = "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9"
+source_hash = "27a4bf64e91abdf2c3baa4582bb5805612b644b7578df5a188ed67a9b5694ecf"
+specified = true
+stale = []
+calls = ["adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Full unconditional recurrence and normalization contract for explicit write method; original Result and generated-contract equivalences to write_slice proved, complete module scratch check passed. Unconditional update proof and Hasher laws remain unverified; no proof binding claimed."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::write::Method".dependencies]
+"adler2::impl[ff6e69000b04949b]::write_slice::Method" = "33b475f049f3758cd6fa1d91befc747f5d89a8aeeafb2c3d043713de10a4046d"
+
+[targets."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+id = "adler2::impl[ff6e69000b04949b]::checksum::Method"
+name = "checksum"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 134
+column = 11
+aliases = []
+spec_hash = "d4a8802f5b465889a6a525ef7c0b48c4d9ec15a190a72cba851d4f6f8bc3741b"
+body_hash = "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d"
+original_body = "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d"
+source_hash = "9b63a8ddf10b9bc46cd81b8c1f64807166e8889bb8ea02f88e1012a843af9563"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Unconditional original-source checksum contract: succeeds with 65536*b+a for every representable state. checksum_correct covers conversions, checked shift and OR via standard models. Complete proof module scratch check passed; official audit pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::checksum::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+id = "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+name = "from_checksum"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 125
+column = 17
+aliases = []
+spec_hash = "0b205c65ed127b0377b8341ff23a3464251ba0b5ad464bbaa97c75d2d5a0b49d"
+body_hash = "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a"
+original_body = "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a"
+source_hash = "9b482623374061248426ababc357fcb2462d89278a7a8658efb415d3e808bc19"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Unconditional exact low/high-half decoder contract and original-source from_checksum_correct proof. Both original-method codec roundtrips also prepared. Complete module passes scratch Lean check; official wrapper and audit pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::from_checksum::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::new::Method"]
+id = "adler2::impl[ff6e69000b04949b]::new::Method"
+name = "new"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 95
+column = 11
+aliases = []
+spec_hash = "d8ba31d889edf8e5a83b7a7957b7af3f9a28c45c3154bcf3087ae7d70b036f7f"
+body_hash = "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2"
+original_body = "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2"
+source_hash = "49ea3906b29d132d531be9932d6f18e45c6d5142908277cc78d56d45b68c6094"
+specified = true
+stale = []
+calls = ["adler2::impl[6f07fcfab3542315]::default::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Unconditional exact initial state contract; new_correct proves original method through original default call and default_correct. Complete module scratch check passed; official verification pending."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::new::Method".dependencies]
+"adler2::impl[6f07fcfab3542315]::default::Method" = "b77c67f78aa274ecf57be780b988b83b9877ea22bfc353de59e1be152c427a0a"
+
+[targets."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+id = "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+name = "write_slice"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/round2b-cases/adler2-with/src/lib.rs"
+line = 142
+column = 11
+aliases = []
+spec_hash = "33b475f049f3758cd6fa1d91befc747f5d89a8aeeafb2c3d043713de10a4046d"
+body_hash = "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a"
+original_body = "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a"
+source_hash = "252e2ca113cca57fd2be28243932d08843c232df559340ca3132d8f75075e0b6"
+specified = true
+stale = []
+calls = ["adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Full unconditional recurrence and normalization contract. Original wrapper and generated-contract equivalences proved; save/restore/resume Result equality also prepared. Complete module scratch check passed; unconditional compute/write correctness remains outstanding, no proof binding claimed."]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::write_slice::Method".dependencies]
+"adler2::algo::impl[ff6e69000b04949b]::compute::Method" = "ad650c79b817b1846e358aafe54039447e35818665b623bb76d5d80786489895"
+
+[[results]]
+id = "75-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-0"
+target = "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+units = ["contract"]
+obligations = []
+scope = "unknown"
+assumptions = []
+restrictions = []
+input = "88fb58eb413f04ad2c8caa81efc29e7ca3f84bdc54cebd4c8e7890df1dcf224d"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = []
+reusable = false
+outcome = "input_changed"
+summary = "verification inputs changed during execution; result is not current"
+elapsed_ms = 27095
+
+[results.diagnostic]
+phase = "audit"
+cache = "/workspace/elicit-comparison/round2b-cases/adler2-with/.elicit/cache/verification-UPxUK7"
+
+[run]
+thread = "01a14a88-2f19-7332-bb9b-e20ec562bd9c"
+last_result = "completed with accepted work"
+input_tokens = 19632762
+cached_input_tokens = 19355392
+output_tokens = 41582
+elapsed_ms = 1749063
+
+[run.active]
+input = "88fb58eb413f04ad2c8caa81efc29e7ca3f84bdc54cebd4c8e7890df1dcf224d"
+started = 1792253548
+
+[run.active.task]
+kind = "verify"
+targets = ["adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+
+[run.attempts."Recheck:adler2::Adler32::Struct"]
+total = 1
+no_progress = 0
+last_input = "5ed5dec232a7b0435bcc24d803ea60cc8a1ab2212d29dc9741c5ce6f155d28e0"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::adler32::Function"]
+total = 1
+no_progress = 1
+last_input = "8f9b23c62b705d7d11a4d045101b2d3b84f2d10516d7d54c4357ec96d60c0893"
+failed = true
+last_result = "unresolved; same task/input suppressed"
+
+[run.attempts."Recheck:adler2::adler32_slice::Function"]
+total = 1
+no_progress = 0
+last_input = "ce1f5addd552ebd1e11875b2caa3882ab9c490b9ef55b01a1bf97d3a5dc4282c"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::U32X4::Struct"]
+total = 1
+no_progress = 0
+last_input = "394fc0c2a821f518e3c2607737d698542ef678cc6615b643b38156dfd410b4ca"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+total = 1
+no_progress = 0
+last_input = "f3d5d640664d2bb0ea7e113ff54b857e20d46abbba75fda9e678d547831eb71f"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+total = 1
+no_progress = 0
+last_input = "51c2c2e57b916bc39b367ca8c69ed780898bf694ab990a47209997371a801ed9"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+total = 1
+no_progress = 0
+last_input = "8e48ff1866c6923d5b9dc6a2eacf981c4ae680beff975b69f7b5985010fd52d5"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+total = 1
+no_progress = 0
+last_input = "2ef0e3eef754635771ed62db23c6d5243b924f4e8128df0928beac7e53b6794d"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+total = 1
+no_progress = 0
+last_input = "1b4ce7ad78259572ecbe5014aa8cf50babdaa0bb70d037e402914d7a0cd0aa07"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[6f07fcfab3542315]::default::Method"]
+total = 1
+no_progress = 0
+last_input = "a0cc2a144979d5cca0c5124c4f057417cb11bba42f7352216ed71dd841fa7a6b"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+total = 1
+no_progress = 0
+last_input = "93a01a2270db8badde1a7ed676f9af01c00dc58b118d22ec63a953c6842f4235"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[c15b331ca2ffd1e4]::write::Method"]
+total = 1
+no_progress = 0
+last_input = "f190801d1443e177b3179caf66587f653796c5da653fea76d9c9f765bc5f15be"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[ff6e69000b04949b]::checksum::Method"]
+total = 1
+no_progress = 0
+last_input = "923020d9453632dde3691d80f94e8578b3b5d5315ff0fc0ee6d9820439eda023"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+total = 1
+no_progress = 0
+last_input = "52360148be1831d075997a8718240567aa71ead210d02797f06176084330f9bd"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[ff6e69000b04949b]::new::Method"]
+total = 1
+no_progress = 0
+last_input = "d03bcab11b73fefdb641e86eda7225deb00f8c46335f03866875b3f1b7045daa"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Recheck:adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+total = 1
+no_progress = 0
+last_input = "300fbe0f781188b5b3c719b98eeee5933b43752e3752fadcd6328a6c017bb2ca"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Specify:adler2::Adler32::Struct"]
+total = 1
+no_progress = 0
+last_input = "ad17b4ed24812de1efe5db020510c5de377ff7f0874476d7c7747b54d4c095fb"
+failed = false
+last_result = "completed with accepted work"
+
+[run.attempts."Verify:adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+total = 1
+no_progress = 0
+last_input = "88fb58eb413f04ad2c8caa81efc29e7ca3f84bdc54cebd4c8e7890df1dcf224d"
+failed = true
+last_result = "started, not finalized"

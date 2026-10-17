@@ -1,0 +1,75 @@
+ElicitContracts.c_f321f3834d6c15c0 : Prop
+def ElicitContracts.c_f321f3834d6c15c0 : Prop :=
+∀ (self : ElicitGenerated.algo.U32X4) (quotient : Aeneas.Std.U32),
+  (fun x divisor => ↑divisor ≠ 0) self quotient →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self quotient = Aeneas.Std.Result.ok result ∧
+        (fun before divisor after => List.map (fun x => ↑x) ↑after = List.map (fun x => ↑x % ↑divisor) ↑before) self
+          quotient result
+'IndependentAudit_0' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_6c7496278e307fe7 : Prop
+def ElicitContracts.c_6c7496278e307fe7 : Prop :=
+∀ (self : ElicitGenerated.algo.U32X4) (rhs : Aeneas.Std.U32),
+  (fun before rhs => ∀ lane ∈ ↑before, ↑lane * ↑rhs ≤ 4294967295) self rhs →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs = Aeneas.Std.Result.ok result ∧
+        (fun before rhs after => List.map (fun x => ↑x) ↑after = List.map (fun x => ↑x * ↑rhs) ↑before) self rhs result
+'IndependentAudit_1' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_20b5198a3591154d : Prop
+def ElicitContracts.c_20b5198a3591154d : Prop :=
+∀ (self other : ElicitGenerated.algo.U32X4),
+  (fun before other =>
+        ∀ (i : ℕ) (hi : i < (↑before).length) (hj : i < (↑other).length), ↑(↑before)[i] + ↑(↑other)[i] ≤ 4294967295)
+      self other →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign self other = Aeneas.Std.Result.ok result ∧
+        (fun before other after => List.map (fun x => ↑x) ↑after = List.zipWith (fun x y => ↑x + ↑y) ↑before ↑other)
+          self other result
+'IndependentAudit_2' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_2fa15a7d1ba5a684 : Prop
+def ElicitContracts.c_2fa15a7d1ba5a684 : Prop :=
+True →
+  ∃ result,
+    ElicitGenerated.Adler32.Insts.CoreDefaultDefault.default = Aeneas.Std.Result.ok result ∧
+      (fun after => ↑after.a = 1 ∧ ↑after.b = 0) result
+'IndependentAudit_3' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_0a059b8c0885cf07 : Prop
+def ElicitContracts.c_0a059b8c0885cf07 : Prop :=
+∀ (self : ElicitGenerated.Adler32),
+  True →
+    ∃ result,
+      self.checksum = Aeneas.Std.Result.ok result ∧
+        (fun before result => ↑result = 65536 * ↑before.b + ↑before.a) self result
+'IndependentAudit_4' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_9a31b7b9cb8492b0 : Prop
+def ElicitContracts.c_9a31b7b9cb8492b0 : Prop :=
+∀ (sum : Aeneas.Std.U32),
+  True →
+    ∃ result,
+      ElicitGenerated.Adler32.from_checksum sum = Aeneas.Std.Result.ok result ∧
+        (fun sum after => ↑after.a = ↑sum % 65536 ∧ ↑after.b = ↑sum / 65536) sum result
+'IndependentAudit_5' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_0dfc1ce11e75ed00 : Prop
+def ElicitContracts.c_0dfc1ce11e75ed00 : Prop :=
+∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  (fun bytes => 4 ≤ (↑bytes).length) bytes →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.from bytes = Aeneas.Std.Result.ok result ∧
+        (fun bytes after =>
+            ∀ (i : ℕ) (hi : i < (↑after).length) (hj : i < (↑bytes).length), ↑(↑after)[i] = ↑(↑bytes)[i])
+          bytes result
+'IndependentAudit_6' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_375e1cdaf1f944d2 : Prop
+def ElicitContracts.c_375e1cdaf1f944d2 : Prop :=
+∀ (self : ElicitGenerated.Adler32),
+  True →
+    ∃ result,
+      ElicitGenerated.Adler32.Insts.CoreHashHasher.finish self = Aeneas.Std.Result.ok result ∧
+        (fun before result => ↑result = 65536 * ↑before.b + ↑before.a) self result
+'IndependentAudit_7' depends on axioms: [propext, Classical.choice, Quot.sound]
+ElicitContracts.c_8055bec449b87b3d : Prop
+def ElicitContracts.c_8055bec449b87b3d : Prop :=
+True →
+  ∃ result,
+    ElicitGenerated.Adler32.new = Aeneas.Std.Result.ok result ∧ (fun after => ↑after.a = 1 ∧ ↑after.b = 0) result
+'IndependentAudit_8' depends on axioms: [propext, Classical.choice, Quot.sound]

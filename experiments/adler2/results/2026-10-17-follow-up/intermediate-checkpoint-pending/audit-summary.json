@@ -1,0 +1,92 @@
+{
+  "elapsed_seconds": 10.652951341005974,
+  "fresh_cache": "/workspace/elicit-comparison/round2b-cases/adler2-with/.elicit/cache/verification-yEZ8vj",
+  "separate_kernel_rebuild": true,
+  "llbc_original_sources_identical": true,
+  "overflow_checks": true,
+  "original_api_bodies_transparent": true,
+  "audited_contracts": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": "AdlerSpec.rem_assign_correct",
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": "AdlerSpec.mul_assign_correct",
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": "AdlerSpec.add_assign_correct",
+    "adler2::impl[6f07fcfab3542315]::default::Method": "AdlerSpec.default_correct",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": "AdlerSpec.checksum_correct",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "AdlerSpec.from_checksum_correct",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": "AdlerSpec.lanes_from_correct",
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": "AdlerSpec.finish_correct",
+    "adler2::impl[ff6e69000b04949b]::new::Method": "AdlerSpec.new_correct"
+  },
+  "axioms": {
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[6f07fcfab3542315]::default::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "adler2::impl[ff6e69000b04949b]::new::Method": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "proof_sha256": {
+    "Specs.lean": "30468af64fba13e8d64636ff61c42f24f3fd5f12906eb1bca3222b57797cf6a0",
+    "ElicitContracts.lean": "dfb2d21db83224b53abff38cafe3083f9e2989df0a802a73434ea751c82206fa",
+    "IndependentAudit.lean": "dbc1eb5c4f27ac5496f25666f049b8216fff536304aa5a9719402fd6bb2a5fbd",
+    "ElicitGenerated.lean": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+    "Proofs.lean": "ecb44ba2b72dec1a08335a833ba9b7ad11fae978d04af6c8861cd15914b33e7c",
+    "ElicitAdapter.lean": "630ae0d08d8eeeabb039e00c472829b7091a9ad2762658466f19086fc769a1d6"
+  },
+  "acceptance_note": "These roots prove their emitted exact contracts. API coverage still requires manual semantic review; theorem names alone are insufficient.",
+  "accepted_apis": [
+    "Adler32::new",
+    "Adler32::checksum",
+    "Adler32::from_checksum"
+  ],
+  "unproved_apis": [
+    "Adler32::write_slice",
+    "adler32_slice"
+  ],
+  "selected_coverage": "3/5",
+  "accepted_method_contracts": 9,
+  "timed_ledger_not_retroactively_changed": true,
+  "semantic_review_notes": [
+    "All-state codec contracts have no user precondition and establish successful execution with exact numeric results.",
+    "Arithmetic helper bounds and nonzero divisor are explicit; callers and optimized loops remain unproved.",
+    "compute/write_slice/adler32_slice/Hasher.write have exact recurrence contracts but no unconditional matching proof."
+  ]
+}

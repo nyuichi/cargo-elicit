@@ -1,0 +1,5 @@
+{
+  "scored": false,
+  "reason": "File-identical cargo/direct CLI entry points produce different context fingerprints. Candidate stopped for implementation repair; all candidate proof work is withheld from the next trial.",
+  "timestamp_unix": 1792251457.8671153
+}

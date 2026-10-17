@@ -25,3 +25,5 @@ The recorded proof artifacts are withheld solutions for any future authoring tri
 The follow-up runner additionally captures a preplanned first-success checkpoint for any helper/API, so helper progress is observed even before a selected API succeeds. It freezes the terminal event stream and ledger before post-trial auditing. The fixed scheduler's event stream records task IDs, checker-only refreshes and all audited roots; compare these with the earlier reconstructed timeline rather than assuming every repeated target is a new proof.
 
 The [workflow-repair follow-up](../../docs/experiments/adler2-follow-up.md) records the new implementation, validation and fresh comparison separately from the first pair.
+
+See the [workflow repair follow-up and fresh measurements](../../docs/experiments/adler2-follow-up.md).

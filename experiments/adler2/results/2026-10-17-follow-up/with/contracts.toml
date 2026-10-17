@@ -1,0 +1,37 @@
+schema_version = 1
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+requires = "fun (_self : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32) => q.val ≠ 0"
+ensures = "fun (self : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32) (out : ElicitGenerated.algo.U32X4) => ∀ i : Nat, i < 4 → (out.val[i]!).val = (self.val[i]!).val % q.val"
+theorem = "AdlerProof.rem_assign_contract"
+
+[contracts."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+requires = "fun (self : ElicitGenerated.algo.U32X4) (rhs : Aeneas.Std.U32) => ∀ i : Nat, i < 4 → (self.val[i]!).val * rhs.val < 2 ^ 32"
+ensures = "fun (self : ElicitGenerated.algo.U32X4) (rhs : Aeneas.Std.U32) (out : ElicitGenerated.algo.U32X4) => ∀ i : Nat, i < 4 → (out.val[i]!).val = (self.val[i]!).val * rhs.val"
+theorem = "AdlerProof.mul_assign_contract"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun (self other : ElicitGenerated.algo.U32X4) => ∀ i : Nat, i < 4 → (self.val[i]!).val + (other.val[i]!).val < 2 ^ 32"
+ensures = "fun (self other out : ElicitGenerated.algo.U32X4) => ∀ i : Nat, i < 4 → (out.val[i]!).val = (self.val[i]!).val + (other.val[i]!).val"
+theorem = "AdlerProof.add_assign_contract"
+
+[contracts."adler2::impl[6f07fcfab3542315]::default::Method"]
+ensures = "fun (out : ElicitGenerated.Adler32) => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "AdlerProof.default_contract"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun (self : ElicitGenerated.Adler32) (out : Aeneas.Std.U32) => out.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerProof.checksum_contract"
+
+[contracts."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+ensures = "fun (sum : Aeneas.Std.U32) (out : ElicitGenerated.Adler32) => out.a.val = sum.val % 65536 ∧ out.b.val = sum.val / 65536"
+theorem = "AdlerProof.from_checksum_contract"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun (bytes : Aeneas.Std.Slice Aeneas.Std.U8) => 4 ≤ bytes.val.length"
+ensures = "fun (bytes : Aeneas.Std.Slice Aeneas.Std.U8) (out : ElicitGenerated.algo.U32X4) => ∀ i : Nat, i < 4 → (out.val[i]!).val = (bytes.val[i]!).val"
+theorem = "AdlerProof.from_bytes_contract"
+
+[contracts."adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+ensures = "fun (self : ElicitGenerated.Adler32) (out : Aeneas.Std.U64) => out.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerProof.finish_contract"

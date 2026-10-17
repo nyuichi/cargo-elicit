@@ -1,0 +1,198 @@
+{
+  "scope": [
+    "adler2::Adler32::Struct",
+    "adler2::algo::U32X4::Struct",
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+    "adler2::impl[6f07fcfab3542315]::default::Method",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+  ],
+  "status": "Helper and codec proofs prepared and locally checked; official wrapper status belongs to ledger",
+  "theorem_roots": [
+    {
+      "name": "AdlerSpec.normalized_valid",
+      "mapped_rust_api": null,
+      "contract": "Normalized a b implies Valid a b",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Specs.lean"
+      ],
+      "runtime_proof": false
+    },
+    {
+      "name": "AdlerSpec.add_lanes_valid",
+      "mapped_rust_api": null,
+      "contract": "Logical lane representation preservation only",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Specs.lean"
+      ],
+      "runtime_proof": false
+    },
+    {
+      "name": "AdlerSpec.mul_lanes_valid",
+      "mapped_rust_api": null,
+      "contract": "Logical lane representation preservation only",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Specs.lean"
+      ],
+      "runtime_proof": false
+    },
+    {
+      "name": "AdlerSpec.rem_lanes_valid",
+      "mapped_rust_api": null,
+      "contract": "Logical lane representation preservation only",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Specs.lean"
+      ],
+      "runtime_proof": false
+    },
+    {
+      "name": "AdlerProof.rem_assign_contract",
+      "mapped_rust_api": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "contract": "ElicitContracts.c_f321f3834d6c15c0: nonzero divisor implies successful execution and all four lane remainders",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; official wrapper pending"
+    },
+    {
+      "name": "AdlerProof.mul_assign_contract",
+      "mapped_rust_api": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "contract": "ElicitContracts.c_6c7496278e307fe7: all four natural products below 2^32 imply successful execution and exact output lane products",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper pending"
+    },
+    {
+      "name": "AdlerProof.add_assign_contract",
+      "mapped_rust_api": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "contract": "ElicitContracts.c_20b5198a3591154d: all four natural lane sums below 2^32 imply successful execution and exact output sums",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper pending"
+    },
+    {
+      "name": "AdlerProof.default_contract",
+      "mapped_rust_api": "adler2::impl[6f07fcfab3542315]::default::Method",
+      "contract": "ElicitContracts.c_2fa15a7d1ba5a684: unconditional success, output a=1 and b=0",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper pending"
+    },
+    {
+      "name": "AdlerProof.checksum_contract",
+      "mapped_rust_api": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "contract": "ElicitContracts.c_0a059b8c0885cf07: unconditional successful execution; out.val=65536*self.b.val+self.a.val",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper pending"
+    },
+    {
+      "name": "AdlerProof.from_checksum_contract",
+      "mapped_rust_api": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "contract": "ElicitContracts.c_9a31b7b9cb8492b0: unconditional success, low-half remainder and high-half quotient",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local Lean check passed; official wrapper evidence pending"
+    },
+    {
+      "name": "AdlerProof.checksum_decode_roundtrip",
+      "mapped_rust_api": "from_checksum then checksum",
+      "contract": "Every u32 roundtrips through original methods",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local Lean check passed; official wrapper evidence pending"
+    },
+    {
+      "name": "AdlerProof.decode_checksum_roundtrip",
+      "mapped_rust_api": "checksum then from_checksum",
+      "contract": "Every representable Adler32 roundtrips through original methods",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local Lean check passed; official wrapper evidence pending"
+    },
+    {
+      "name": "AdlerProof.from_bytes_contract",
+      "mapped_rust_api": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "contract": "ElicitContracts.c_0dfc1ce11e75ed00: length at least four implies successful execution; output lanes equal first four byte values",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper evidence pending"
+    },
+    {
+      "name": "AdlerProof.finish_contract",
+      "mapped_rust_api": "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+      "contract": "ElicitContracts.c_375e1cdaf1f944d2: unconditional success; u64 output value=65536*b+a",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "dependencies": [
+        "AdlerProof.checksum_contract"
+      ],
+      "runtime_proof": "prepared; local exact-contract Lean check passed; official wrapper evidence pending"
+    }
+  ],
+  "type_invariant": "AdlerSpec.Valid a b: a < 65536 and b < 65536, for natural values of original u16 fields",
+  "preconditions": "All representable Adler32 states; no normalization requirement",
+  "checker_commands": [
+    "charon cargo --preset=aeneas --sysroot=default --dest .elicit/cache/rem-proof -- --manifest-path Cargo.toml --target x86_64-unknown-linux-gnu",
+    "aeneas -backend lean -namespace ElicitGenerated -dest .elicit/cache/rem-proof .elicit/cache/rem-proof/adler2.llbc",
+    "Installed Aeneas backend: lake env lean --root=SCRATCH SCRATCH/Test.lean with LEAN_PATH including scratch generated model",
+    "Installed backend lake env lean --root=WORKSPACE/.elicit/cache/rem-proof/official WORKSPACE/.elicit/cache/rem-proof/official/Proofs.lean; LEAN_PATH includes captured official submission modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/mul-proof WORKSPACE/.elicit/cache/mul-proof/Proofs.lean; LEAN_PATH includes fresh captured official modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/add-proof WORKSPACE/.elicit/cache/add-proof/Proofs.lean; LEAN_PATH includes fresh captured official modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/default-proof WORKSPACE/.elicit/cache/default-proof/Proofs.lean; LEAN_PATH includes fresh official generated modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/checksum-proof WORKSPACE/.elicit/cache/checksum-proof/Proofs.lean; LEAN_PATH includes fresh official generated modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/decode-proof WORKSPACE/.elicit/cache/decode-proof/Proofs.lean; LEAN_PATH includes fresh official generated modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/from-bytes-proof WORKSPACE/.elicit/cache/from-bytes-proof/Proofs.lean; LEAN_PATH includes fresh official generated modules",
+    "Installed Aeneas backend lake env lean --root=WORKSPACE/.elicit/cache/finish-proof WORKSPACE/.elicit/cache/finish-proof/Proofs.lean; LEAN_PATH includes fresh official generated modules"
+  ],
+  "ledger_commands": [
+    "cargo-elicit agent show adler2::Adler32::Struct",
+    "cargo-elicit agent submit adler2::Adler32::Struct --revision CURRENT --note REASON"
+  ],
+  "remaining_obligations": [
+    "Official syntax/type checking",
+    "Original-source invariant preservation",
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice and all optimized compute dependencies",
+    "adler32_slice",
+    "Codec roundtrips",
+    "Split-update equivalence with concatenation representability",
+    "Save/restore/resume equivalence"
+  ],
+  "unverified_out_of_scope": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Alternative targets"
+  ],
+  "trusted_boundaries": [
+    "Pinned Rust compiler and Charon extraction",
+    "Aeneas translation",
+    "Standard Aeneas and Lean libraries"
+  ],
+  "project_axioms": [],
+  "runtime_source_modified": false,
+  "u32x4_invariant": "AdlerSpec.LanesValid: four lanes, each natural value below 2^32",
+  "u32x4_preservation_obligations": [
+    "from: input slice has at least four bytes, output equals first four bytes widened to u32",
+    "add_assign: every mathematical lane sum below 2^32; result equals lane sums",
+    "mul_assign: every mathematical lane product below 2^32; result equals lane products",
+    "rem_assign: positive divisor; result equals lane remainders"
+  ]
+}

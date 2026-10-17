@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "overall_status": "partial_not_complete",
+  "arm": "without_cargo_elicit",
+  "original_crate": "adler2 2.0.1",
+  "target": "x86_64-unknown-linux-gnu",
+  "preservation": {
+    "files": [
+      "src/algo.rs",
+      "src/lib.rs",
+      "Cargo.toml"
+    ],
+    "initial_hashes": "verification/source-sha256.txt",
+    "final_check": "verification/logs/final-check.log",
+    "unchanged": true
+  },
+  "toolchain": {
+    "charon": "0.1.293 de8736f7c995ac54dc490345cef9ea5143c06c62",
+    "aeneas": "e62dd83",
+    "lean": "4.35.0 eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+    "rustc": "1.100.0-nightly 923c95cdf 2026-09-16",
+    "versions_log": "verification/logs/tool-versions.log"
+  },
+  "extraction": {
+    "command": "verification/extract.sh",
+    "manifest": "Cargo.toml",
+    "charon_options": [
+      "--preset=aeneas",
+      "--sysroot=default",
+      "--exclude adler2::adler32",
+      "--exclude adler2::{core::fmt::Debug for adler2::Adler32}",
+      "--target x86_64-unknown-linux-gnu",
+      "--lib"
+    ],
+    "aeneas_options": [
+      "-backend lean",
+      "-dest verification/generated",
+      "-no-progress-bar"
+    ],
+    "llbc": "verification/generated/adler2.llbc",
+    "generated_model": "verification/generated/Adler2.lean",
+    "generated_model_fresh": true,
+    "generated_model_edited": false,
+    "generated_hashes": "verification/generated-sha256.txt"
+  },
+  "actual_checker_commands": [
+    "verification/extract.sh",
+    "verification/check.sh",
+    "verification/regression.sh"
+  ],
+  "lean_checker_details": [
+    "verification/lean.sh -o generated/Adler2.olean generated/Adler2.lean",
+    "verification/lean.sh -o Proofs.olean Proofs.lean",
+    "verification/lean.sh -o CoreLemmas.olean CoreLemmas.lean",
+    "verification/lean.sh -o Empty.olean Empty.lean",
+    "verification/lean.sh -o LaneAlgebra.olean LaneAlgebra.lean",
+    "verification/lean.sh Audit.lean",
+    "python3 verification/audit.py"
+  ],
+  "entries": [
+    {
+      "rust_api": "Adler32::new",
+      "status": "proved",
+      "contract": "Successful execution returning a=1, b=0.",
+      "preconditions": "None.",
+      "theorem_roots": [
+        "Verification.new_correct"
+      ],
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::checksum",
+      "status": "proved",
+      "contract": "Successful execution returning a u32 with natural value 65536*b+a.",
+      "preconditions": "Any representable pair of u16 fields; no normalization assumption.",
+      "theorem_roots": [
+        "Verification.checksum_correct",
+        "Verification.checksum_eq",
+        "Verification.encode_val"
+      ],
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::from_checksum",
+      "status": "proved",
+      "contract": "Successful execution; output a=sum%65536, b=sum/65536.",
+      "preconditions": "Every u32.",
+      "theorem_roots": [
+        "Verification.from_checksum_correct",
+        "Verification.from_checksum_eq"
+      ],
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::write_slice",
+      "status": "unproved",
+      "contract": "Verification.WriteSliceCorrect: successful execution and exact scalar recurrence modulo 65521, including normalized empty updates.",
+      "preconditions": "Every representable state and Slice U8, without additional input-length bounds.",
+      "theorem_roots": [],
+      "proof_modules": [
+        "verification/CoreLemmas.lean"
+      ],
+      "remaining_obligations": [
+        "Prove Verification.WriteSliceCorrect; see compute obligations."
+      ]
+    },
+    {
+      "rust_api": "adler32_slice",
+      "status": "conditional_only",
+      "contract": "Verification.ConvenienceCorrect: successful execution and recurrence encoded from (1,0).",
+      "preconditions": "Every Slice U8. The conditional theorem assumes the full, unproved WriteSliceCorrect.",
+      "theorem_roots": [
+        "Verification.convenience_of_write"
+      ],
+      "proof_modules": [
+        "verification/CoreLemmas.lean"
+      ],
+      "remaining_obligations": [
+        "Discharge WriteSliceCorrect to remove the conditional premise."
+      ]
+    },
+    {
+      "rust_api": "Adler32::checksum / Adler32::from_checksum",
+      "status": "proved",
+      "contract": "Both state->checksum->state and checksum->state->checksum are exact identity, with successful codecs.",
+      "preconditions": "Every representable state / every u32.",
+      "theorem_roots": [
+        "Verification.codec_decode_encode",
+        "Verification.codec_encode_decode",
+        "Verification.checksum_save_restore",
+        "Verification.checksum_restore_save"
+      ],
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::write_slice split-update law",
+      "status": "conditional_only",
+      "contract": "Two sequential updates equal one update on the concatenation. The mathematical specification split law is unconditional.",
+      "preconditions": "Concatenated length <= Usize.max is explicit in SplitUpdateCorrect. The source theorem also assumes full, unproved WriteSliceCorrect.",
+      "theorem_roots": [
+        "Verification.split_of_write",
+        "Verification.scalarAdler_split"
+      ],
+      "proof_modules": [
+        "verification/CoreLemmas.lean"
+      ],
+      "remaining_obligations": [
+        "Discharge WriteSliceCorrect; pure scalar law alone does not prove source law."
+      ]
+    },
+    {
+      "rust_api": "Adler32 checksum save/restore/resume",
+      "status": "proved_result_equivalence",
+      "contract": "Saving and restoring a state before any subsequent write_slice preserves the entire Result, including failures/divergence.",
+      "preconditions": "Any state and slice. Does not establish successful execution of write_slice.",
+      "theorem_roots": [
+        "Verification.save_restore_resume"
+      ],
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "algo::U32X4::from",
+      "status": "proved_helper",
+      "contract": "Successful four-byte load; output lanes equal widened input byte values.",
+      "preconditions": "Slice length >=4; establishing this for every compute call remains open.",
+      "theorem_roots": [
+        "Verification.loader_correct"
+      ],
+      "proof_modules": [
+        "verification/CoreLemmas.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "algo::U32X4::{AddAssign,RemAssign,MulAssign}",
+      "status": "proved_helpers",
+      "contract": "Successful execution and exact pointwise natural addition, remainder, or multiplication, including array indexing/updates.",
+      "preconditions": "Each addition/product <= U32.max; remainder divisor >0. Establishing preconditions at every compute call remains open.",
+      "theorem_roots": [
+        "Verification.vector_add_correct",
+        "Verification.vector_rem_correct",
+        "Verification.vector_mul_correct"
+      ],
+      "proof_modules": [
+        "verification/CoreLemmas.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "algo::Adler32::compute loop exits",
+      "status": "proved_base_cases_only",
+      "contract": "Outer chunk loop and final vector chunk loop return accumulators unchanged on an empty chunk iterator.",
+      "preconditions": "Iterator has no chunks. Does not establish compute on an empty byte slice.",
+      "theorem_roots": [
+        "Verification.chunk_loop0_empty",
+        "Verification.chunk_loop1_empty"
+      ],
+      "proof_modules": [
+        "verification/Empty.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Mathematical supporting lemmas",
+      "status": "proved_support_only",
+      "contract": "Scalar normalization and splitting; lane bound <=4294967295; arbitrary u16 scalar-seed chunk bound; four-lane linear identity and complement correction in ZMod 65521.",
+      "preconditions": "Lane bound assumes at most 5552 lane updates after a reduction; scalar chunk bound uses a,b<=65535 and n<=22208. These are internal chunk bounds, not API length limits. No source loop equivalence is asserted.",
+      "theorem_roots": [
+        "Verification.normalize_idem",
+        "Verification.scalarStep_normalized",
+        "Verification.scalarAdler_normalized",
+        "Verification.lane_accumulator_bound",
+        "Verification.scalar_chunk_seed_bound",
+        "Verification.four_lane_step",
+        "Verification.complement_correction"
+      ],
+      "proof_modules": [
+        "verification/CoreLemmas.lean",
+        "verification/LaneAlgebra.lean"
+      ],
+      "remaining_obligations": []
+    }
+  ],
+  "all_checked_theorem_roots": [
+    "Verification.new_correct",
+    "Verification.from_checksum_eq",
+    "Verification.from_checksum_correct",
+    "Verification.checksum_eq",
+    "Verification.encode_val",
+    "Verification.checksum_correct",
+    "Verification.codec_decode_encode",
+    "Verification.codec_encode_decode",
+    "Verification.checksum_save_restore",
+    "Verification.checksum_restore_save",
+    "Verification.save_restore_resume",
+    "Verification.normalize_idem",
+    "Verification.scalarStep_normalized",
+    "Verification.scalarAdler_normalized",
+    "Verification.scalarAdler_split",
+    "Verification.loader_correct",
+    "Verification.vector_rem_correct",
+    "Verification.vector_add_correct",
+    "Verification.vector_mul_correct",
+    "Verification.lane_accumulator_bound",
+    "Verification.scalar_chunk_seed_bound",
+    "Verification.convenience_of_write",
+    "Verification.split_of_write",
+    "Verification.chunk_loop0_empty",
+    "Verification.chunk_loop1_empty",
+    "Verification.four_lane_step",
+    "Verification.complement_correction"
+  ],
+  "compute_obligations": [
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop0_loop0",
+      "status": "unproved",
+      "obligation": "Inner full-chunk lane-loop termination, bounds, indexing, exact lane recurrence."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop0",
+      "status": "unproved",
+      "obligation": "Outer-loop termination and invariants across arbitrarily many chunks; carry reduction and delayed scalar contribution. Empty-iterator exit only is proved."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop1",
+      "status": "unproved",
+      "obligation": "Final vector-chunk termination and correctness with at most 5551 groups. Empty-iterator exit only is proved."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop2",
+      "status": "unproved",
+      "obligation": "Terminating four-lane a summation and machine bounds."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop3",
+      "status": "unproved",
+      "obligation": "Terminating four-lane b summation and machine bounds."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute_loop4",
+      "status": "unproved",
+      "obligation": "Terminating serial remainder processing and exact recurrence for zero to three bytes."
+    },
+    {
+      "generated_function": "adler2.algo.Adler32.compute",
+      "status": "unproved",
+      "obligation": "Slice length arithmetic and splitting, chunk partition laws, all helper-call preconditions, vector recombination, final normalization and casts for every seed, including empty updates."
+    }
+  ],
+  "axiom_audit": {
+    "status": "passed",
+    "count": 27,
+    "allowed": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "project_axioms": [],
+    "proof_holes": false,
+    "native_decision_axioms": false,
+    "log": "verification/logs/axioms.log"
+  },
+  "testing": {
+    "status": "passed",
+    "universal_proof": false,
+    "source": "verification/regression.rs",
+    "reproduce": "verification/regression.sh",
+    "upstream_tests": 6,
+    "seeded_recurrence_cases": 2888,
+    "convenience_cases": 66,
+    "split_save_resume_cases": 14256,
+    "overflow_checks": true,
+    "counterexamples_found": [],
+    "logs": [
+      "verification/logs/cargo-test.log",
+      "verification/logs/regression.log"
+    ]
+  },
+  "failed_attempt_evidence": [
+    "verification/logs/empty-attempt.log"
+  ],
+  "out_of_scope_unverified": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Alternative targets"
+  ],
+  "trusted_boundaries": [
+    "Pinned Rust compiler and its MIR semantics for the original crate and target",
+    "Charon extraction and Aeneas translation correctness",
+    "Standard prepared Aeneas Lean backend models for scalars, arrays, slices, iterators, and effects",
+    "Lean kernel and propext/Classical.choice/Quot.sound",
+    "Installed library oleans and host platform modeling"
+  ],
+  "limitations": [
+    "Only three of the five required APIs have unconditional successful-execution and functional-correctness proofs.",
+    "No whole-compute or whole-crate proof is claimed.",
+    "Conditional theorem roots do not discharge their WriteSliceCorrect premise.",
+    "No counterexample found; tests do not exclude counterexamples."
+  ]
+}

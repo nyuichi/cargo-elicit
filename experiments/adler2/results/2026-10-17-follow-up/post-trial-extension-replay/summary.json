@@ -1,0 +1,14 @@
+{
+  "benchmark_excluded": true,
+  "real_ai_calls": 0,
+  "new_api_proofs_authored": 0,
+  "ready_specifications_retained": 10,
+  "method_contracts_rechecked": 8,
+  "changed_whole_proof_input": true,
+  "all_retained_specification_hashes_equal": true,
+  "extension": "IndependentReplay.unrelated : Nat := 7",
+  "elapsed_seconds_before_restore": 56.61437940099859,
+  "source_restored_byte_identical": true,
+  "total_elapsed_seconds": 78.5632411090046,
+  "source_sha256": "9bec68c16a37eee20788ed13589e27b4d0cfd2c8fba3ad05f7843f3f0b714ba6"
+}

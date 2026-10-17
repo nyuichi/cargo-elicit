@@ -1,0 +1,17 @@
+import Specs
+import ElicitAdapter
+import ElicitGenerated
+open Aeneas Aeneas.Std Result ElicitGenerated
+elicit_contract ElicitContracts.c_8484fdd92cfcd3e7 for ElicitGenerated.adler32_slice requires (by intros; exact True) ensures (fun data result => let final := AdlerSpec.Update 1 0 (data.val.map (fun byte => byte.val)); result.val = AdlerSpec.Checksum final.1 final.2)
+elicit_contract ElicitContracts.c_0dfc1ce11e75ed00 for ElicitGenerated.algo.U32X4.from requires (fun bytes => 4 ≤ bytes.val.length) ensures (fun bytes result => result.val.map (fun x => x.val) = (bytes.val.take 4).map (fun x => x.val))
+elicit_contract ElicitContracts.c_f321f3834d6c15c0 for ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign requires (fun _ quotient => quotient.val ≠ 0) ensures (fun self quotient result => result.val.map (fun x => x.val) = self.val.map (fun x => x.val % quotient.val))
+elicit_contract ElicitContracts.c_6c7496278e307fe7 for ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign requires (fun self rhs => ∀ x ∈ self.val, x.val * rhs.val < 4294967296) ensures (fun self rhs result => result.val.map (fun x => x.val) = self.val.map (fun x => x.val * rhs.val))
+elicit_contract ElicitContracts.c_20b5198a3591154d for ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign requires (fun self other => ∀ p ∈ self.val.zip other.val, p.1.val + p.2.val < 4294967296) ensures (fun self other result => result.val.map (fun x => x.val) = List.zipWith (fun x y => x.val + y.val) self.val other.val)
+elicit_contract ElicitContracts.c_a058c96663922dc4 for ElicitGenerated.algo.Adler32.compute requires (by intros; exact True) ensures (fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val)
+elicit_contract ElicitContracts.c_2fa15a7d1ba5a684 for ElicitGenerated.Adler32.Insts.CoreDefaultDefault.default requires (by intros; exact True) ensures (fun result => result.a.val = 1 ∧ result.b.val = 0)
+elicit_contract ElicitContracts.c_375e1cdaf1f944d2 for ElicitGenerated.Adler32.Insts.CoreHashHasher.finish requires (by intros; exact True) ensures (fun self result => result.val = 65536 * self.b.val + self.a.val)
+elicit_contract ElicitContracts.c_91f5cdb130e53bd4 for ElicitGenerated.Adler32.Insts.CoreHashHasher.write requires (by intros; exact True) ensures (fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val)
+elicit_contract ElicitContracts.c_0a059b8c0885cf07 for ElicitGenerated.Adler32.checksum requires (by intros; exact True) ensures (fun self result => result.val = 65536 * self.b.val + self.a.val)
+elicit_contract ElicitContracts.c_9a31b7b9cb8492b0 for ElicitGenerated.Adler32.from_checksum requires (by intros; exact True) ensures (fun sum result => result.a.val = sum.val % 65536 ∧ result.b.val = sum.val / 65536)
+elicit_contract ElicitContracts.c_8055bec449b87b3d for ElicitGenerated.Adler32.new requires (by intros; exact True) ensures (fun result => result.a.val = 1 ∧ result.b.val = 0)
+elicit_contract ElicitContracts.c_98f3436459f22f5d for ElicitGenerated.Adler32.write_slice requires (by intros; exact True) ensures (fun self bytes result => (result.a.val, result.b.val) = AdlerSpec.Update self.a.val self.b.val (bytes.val.map (fun byte => byte.val)) ∧ AdlerSpec.Normalized result.a.val result.b.val)

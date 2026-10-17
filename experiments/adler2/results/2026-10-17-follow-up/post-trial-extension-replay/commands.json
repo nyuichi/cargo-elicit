@@ -1,0 +1,44 @@
+[
+  {
+    "argv": [
+      "cargo",
+      "elicit",
+      "status",
+      "--json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 21.850694323002244
+  },
+  {
+    "argv": [
+      "cargo",
+      "elicit",
+      "agent",
+      "verify",
+      "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "adler2::impl[6f07fcfab3542315]::default::Method",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+      "--revision",
+      "76",
+      "--seconds",
+      "600"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 34.757339548988966
+  },
+  {
+    "argv": [
+      "cargo",
+      "elicit",
+      "status",
+      "--json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 21.948182056003134
+  }
+]
