@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-17",
+  "subject": {
+    "crate": "adler2",
+    "version": "2.0.1",
+    "archive_sha256": "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
+  },
+  "cargo_elicit_commit": "e4def34d4b1879835b226273b369539860693adf",
+  "cargo_elicit_binary_sha256": "2606ad42852095fbd9b03afebf3465d48855e9277136f0b55299286909fa9636",
+  "order": [
+    "without",
+    "with"
+  ],
+  "repetitions": 1,
+  "arms": {
+    "without": {
+      "timing": {
+        "arm": "without",
+        "command": [
+          "python3",
+          "/workspace/cargo-elicit/experiments/adler2/baseline.py",
+          "/workspace/elicit-comparison/final-cases/adler2-without"
+        ],
+        "exit": 0,
+        "end_to_end_seconds": 594.0576333799982,
+        "timed_work_seconds": 594.0566508249976,
+        "terminal_observation_seconds": 0.0009825550005189143,
+        "observation_seconds_total": 0.0008006529969861731,
+        "observation_seconds_during_run": 0,
+        "historical_api_proof_milestones": [],
+        "tokens": {
+          "inputTokens": 4212259,
+          "cachedInputTokens": 4109440,
+          "outputTokens": 20583
+        },
+        "human_proof_hints": 0,
+        "original_sources_unchanged": true,
+        "source_hashes_before": {
+          "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+          "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+          "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+        },
+        "source_hashes_after": {
+          "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+          "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+          "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+        },
+        "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+      },
+      "telemetry": {
+        "resolved_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "modelProvider": "openai",
+            "reasoningEffort": null,
+            "serviceTier": null,
+            "approvalPolicy": "on-request",
+            "sandbox": {
+              "type": "workspaceWrite",
+              "writableRoots": [
+                "/workspace/toolchain"
+              ],
+              "networkAccess": true,
+              "excludeTmpdirEnvVar": false,
+              "excludeSlashTmp": false
+            }
+          }
+        ],
+        "thread_count_with_usage": 1,
+        "tokens": {
+          "inputTokens": 4212259,
+          "cachedInputTokens": 4109440,
+          "outputTokens": 20583
+        },
+        "started_items": {
+          "userMessage": 1,
+          "agentMessage": 7,
+          "commandExecution": 74,
+          "reasoning": 45,
+          "fileChange": 1
+        },
+        "accepted_api_coverage": 3,
+        "note": "Cached input is a subset of input, not an extra token category. Coverage requires independent source, theorem and axiom checks."
+      },
+      "independently_accepted_api_ids": [
+        "Adler32::new",
+        "Adler32::checksum",
+        "Adler32::from_checksum"
+      ],
+      "observation_seconds_including_additional": 0.0008006529969861731,
+      "observations": [
+        {
+          "reason": "termination",
+          "at_seconds": 594.0566589369992,
+          "commands": [],
+          "lean_files": [
+            "verification/lakefile.lean",
+            "verification/Proofs.lean",
+            "verification/selected/Adler2.lean"
+          ],
+          "note": "No cargo-elicit ledger in this arm; theorem declarations alone are not verified coverage.",
+          "elapsed_seconds": 0.0008006529969861731
+        }
+      ]
+    },
+    "with": {
+      "timing": {
+        "arm": "with",
+        "command": [
+          "cargo",
+          "elicit",
+          "run",
+          "--max-seconds",
+          "1800",
+          "--max-tasks",
+          "32"
+        ],
+        "exit": 130,
+        "end_to_end_seconds": 1808.3966193330052,
+        "timed_work_seconds": 1801.7572563390058,
+        "terminal_observation_seconds": 6.639362993999384,
+        "observation_seconds_total": 15.113344325000071,
+        "observation_seconds_during_run": 8.474347315997875,
+        "historical_api_proof_milestones": [],
+        "tokens": {
+          "inputTokens": 23160269,
+          "cachedInputTokens": 22806016,
+          "outputTokens": 47589
+        },
+        "human_proof_hints": 0,
+        "original_sources_unchanged": true,
+        "source_hashes_before": {
+          "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+          "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+          "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+        },
+        "source_hashes_after": {
+          "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+          "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+          "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+        },
+        "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+      },
+      "telemetry": {
+        "resolved_settings": [
+          {
+            "model": "gpt-6.1-sol",
+            "modelProvider": "openai",
+            "reasoningEffort": null,
+            "serviceTier": null,
+            "approvalPolicy": "on-request",
+            "sandbox": {
+              "type": "workspaceWrite",
+              "writableRoots": [
+                "/workspace/toolchain"
+              ],
+              "networkAccess": true,
+              "excludeTmpdirEnvVar": false,
+              "excludeSlashTmp": false
+            }
+          }
+        ],
+        "thread_count_with_usage": 1,
+        "tokens": {
+          "inputTokens": 23160269,
+          "cachedInputTokens": 22806016,
+          "outputTokens": 47589
+        },
+        "started_items": {
+          "userMessage": 17,
+          "agentMessage": 51,
+          "commandExecution": 150,
+          "reasoning": 127
+        },
+        "accepted_api_coverage": 0,
+        "note": "Cached input is a subset of input, not an extra token category. Coverage requires independent source, theorem and axiom checks."
+      },
+      "independently_accepted_api_ids": [],
+      "additional_observations": [
+        {
+          "reason": "additional_checkpoint_after_first_successful_helper_proof",
+          "preplanned": false,
+          "timestamp_unix": 1792245470.9010205,
+          "commands": [
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.3796901280002203
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.4294618259955314
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "list",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.3298343459973694
+            }
+          ],
+          "note": "Observation only, no proof hints. Concurrent with the live trial, so its elapsed time is already within end-to-end time.",
+          "elapsed_seconds": 7.138999559996591
+        }
+      ],
+      "observation_seconds_including_additional": 22.252343884996662,
+      "observations": [
+        {
+          "reason": "ten_minutes",
+          "at_seconds": 601.4565695120036,
+          "commands": [
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.120179249002831
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.1726242329968954
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "list",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 4.181522932994994
+            }
+          ],
+          "elapsed_seconds": 8.474347315997875
+        },
+        {
+          "reason": "termination",
+          "at_seconds": 1801.7572622280059,
+          "commands": [
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.225036054995144
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "status",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.184717472999182
+            },
+            {
+              "argv": [
+                "cargo",
+                "elicit",
+                "list",
+                "--json"
+              ],
+              "exit": 0,
+              "elapsed_seconds": 2.2292244330019457
+            }
+          ],
+          "elapsed_seconds": 6.638997009002196
+        }
+      ]
+    }
+  },
+  "independent_audits": {
+    "without": {
+      "elapsed_seconds": 7.254214314998535,
+      "fresh_model_byte_identical": true,
+      "overflow_checks": true,
+      "original_api_bodies_transparent": true,
+      "charon_has_errors": false,
+      "source_hashes": {
+        "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+        "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+        "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+      },
+      "allowed_axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "audited_roots": [
+        "Verification.new_correct",
+        "Verification.checksum_correct",
+        "Verification.from_checksum_correct",
+        "Verification.codec_state_roundtrip",
+        "Verification.codec_checksum_roundtrip",
+        "Verification.resume_equivalence",
+        "Verification.scalar_split_representable",
+        "Verification.adler32_slice_of_update",
+        "Verification.four_byte_loader",
+        "Verification.lane_chunk_bound",
+        "Verification.seed_chunk_bound"
+      ],
+      "accepted_apis": [
+        "Adler32::new",
+        "Adler32::checksum",
+        "Adler32::from_checksum"
+      ],
+      "unproved_apis": [
+        "Adler32::write_slice",
+        "adler32_slice"
+      ],
+      "selected_coverage": "3/5",
+      "notes": [
+        "adler32_slice_of_update assumes unproved UpdateContract and is not unconditional API correctness.",
+        "scalar_split_representable is a mathematical specification law, not optimized implementation correctness.",
+        "resume_equivalence preserves exact effects but does not prove write_slice success."
+      ]
+    },
+    "with_kernel": {
+      "all_modules_rebuilt": true,
+      "proof_bytes_unchanged_from_terminal": true,
+      "helper_roots_checked_against_exact_generated_contracts": 3,
+      "allowed_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selected_api_coverage": "0/5",
+      "seconds": 7.828078212995024
+    },
+    "with_model": {
+      "fresh_wrapper_extraction": true,
+      "charon_has_errors": false,
+      "original_source_contents_exact": true,
+      "overflow_checks": true,
+      "monomorphized": false,
+      "type_or_borrow_checks_skipped": false,
+      "three_helper_bodies_transparent": true,
+      "proof_and_contract_bytes_unchanged_after_timer": true,
+      "generated_model_sha256": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8"
+    },
+    "with_wrapper": {
+      "argv": [
+        "cargo",
+        "elicit",
+        "agent",
+        "verify",
+        "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+        "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+        "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+        "--revision",
+        "105",
+        "--seconds",
+        "180"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 22.776927039994916,
+      "note": "Post-trial audit only. These results must not replace the frozen terminal ledger or timed coverage."
+    }
+  },
+  "limitations": [
+    "Single exploratory pair, different completed work; no general speedup estimate.",
+    "With arm hit 1800 second work budget; terminal observation included in end-to-end time.",
+    "Additional helper-success checkpoint was not preplanned and is disclosed separately.",
+    "Total verifier invocations, API retry counts, agent-only elapsed time and monetary costs are unavailable.",
+    "Cached tokens are a subset of input; do not add them again.",
+    "Post-trial helper audits are not timed-arm completion.",
+    "Earlier auth failures and two 8-second setup failures are excluded and disclosed in the report."
+  ]
+}

@@ -1,0 +1,6 @@
+adler2: aeneas / target x86_64-unknown-linux-gnu, features ["default", "std"]
+Mode: verification required. Revision 105. unresolved
+Types/traits specified: 2/2; functions/methods/impls specified: 3/19, fully verified: 1/19
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]
+Last run: interrupted; task checkpoint retained for source reconciliation on resume

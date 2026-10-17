@@ -1,0 +1,18 @@
+U32X4Proofs.remainder_method : ∀ (s : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32),
+  ↑q ≠ 0 →
+    ∃ out,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign s q = Aeneas.Std.Result.ok out ∧
+        List.map (fun x => ↑x) ↑out = List.map (fun x => ↑x % ↑q) ↑s ∧ (↑out).length = 4 ∧ ∀ x ∈ ↑out, ↑x < ↑q
+'Audit_remainder_method' depends on axioms: [propext, Classical.choice, Quot.sound]
+U32X4Proofs.multiply_method : ∀ (s : ElicitGenerated.algo.U32X4) (r : Aeneas.Std.U32),
+  (∀ x ∈ ↑s, ↑x * ↑r < 4294967296) →
+    ∃ out,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign s r = Aeneas.Std.Result.ok out ∧
+        List.map (fun x => ↑x) ↑out = List.map (fun x => ↑x * ↑r) ↑s ∧ (↑out).length = 4
+'Audit_multiply_method' depends on axioms: [propext, Classical.choice, Quot.sound]
+U32X4Proofs.add_method : ∀ (s t : ElicitGenerated.algo.U32X4),
+  (∀ p ∈ (↑s).zip ↑t, ↑p.1 + ↑p.2 < 4294967296) →
+    ∃ out,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign s t = Aeneas.Std.Result.ok out ∧
+        List.map (fun x => ↑x) ↑out = List.zipWith (fun x y => ↑x + ↑y) ↑s ↑t ∧ (↑out).length = 4
+'Audit_add_method' depends on axioms: [propext, Classical.choice, Quot.sound]

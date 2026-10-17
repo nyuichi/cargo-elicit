@@ -1,0 +1,276 @@
+{
+  "target": "adler2::Adler32::Struct",
+  "status": "Representation theorem locally checks against generated type; no official verified claim",
+  "theorem_roots": [
+    "Adler32Proofs.representable"
+  ],
+  "generated_contract": "ElicitContracts.c_e3ae6d72ae0fddb9",
+  "mapped_rust_api": "src/lib.rs::Adler32",
+  "contract": "Every representable state has a < 65536 and b < 65536",
+  "preconditions": [],
+  "proof_modules": [
+    "elicit-proofs/aeneas/Proofs.lean"
+  ],
+  "checker_commands_executed": [],
+  "processing_commands": [
+    "cargo-elicit agent show adler2::Adler32::Struct",
+    "cargo-elicit agent submit adler2::Adler32::Struct --revision 8 --note <invariant description>"
+  ],
+  "next_checker": "scheduler official Aeneas wrapper after this turn",
+  "remaining_obligations": [
+    "Inspect fresh generated signature and check candidate",
+    "new/default",
+    "checksum",
+    "from_checksum",
+    "write_slice and optimized compute with all helpers and loops",
+    "adler32_slice",
+    "codec roundtrips",
+    "split update with concatenated slice representability",
+    "save/restore/resume",
+    "Explicit update-preservation obligations"
+  ],
+  "unverified_out_of_scope": [
+    "BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "trusted_boundaries": [
+    "Pinned Charon/Aeneas translation and standard Lean scalar models; no project axioms introduced"
+  ],
+  "runtime_sources_modified": false,
+  "additional_targets": [
+    {
+      "target": "adler2::algo::U32X4::Struct",
+      "mapped_rust_api": "src/algo.rs::U32X4",
+      "theorem_roots": [
+        "U32X4Proofs.representable"
+      ],
+      "generated_contract": "ElicitContracts.c_02edaa52ff1b22d2",
+      "contract": "Exactly four lanes, each in the full u32 range [0, 2^32)",
+      "preconditions": [],
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "status": "proof candidate prepared; official checking pending",
+      "fresh_translation_signature": "def algo.U32X4 := Array Std.U32 4#usize",
+      "translation_experiments": [
+        "charon cargo --preset=aeneas --sysroot=default --dest /tmp/adler2-with-u32x4-model -- --manifest-path /workspace/elicit-comparison/final-cases/adler2-with/Cargo.toml --target x86_64-unknown-linux-gnu",
+        "aeneas -backend lean -dest /tmp/adler2-with-u32x4-model /tmp/adler2-with-u32x4-model/adler2.llbc"
+      ],
+      "remaining_obligations": [
+        "Check fresh generated contract and theorem via official wrapper",
+        "Explicit add_assign, mul_assign, rem_assign method safety, lane results and preservation obligations",
+        "from slice indexing safety and lane correspondence",
+        "All original optimized loop dependencies"
+      ],
+      "trusted_boundaries": [
+        "Standard Aeneas Array and U32 models",
+        "Translation warned of unknown external definitions; none supplied or trusted as proof evidence"
+      ]
+    },
+    {
+      "target": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "mapped_rust_api": "src/algo.rs:137 RemAssign<u32> for U32X4",
+      "status": "Direct law of actual translated trait dictionary passes local Lean experiment; official ledger trait mapping unsupported",
+      "contract": "For nonzero q, dictionary method succeeds with lane-wise remainder, four lanes, and lane values below q",
+      "unsupported_contract_file": "elicit-proofs/aeneas/unsupported-trait-laws.toml",
+      "remaining_obligations": [
+        "Unsupported official trait_impl mapping; method has official full_contract success"
+      ],
+      "explicit_dependencies": [
+        "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+      ],
+      "recheck_result": "Revision 56: namespace-correct dictionary law with officially verified rem_assign dependency still rejected: trait implementation laws require explicit method obligations; record an agent issue. Tool mapping blocker recorded.",
+      "helper_theorems": [
+        "U32X4Proofs.remainder_trait_law"
+      ],
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "experiment_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "mapped_rust_api": "src/algo.rs:139 U32X4::rem_assign",
+      "theorem_roots": [
+        "U32X4Proofs.remainder_method"
+      ],
+      "generated_contract": "ElicitContracts.c_f321f3834d6c15c0",
+      "preconditions": [
+        "q.val != 0"
+      ],
+      "contract": "Successful execution returns updated state whose lane values are input values modulo q; exactly four lanes; all output lanes below q",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "status": "Official wrapper recorded full_contract success at c0bfab7f4e52c526a50c8e68ed82703d80f68aa3d7f6db691db80f6ea5df159a",
+      "remaining_obligations": [
+        "Refresh official record after report-only edits",
+        "Compute callers must discharge nonzero divisor"
+      ],
+      "checker_commands_executed": [],
+      "helper_theorems": [
+        "U32X4Proofs.remainder_body",
+        "U32X4Proofs.result_of_spec"
+      ],
+      "local_experiment_commands": [
+        "lake env lean --root=/tmp/adler2-with-u32x4-model -o /tmp/adler2-with-u32x4-model/Adler2.olean /tmp/adler2-with-u32x4-model/Adler2.lean",
+        "LEAN_PATH=/tmp/adler2-with-u32x4-model lake env lean --root=/tmp/adler2-with-u32x4-model /tmp/adler2-with-u32x4-model/Experiment.lean"
+      ],
+      "experiment_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "local_exact_wrapper_check_command": "LEAN_PATH=/workspace/elicit-comparison/final-cases/adler2-with/.elicit/cache/verification-lbm8N6 lake env lean --root=/workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas -o /tmp/adler2-with-u32x4-model/Proofs.olean /workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas/Proofs.lean",
+      "fresh_generated_signature": "ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign (self : ElicitGenerated.algo.U32X4) (quotient : Aeneas.Std.U32) : Result ElicitGenerated.algo.U32X4",
+      "official_record": {
+        "id": "50-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-1",
+        "input": "c0bfab7f4e52c526a50c8e68ed82703d80f68aa3d7f6db691db80f6ea5df159a",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_f321f3834d6c15c0"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+      }
+    },
+    {
+      "target": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "status": "Unsupported official trait mapping; issue recorded before archiving dictionary law",
+      "mapped_rust_api": "src/algo.rs:147 MulAssign<u32> for U32X4",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "helper_theorems": [
+        "U32X4Proofs.multiply_trait_law"
+      ],
+      "unsupported_contract_file": "elicit-proofs/aeneas/unsupported-trait-laws.toml",
+      "remaining_obligations": [
+        "Official trait mapping unsupported; explicit method submitted separately"
+      ],
+      "recheck_result": "Explicit multiplication method has recorded official full_contract success (result 78); trait mapping remains unsupported with issue recorded."
+    },
+    {
+      "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "mapped_rust_api": "src/algo.rs:149 U32X4::mul_assign",
+      "status": "Official wrapper recorded full_contract success at 707c59150cd575d01b1644037e0ba2cd1b0faca3373b2865c47e6a30872a6c66; subsequent proof/report additions await refreshed record",
+      "generated_contract": "ElicitContracts.c_6c7496278e307fe7",
+      "preconditions": [
+        "Every lane value times rhs.val is below 4294967296"
+      ],
+      "contract": "Successful lane-wise natural multiplication with exactly four output lanes",
+      "theorem_roots": [
+        "U32X4Proofs.multiply_method"
+      ],
+      "helper_theorems": [
+        "U32X4Proofs.multiply_body",
+        "U32X4Proofs.multiply_trait_law"
+      ],
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "experiment_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "remaining_obligations": [
+        "Refresh official record after later addition-proof/report edits",
+        "Compute callers must establish product bounds"
+      ],
+      "official_record": {
+        "id": "78-adler2::algo::impl[6142b20c00108117]::mul_assign::Method-3",
+        "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+        "units": [
+          "contract"
+        ],
+        "obligations": [
+          "ElicitContracts.c_6c7496278e307fe7"
+        ],
+        "scope": "full_contract",
+        "assumptions": [],
+        "restrictions": [],
+        "input": "707c59150cd575d01b1644037e0ba2cd1b0faca3373b2865c47e6a30872a6c66",
+        "tool": "aeneas",
+        "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "outcome": "success",
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 17880
+      }
+    },
+    {
+      "target": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "status": "Unsupported official trait mapping; issue recorded",
+      "mapped_rust_api": "src/algo.rs:126 AddAssign<Self> for U32X4",
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "helper_theorems": [
+        "U32X4Proofs.add_trait_law"
+      ],
+      "unsupported_contract_file": "elicit-proofs/aeneas/unsupported-trait-laws.toml",
+      "remaining_obligations": [
+        "Official trait mapping unsupported; explicit method submitted separately"
+      ]
+    },
+    {
+      "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "mapped_rust_api": "src/algo.rs:128 U32X4::add_assign",
+      "status": "Complete original-body proof passes local Lean check; official wrapper pending",
+      "generated_contract": "ElicitContracts.c_20b5198a3591154d",
+      "preconditions": [
+        "Every paired lane sum is below 4294967296; both arrays inherently have exactly four lanes"
+      ],
+      "contract": "Successful lane-wise natural addition with exactly four output lanes",
+      "theorem_roots": [
+        "U32X4Proofs.add_method"
+      ],
+      "helper_theorems": [
+        "U32X4Proofs.add_body",
+        "U32X4Proofs.add_trait_law"
+      ],
+      "proof_modules": [
+        "elicit-proofs/aeneas/Proofs.lean"
+      ],
+      "experiment_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "local_exact_wrapper_check_command": "LEAN_PATH=/workspace/elicit-comparison/final-cases/adler2-with/.elicit/cache/verification-lbm8N6 lake env lean --root=/workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas -o /tmp/adler2-with-u32x4-model/Proofs.olean /workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas/Proofs.lean",
+      "remaining_obligations": [
+        "Inspect new official generated contract and record official proof evidence",
+        "Compute callers must establish sum bounds"
+      ]
+    }
+  ],
+  "local_exact_wrapper_check_command": "LEAN_PATH=/workspace/elicit-comparison/final-cases/adler2-with/.elicit/cache/verification-lbm8N6 lake env lean --root=/workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas -o /tmp/adler2-with-u32x4-model/Proofs.olean /workspace/elicit-comparison/final-cases/adler2-with/elicit-proofs/aeneas/Proofs.lean",
+  "official_status": "Official wrapper recorded full_contract success for remainder_method at the listed input; report edits await record refresh",
+  "fresh_generated_cache": ".elicit/cache/verification-lbm8N6",
+  "official_record": {
+    "id": "50-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-1",
+    "input": "c0bfab7f4e52c526a50c8e68ed82703d80f68aa3d7f6db691db80f6ea5df159a",
+    "scope": "full_contract",
+    "outcome": "success",
+    "obligations": [
+      "ElicitContracts.c_f321f3834d6c15c0"
+    ],
+    "assumptions": [],
+    "restrictions": [],
+    "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+  }
+}

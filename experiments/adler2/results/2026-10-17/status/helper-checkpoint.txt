@@ -1,0 +1,6 @@
+adler2: aeneas / target x86_64-unknown-linux-gnu, features ["default", "std"]
+Mode: verification required. Revision 78. unresolved
+Types/traits specified: 2/2; functions/methods/impls specified: 2/19, fully verified: 0/19
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]
+Last run: unresolved; same task/input suppressed

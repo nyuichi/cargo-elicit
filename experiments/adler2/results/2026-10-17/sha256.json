@@ -1,0 +1,19 @@
+{
+  "README.md": "62a6b271d079f1fdeb0af3c405515e4d8af16e84f26e0e730725a8840b243ad8",
+  "audit/with-roots.txt": "ab4a4dd83c24d50b8d7e8cc95e8af3c043d4806fa235c35a214a2bdc9c15d46a",
+  "audit/without-roots.txt": "02c8460d52f9152c4f0fdfcc92f975d641f6181283f3bfd1f4cebad7fec1209b",
+  "measurements.json": "d48106aabf1f9ea196bef080ff2d1199e60cc3d4f4a99a77359b3221e655e085",
+  "status/helper-checkpoint.txt": "1ce7330103eac1ddb753a6b1dc09dcf34f8503a9d47c9e095b3e11a2a3b27f98",
+  "status/ten-minutes.txt": "100c5e9615f5a4253aa3ac9687dec0363ca9dcf6fdf9f1c7439f938d366e6721",
+  "status/terminal.txt": "6f6f962c446e5467f342530443745a06f117ff5569cf1539a4ed49ab7e71c729",
+  "with/ElicitAdapter.lean": "630ae0d08d8eeeabb039e00c472829b7091a9ad2762658466f19086fc769a1d6",
+  "with/ElicitContracts.lean": "4a551e0503980cbb33bfa65bd63d8697fe578448de1c706d214e451c89efb2bd",
+  "with/ElicitGenerated.lean": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+  "with/Proofs.lean": "20f50bea4e22cd97122f646358c176edd9395393781b6e9cd09c125195580f73",
+  "with/contracts.toml": "f89a63ecd35246674719b7d5ad1ba793c3fa7eb98bb9c9ccb11d8a71bad78954",
+  "with/unsupported-trait-laws.toml": "8313805b83b8f179a209d78ca9f7357d29fb5a213532dab0e69213b438733895",
+  "with/worker-inventory.json": "8466ae7bab6c6d012e6d6afbc8f5e484ce3250a7dcb15b7cd9daef2184b9245b",
+  "without/Adler2.lean": "c4d44cd73d9fa79d2ac3bac2928a98786dc4c11c0701b07825e3c3c3501db043",
+  "without/Proofs.lean": "3ccb39d081cdc66d10a3fd62856a9b271611a188d3879decfbf419c7ae9e2625",
+  "without/worker-inventory.json": "1c9acb88be1556bccbe734a6223bd4773e275759b68227f9621b620b2cbd90ff"
+}

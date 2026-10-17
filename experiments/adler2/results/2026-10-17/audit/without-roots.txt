@@ -1,0 +1,51 @@
+Verification.new_correct : adler2.Adler32.new = Aeneas.Std.Result.ok { a := 1#u16, b := 0#u16 }
+'Verification.new_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.checksum_correct : ∀ (s : adler2.Adler32),
+  ∃ x, s.checksum = Aeneas.Std.Result.ok x ∧ ↑x = 65536 * ↑s.b + ↑s.a
+'Verification.checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.from_checksum_correct : ∀ (x : Aeneas.Std.U32),
+  ∃ s, adler2.Adler32.from_checksum x = Aeneas.Std.Result.ok s ∧ ↑s.a = ↑x % 65536 ∧ ↑s.b = ↑x / 65536
+'Verification.from_checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.codec_state_roundtrip : ∀ (s : adler2.Adler32),
+  (do
+      let x ← s.checksum
+      adler2.Adler32.from_checksum x) =
+    Aeneas.Std.Result.ok s
+'Verification.codec_state_roundtrip' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.codec_checksum_roundtrip : ∀ (x : Aeneas.Std.U32),
+  (do
+      let s ← adler2.Adler32.from_checksum x
+      s.checksum) =
+    Aeneas.Std.Result.ok x
+'Verification.codec_checksum_roundtrip' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.resume_equivalence : ∀ (s : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  (do
+      let x ← s.checksum
+      let restored ← adler2.Adler32.from_checksum x
+      restored.write_slice bytes) =
+    s.write_slice bytes
+'Verification.resume_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.scalar_split_representable : ∀ (s : ℕ × ℕ) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑xs).length + (↑ys).length ≤ Aeneas.Std.Usize.max →
+    Verification.scalar s (↑xs ++ ↑ys) = Verification.scalar (Verification.scalar s ↑xs) ↑ys
+'Verification.scalar_split_representable' depends on axioms: [propext, Quot.sound]
+Verification.adler32_slice_of_update : Verification.UpdateContract →
+  ∀ (xs : Aeneas.Std.Slice Aeneas.Std.U8),
+    ∃ x,
+      adler2.adler32_slice xs = Aeneas.Std.Result.ok x ∧
+        ↑x = 65536 * (Verification.scalar (1, 0) ↑xs).2 + (Verification.scalar (1, 0) ↑xs).1
+'Verification.adler32_slice_of_update' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.four_byte_loader : ∀ (xs : Aeneas.Std.Slice Aeneas.Std.U8) (x0 x1 x2 x3 : Aeneas.Std.U8),
+  ↑xs = [x0, x1, x2, x3] →
+    adler2.algo.U32X4.from xs =
+      Aeneas.Std.Result.ok
+        (Aeneas.Std.Array.make 4#usize
+          [Aeneas.Std.core.convert.num.FromU32U8.from x0, Aeneas.Std.core.convert.num.FromU32U8.from x1,
+            Aeneas.Std.core.convert.num.FromU32U8.from x2, Aeneas.Std.core.convert.num.FromU32U8.from x3]
+          ⋯)
+'Verification.four_byte_loader' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verification.lane_chunk_bound : ∀ (n a b : ℕ),
+  n ≤ 5552 → a ≤ 65520 → b ≤ 65520 → b + n * a + 255 * (n * (n + 1) / 2) ≤ 4294967295
+'Verification.lane_chunk_bound' depends on axioms: [propext, Quot.sound]
+Verification.seed_chunk_bound : ∀ (a b : ℕ), a ≤ 65535 → b ≤ 65535 → b + 22208 * a ≤ 4294967295
+'Verification.seed_chunk_bound' depends on axioms: [propext, Quot.sound]

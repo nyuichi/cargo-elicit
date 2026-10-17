@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "overall_status": "partial_not_complete",
+  "arm": "without_cargo_elicit",
+  "single_worker": true,
+  "source_preservation": {
+    "hash_file": "verification/source-sha256.txt",
+    "checked": true,
+    "paths": [
+      "src/algo.rs",
+      "src/lib.rs",
+      "Cargo.toml",
+      "Cargo.toml.orig"
+    ]
+  },
+  "generated_models": {
+    "lean": "verification/selected/Adler2.lean",
+    "llbc": "verification/selected/adler2.llbc",
+    "fresh_unedited": true,
+    "hash_file": "verification/generated-sha256.txt",
+    "excluded": [
+      "adler2::adler32 (out-of-scope generic BufRead entry point)"
+    ],
+    "compute_and_helpers_transparent": true
+  },
+  "results": [
+    {
+      "rust_api": "Adler32::new",
+      "status": "proved",
+      "theorem_roots": [
+        "Verification.new_correct"
+      ],
+      "contract": "No preconditions; returns ok state (1,0).",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "Adler32::checksum",
+      "status": "proved",
+      "theorem_roots": [
+        "Verification.checksum_correct"
+      ],
+      "contract": "Every U16/U16 state; returns ok U32 with value 65536*b+a.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "Adler32::from_checksum",
+      "status": "proved",
+      "theorem_roots": [
+        "Verification.from_checksum_correct"
+      ],
+      "contract": "Every U32; returns ok state with low/high sixteen-bit halves.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "Adler32::write_slice",
+      "status": "unproved",
+      "theorem_roots": [],
+      "contract": "Every representable seed and slice; scalar recurrence mod 65521, including empty normalization. Formal outstanding proposition: Verification.UpdateContract.",
+      "proof_modules": [],
+      "checker_commands": []
+    },
+    {
+      "rust_api": "adler32_slice",
+      "status": "conditional_only",
+      "theorem_roots": [
+        "Verification.adler32_slice_of_update"
+      ],
+      "contract": "Assumes Verification.UpdateContract, which is not proved; recurrence from (1,0).",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "codec roundtrips",
+      "status": "proved",
+      "theorem_roots": [
+        "Verification.codec_state_roundtrip",
+        "Verification.codec_checksum_roundtrip"
+      ],
+      "contract": "All representable states and U32 checksums; no normalized-seed assumption.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "split-update equivalence",
+      "status": "specification_only",
+      "theorem_roots": [
+        "Verification.scalar_split_representable"
+      ],
+      "contract": "Concatenated slice length must be <= Usize.max. Proved for mathematical scalar specification only; original implementation law unproved.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "checksum save/restore/resume equivalence",
+      "status": "computation_equality_proved",
+      "theorem_roots": [
+        "Verification.resume_equivalence"
+      ],
+      "contract": "All states and suffix slices; exact equality of subsequent write_slice computations including effects. Universal successful execution and scalar correctness remain unproved.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "algo::U32X4::from",
+      "status": "proved_for_four_byte_slices",
+      "theorem_roots": [
+        "Verification.four_byte_loader"
+      ],
+      "contract": "Slice.val equals [x0,x1,x2,x3]; returns widened byte array successfully.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    },
+    {
+      "rust_api": "optimized compute arithmetic support",
+      "status": "support_only",
+      "theorem_roots": [
+        "Verification.lane_chunk_bound",
+        "Verification.seed_chunk_bound"
+      ],
+      "contract": "Lane bound: n<=5552, a,b<=65520. Seed scalar bound: a,b<=65535. Not connected to loops by invariant proofs.",
+      "proof_modules": [
+        "verification/Proofs.lean"
+      ],
+      "checker_commands": [
+        "python3 verification/check.py"
+      ]
+    }
+  ],
+  "actual_checker_commands": [
+    "bash verification/extract.sh",
+    "python3 verification/check.py > verification/logs/proofs.log 2>&1",
+    "bash verification/runtime-check.sh",
+    "sha256sum -c verification/source-sha256.txt"
+  ],
+  "checker_implementation": "check.py obtains LEAN_PATH from the prepared Aeneas backend using lake env printenv LEAN_PATH; invokes lean -o selected/Adler2.olean selected/Adler2.lean and lean -o Proofs.olean Proofs.lean; rejects printed axiom dependencies outside whitelist.",
+  "allowed_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "axiom_audit_log": "verification/logs/proofs.log",
+  "remaining_obligations": [
+    "Unconditional UpdateContract for original optimized compute",
+    "Termination and invariants for all six extracted loops",
+    "Machine arithmetic bounds at every intermediate operation",
+    "All slice/array indexing and iterator invariants",
+    "Exact chunks partition and weighted lane recombination",
+    "No input length bound; arbitrary representable non-normalized seeds",
+    "Final casts and modulo normalization including empty input",
+    "Unconditional adler32_slice correctness",
+    "Implementation split law with concatenation representability",
+    "Successful recurrence-based save/restore/resume correctness"
+  ],
+  "unverified_out_of_scope": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Alternative targets"
+  ],
+  "counterexample": {
+    "found": false,
+    "universal_claim_established": false,
+    "finite_tests_only": true
+  },
+  "runtime_evidence": {
+    "unit_tests": 6,
+    "doctests": 4,
+    "split_resume_cases": 3420,
+    "max_test_length": 1000000,
+    "logs": [
+      "verification/logs/cargo-test.log",
+      "verification/logs/runtime-checks.log"
+    ],
+    "proof": false
+  },
+  "logs": [
+    "verification/logs/charon-selected.log",
+    "verification/logs/aeneas-selected.log",
+    "verification/logs/proofs.log",
+    "verification/logs/tool-versions.log"
+  ],
+  "trusted_boundaries": [
+    "Rust compiler MIR",
+    "Charon",
+    "Aeneas translation",
+    "Standard Aeneas models for machine arithmetic, slices, iterators and ITree",
+    "Prepared Lean backend dependencies",
+    "Lean kernel"
+  ],
+  "forbidden_mechanisms_used": []
+}

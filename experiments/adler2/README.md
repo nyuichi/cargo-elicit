@@ -1,6 +1,6 @@
 # Exploratory Adler-32 comparison
 
-Read the [protocol and current status](../../docs/experiments/adler2-comparison.md) first. No speedup or token result is available until actual authoring trials and independent proof checks finish. The scripts require Python 3.12+, Git, curl, Cargo, authenticated Codex CLI 0.159.x, and the [prepared Aeneas toolchain](../../docs/aeneas.md). They use the inherited model, reasoning and permissions. Live trials consume Codex usage.
+Read the [protocol and current status](../../docs/experiments/adler2-comparison.md) first. The [first measured pair](results/2026-10-17/) completed with independent proof audits; the report explains its partial results and limitations. The scripts require Python 3.12+, Git, curl, Cargo, authenticated Codex CLI 0.159.x, and the [prepared Aeneas toolchain](../../docs/aeneas.md). They use the inherited model, reasoning and permissions. Live trials consume Codex usage.
 
 ```sh
 python3 experiments/adler2/prepare.py /tmp/elicit-adler-benchmark
@@ -19,3 +19,5 @@ The with arm records real text and JSON status plus a target listing after the f
 Telemetry records resolved settings, item kinds, turn status and actual token-usage events without storing conversation text. Confirm the resolved model/reasoning match before comparing runs. `summarize.py RESULTS_DIR` groups actual cumulative token usage by thread (including resumed peers) and leaves missing telemetry unavailable. Cached input is a subset of input. `metrics.json` initially leaves tokens and accepted coverage unpopulated; populate them from actual events and independent artifact checks. A completed agent turn, a declaration count, or a zero exit status is not acceptance. Check fresh extraction, original-source identity, exact theorem statements/API mappings, proof rebuilds and transitive axioms for both arms.
 
 Raw run diagnostics and readiness errors are private experiment artifacts: review before publishing them. Publish sanitized evidence and explicit missing metrics. A single pair is exploratory, and overall cargo-elicit completion must remain separate from the five selected core APIs.
+
+The recorded proof artifacts are withheld solutions for any future authoring trial. `audit-baseline.py` independently re-extracts and rebuilds the specifically recorded ordinary-arm proof; see the result README for setup and interpretation. It is not a general-purpose contract acceptance tool.

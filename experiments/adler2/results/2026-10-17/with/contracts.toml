@@ -1,0 +1,24 @@
+schema_version = 1
+
+[contracts."adler2::Adler32::Struct"]
+ensures = "fun s => s.a.val < 65536 ∧ s.b.val < 65536"
+theorem = "Adler32Proofs.representable"
+
+[contracts."adler2::algo::U32X4::Struct"]
+ensures = "fun s => s.val.length = 4 ∧ ∀ x ∈ s.val, x.val < 4294967296"
+theorem = "U32X4Proofs.representable"
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+requires = "fun _ q => q.val ≠ 0"
+ensures = "fun s q out => out.val.map (fun x => x.val) = s.val.map (fun x => x.val % q.val) ∧ out.val.length = 4 ∧ (∀ x ∈ out.val, x.val < q.val)"
+theorem = "U32X4Proofs.remainder_method"
+
+[contracts."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+requires = "fun s r => ∀ x ∈ s.val, x.val * r.val < 4294967296"
+ensures = "fun s r out => out.val.map (fun x => x.val) = s.val.map (fun x => x.val * r.val) ∧ out.val.length = 4"
+theorem = "U32X4Proofs.multiply_method"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun s t => ∀ p ∈ s.val.zip t.val, p.1.val + p.2.val < 4294967296"
+ensures = "fun s t out => out.val.map (fun x => x.val) = s.val.zipWith (fun x y => x.val + y.val) t.val ∧ out.val.length = 4"
+theorem = "U32X4Proofs.add_method"

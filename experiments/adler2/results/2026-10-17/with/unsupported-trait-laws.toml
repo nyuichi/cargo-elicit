@@ -1,0 +1,15 @@
+# Not processed: official wrapper does not map this trait implementation.
+schema_version = 1
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::TraitImpl"]
+ensures = "fun inst => ∀ (s : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32), q.val ≠ 0 → ∃ out, inst.rem_assign s q = (.ok out) ∧ out.val.map (fun x => x.val) = s.val.map (fun x => x.val % q.val) ∧ out.val.length = 4 ∧ (∀ x ∈ out.val, x.val < q.val)"
+theorem = "U32X4Proofs.remainder_trait_law"
+
+
+[contracts."adler2::algo::impl[6142b20c00108117]::TraitImpl"]
+ensures = "fun inst => ∀ (s : ElicitGenerated.algo.U32X4) (r : Aeneas.Std.U32), (∀ x ∈ s.val, x.val * r.val < 4294967296) → ∃ out, inst.mul_assign s r = (.ok out) ∧ out.val.map (fun x => x.val) = s.val.map (fun x => x.val * r.val) ∧ out.val.length = 4"
+theorem = "U32X4Proofs.multiply_trait_law"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::TraitImpl"]
+ensures = "fun inst => ∀ (s t : ElicitGenerated.algo.U32X4), (∀ p ∈ s.val.zip t.val, p.1.val + p.2.val < 4294967296) → ∃ out, inst.add_assign s t = (.ok out) ∧ out.val.map (fun x => x.val) = s.val.zipWith (fun x y => x.val + y.val) t.val ∧ out.val.length = 4"
+theorem = "U32X4Proofs.add_trait_law"
