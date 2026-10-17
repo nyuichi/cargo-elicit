@@ -825,6 +825,13 @@ impl Index {
                                 p.column,
                                 false,
                             );
+                            if let Some(t) = self.targets.iter_mut().find(|t| t.id == id) {
+                                t.aliases.push(format!(
+                                    "{}::{}",
+                                    tokens(&v.self_ty).replace(' ', ""),
+                                    f.sig.ident
+                                ));
+                            }
                             self.calls(&id, file, &f.block);
                         }
                     }

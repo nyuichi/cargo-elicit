@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Time one arm and preserve actual status observations; never invent metrics."""
 import argparse,hashlib,json,os,pathlib,shutil,signal,subprocess,time,tomllib
-p=argparse.ArgumentParser();p.add_argument('arm',choices=['with','without']);p.add_argument('--root',required=True);p.add_argument('--results',required=True);p.add_argument('--seconds',type=int,default=1800);args=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('arm',choices=['with','without']);p.add_argument('--root',required=True);p.add_argument('--results',required=True);p.add_argument('--seconds',type=int,default=1800);p.add_argument("--api",action="append",default=[]);p.add_argument("--continue-control",action="store_true");args=p.parse_args()
 if args.seconds<=0:p.error('--seconds must be positive')
 root=pathlib.Path(args.root).resolve();out=pathlib.Path(args.results).resolve()
 if out.exists() and any(out.iterdir()):raise SystemExit('Refusing to overwrite prior experiment results')
@@ -52,10 +52,10 @@ def snapshot(reason):
 if args.arm=='with':
  tick=time.monotonic()
  with (out/'init.stdout').open('wb') as stdout,(out/'init.stderr').open('wb') as stderr:
-  init=subprocess.run(['cargo','elicit','init','--tool','aeneas'],cwd=root,stdout=stdout,stderr=stderr,timeout=180)
+  init=subprocess.run(['cargo','elicit','init','--tool','aeneas']+sum((['--api',a] for a in args.api),[]),cwd=root,stdout=stdout,stderr=stderr,timeout=180)
  (out/'initialization.json').write_text(json.dumps({'elapsed_seconds':time.monotonic()-tick,'exit':init.returncode})+'\n')
  if init.returncode:raise SystemExit('initialization failed; inspect captured output')
-cmd=['cargo','elicit','run','--max-seconds',str(args.seconds),'--max-tasks','32'] if args.arm=='with' else ['python3',str(pathlib.Path(__file__).with_name('baseline.py')),str(root)]
+cmd=['cargo','elicit','run','--max-seconds',str(args.seconds),'--max-tasks','32'] if args.arm=='with' else ['python3',str(pathlib.Path(__file__).with_name('baseline.py')),str(root)]+([str(args.seconds)] if args.continue_control else [])
 with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as stderr:
  proc=subprocess.Popen(cmd,cwd=root,stdout=stdout,stderr=stderr,start_new_session=True)
  try:
@@ -69,6 +69,7 @@ with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as st
    if args.arm=='with':
     try:
      s=tomllib.loads((root/'.elicit/state.toml').read_text())
+     if any(e.get('outcome')=='success' and e.get('input')==s.get('input') for e in s.get('proof_plan',{}).get('evidence',{}).values()):any_proof=True
      for r in s.get('results',[]):
       name=r['target'].split('::')[-2]
       if r['outcome']=='success' and r['scope']=='full_contract':any_proof=True
@@ -89,5 +90,5 @@ if args.arm=='with':
  for name in ['events.jsonl','state.toml']:
   source=root/'.elicit'/name
   if source.exists():shutil.copyfile(source,out/('terminal-'+name))
-metrics={'start_unix':start_unix,'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
+metrics={'start_unix':start_unix,'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'api_selectors':args.api,'continue_control':args.continue_control,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
 (out/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')

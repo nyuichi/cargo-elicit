@@ -753,3 +753,53 @@ fn interrupted_checker_is_retained_as_interrupted_without_fingerprint_errors() {
     );
     assert!(!after.verified("fixture::identity::Function"));
 }
+
+#[test]
+fn selected_api_goal_and_revision_checked_plan_are_persisted_without_forging_proof() {
+    let f = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    f.ok(&["init", "--tool", "aeneas", "--api", "identity"]);
+    let s = f.state();
+    assert!(matches!(
+        s.goal,
+        cargo_elicit::plan::VerificationGoal::SelectedApis(_)
+    ));
+    let id = s
+        .targets
+        .values()
+        .find(|t| t.name == "identity")
+        .unwrap()
+        .id
+        .clone();
+    let file = f.dir.path().join(".elicit/cache/plan.json");
+    fs::create_dir_all(file.parent().unwrap()).unwrap();
+    fs::write(&file,serde_json::to_string(&serde_json::json!({"steps":[{"id":"main","goal":id,"kind":"integrate","target":id,"reason":"Prove the original goal","needs":[]}]})).unwrap()).unwrap();
+    let rev = s.revision.to_string();
+    f.ok(&[
+        "agent",
+        "plan",
+        "--file",
+        file.to_str().unwrap(),
+        "--revision",
+        &rev,
+    ]);
+    let s = f.state();
+    assert!(!s.verified(&id));
+    assert_eq!(s.proof_plan.steps.len(), 1);
+    assert!(
+        !f.call(&[
+            "agent",
+            "plan",
+            "--file",
+            file.to_str().unwrap(),
+            "--revision",
+            &rev
+        ])
+        .status
+        .success()
+    );
+    f.ok(&["init", "--whole-package"]);
+    assert!(matches!(
+        f.state().goal,
+        cargo_elicit::plan::VerificationGoal::WholePackage
+    ));
+}

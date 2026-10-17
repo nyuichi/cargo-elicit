@@ -200,6 +200,7 @@ fn worker_body_changes_cannot_complete() {
     let mut s = state();
     s.run.active = Some(Active {
         task: Task {
+            work: None,
             kind: TaskKind::Specify,
             targets: vec!["a".into()],
         },
@@ -247,6 +248,7 @@ fn verification_not_starved_by_unspecified_targets() {
 fn finite_attempts_survive_changing_helpers() {
     let mut s = state();
     let t = Task {
+        work: None,
         kind: TaskKind::Verify,
         targets: vec!["a".into()],
     };
@@ -392,6 +394,7 @@ fn recheck_failure_is_not_reopened_by_other_proof_edits() {
     let mut s = state();
     s.context_input = "stable-context".into();
     let task = Task {
+        work: None,
         kind: TaskKind::Recheck,
         targets: vec!["a".into()],
     };
@@ -470,4 +473,252 @@ fn fallback_model_stamps_continue_tracking_changes_after_a_bound_name_disappears
     t.model_inputs
         .insert("@source".into(), "changed unsupported model source".into());
     assert_ne!(first, t.model_hash());
+}
+
+fn lemma_step(goal: &str) -> cargo_elicit::plan::ProofStep {
+    cargo_elicit::plan::ProofStep {
+        id: "loop_bound".into(),
+        goal: goal.into(),
+        kind: cargo_elicit::plan::StepKind::Lemma,
+        target: None,
+        reason: "Needed to establish the caller's overflow precondition".into(),
+        needs: vec![],
+        statement: Some("True".into()),
+        theorem: Some("Lemmas.bound".into()),
+    }
+}
+#[test]
+fn selected_goals_do_not_require_unrelated_apis_but_never_hide_package_inventory() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into()]);
+    s.processing_input = s.input.clone();
+    s.results.push(proof("a"));
+    assert!(s.complete(true));
+    assert_eq!(s.targets.len(), 3);
+    s.targets.get_mut("b").unwrap().removed = true;
+    assert!(!s.complete(true), "selection cannot hide removed APIs");
+    s.targets.get_mut("b").unwrap().removed = false;
+    s.goal = VerificationGoal::WholePackage;
+    assert!(!s.complete(true));
+}
+#[test]
+fn plans_reject_cycles_unknown_dependencies_and_foreign_goals() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into()]);
+    let mut p = lemma_step("a");
+    p.needs = vec![p.id.clone()];
+    assert!(install(&mut s, vec![p]).is_err());
+    let mut p = lemma_step("a");
+    p.needs = vec!["missing".into()];
+    assert!(install(&mut s, vec![p]).is_err());
+    assert!(install(&mut s, vec![lemma_step("b")]).is_err());
+}
+#[test]
+fn checked_lemma_is_progress_but_never_api_completion_and_edits_invalidate_it() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into()]);
+    let p = lemma_step("a");
+    install(&mut s, vec![p.clone()]).unwrap();
+    let before = s.clone();
+    assert!(!checked(&s, &p));
+    s.proof_plan.evidence.insert(
+        p.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&p),
+            outcome: Outcome::Success,
+            cache: "cache".into(),
+        },
+    );
+    assert!(checked(&s, &p));
+    assert!(scheduler::advanced(&before, &s));
+    assert!(!s.verified("a"));
+    s.input = "edited".into();
+    assert!(!checked(&s, &p));
+}
+#[test]
+fn planner_inspects_goals_before_helpers_and_returns_to_caller() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["c".into()]);
+    s.targets.get_mut("c").unwrap().calls.insert("a".into());
+    let t = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(t.kind, TaskKind::Plan);
+    assert_eq!(t.targets, vec!["c"]);
+    let p = ProofStep {
+        id: "helper".into(),
+        goal: "c".into(),
+        kind: StepKind::Contract,
+        target: Some("a".into()),
+        reason: "Required by caller c".into(),
+        needs: vec![],
+        statement: None,
+        theorem: None,
+    };
+    install(&mut s, vec![p]).unwrap();
+    assert_eq!(
+        scheduler::next(&s, true, &Limits::default())
+            .unwrap()
+            .targets,
+        vec!["a"]
+    );
+    s.results.push(proof("a"));
+    let t = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(t.kind, TaskKind::Integrate);
+    assert_eq!(t.targets, vec!["c"]);
+}
+#[test]
+fn plan_edits_cannot_reuse_a_different_lemma_and_selectors_reject_ambiguity() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    let p = lemma_step("a");
+    install(&mut s, vec![p.clone()]).unwrap();
+    s.proof_plan.evidence.insert(
+        p.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&p),
+            outcome: Outcome::Success,
+            cache: "cache".into(),
+        },
+    );
+    let mut changed = p;
+    changed.statement = Some("False".into());
+    install(&mut s, vec![changed]).unwrap();
+    assert!(s.proof_plan.evidence.is_empty());
+    s.targets.get_mut("b").unwrap().name = "a".into();
+    assert!(resolve(&s, &["a".into()]).is_err());
+}
+
+#[test]
+fn plan_retry_keys_ignore_checker_cache_paths_and_explanatory_text() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    let p = lemma_step("a");
+    install(&mut s, vec![p.clone()]).unwrap();
+    s.proof_plan.evidence.insert(
+        p.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&p),
+            outcome: Outcome::Unresolved,
+            cache: "cache1".into(),
+        },
+    );
+    let task = Task {
+        kind: TaskKind::ProveLemma,
+        targets: vec!["a".into()],
+        work: Some(p.id.clone()),
+    };
+    let key = scheduler::task_input(&s, &task);
+    s.proof_plan.evidence.get_mut(&p.id).unwrap().cache = "cache2".into();
+    s.proof_plan.steps[0].reason =
+        "Additional diagnostics do not change the mathematical task".into();
+    assert_eq!(key, scheduler::task_input(&s, &task));
+}
+#[test]
+fn failed_prerequisite_returns_to_bounded_replanning() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into()]);
+    let p = lemma_step("a");
+    install(&mut s, vec![p.clone()]).unwrap();
+    let t = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(t.kind, TaskKind::ProveLemma);
+    s.proof_plan.evidence.insert(
+        p.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&p),
+            outcome: Outcome::Unresolved,
+            cache: "cache".into(),
+        },
+    );
+    s.run.attempts.insert(
+        t.key(),
+        Attempt {
+            failed: true,
+            last_input: scheduler::task_input(&s, &t),
+            total: 1,
+            ..Default::default()
+        },
+    );
+    let repair = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(repair.kind, TaskKind::Plan);
+    assert_eq!(repair.work.as_deref(), Some("repair"));
+    s.run.attempts.insert(
+        repair.key(),
+        Attempt {
+            failed: true,
+            last_input: scheduler::task_input(&s, &repair),
+            total: 1,
+            ..Default::default()
+        },
+    );
+    assert!(scheduler::next(&s, true, &Limits::default()).is_none());
+}
+
+#[test]
+fn root_dependency_uses_its_own_prerequisites_and_rejects_delegation_cycles() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["c".into(), "a".into()]);
+    let delegate = ProofStep {
+        id: "need_a".into(),
+        goal: "c".into(),
+        kind: StepKind::Contract,
+        target: Some("a".into()),
+        reason: "Caller c uses selected API a".into(),
+        needs: vec![],
+        statement: None,
+        theorem: None,
+    };
+    let lemma = lemma_step("a");
+    install(&mut s, vec![delegate.clone(), lemma]).unwrap();
+    let t = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(t.kind, TaskKind::ProveLemma);
+    assert_eq!(t.work.as_deref(), Some("loop_bound"));
+    let back = ProofStep {
+        id: "need_c".into(),
+        goal: "a".into(),
+        kind: StepKind::Contract,
+        target: Some("c".into()),
+        reason: "Would create circular root completion".into(),
+        needs: vec![],
+        statement: None,
+        theorem: None,
+    };
+    assert!(install(&mut s, vec![delegate, back]).is_err());
+}
+
+#[test]
+fn saved_lemma_is_checked_before_reauthoring_and_new_input_reopens_checkpoint() {
+    use cargo_elicit::plan::*;
+    let root = tempfile::tempdir().unwrap();
+    let dir = root.path().join("elicit-proofs/aeneas");
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(dir.join("Lemmas.lean"), "import ElicitContracts\n").unwrap();
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.scope.manifest_path = root
+        .path()
+        .join("Cargo.toml")
+        .to_string_lossy()
+        .into_owned();
+    install(&mut s, vec![lemma_step("a")]).unwrap();
+    assert!(checkpoint_needed(&s));
+    s.proof_plan.last_checkpoint = checkpoint_key(&s);
+    assert!(!checkpoint_needed(&s));
+    s.input = "new proof input".into();
+    assert!(checkpoint_needed(&s));
 }

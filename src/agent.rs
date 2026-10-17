@@ -11,18 +11,28 @@ use std::{
 
 pub fn instructions(tool: Tool, required: bool, exe: &str) -> String {
     format!(
-        r#"You are the single cargo-elicit specification worker. Work in the original source tree.
+        r#"You are the single cargo-elicit verification worker. Work in the original source tree.
 Verifier: {tool}; verification required: {required}. Use the user's Codex model, reasoning, auth and permissions.
-Write meaningful contracts, type invariants, trait laws and preservation obligations. Do not weaken a contract merely to obtain a proof. If a specification is wrong, report the reason with agent issue before revising it.
+Write meaningful contracts and proof obligations needed for the declared goal; do not author unrelated type invariants or trait laws first. Do not weaken a contract merely to obtain a proof. If a specification is wrong, report the reason with agent issue before revising it.
 Never change runtime behavior, move APIs out of the denominator, copy a function to another project for proof, or hide assumptions as trusted infrastructure. Existing uncommitted work must be preserved. Never git commit/reset/clean. Do not start parallel/subagents.
 Creusot uses creusot_std contracts, invariants, logic/ghost/lemmas. Trusted is acceptable only for specification mode, never evidence of a proof. Kani uses cfg_attr(kani,kani::requires/ensures), arbitrary input proof_for_contract harnesses calling the original function. Put models and law/preservation harnesses in the original sources; report unsupported invariants/laws instead of pretending coverage.
 Aeneas uses Lean 4. Trait implementation targets are unsupported and remain visible as blocked; do not restore, resubmit or repeatedly investigate their contracts. Prove explicit original method contracts instead; any dictionary law can remain a local support theorem. Type invariants have no generated function-contract constant: state their predicates directly, not as nonexistent ElicitContracts names. Keep persistent files under elicit-proofs/aeneas in the selected package. contracts.toml has schema_version=1 and [contracts."TARGET_ID"] entries with requires (optional Lean predicate), ensures (required Lean predicate), theorem (Lean name). agent show ID reports the generated contract name. Specs.lean optionally defines logical models; Proofs.lean imports ElicitContracts and proves that exact generated proposition. Generated definitions are in ElicitGenerated.lean in the wrapper cache; never edit them. Contracts quantify every argument of the actual translated Lean function, including self, slices, generic parameters and trait dictionaries. ensures receives those arguments followed by the translated output; mutable-reference outputs may carry updated state instead of Rust unit. Use agent show for contract names and inspect the freshly generated signature. Reuse the recorded diagnostic cache for original model inspection. Keep scratch compiler/proof objects under .elicit/cache, not among persistent proof sources. Structs, methods and local helper calls are supported when the translated body and its transitive proof dependencies are checked; trait-implementation laws still require explicit method obligations. Do not use sorry, project axioms or native_decide as proof evidence. In specification mode Proofs.lean need not exist. Unsupported mappings must remain issues.
+Goal-directed verification: read the selected goal and proof_plan in each task. Do not drain every helper or type first. A Plan turn must inspect/attempt the goal's translated body, state the goal contract, and identify actual missing invariants or lemmas. Keep the plan focused on completing that goal; follow BENCHMARK_TASK.md when present. You may submit the goal contract before its proof and need not submit unrelated type invariants. Then install the plan with {exe} agent plan --file PATH --revision N. JSON format: {{"steps":[{{"id":"unique_id","goal":"ROOT_TARGET_ID","kind":"contract|lemma|integrate","target":"TARGET_ID or null","reason":"why this is needed at the caller","needs":["step_id"],"statement":"Lean proposition or null","theorem":"Lean theorem name or null"}}]}}. Preserve existing steps for other goals when updating. Contract steps prepare an original helper/API contract and proof; integrate steps target the root API and return to its body; lemma steps have target=null and name an exact proposition and theorem in Lemmas.lean. Plans can be revised after new proof failures; no plan or declared dependency is proof evidence. Do not invent prerequisites just to populate a plan. A directly proved goal needs no extra steps: install an integration step for it. For multiple goals first inspect each, then do prerequisites in declared order. Planning turns are short (the supplied turn_seconds is the deadline): save a concise concrete plan before that deadline. Probe the hard body within the planning turn instead of spending the entire turn polishing leaf proofs. Final proofs must preserve the user's arbitrary-input contract.
+Aeneas checkpoint files: Lemmas.lean imports ElicitContracts and contains independently compilable checked lemmas. Proofs.lean may import Lemmas. Keep unfinished experiments in .elicit/cache; never put sorry or failing attempts in checkpoint modules. Add lemma statements/theorem names to the plan. Finish a turn after a useful checkpoint so the scheduler can kernel-check it. For long tasks, save completed lemmas and update the plan instead of losing them in one uncompleted API task. API ledger evidence remains separate. Use ElicitAdapter.contract_to_spec to convert a checked existential execution contract to an Aeneas WP specification, and generate a caller-facing theorem with `elicit_spec rule_name from contract_theorem` after the helper theorem, before its callers. The pinned Aeneas uses @[step] for step* registration (not the mvcgen @[spec] attribute); the axiom audit checks these dependencies too.
 Use the ledger CLI: {exe} agent show [ID]; {exe} agent submit ID --revision N --note REASON [--depends ID ...] [--unit UNIT ...]; {exe} agent depend ID DEPENDENCY --revision N; {exe} agent issue ID --revision N --reason REASON. Fetch the current revision with agent show after source edits. Submit runs syntax/type processing through the verifier and rejects changing inputs. Do not edit state.toml directly.
 You may run verifier experiments, but only cargo-elicit's official wrapper records proof evidence. agent verify is available outside active turns; during an active turn finish and let the scheduler run the wrapper while edits are stopped.
 Do not claim verified yourself. Preserve partial results and limitations. For a blocked task leave one concise agent issue. It blocks automatic retries until relevant semantic inputs change or an explicit run --retry; adding more diagnostic text does not unblock it. Submit every target separately with its current revision; a completed turn without accepted work is not success.
 "#
     )
 }
+#[derive(Debug)]
+pub struct WorkerDeadline;
+impl std::fmt::Display for WorkerDeadline {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Codex task deadline exceeded")
+    }
+}
+impl std::error::Error for WorkerDeadline {}
 pub struct Codex {
     child: Child,
     input: ChildStdin,
@@ -112,11 +122,10 @@ impl Codex {
                     self.seq += 1;
                     let _=self.send(json!({"id":self.seq,"method":"turn/interrupt","params":{"threadId":self.thread,"turnId":id}}));
                 }
-                bail!(if process::interrupted() {
-                    "interrupted"
-                } else {
-                    "Codex task deadline exceeded"
-                });
+                if process::interrupted() {
+                    bail!("interrupted");
+                }
+                return Err(WorkerDeadline.into());
             }
             match self.rx.recv_timeout(Duration::from_millis(100)) {
                 Ok(v) => {
@@ -198,11 +207,17 @@ impl Codex {
         }
         Ok(())
     }
-    pub fn run(&mut self, s: &State, task: &Task, timeout: Duration) -> Result<String> {
+    pub fn run(
+        &mut self,
+        s: &State,
+        task: &Task,
+        timeout: Duration,
+        remaining_seconds: u64,
+    ) -> Result<String> {
         let _ = s; // Only task context changes between turns; shared instructions belong to the thread.
         let details:Vec<_>=task.targets.iter().filter_map(|id|s.targets.get(id)).map(|t|json!({"id":t.id,"file":t.file,"line":t.line,"kind":t.kind,"dependencies":t.dependencies,"stale":t.stale,"notes":t.notes,"required_units":t.required_units,"verification_results":s.results.iter().filter(|r| r.target == t.id).collect::<Vec<_>>()})).collect();
         let text = serde_json::to_string(
-            &json!({"task":task.kind,"targets":details,"input_revision":s.revision,"input_fingerprint":s.input,"completion":"accepted specification submission; for verification prepare original-source proof and finish turn for official wrapper"}),
+            &json!({"task":task.kind,"targets":details,"work":task.work,"goal":s.goal,"proof_plan":s.proof_plan,"remaining_seconds":remaining_seconds,"turn_seconds":timeout.as_secs(),"input_revision":s.revision,"input_fingerprint":s.input,"completion":"Plan: inspect the goal body, attempt its proof, and install concrete missing prerequisites. Other work: prepare the assigned contract/lemma, reconnect it to the caller, then finish for kernel checking. API completion always requires its full contract."}),
         )?;
         let start = Instant::now();
         let response = self.request(

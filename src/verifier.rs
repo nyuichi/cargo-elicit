@@ -356,9 +356,59 @@ pub fn verify(
             }
         }
     }
+    let mut lemma_results = std::collections::BTreeMap::new();
+    if s.tool == Tool::Aeneas && !process::interrupted() && after.as_ref().ok() == Some(&before) {
+        if let Ok((o, Some(e))) = &execute {
+            if !o.timeout && !o.interrupted {
+                for step in s
+                    .proof_plan
+                    .steps
+                    .iter()
+                    .filter(|p| p.kind == crate::plan::StepKind::Lemma)
+                {
+                    if e["lemmas"][&step.id]["step_hash"].as_str()
+                        == Some(crate::plan::step_hash(step).as_str())
+                    {
+                        lemma_results.insert(
+                            step.id.clone(),
+                            crate::plan::LemmaEvidence {
+                                input: before.clone(),
+                                step_hash: crate::plan::step_hash(step),
+                                outcome: if e["lemmas"][&step.id]["checked"] == true {
+                                    Outcome::Success
+                                } else {
+                                    Outcome::Unresolved
+                                },
+                                cache: dir.to_string_lossy().into_owned(),
+                            },
+                        );
+                    }
+                }
+            }
+        }
+    }
     // Keep only a typed, bounded summary in the ledger. Native tool output can
     // contain source excerpts or environment secrets and is deliberately not logged.
     store.transaction(None, |state| {
+        state.proof_plan.evidence.extend(lemma_results.clone());
+        if s.tool == Tool::Aeneas
+            && after.as_ref().ok() == Some(&before)
+            && !process::interrupted()
+            && execute
+                .as_ref()
+                .is_ok_and(|(o, _)| !o.timeout && !o.interrupted)
+        {
+            state.proof_plan.last_checkpoint = crate::plan::checkpoint_key(&s);
+        }
+        if s.tool == Tool::Aeneas
+            && after.as_ref().ok() == Some(&before)
+            && !process::interrupted()
+            && execute
+                .as_ref()
+                .is_ok_and(|(o, _)| o.code == Some(0) && !o.timeout && !o.interrupted)
+        {
+            state.processing_input = before.clone();
+        }
         for r in &results {
             if let Some(old) = state.results.iter_mut().find(|p| p.id == r.id) {
                 *old = r.clone();
@@ -368,7 +418,19 @@ pub fn verify(
         }
         Ok(())
     })?;
+    store.event(
+        "lemma_checks_finished",
+        serde_json::json!({"input":before,"results":lemma_results}),
+    )?;
     store.event("verification_finished", serde_json::json!({"requested":ids,"input":before,"results":results.iter().map(|r| serde_json::json!({"target":r.target,"outcome":r.outcome,"scope":r.scope,"elapsed_ms":r.elapsed_ms})).collect::<Vec<_>>()}))?;
+    if ids.is_empty()
+        && (execute.is_err()
+            || execute.as_ref().is_ok_and(|(o, e)| {
+                o.code != Some(0) && e.is_none() && !o.timeout && !o.interrupted
+            }))
+    {
+        bail!("verification environment failed during lemma checkpoint; inspect the latest cache");
+    }
     Ok(results)
 }
 pub(crate) fn safe_project(s: &State) -> Result<bool> {

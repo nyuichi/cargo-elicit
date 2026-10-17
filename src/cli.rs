@@ -35,6 +35,12 @@ enum Commands {
         tool: Option<Tool>,
         #[command(flatten)]
         scope: ScopeArgs,
+        /// Verify only these API roots; accepts exact IDs, aliases, or unique names.
+        #[arg(long = "api", conflicts_with = "whole_package")]
+        apis: Vec<String>,
+        /// Explicitly replace selected roots with the whole-package goal.
+        #[arg(long)]
+        whole_package: bool,
     },
     /// Resume work, bounded by task/time/attempt limits. Exit: 0 complete, 1 unresolved, 2 environment, 130 interrupted.
     Run {
@@ -80,6 +86,13 @@ struct ScopeArgs {
 }
 #[derive(Subcommand)]
 enum AgentCommand {
+    /// Install a JSON proof plan {"steps": [...]} without accepting proof evidence.
+    Plan {
+        #[arg(long)]
+        file: PathBuf,
+        #[arg(long)]
+        revision: u64,
+    },
     Show {
         id: Option<String>,
     },
@@ -206,7 +219,13 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
 fn execute(cli: Cli) -> Result<i32> {
     let root = root(&cli)?;
     let mut engine = Analyzer::default();
-    if let Commands::Init { tool, scope } = &cli.command {
+    if let Commands::Init {
+        tool,
+        scope,
+        apis,
+        whole_package,
+    } = &cli.command
+    {
         let store = Store { root };
         let _run = store.lock("run")?;
         let _state = store.state_lock()?;
@@ -258,6 +277,18 @@ fn execute(cli: Cli) -> Result<i32> {
         s.context_input = context_input;
         s.input_files = input_files;
         s.reconcile(targets, incomplete, input);
+        if !apis.is_empty() || *whole_package {
+            let goal = if *whole_package {
+                crate::plan::VerificationGoal::WholePackage
+            } else {
+                crate::plan::VerificationGoal::SelectedApis(crate::plan::resolve(&s, apis)?)
+            };
+            if goal != s.goal {
+                s.goal = goal;
+                s.proof_plan = Default::default();
+                s.run.attempts.clear();
+            }
+        }
         store.save(&mut s)?;
         println!(
             "Initialized {} ({}, features {:?}, target {}). {} definitions. Existing source and results preserved.",
@@ -314,7 +345,19 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
         .collect();
     let types: Vec<_> = active.iter().filter(|t| !t.kind.proof()).collect();
     let functions: Vec<_> = active.iter().filter(|t| t.kind.proof()).collect();
-    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"complete":s.complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"blocked":active.iter().filter(|t| t.blocker.is_some() || s.unsupported(&t.id).is_some()).map(|t| json!({"id":t.id,"reason":s.unsupported(&t.id).map(str::to_string).or_else(||t.blocker.as_ref().map(|b|b.reason.clone()))})).collect::<Vec<_>>(),"analysis_incomplete":s.analysis_incomplete,"run":s.run});
+    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"goal":s.goal,"proof_plan":s.proof_plan,"checked_lemmas":s.proof_plan.steps.iter().filter(|p| p.kind==crate::plan::StepKind::Lemma && crate::plan::checked(s,p)).count(),"complete":s.complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"blocked":active.iter().filter(|t| t.blocker.is_some() || s.unsupported(&t.id).is_some()).map(|t| json!({"id":t.id,"reason":s.unsupported(&t.id).map(str::to_string).or_else(||t.blocker.as_ref().map(|b|b.reason.clone()))})).collect::<Vec<_>>(),"analysis_incomplete":s.analysis_incomplete,"run":s.run});
+    if !as_json {
+        println!("Goal: {}", serde_json::to_string(&s.goal)?);
+        println!(
+            "Proof plan: {} steps, {} current checked lemmas",
+            s.proof_plan.steps.len(),
+            s.proof_plan
+                .steps
+                .iter()
+                .filter(|p| p.kind == crate::plan::StepKind::Lemma && crate::plan::checked(s, p))
+                .count()
+        );
+    }
     if as_json {
         println!(
             "{}",
@@ -378,6 +421,21 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
 fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<i32> {
     let s = sync(store, engine)?;
     match command {
+        AgentCommand::Plan { file, revision } => {
+            #[derive(serde::Deserialize)]
+            #[serde(deny_unknown_fields)]
+            struct Document {
+                steps: Vec<crate::plan::ProofStep>,
+            }
+            let doc: Document = serde_json::from_slice(&std::fs::read(file)?)?;
+            let _verification = store.lock("verification")?;
+            store.transaction(Some(revision), |s| crate::plan::install(s, doc.steps))?;
+            store.event(
+                "plan_installed",
+                json!({"steps":store.load()?.proof_plan.steps}),
+            )?;
+            println!("plan accepted; no proof evidence accepted");
+        }
         AgentCommand::Show { id } => {
             println!(
                 "{}",
@@ -541,6 +599,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
     if limits.max_tasks == 0
         || limits.max_seconds == 0
         || limits.task_seconds == 0
+        || limits.plan_seconds == 0
         || limits.verify_seconds == 0
         || limits.max_attempts == 0
         || limits.max_no_progress == 0
@@ -602,7 +661,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         // AI to solve any API ahead of another; it only checks saved artifacts.
         if config.verification.required && s.tool == Tool::Aeneas {
             let ids = crate::aeneas::prepared_targets(&s)?;
-            if !ids.is_empty() {
+            if !ids.is_empty() || crate::plan::checkpoint_needed(&s) {
                 let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
                 if remaining == 0 {
                     break;
@@ -724,13 +783,23 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             codex.as_mut().unwrap().run(
                 &s,
                 &task,
-                Duration::from_secs(limits.task_seconds.min(remaining)),
+                Duration::from_secs(limits.task_seconds.min(remaining).min(
+                    if task.kind == TaskKind::Plan {
+                        limits.plan_seconds
+                    } else {
+                        u64::MAX
+                    },
+                )),
+                remaining,
             )
         })();
         store.event(
             "worker_finished",
             json!({"task":task,"called":!refreshed,"completed":result.is_ok()}),
         )?;
+        let worker_deadline = result
+            .as_ref()
+            .is_err_and(|e| e.is::<crate::agent::WorkerDeadline>());
         // A failed/interrupted worker is killed before releasing work to a verifier.
         if result.is_err() {
             codex = None;
@@ -745,9 +814,33 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             return Ok(130);
         }
         let mut after = sync(store, engine)?;
+        if (result.is_ok() || worker_deadline)
+            && s.tool == Tool::Aeneas
+            && task.kind != TaskKind::Plan
+            && !refreshed
+            && (task.work.is_some() || task.kind == TaskKind::Integrate)
+            && !process::interrupted()
+        {
+            let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
+            if remaining > 0 {
+                // Lemmas are kernel checkpoints, never API acceptance. This call
+                // also collects every independently ready API proof in the cache.
+                verifier::verify(
+                    store,
+                    &[],
+                    Some(after.revision),
+                    limits.verify_seconds.min(remaining),
+                )?;
+                after = sync(store, engine)?;
+            }
+        }
         let mut proof_ok = refreshed;
         let mut proof_environment_error = false;
-        if result.is_ok() && !refreshed && task.kind == TaskKind::Verify && !process::interrupted()
+        if result.is_ok()
+            && !refreshed
+            && task.kind == TaskKind::Verify
+            && task.work.is_none()
+            && !process::interrupted()
         {
             let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
             if remaining > 0 {
@@ -773,7 +866,23 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         }
         let progress = scheduler::advanced(&before, &after);
         let success = result.is_ok()
-            && if task.kind == TaskKind::Verify {
+            && if task.kind == TaskKind::Plan {
+                task.targets.iter().all(|id| {
+                    after.proof_plan.inspected.get(id)
+                        == Some(&crate::plan::inspection_input(&after, id))
+                })
+            } else if let Some(work) = &task.work {
+                after
+                    .proof_plan
+                    .steps
+                    .iter()
+                    .find(|p| &p.id == work)
+                    .is_some_and(|p| crate::plan::checked(&after, p))
+            } else if task.kind == TaskKind::Integrate {
+                task.targets
+                    .iter()
+                    .all(|id| crate::plan::goal_done(&after, id))
+            } else if task.kind == TaskKind::Verify {
                 proof_ok
             } else {
                 progress
@@ -786,11 +895,13 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         store.transaction(None, |s| {
             s.run.active = None;
             let attempt = s.run.attempts.entry(key.clone()).or_default();
-            attempt.failed = !success;
+            attempt.failed = !success && !progress;
             attempt.no_progress = if progress { 0 } else { attempt.no_progress + 1 };
             attempt.last_input = scheduler::task_input(&after, &task);
             attempt.last_result = if success {
                 "completed with accepted work"
+            } else if worker_deadline {
+                "worker task deadline reached; saved checkpoints retained"
             } else if failure {
                 "worker failed, interrupted, approval needed, or disconnected; partial work retained"
             } else if proof_environment_error {
@@ -807,8 +918,8 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             }
             Ok(())
         })?;
-        store.event("task_finished", json!({"task":task,"input":after.input,"success":success,"forward_progress":progress,"checker_only":refreshed}))?;
-        if failure || proof_environment_error {
+        store.event("task_finished", json!({"task":task,"input":after.input,"success":success,"forward_progress":progress,"checker_only":refreshed,"worker_deadline":worker_deadline}))?;
+        if (failure && !worker_deadline) || proof_environment_error {
             if process::interrupted() {
                 break;
             }

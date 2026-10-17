@@ -99,3 +99,6 @@ cargo test --release --locked --test native -- --ignored --test-threads=1
 Regular CLI tests use actual Cargo and rust-analyzer with deterministic Codex and verifier protocol fixtures. Native tests use actual verifiers to check both modes, interruption and resumption, and reuse after cache deletion. They do not execute a live AI turn. See [Testing](docs/testing.md).
 
 Specification: [v0.6](docs/spec-v0.6.md). License: [MIT](LICENSE-MIT) OR [Apache-2.0](LICENSE-APACHE).
+
+For selected API goals, caller-driven proof plans, intermediate Lean checkpoints,
+and reusable Aeneas `step*` rules, see [Goal-directed Aeneas verification](docs/goal-directed-aeneas.md).

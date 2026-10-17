@@ -27,3 +27,9 @@ The follow-up runner additionally captures a preplanned first-success checkpoint
 The [workflow-repair follow-up](../../docs/experiments/adler2-follow-up.md) records the new implementation, validation and fresh comparison separately from the first pair.
 
 See the [workflow repair follow-up and fresh measurements](../../docs/experiments/adler2-follow-up.md).
+
+The [goal-planning experiment](../../docs/experiments/adler2-goal-planning.md)
+uses `run-arm.py with --api new --api checksum --api from_checksum --api write_slice --api adler32_slice`
+and `run-arm.py without --continue-control`. Both retain the common five-API task;
+the latter continues partial turns within the fixed budget rather than treating
+one completed model turn as the end of the control experiment.

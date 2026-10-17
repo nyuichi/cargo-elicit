@@ -441,3 +441,112 @@ fn aeneas_model_dependencies_do_not_turn_documentation_into_specification_change
     }
     fs::remove_dir_all(root).unwrap();
 }
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
+fn aeneas_planned_lemma_checkpoints_and_caller_registration() {
+    use cargo_elicit::{plan::*, store::Store};
+    let root = prepare_fixture("aeneas", "aeneas");
+    ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
+    let store = Store { root: root.clone() };
+    let checkpoint = || {
+        let revision = state(&root).revision.to_string();
+        let out = cmd(&root)
+            .args(["agent", "verify", "--revision", &revision])
+            .output()
+            .unwrap();
+        assert!(
+            matches!(out.status.code(), Some(0 | 1)),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+    };
+    let id = "elicit-aeneas-fixture::identity::Function";
+    let proof_root = root.join("elicit-proofs/aeneas");
+    let source = r#"import ElicitContracts
+open Aeneas Aeneas.Std Result
+namespace Checkpoint
+
+def helper (x : U32) : Result U32 := .ok x
+
+theorem helper_contract (x : U32) : ∃ y, helper x = ok y ∧ y.val = x.val := by
+  exact ⟨x, rfl, rfl⟩
+elicit_spec helper_rule from helper_contract
+attribute [irreducible] helper
+
+def caller (x : U32) : Result U32 := do
+  let y ← helper x
+  pure y
+
+theorem caller_rule (x : U32) : caller x ⦃ y => y.val = x.val ⦄ := by
+  unfold caller
+  step*
+end Checkpoint
+"#;
+    fs::write(proof_root.join("Lemmas.lean"), source).unwrap();
+    fs::remove_file(proof_root.join("Proofs.lean")).unwrap();
+    ok(&root, &["status"]);
+    let step = ProofStep {
+        id: "caller_rule".into(),
+        goal: id.into(),
+        kind: StepKind::Lemma,
+        target: None,
+        reason: "Exercise composition of a checked helper through the Aeneas step database".into(),
+        needs: vec![],
+        statement: Some("∀ x : Aeneas.Std.U32, Checkpoint.caller x ⦃ y => y.val = x.val ⦄".into()),
+        theorem: Some("Checkpoint.caller_rule".into()),
+    };
+    store
+        .transaction(None, |s| install(s, vec![step.clone()]))
+        .unwrap();
+    checkpoint();
+    let s = store.load().unwrap();
+    assert!(checked(&s, &step));
+    assert!(!s.verified(id));
+    // A changed proposition cannot inherit the old checkpoint even when the
+    // theorem name and original Rust stay unchanged.
+    let mut wrong = step.clone();
+    wrong.statement = Some("False".into());
+    store
+        .transaction(None, |s| install(s, vec![wrong.clone()]))
+        .unwrap();
+    checkpoint();
+    assert!(!checked(&store.load().unwrap(), &wrong));
+    // An admitted theorem is never a checked checkpoint.
+    fs::write(
+        proof_root.join("Lemmas.lean"),
+        format!("{source}\ntheorem bad : False := by sorry\n"),
+    )
+    .unwrap();
+    ok(&root, &["status"]);
+    wrong.theorem = Some("bad".into());
+    store
+        .transaction(None, |s| install(s, vec![wrong.clone()]))
+        .unwrap();
+    checkpoint();
+    assert!(!checked(&store.load().unwrap(), &wrong));
+    // Selected completion does not require authoring the unrelated Marker type.
+    fs::write(proof_root.join("Lemmas.lean"), source).unwrap();
+    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures/aeneas/elicit-proofs/aeneas/Proofs.lean");
+    fs::copy(fixture, proof_root.join("Proofs.lean")).unwrap();
+    ok(&root, &["status"]);
+    let revision = state(&root).revision.to_string();
+    ok(
+        &root,
+        &[
+            "agent",
+            "submit",
+            id,
+            "--revision",
+            &revision,
+            "--note",
+            "Reviewed selected original API",
+        ],
+    );
+    checkpoint();
+    let s = store.load().unwrap();
+    assert!(s.complete(true));
+    assert!(!s.targets["elicit-aeneas-fixture::Marker::Struct"].ready());
+    fs::remove_dir_all(root).unwrap();
+}

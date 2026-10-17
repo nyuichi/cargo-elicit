@@ -540,10 +540,23 @@ pub fn execute(
 ) -> Result<(process::Output, Option<Value>)> {
     let start = Instant::now();
     let run = |cmd: &mut Command| {
-        process::run(
+        let tick = Instant::now();
+        let stage = cmd
+            .get_args()
+            .last()
+            .and_then(|s| Path::new(s).file_name())
+            .filter(|s| s.to_string_lossy().ends_with(".lean"))
+            .or_else(|| Path::new(cmd.get_program()).file_name())
+            .unwrap_or_default()
+            .to_string_lossy()
+            .into_owned();
+        let result = process::run(
             cmd,
             Duration::from_secs(seconds.saturating_sub(start.elapsed().as_secs())),
-        )
+        );
+        crate::store::Store { root: Path::new(&s.scope.manifest_path).parent().unwrap().to_path_buf() }
+            .event("pipeline_stage_finished", json!({"stage":stage,"prove":prove,"elapsed_ms":tick.elapsed().as_millis(),"success":result.as_ref().is_ok_and(|o| o.code==Some(0) && !o.timeout && !o.interrupted)}))?;
+        result
     };
     let mut cmd = Command::new("charon");
     cmd.args([
@@ -636,13 +649,44 @@ pub fn execute(
     if o.code != Some(0) || !prove {
         return Ok((o, Some(json!({"phase":"contracts"}))));
     }
+    let mut lemmas = BTreeMap::new();
+    if root.join("Lemmas.lean").exists() {
+        fs::copy(root.join("Lemmas.lean"), out.join("Lemmas.lean"))?;
+        o = run(&mut lean_command(out, "Lemmas")?)?;
+        if o.code != Some(0) {
+            return Ok((o, Some(json!({"phase":"lemmas"}))));
+        }
+        for step in s
+            .proof_plan
+            .steps
+            .iter()
+            .filter(|p| p.kind == crate::plan::StepKind::Lemma)
+        {
+            let (Some(statement), Some(theorem)) = (&step.statement, &step.theorem) else {
+                continue;
+            };
+            if !crate::plan::lean_name(theorem) {
+                bail!("invalid lemma theorem name");
+            }
+            let source = format!(
+                "import Lemmas\nopen Aeneas Aeneas.Std Result ElicitGenerated\ntheorem ElicitAudit : {statement} := {theorem}\n#print axioms ElicitAudit\n"
+            );
+            fs::write(out.join("Audit.lean"), source)?;
+            o = run(&mut lean_command(out, "Audit")?)?;
+            if o.timeout || o.interrupted {
+                return Ok((o, Some(json!({"phase":"lemma-audit"}))));
+            }
+            lemmas.insert(step.id.clone(), json!({"checked":o.code==Some(0) && standard_axioms(&o.stdout),"step_hash":crate::plan::step_hash(step)}));
+        }
+    }
     if !root.join("Proofs.lean").exists() {
-        return Ok((o, Some(json!({"phase":"translation-only"}))));
+        o.code = Some(0);
+        return Ok((o, Some(json!({"phase":"lemma-audit","lemmas":lemmas}))));
     }
     fs::copy(root.join("Proofs.lean"), out.join("Proofs.lean"))?;
     o = run(&mut lean_command(out, "Proofs")?)?;
     if o.code != Some(0) {
-        return Ok((o, Some(json!({"phase":"proofs"}))));
+        return Ok((o, Some(json!({"phase":"proofs","lemmas":lemmas}))));
     }
     let mut audits = BTreeMap::new();
     for (id, (c, full)) in eligible {
@@ -669,7 +713,10 @@ pub fn execute(
     }
     // An individual rejected theorem does not discard independent successful proofs.
     o.code = Some(0);
-    Ok((o, Some(json!({"phase":"audit","targets":audits}))))
+    Ok((
+        o,
+        Some(json!({"phase":"audit","targets":audits,"lemmas":lemmas})),
+    ))
 }
 fn standard_axioms(text: &str) -> bool {
     let lines = text

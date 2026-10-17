@@ -240,15 +240,28 @@ pub enum TaskKind {
     Recheck,
     Specify,
     Verify,
+    Plan,
+    ProveLemma,
+    Integrate,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Task {
+    #[serde(default)]
+    pub work: Option<String>,
     pub kind: TaskKind,
     pub targets: Vec<String>,
 }
 impl Task {
     pub fn key(&self) -> String {
-        format!("{:?}:{}", self.kind, self.targets.join("|"))
+        format!(
+            "{:?}:{}{}",
+            self.kind,
+            self.targets.join("|"),
+            self.work
+                .as_ref()
+                .map(|w| format!("@{w}"))
+                .unwrap_or_default()
+        )
     }
 }
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -288,6 +301,10 @@ pub struct State {
     pub context_input: String,
     #[serde(default)]
     pub input_files: BTreeMap<String, String>,
+    #[serde(default)]
+    pub goal: crate::plan::VerificationGoal,
+    #[serde(default)]
+    pub proof_plan: crate::plan::ProofPlan,
     pub targets: BTreeMap<String, Target>,
     pub results: Vec<Verification>,
     pub analysis_incomplete: Vec<String>,
@@ -304,6 +321,8 @@ impl State {
             processing_input: String::new(),
             context_input: String::new(),
             input_files: BTreeMap::new(),
+            goal: Default::default(),
+            proof_plan: Default::default(),
             targets: BTreeMap::new(),
             results: vec![],
             analysis_incomplete: vec![],
@@ -386,6 +405,19 @@ impl State {
             })
     }
     pub fn complete(&self, required: bool) -> bool {
+        if let crate::plan::VerificationGoal::SelectedApis(ids) = &self.goal {
+            return !ids.is_empty()
+                && self.processing_input == self.input
+                && self.analysis_incomplete.is_empty()
+                && !self.targets.values().any(|t| {
+                    t.visibility != Visibility::Auxiliary && (t.removed || t.implementation_changed)
+                })
+                && ids.iter().all(|id| {
+                    self.targets.get(id).is_some_and(|t| {
+                        !t.removed && t.ready() && (!required || self.verified(id))
+                    })
+                });
+        }
         self.processing_input == self.input
             && self.analysis_incomplete.is_empty()
             && !self

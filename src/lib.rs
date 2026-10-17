@@ -4,6 +4,7 @@ pub mod analysis;
 pub mod cli;
 pub mod fingerprint;
 pub mod model;
+pub mod plan;
 pub mod process;
 pub mod scheduler;
 pub mod store;

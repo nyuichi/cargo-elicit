@@ -22,6 +22,13 @@ for line in sys.stdin:
    for target in task['targets']:
     exe=os.environ['ELICIT_BIN'];data=json.loads(subprocess.check_output([exe,'agent','show',target['id']]))
     subprocess.run([exe,'agent','submit',target['id'],'--revision',str(data['revision']),'--note','fixture: reviewed original contract'],stdout=subprocess.DEVNULL)
+  if case=='submit' and task['task']=='plan':
+   exe=os.environ['ELICIT_BIN'];data=json.loads(subprocess.check_output([exe,'agent','show']))
+   steps=data.get('proof_plan',{}).get('steps',[])
+   for target in task['targets']:
+    steps.append({'id':'integrate_'+str(len(steps)),'goal':target['id'],'kind':'integrate','target':target['id'],'reason':'Return to original goal after body inspection','needs':[]})
+   file=pathlib.Path('.elicit/cache/mock-plan.json');file.parent.mkdir(parents=True,exist_ok=True);file.write_text(json.dumps({'steps':steps}))
+   subprocess.run([exe,'agent','plan','--file',str(file),'--revision',str(data['revision'])],check=True,stdout=subprocess.DEVNULL)
   send({'method':'thread/tokenUsage/updated','params':{'threadId':thread,'tokenUsage':{'total':{'inputTokens':100,'cachedInputTokens':40,'outputTokens':20}}}})
   send({'method':'turn/completed','params':{'threadId':thread,'turn':{'id':turn,'status':'failed' if case=='failed' else 'completed'}}})
  elif m=='turn/interrupt':

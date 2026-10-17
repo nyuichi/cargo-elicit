@@ -18,8 +18,14 @@ theorem len_spec : ElicitContracts.c_d319ad4cf801c760 := by
   intro state bytes _
   exact ⟨bytes.len, rfl, rfl⟩
 
+elicit_spec value_rule from Proofs.value_spec
+attribute [local irreducible] Counter.impl.value
+
 theorem roundtrip_spec : ElicitContracts.c_af80c86f2878b00e := by
   intro value _
-  exact ⟨value, rfl, rfl⟩
+  apply ElicitAdapter.spec_to_contract
+  change roundtrip value ⦃ result => result = value ⦄
+  unfold roundtrip
+  step*
 
 end Proofs

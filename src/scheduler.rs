@@ -9,6 +9,8 @@ pub struct Limits {
     pub max_seconds: u64,
     #[arg(long, default_value_t = 600)]
     pub task_seconds: u64,
+    #[arg(long, default_value_t = 180)]
+    pub plan_seconds: u64,
     #[arg(long, default_value_t = 600)]
     pub verify_seconds: u64,
     #[arg(long, default_value_t = 3)]
@@ -22,6 +24,7 @@ impl Default for Limits {
             max_tasks: 32,
             max_seconds: 3600,
             task_seconds: 600,
+            plan_seconds: 180,
             verify_seconds: 600,
             max_attempts: 3,
             max_no_progress: 2,
@@ -29,6 +32,14 @@ impl Default for Limits {
     }
 }
 pub fn task_input(s: &State, t: &Task) -> String {
+    if t.work.is_some()
+        || matches!(
+            t.kind,
+            TaskKind::Plan | TaskKind::ProveLemma | TaskKind::Integrate
+        )
+    {
+        return crate::plan::task_input(s, t);
+    }
     if t.kind == TaskKind::Verify {
         return s.input.clone();
     }
@@ -105,6 +116,9 @@ pub fn groups(s: &State) -> Vec<Vec<String>> {
 }
 
 pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
+    if s.tool == Tool::Aeneas && required {
+        return crate::plan::next(s, l);
+    }
     let groups = groups(s);
     for g in &groups {
         let ids = g
@@ -114,6 +128,7 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
             .collect::<Vec<_>>();
         if !ids.is_empty() {
             let t = Task {
+                work: None,
                 kind: TaskKind::Recheck,
                 targets: ids,
             };
@@ -136,6 +151,7 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
                     .collect::<Vec<_>>();
                 if !ids.is_empty() {
                     let t = Task {
+                        work: None,
                         kind: TaskKind::Verify,
                         targets: ids,
                     };
@@ -161,6 +177,7 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
                 .collect::<Vec<_>>();
             if !ids.is_empty() {
                 let t = Task {
+                    work: None,
                     kind: TaskKind::Specify,
                     targets: ids,
                 };
@@ -174,7 +191,15 @@ pub fn next(s: &State, required: bool, l: &Limits) -> Option<Task> {
 }
 // Diagnostic text changes and regressions are not forward progress.
 pub fn advanced(before: &State, after: &State) -> bool {
-    after.targets.iter().any(|(id, t)| {
+    after.proof_plan.steps.iter().any(|step| {
+        crate::plan::checked(after, step)
+            && !before
+                .proof_plan
+                .steps
+                .iter()
+                .find(|s| s.id == step.id)
+                .is_some_and(|s| crate::plan::checked(before, s))
+    }) || after.targets.iter().any(|(id, t)| {
         let was_ready = before.targets.get(id).is_some_and(Target::ready);
         (!was_ready && t.ready()) || (!before.verified(id) && after.verified(id))
     })
