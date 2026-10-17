@@ -76,6 +76,6 @@ with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as st
    time.sleep(2)
  finally:
   if proc.poll() is None:os.killpg(proc.pid,signal.SIGTERM);proc.wait()
-stop=time.monotonic();snapshot('termination')
-metrics={'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':stop-start,'observation_seconds_during_run':sum(c['elapsed_seconds'] for o in observations if o['reason']!='termination' for c in o.get('commands',[])),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
+stop=time.monotonic();snapshot('termination');finished=time.monotonic()
+metrics={'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(c['elapsed_seconds'] for o in observations for c in o.get('commands',[])),'observation_seconds_during_run':sum(c['elapsed_seconds'] for o in observations if o['reason']!='termination' for c in o.get('commands',[])),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
 (out/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')
