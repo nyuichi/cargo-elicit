@@ -28,6 +28,7 @@ pub fn version(program: &str, args: &[&str]) -> Result<String> {
 }
 pub fn tool_version(tool: Tool) -> Result<String> {
     let v = match tool {
+        Tool::Aeneas => crate::aeneas::version(),
         Tool::Kani => version("cargo", &["kani", "--version"]),
         Tool::Creusot => version("cargo", &["creusot", "version"]),
     }?;
@@ -105,9 +106,12 @@ pub fn input(scope: &Scope, tool: Tool, version: &str) -> Result<String> {
     h.update(env!("CARGO_PKG_VERSION"));
     h.update(hash(fs::read(std::env::current_exe()?)?));
     h.update(version_cached()?);
-    tcb_inputs(tool, &mut h)?;
+    tcb_inputs(scope, tool, &mut h)?;
     for (k, v) in std::env::vars().filter(|(k, _)| {
-        k == "RUSTUP_TOOLCHAIN"
+        k == "AENEAS_HOME"
+            || k.starts_with("LEAN_")
+            || k.starts_with("ELAN_")
+            || k == "RUSTUP_TOOLCHAIN"
             || k == "RUSTFLAGS"
             || k == "RUSTDOCFLAGS"
             || k == "CARGO_ENCODED_RUSTFLAGS"
@@ -168,14 +172,25 @@ pub fn creusot_home() -> Option<PathBuf> {
 }
 pub fn tcb_tracked(tool: Tool) -> bool {
     match tool {
+        Tool::Aeneas => crate::aeneas::home().is_ok(),
         Tool::Kani => kani_home().is_some(),
         Tool::Creusot => {
             creusot_home().is_some_and(|p| p.join("share/why3find/packages/creusot").is_dir())
         }
     }
 }
-fn tcb_inputs(tool: Tool, h: &mut Sha256) -> Result<()> {
+fn tcb_inputs(scope: &Scope, tool: Tool, h: &mut Sha256) -> Result<()> {
+    let cache_path = Path::new(&scope.manifest_path)
+        .parent()
+        .unwrap()
+        .join(".elicit/cache/tcb-digests.json");
+    let mut digests = if tool == Tool::Aeneas {
+        InstalledDigests::load(cache_path)
+    } else {
+        InstalledDigests::default()
+    };
     let roots = match tool {
+        Tool::Aeneas => Some(crate::aeneas::tcb_roots()?),
         Tool::Kani => kani_home().map(|p| {
             vec![
                 p.join("library"),
@@ -208,28 +223,141 @@ fn tcb_inputs(tool: Tool, h: &mut Sha256) -> Result<()> {
                 continue;
             }
             if root.is_file() {
-                h.update(fs::read(root)?);
+                h.update(digests.read(&root, tool)?);
             } else {
                 let mut files = WalkDir::new(root)
                     .follow_links(true)
                     .into_iter()
+                    .filter_entry(|e| e.file_name() != ".git")
                     .collect::<std::result::Result<Vec<_>, _>>()?
                     .into_iter()
-                    .filter(|e| e.file_type().is_file())
+                    .filter(|e| {
+                        e.file_type().is_file()
+                            && (tool != Tool::Aeneas || crate::aeneas::tcb_file(e.path()))
+                    })
                     .map(|e| e.into_path())
                     .collect::<Vec<_>>();
                 files.sort();
                 for file in files {
                     h.update(file.to_string_lossy().as_bytes());
-                    h.update(fs::read(file)?);
+                    h.update(digests.read(&file, tool)?);
                 }
             }
         }
     }
-    for name in ["cargo-kani", "cargo-creusot"] {
+    digests.save();
+    for name in if tool == Tool::Aeneas {
+        vec!["aeneas", "charon", "charon-driver", "lake"]
+    } else {
+        vec!["cargo-kani", "cargo-creusot"]
+    } {
         if let Some(p) = executable(name) {
             h.update(fs::read(p)?);
         }
     }
     Ok(())
+}
+
+// Installed Lean environments can contain gigabytes of immutable proof objects.
+// Cache only their content digests, guarded by Unix inode, size, mtime AND ctime.
+// Source inputs are always read directly. This is an acceleration cache, never
+// proof evidence; deleting it reproduces exactly the same fingerprint.
+#[derive(Default)]
+struct InstalledDigests {
+    path: Option<PathBuf>,
+    entries: std::collections::BTreeMap<String, (Vec<u64>, String)>,
+    changed: bool,
+}
+impl InstalledDigests {
+    fn load(path: PathBuf) -> Self {
+        Self {
+            entries: fs::read(&path)
+                .ok()
+                .and_then(|b| serde_json::from_slice(&b).ok())
+                .unwrap_or_default(),
+            path: Some(path),
+            changed: false,
+        }
+    }
+    fn read(&mut self, path: &Path, tool: Tool) -> Result<Vec<u8>> {
+        if tool != Tool::Aeneas {
+            return Ok(fs::read(path)?);
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt;
+            let m = fs::metadata(path)?;
+            let stamp = vec![
+                m.dev(),
+                m.ino(),
+                m.size(),
+                m.mtime() as u64,
+                m.mtime_nsec() as u64,
+                m.ctime() as u64,
+                m.ctime_nsec() as u64,
+            ];
+            let key = path.to_string_lossy().into_owned();
+            if let Some((old, digest)) = self.entries.get(&key) {
+                if old == &stamp {
+                    return Ok(digest.as_bytes().to_vec());
+                }
+            }
+            let digest = hash(fs::read(path)?);
+            self.entries.insert(key, (stamp, digest.clone()));
+            self.changed = true;
+            Ok(digest.into_bytes())
+        }
+        #[cfg(not(unix))]
+        {
+            Ok(hash(fs::read(path)?).into_bytes())
+        }
+    }
+    fn save(&self) {
+        if !self.changed {
+            return;
+        }
+        // Cache failures must not alter proof semantics or prevent verification.
+        let _ = (|| -> Result<()> {
+            let Some(path) = &self.path else {
+                return Ok(());
+            };
+            let parent = path.parent().unwrap();
+            fs::create_dir_all(parent)?;
+            let mut file = tempfile::NamedTempFile::new_in(parent)?;
+            use std::io::Write;
+            file.write_all(&serde_json::to_vec(&self.entries)?)?;
+            file.persist(path)?;
+            Ok(())
+        })();
+    }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    #[test]
+    fn installed_digest_cache_detects_same_size_edits_with_restored_mtime() {
+        let d = tempfile::tempdir().unwrap();
+        let path = d.path().join("model.olean");
+        fs::write(&path, "old").unwrap();
+        let modified = fs::metadata(&path).unwrap().modified().unwrap();
+        let cache = d.path().join("digests.json");
+        let mut digests = InstalledDigests::load(cache.clone());
+        let original = digests.read(&path, Tool::Aeneas).unwrap();
+        digests.save();
+        let mut digests = InstalledDigests::load(cache);
+        assert_eq!(original, digests.read(&path, Tool::Aeneas).unwrap());
+        fs::write(&path, "new").unwrap();
+        fs::File::options()
+            .write(true)
+            .open(&path)
+            .unwrap()
+            .set_times(fs::FileTimes::new().set_modified(modified))
+            .unwrap();
+        assert_ne!(original, digests.read(&path, Tool::Aeneas).unwrap());
+        assert_eq!(
+            digests.read(&path, Tool::Aeneas).unwrap(),
+            hash(b"new").into_bytes()
+        );
+    }
 }

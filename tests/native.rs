@@ -1,4 +1,4 @@
-//! Opt-in tests use actual Kani/Creusot and a deterministic Codex protocol peer.
+//! Opt-in tests use actual Kani/Creusot/Aeneas and a deterministic Codex protocol peer.
 //! They do not call a live AI model or consume API credits.
 use cargo_elicit::model::State;
 use std::{
@@ -50,6 +50,17 @@ fn exercise(tool: &str) {
     for name in ["Cargo.toml", "Cargo.lock", "why3find.json", "src/lib.rs"] {
         if from.join(name).is_file() {
             fs::copy(from.join(name), root.join(name)).unwrap();
+        }
+    }
+    if from.join("elicit-proofs").is_dir() {
+        for e in walkdir::WalkDir::new(from.join("elicit-proofs")) {
+            let e = e.unwrap();
+            let dest = root.join(e.path().strip_prefix(&from).unwrap());
+            if e.file_type().is_dir() {
+                fs::create_dir_all(dest).unwrap();
+            } else {
+                fs::copy(e.path(), dest).unwrap();
+            }
         }
     }
     let p = root.join("bin/codex");
@@ -120,6 +131,43 @@ fn exercise(tool: &str) {
             )
             .all(|t| s.verified(&t.id))
     );
+    if tool == "aeneas" {
+        let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
+        let original = fs::read_to_string(&proof).unwrap();
+        let id = "elicit-aeneas-fixture::identity::Function";
+        let proposition = cargo_elicit::aeneas::contract_name(id);
+        for source in [
+            format!(
+                "import ElicitContracts\n theorem Proofs.identity_spec : {proposition} := by sorry\n"
+            ),
+            format!(
+                "import ElicitContracts\n axiom projectAssumption : {proposition}\n theorem Proofs.identity_spec : {proposition} := projectAssumption\n"
+            ),
+            "import ElicitContracts\n theorem Proofs.identity_spec : True := by trivial\n".into(),
+        ] {
+            fs::write(&proof, source).unwrap();
+            ok(&root, &["status"]);
+            let revision = state(&root).revision.to_string();
+            let o = cmd(&root)
+                .args(["agent", "verify", id, "--revision", &revision])
+                .output()
+                .unwrap();
+            assert_eq!(
+                o.status.code(),
+                Some(1),
+                "{}: {}",
+                root.display(),
+                String::from_utf8_lossy(&o.stderr)
+            );
+            assert!(
+                !state(&root).verified(id),
+                "admitted, assumed or mismatched theorem was accepted"
+            );
+        }
+        fs::write(&proof, original).unwrap();
+        ok(&root, &["run", "--retry"]);
+        assert!(state(&root).complete(true));
+    }
     fs::remove_dir_all(root.join(".elicit/cache")).unwrap();
     ok(&root, &["init"]);
     assert!(
@@ -138,4 +186,10 @@ fn kani_both_modes_interruption_resume() {
 #[ignore = "requires Creusot 0.14.x with Why3find/Why3/SMT setup and rust-analyzer"]
 fn creusot_both_modes_interruption_resume() {
     exercise("creusot");
+}
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
+fn aeneas_both_modes_interruption_resume() {
+    exercise("aeneas");
 }

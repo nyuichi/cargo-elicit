@@ -33,6 +33,31 @@ impl Project {
                 fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
             }
         }
+        if tool == "aeneas" {
+            for name in ["charon", "aeneas", "lake"] {
+                let path = root.join("bin").join(name);
+                fs::copy(
+                    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/aeneas.py"),
+                    &path,
+                )
+                .unwrap();
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+                }
+            }
+            fs::create_dir_all(root.join(".elicit/runtime/aeneas/backends/lean")).unwrap();
+            fs::write(
+                root.join(".elicit/runtime/aeneas/backends/lean/lakefile.lean"),
+                "",
+            )
+            .unwrap();
+            let backend = root.join(".elicit/runtime/aeneas/backends/lean");
+            fs::create_dir_all(backend.join(".lake/build/lib/lean")).unwrap();
+            fs::write(backend.join(".lake/build/lib/lean/Aeneas.olean"), "").unwrap();
+            fs::write(backend.join("lake-manifest.json"), r#"{"packages":[]}"#).unwrap();
+        }
         let p = Self { dir: d };
         p.ok(&["init", "--tool", tool]);
         p
@@ -50,6 +75,12 @@ impl Project {
             )
             .env("ELICIT_REAL_CARGO", env!("CARGO"))
             .env("ELICIT_BIN", env!("CARGO_BIN_EXE_cargo-elicit"));
+        if self.dir.path().join("bin/aeneas").exists() {
+            c.env(
+                "AENEAS_HOME",
+                self.dir.path().join(".elicit/runtime/aeneas"),
+            );
+        }
         c
     }
     fn call(&self, a: &[&str]) -> Output {
@@ -391,4 +422,65 @@ fn unchanged_status_reuses_persisted_semantic_analysis() {
         "{}",
         String::from_utf8_lossy(&out.stderr)
     );
+}
+
+#[test]
+fn aeneas_requires_matching_kernel_proof_and_standard_axioms() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let proof = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&proof).unwrap();
+    fs::write(proof.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
+    p.ok(&["run"]);
+    assert!(p.state().complete(false));
+    p.required();
+    assert_eq!(p.call(&["run"]).status.code(), Some(1));
+    assert!(!p.state().complete(true), "translation is not a proof");
+    fs::write(proof.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    for rejection in [
+        "sorryAx",
+        "projectAssumption",
+        "mismatch",
+        "opaque",
+        "missing",
+        "wrongtarget",
+        "errors",
+    ] {
+        let out = p
+            .cmd()
+            .env("MOCK_AENEAS", rejection)
+            .args(["run", "--retry"])
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(1),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        assert!(!p.state().complete(true));
+    }
+    p.ok(&["run", "--retry"]);
+    assert!(p.state().complete(true));
+    let old = p.state().targets["fixture::identity::Function"]
+        .spec_hash
+        .clone();
+    fs::write(
+        proof.join("Proofs.lean"),
+        "import ElicitContracts\n-- revised proof\n",
+    )
+    .unwrap();
+    p.ok(&["status"]);
+    assert_eq!(
+        old,
+        p.state().targets["fixture::identity::Function"].spec_hash
+    );
+    assert!(
+        !p.state().complete(true),
+        "proof edits invalidate proof freshness"
+    );
+    fs::write(proof.join("Specs.lean"), "-- revised model\n").unwrap();
+    p.ok(&["status"]);
+    let s = p.state();
+    assert_ne!(old, s.targets["fixture::identity::Function"].spec_hash);
+    assert!(!s.targets["fixture::identity::Function"].stale.is_empty());
 }

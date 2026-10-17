@@ -7,12 +7,14 @@ use std::collections::{BTreeMap, BTreeSet};
 pub enum Tool {
     Creusot,
     Kani,
+    Aeneas,
 }
 impl std::fmt::Display for Tool {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
             Self::Creusot => "creusot",
             Self::Kani => "kani",
+            Self::Aeneas => "aeneas",
         })
     }
 }

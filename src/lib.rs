@@ -1,3 +1,4 @@
+pub mod aeneas;
 pub mod agent;
 pub mod analysis;
 pub mod cli;

@@ -346,7 +346,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
             println!(
                 "{}",
                 serde_json::to_string_pretty(&if let Some(id) = id {
-                    json!({"revision":s.revision,"input":s.input,"target":s.targets.get(&id).context("unknown target")?,"verified":s.verified(&id)})
+                    json!({"revision":s.revision,"input":s.input,"target":s.targets.get(&id).context("unknown target")?,"verified":s.verified(&id),"aeneas_contract":if s.tool == Tool::Aeneas {Some(crate::aeneas::contract_name(&id))} else {None}})
                 } else {
                     serde_json::to_value(&s)?
                 })?
@@ -364,6 +364,9 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
             }
             if !s.targets.contains_key(&id) {
                 bail!("unknown target");
+            }
+            if s.tool == Tool::Aeneas {
+                crate::aeneas::check_submission(&s.scope, &s.targets[&id])?;
             }
             let input = verifier::syntax(store, &s, 600)?;
             store.transaction(Some(revision), |s| {

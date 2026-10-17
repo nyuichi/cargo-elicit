@@ -224,3 +224,7 @@ These sources describe notation and protocols for external tools. cargo-elicit's
 [5] OpenAI — Codex app-server: https://developers.openai.com/codex/app-server/
 
 [6] OpenAI — Prompt caching: https://developers.openai.com/api/docs/guides/prompt-caching
+
+## Extension: Aeneas / Lean 4
+
+The implementation additionally supports `verification.tool = "aeneas"` with Lean 4 as its initial proof backend. The original v0.6 Creusot/Kani requirements above remain applicable; this extension uses fresh Charon extraction, Aeneas translation, typed contracts, kernel-checked Lean proofs, and a transitive axiom audit rather than treating translation as proof. Persistent proof files stay in the selected package. See [Aeneas setup and contract format](aeneas.md) for exact toolchain pins, configuration, proof obligations, invalidation, and initial coverage limits. Other Aeneas backends remain outside this extension.

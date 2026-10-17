@@ -26,7 +26,7 @@ impl Store {
                 });
             }
         }
-        bail!("elicit.toml not found; run cargo elicit init --tool creusot (or kani)")
+        bail!("elicit.toml not found; run cargo elicit init --tool creusot (or kani / aeneas)")
     }
     pub fn lock(&self, name: &str) -> Result<Lock> {
         fs::create_dir_all(self.root.join(".elicit/runtime"))?;

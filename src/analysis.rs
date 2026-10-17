@@ -333,6 +333,9 @@ impl Analyzer {
                 ));
             }
         }
+        if tool == Tool::Aeneas {
+            crate::aeneas::attach_specs(&p.scope, &mut ix.targets)?;
+        }
         ix.targets.sort_by(|a, b| a.id.cmp(&b.id));
         ix.incomplete.sort();
         ix.incomplete.dedup();
@@ -527,7 +530,10 @@ impl Index {
         match m {
             syn::Meta::Path(p) => {
                 let s = tokens(p).replace(' ', "");
-                Some(self.cfg.contains(&s) || s == self.tool.to_string())
+                Some(
+                    self.cfg.contains(&s)
+                        || (self.tool != Tool::Aeneas && s == self.tool.to_string()),
+                )
             }
             syn::Meta::NameValue(_) => Some(self.cfg.contains(&tokens(m).replace(' ', ""))),
             syn::Meta::List(l) => {
@@ -1122,7 +1128,7 @@ impl Ra {
         };
         let root = url::Url::from_directory_path(&scope.workspace_root)
             .map_err(|_| anyhow::anyhow!("invalid workspace path"))?;
-        ra.request("initialize",json!({"processId":std::process::id(),"rootUri":root,"capabilities":{"experimental":{"serverStatusNotification":true}},"initializationOptions":{"cargo":{"features":if scope.all_features{json!("all")}else{json!(scope.features)},"noDefaultFeatures":scope.no_default_features,"target":scope.target,"cfgs":[tool.to_string()]},"checkOnSave":false,"diagnostics":{"enable":false}}}))?;
+        ra.request("initialize",json!({"processId":std::process::id(),"rootUri":root,"capabilities":{"experimental":{"serverStatusNotification":true}},"initializationOptions":{"cargo":{"features":if scope.all_features{json!("all")}else{json!(scope.features)},"noDefaultFeatures":scope.no_default_features,"target":scope.target,"cfgs":if tool == Tool::Aeneas {vec![]} else {vec![tool.to_string()]}},"checkOnSave":false,"diagnostics":{"enable":false}}}))?;
         ra.send(json!({"jsonrpc":"2.0","method":"initialized","params":{}}))?;
         ra.settle()?;
         Ok(ra)

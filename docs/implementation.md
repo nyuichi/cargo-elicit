@@ -32,6 +32,8 @@ For Creusot, the adapter cleans only the selected package in cargo-elicit's dedi
 
 Automatically expanding arbitrary type invariants and trait laws into obligations for all implementations is not implemented. The worker may add models, laws, preservation harnesses, and similar definitions to original sources, but unsupported properties must remain reported as issues. Syntax and type checking can establish that an expression is processable; this is distinct from proving that the implementation satisfies the property.
 
+The optional [Aeneas/Lean 4 adapter](aeneas.md) adds a pinned Charon → Aeneas → Lean pipeline. It maps a fresh translation to the original source, generates universally quantified contracts from Rust signatures and project predicates, kernel-checks the corresponding theorems, and audits transitive axioms. Translation, admitted proofs, and project axioms cannot establish full completion. Proof inputs live in the selected package; generated models and proof objects live only in the wrapper cache. See the linked guide for toolchain pins and narrower initial coverage.
+
 ## Changes and reuse
 
 A specification hash change returns the target's specification and directly dependent specifications to review. If B references A and C references B, reviewing B after an A change can update only A's referenced hash without regenerating C's specification, provided B's specification contents do not change. While B awaits review, C's proof completion is also withheld. Once dependencies are restored, existing proof results can be reused if the inputs still match.

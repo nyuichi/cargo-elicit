@@ -25,3 +25,9 @@ Tool versions used during reconstruction:
 - Alt-Ergo 2.6.4
 
 CI runs formatting, Clippy, regular tests, and the MSRV check. It does not install native verifier toolchains or execute live AI turns. Consult the repository's CI status and commit validation records for execution results.
+
+## Aeneas / Lean 4
+
+Regular CLI regression tests use deterministic Charon/Aeneas/Lake protocol peers to exercise both modes, missing proof rejection, axiom rejection, theorem mismatch, and separate contract/proof invalidation. The ignored `aeneas_both_modes_interruption_resume` test instead uses the actual pinned tools and Lean kernel, including rejection of `sorry`, project axioms, and theorem mismatches, with [fixtures/aeneas](../fixtures/aeneas). Follow [Aeneas setup](aeneas.md), then run `cargo test --release --locked --test native aeneas -- --ignored --test-threads=1`. Native tests use the deterministic Codex peer and do not consume AI credits.
+
+The Aeneas extension was validated on Linux x86_64 with 42 regular tests, formatting, Clippy, and Rust 1.86 checks, plus the native Aeneas test using Aeneas `e62dd83`, Charon 0.1.293 (`de8736f` / nightly-2026-09-17), Lean 4.35.0, and the backend's pinned Mathlib dependencies. The earlier reconstruction results above describe the Creusot/Kani baseline.

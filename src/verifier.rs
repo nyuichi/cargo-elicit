@@ -17,9 +17,13 @@ pub fn syntax(store: &Store, s: &State, seconds: u64) -> Result<String> {
     let cache = store.root.join(".elicit/cache");
     fs::create_dir_all(&cache)?;
     let temp = tempfile::tempdir_in(&cache)?;
-    let mut cmd = compile_command(s, temp.path(), false, &version)?;
-    cmd.current_dir(&store.root);
-    let o = process::run(&mut cmd, Duration::from_secs(seconds))?;
+    let o = if s.tool == Tool::Aeneas {
+        crate::aeneas::execute(s, temp.path(), false, seconds)?.0
+    } else {
+        let mut cmd = compile_command(s, temp.path(), false, &version)?;
+        cmd.current_dir(&store.root);
+        process::run(&mut cmd, Duration::from_secs(seconds))?
+    };
     if o.interrupted {
         bail!("interrupted");
     }
@@ -40,6 +44,7 @@ pub fn syntax(store: &Store, s: &State, seconds: u64) -> Result<String> {
 fn compile_command(s: &State, out: &Path, prove: bool, version: &str) -> Result<Command> {
     let mut c = Command::new("cargo");
     match s.tool {
+        Tool::Aeneas => bail!("Aeneas uses the Charon/Lean pipeline"),
         Tool::Kani => {
             c.args(["kani", "-Z", "unstable-options", "-Z", "function-contracts"]);
             if prove {
@@ -154,6 +159,9 @@ pub fn verify(
         .tempdir_in(&cache)?
         .keep();
     let execute = (|| -> Result<(process::Output, Option<Value>)> {
+        if s.tool == Tool::Aeneas {
+            return crate::aeneas::execute(&s, &dir, true, seconds);
+        }
         if s.tool == Tool::Creusot {
             // Force fresh compiler output in our own build cache, never clean user artifacts.
             let mut clean = Command::new("cargo");
@@ -193,6 +201,7 @@ pub fn verify(
             Duration::from_secs(seconds.saturating_sub(started.elapsed().as_secs())),
         )?;
         let evidence = match s.tool {
+            Tool::Aeneas => unreachable!(),
             Tool::Kani => fs::read(dir.as_path().join("kani.json"))
                 .ok()
                 .and_then(|b| serde_json::from_slice(&b).ok()),
@@ -249,6 +258,12 @@ pub fn verify(
                         Ok(())
                     } else {
                         match s.tool {
+                            Tool::Aeneas => crate::aeneas::evidence(
+                                &s,
+                                &s.targets[&r.target],
+                                evidence.as_ref(),
+                                &mut r,
+                            ),
                             Tool::Kani => {
                                 if let Some(e) = evidence {
                                     kani_evidence(&s, &s.targets[&r.target], e, &mut r)
@@ -296,7 +311,7 @@ pub fn verify(
     })?;
     Ok(results)
 }
-fn safe_project(s: &State) -> Result<bool> {
+pub(crate) fn safe_project(s: &State) -> Result<bool> {
     let manifest: toml::Value = toml::from_str(&fs::read_to_string(&s.scope.manifest_path)?)?;
     let root = Path::new(&s.scope.manifest_path).parent().unwrap();
     if root.join("build.rs").exists()
@@ -310,7 +325,7 @@ fn safe_project(s: &State) -> Result<bool> {
         return Ok(false);
     }
     let allowed = match s.tool {
-        Tool::Kani => vec![],
+        Tool::Kani | Tool::Aeneas => vec![],
         Tool::Creusot => vec!["creusot-std"],
     };
     for table in ["dependencies", "dev-dependencies", "build-dependencies"] {
@@ -361,7 +376,7 @@ fn safe_project(s: &State) -> Result<bool> {
     }
     Ok(true)
 }
-fn original_fn(t: &Target) -> Result<syn::ItemFn> {
+pub(crate) fn original_fn(t: &Target) -> Result<syn::ItemFn> {
     // Find by the original definition location, not a duplicate function name.
     let f = syn::parse_file(&fs::read_to_string(&t.file)?)?;
     fn find(items: &[syn::Item], t: &Target) -> Option<syn::ItemFn> {
