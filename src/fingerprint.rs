@@ -133,38 +133,65 @@ pub fn inputs(
         digest.update(bytes);
         digest.update([0]);
     }
-    h.update(serde_json::to_vec(scope)?);
+    let scope_bytes = serde_json::to_vec(scope)?;
+    h.update(&scope_bytes);
+    input_files.insert("@scope".into(), hash(&scope_bytes));
     h.update(tool.to_string());
     h.update(version);
+    input_files.insert("@verifier_version".into(), hash(version));
     h.update(env!("CARGO_PKG_VERSION"));
-    h.update(hash(fs::read(std::env::current_exe()?)?));
-    h.update(version_cached()?);
-    tcb_inputs(scope, tool, &mut h)?;
-    for (k, v) in std::env::vars().filter(|(k, _)| {
-        k == "AENEAS_HOME"
-            || k.starts_with("LEAN_")
-            || k.starts_with("ELAN_")
-            || k == "RUSTUP_TOOLCHAIN"
-            || k == "RUSTFLAGS"
-            || k == "RUSTDOCFLAGS"
-            || k == "CARGO_ENCODED_RUSTFLAGS"
-            || k == "RUSTC"
-            || k == "RUSTC_WRAPPER"
-            || k == "RUSTC_WORKSPACE_WRAPPER"
-            || k.starts_with("CARGO_FEATURE_")
-            || k.starts_with("CARGO_TARGET_")
-            || k == "CREUSOT_DATA_HOME"
-            || k.starts_with("WHY3")
-            || k.starts_with("CARGO_PROFILE_")
-            || k.starts_with("CARGO_BUILD_")
-    }) {
-        h.update(k);
-        h.update(v);
+    let binary = hash(fs::read(std::env::current_exe()?)?);
+    h.update(&binary);
+    input_files.insert("@binary".into(), binary);
+    let compiler = version_cached()?;
+    h.update(&compiler);
+    input_files.insert("@rustc_version".into(), hash(compiler));
+    let mut tcb = Sha256::new();
+    tcb_inputs(scope, tool, &mut tcb)?;
+    let tcb = format!("{:x}", tcb.finalize());
+    h.update(&tcb);
+    input_files.insert("@installed_tcb".into(), tcb);
+    let environment = environment_inputs(tool, reports_are_independent, std::env::vars());
+    for (key, value) in &environment {
+        input_files.insert(format!("@env:{key}"), hash(value));
     }
+    h.update(serde_json::to_vec(&environment)?);
     let context = format!("{:x}", h.finalize());
     proofs.update(context.as_bytes());
     Ok((format!("{:x}", proofs.finalize()), context, input_files))
 }
+// Canonicalize process environment order and selectors which cannot affect this
+// invocation. Aeneas always overwrites LEAN_PATH. For simple crates without
+// compile-time environment reads, the resolved compiler version and pinned TCB
+// replace Rustup's Cargo-only selector variable. Complex crates keep its bytes.
+fn environment_inputs(
+    tool: Tool,
+    simple: bool,
+    vars: impl IntoIterator<Item = (String, String)>,
+) -> std::collections::BTreeMap<String, String> {
+    vars.into_iter()
+        .filter(|(k, _)| {
+            !(tool == Tool::Aeneas && (k == "LEAN_PATH" || (simple && k == "RUSTUP_TOOLCHAIN")))
+                && (k == "AENEAS_HOME"
+                    || k.starts_with("LEAN_")
+                    || k.starts_with("ELAN_")
+                    || k == "RUSTUP_TOOLCHAIN"
+                    || k == "RUSTFLAGS"
+                    || k == "RUSTDOCFLAGS"
+                    || k == "CARGO_ENCODED_RUSTFLAGS"
+                    || k == "RUSTC"
+                    || k == "RUSTC_WRAPPER"
+                    || k == "RUSTC_WORKSPACE_WRAPPER"
+                    || k.starts_with("CARGO_FEATURE_")
+                    || k.starts_with("CARGO_TARGET_")
+                    || k == "CREUSOT_DATA_HOME"
+                    || k.starts_with("WHY3")
+                    || k.starts_with("CARGO_PROFILE_")
+                    || k.starts_with("CARGO_BUILD_"))
+        })
+        .collect()
+}
+
 // Only ignore the two named operational reports in demonstrably simple crates.
 // Arbitrary files, build scripts, dependencies/proc macros, file-input macros and
 // custom compiler hooks retain conservative whole-package invalidation.
@@ -682,5 +709,43 @@ mod report_dependencies {
             "external",
             &manifest["dependencies"]["external"]
         ));
+    }
+}
+
+#[cfg(test)]
+mod environment_regressions {
+    use super::*;
+    #[test]
+    fn order_and_overridden_paths_do_not_change_effective_inputs() {
+        let a = vec![
+            ("AENEAS_HOME".into(), "aeneas".into()),
+            ("ELAN_HOME".into(), "elan".into()),
+            ("LEAN_PATH".into(), "scratch".into()),
+            ("RUSTUP_TOOLCHAIN".into(), "stable".into()),
+        ];
+        let mut b = a.clone();
+        b.reverse();
+        assert_eq!(
+            environment_inputs(Tool::Aeneas, true, a.clone()),
+            environment_inputs(Tool::Aeneas, true, b)
+        );
+        assert_eq!(
+            environment_inputs(Tool::Aeneas, true, a.clone()),
+            environment_inputs(
+                Tool::Aeneas,
+                true,
+                a.iter()
+                    .filter(|(k, _)| k != "RUSTUP_TOOLCHAIN" && k != "LEAN_PATH")
+                    .cloned()
+            )
+        );
+        assert_ne!(
+            environment_inputs(Tool::Aeneas, false, a.clone()),
+            environment_inputs(
+                Tool::Aeneas,
+                false,
+                a.into_iter().filter(|(k, _)| k != "RUSTUP_TOOLCHAIN")
+            )
+        );
     }
 }

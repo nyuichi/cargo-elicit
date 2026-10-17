@@ -181,7 +181,7 @@ pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
         .into_iter()
         .cloned()
         .collect();
-    store.event("input_changed", json!({"previous":s.input,"current":input,"changed_files":changed,"context_changed":s.context_input != context_input}))?;
+    store.event("input_changed", json!({"previous":s.input,"current":input,"previous_manifest_available":!s.input_files.is_empty(),"changed_files":changed.iter().filter(|k|!k.starts_with('@')).collect::<Vec<_>>(),"changed_context_keys":changed.iter().filter(|k|k.starts_with('@')).collect::<Vec<_>>(),"context_changed":s.context_input != context_input}))?;
     s.context_input = context_input;
     s.input_files = input_files;
     s.reconcile(targets, incomplete, input);

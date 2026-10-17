@@ -611,3 +611,25 @@ fn lean_file_reading_and_rust_path_attributes_keep_report_invalidation() {
         assert_ne!(old, p.state().input);
     }
 }
+
+#[test]
+fn simple_aeneas_cargo_selector_and_overridden_lean_path_are_not_source_changes() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let without = p
+        .cmd()
+        .env_remove("RUSTUP_TOOLCHAIN")
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(without.status.success());
+    let original = p.state().input;
+    let with = p
+        .cmd()
+        .env("RUSTUP_TOOLCHAIN", "stable")
+        .env("LEAN_PATH", "/tmp/unused-parent-search-path")
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(with.status.success());
+    assert_eq!(original, p.state().input);
+}

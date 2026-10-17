@@ -1,6 +1,6 @@
 # Adler-32 follow-up after workflow repairs
 
-**Status: implementation validated; fresh authoring pair not yet measured.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
+**Status: ordinary arm completed; repaired product rerun pending.** The [first pair](adler2-comparison.md) exposed unsupported-trait retry loops, coarse proof invalidation, unnecessary worker turns for checking existing proofs, and successful audits omitted from the ledger. This follow-up fixes those mechanisms without prioritizing easy APIs or importing prior proof solutions.
 
 ## Changes under test
 
@@ -25,6 +25,10 @@ Run a fresh ordinary-Codex arm, then the repaired product arm, sequentially with
 The observer now preplans an actual status/text/JSON/list checkpoint after the first successful helper or API record, as well as first-selected-API/halfway-coverage, ten-minute fallback and termination. No human proof hints follow an observation. Observation time, initialization and checker-only refreshes count toward end-to-end time. Freeze terminal events and ledger before post-trial audits. No proof-authoring speedup is inferred from deterministic fixture timings.
 
 Independently check unchanged original sources, fresh extracted model correspondence, exact theorem statements, successful execution and functional postconditions, proof rebuilds and transitive axioms limited to propext/Classical.choice/Quot.sound. Report selected APIs separately from helper results and whole-package completion. Use actual token events; cached input is a subset. A single pair remains exploratory.
+
+## Excluded candidate run
+
+A candidate product trial was stopped after 517.39 seconds, before scoring. Identical source files acquired different fingerprints through Cargo versus direct invocation: environment iteration order, Cargo’s Rustup selector and an overridden Lean path were being hashed as effective inputs. The additional repair canonicalizes environment order, ignores the overridden path, and uses the resolved compiler identity for simple crates while retaining selectors for complex builds. An isolated Cargo/direct/Cargo probe now produces identical fingerprints. Context events now identify hashed context components as well as changed files, without exposing environment values. This interrupted trial is retained as diagnostic cost, not silently counted as a valid paired result. Its proof/specification artifacts are not reused. The completed ordinary arm remains the control because it does not use product fingerprints.
 
 ## Results
 
