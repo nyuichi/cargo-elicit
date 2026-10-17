@@ -1,0 +1,21 @@
+schema_version = 1
+
+[contracts."elicit-aeneas-rich-fixture::impl[e7cfdf9277f6a643]::new::Method"]
+ensures = "fun result => result.value = 0#u32"
+theorem = "Proofs.new_spec"
+
+[contracts."elicit-aeneas-rich-fixture::impl[e7cfdf9277f6a643]::value::Method"]
+ensures = "fun state result => result = state.value"
+theorem = "Proofs.value_spec"
+
+[contracts."elicit-aeneas-rich-fixture::impl[e7cfdf9277f6a643]::set::Method"]
+ensures = "fun state value result => result.value = value"
+theorem = "Proofs.set_spec"
+
+[contracts."elicit-aeneas-rich-fixture::impl[e7cfdf9277f6a643]::len::Method"]
+ensures = "fun state bytes result => result.val = bytes.val.length"
+theorem = "Proofs.len_spec"
+
+[contracts."elicit-aeneas-rich-fixture::roundtrip::Function"]
+ensures = "fun value result => result = value"
+theorem = "Proofs.roundtrip_spec"

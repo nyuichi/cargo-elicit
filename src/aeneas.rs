@@ -1,5 +1,5 @@
 //! Pinned Charon → Aeneas → Lean 4 adapter. Translation is never proof evidence.
-use crate::{fingerprint, model::*, process, verifier};
+use crate::{fingerprint, model::*, process};
 use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -57,10 +57,14 @@ pub fn check_submission(scope: &Scope, t: &Target) -> Result<()> {
             .contracts
             .get(&t.id)
             .context("Aeneas contract missing from elicit-proofs/aeneas/contracts.toml")?;
-        if t.kind != Kind::Function {
-            bail!("Aeneas method/impl contracts require unsupported scope; record an agent issue");
+        if !matches!(t.kind, Kind::Function | Kind::Method) {
+            bail!(
+                "trait implementation laws require explicit method obligations; record an agent issue"
+            );
         }
-        proposition(t, c)?;
+        if c.ensures.trim().is_empty() {
+            bail!("missing Aeneas postcondition");
+        }
     }
     Ok(())
 }
@@ -175,173 +179,141 @@ pub fn tcb_roots() -> Result<Vec<PathBuf>> {
     }
     Ok(roots)
 }
-fn lean_type(t: &syn::Type) -> Option<String> {
-    match t {
-        syn::Type::Tuple(t) if t.elems.is_empty() => Some("Unit".into()),
-        syn::Type::Path(p) if p.qself.is_none() && p.path.segments.len() == 1 => {
-            let n = p.path.segments[0].ident.to_string();
-            Some(match n.as_str() {
-                "bool" => "Bool".into(),
-                "u8" | "u16" | "u32" | "u64" | "u128" | "i8" | "i16" | "i32" | "i64" | "i128" => {
-                    n.to_uppercase()
-                }
-                _ => return None,
-            })
-        }
-        _ => None,
-    }
-}
-fn proposition(t: &Target, c: &Contract) -> Result<String> {
-    let f = verifier::original_fn(t)?;
-    let types = f
-        .sig
-        .inputs
-        .iter()
-        .map(|a| {
-            let syn::FnArg::Typed(a) = a else {
-                bail!("methods are not supported");
-            };
-            lean_type(&a.ty).context("unsupported Aeneas argument type")
-        })
-        .collect::<Result<Vec<_>>>()?;
-    let ret = match &f.sig.output {
-        syn::ReturnType::Default => "Unit".into(),
-        syn::ReturnType::Type(_, t) => lean_type(t).context("unsupported Aeneas return type")?,
-    };
-    let names = (0..types.len())
-        .map(|i| format!("arg{i}"))
-        .collect::<Vec<_>>();
-    let binders = names
-        .iter()
-        .zip(&types)
-        .map(|(n, t)| format!("({n} : {t})"))
-        .collect::<Vec<_>>()
-        .join(" ");
-    let args = names.join(" ");
-    let pred_ty = types.iter().map(|t| format!("{t} → ")).collect::<String>();
-    let pre = c
-        .requires
-        .as_ref()
-        .map(|p| format!("(({p}) : {pred_ty}Prop) {args}"))
-        .unwrap_or_else(|| "True".into());
-    let path =
-        t.id.split("::")
-            .skip(1)
-            .take_while(|v| *v != "Function")
-            .map(|n| format!("«{n}»"))
-            .collect::<Vec<_>>()
-            .join(".");
-    if path.is_empty() || c.ensures.trim().is_empty() {
+fn proposition(t: &Target, c: &Contract, function: &str) -> Result<String> {
+    if c.ensures.trim().is_empty() {
         bail!("missing Aeneas postcondition");
     }
-    let forall = if binders.is_empty() {
-        String::new()
-    } else {
-        format!("∀ {binders}, ")
-    };
+    let pre = c.requires.as_deref().unwrap_or("by intros; exact True");
     Ok(format!(
-        "def {} : Prop :=\n  {forall}({pre}) → ∃ (result : {ret}), ElicitGenerated.{path} {args} = .ok result ∧ ((({}) : {pred_ty}{ret} → Prop) {args} result)\n",
+        "elicit_contract {} for {function} requires ({pre}) ensures ({})\n",
         contract_name(&t.id),
         c.ensures
     ))
 }
-fn extracted(s: &State, t: &Target, llbc: &Value) -> bool {
+fn extracted(s: &State, t: &Target, llbc: &Value) -> Option<(usize, usize, usize, usize)> {
     let tr = &llbc["translated"];
-    if llbc["charon_version"] != "0.1.293"
+    if !matches!(t.kind, Kind::Function | Kind::Method)
+        || llbc["charon_version"] != "0.1.293"
         || llbc["has_errors"] != false
         || tr["runtime_checks"]["overflow_checks"] != true
         || !tr["target_information"]
             .as_array()
             .is_some_and(|ts| ts.len() == 1 && ts[0]["key"] == s.scope.target)
+        || [
+            "monomorphize",
+            "monomorphize_mut",
+            "skip_borrowck",
+            "no_typecheck",
+        ]
+        .iter()
+        .any(|k| tr["options"][k] == true)
     {
-        return false;
+        return None;
     }
-    let expected = t.id.trim_end_matches("::Function").replace('-', "_");
-    let Some(fs) = tr["fun_decls"].as_array() else {
-        return false;
-    };
-    fs.iter().any(|f| {
+    let mut matches = vec![];
+    for f in tr["fun_decls"].as_array()? {
         let m = &f["item_meta"];
-        let name = m["name"]
-            .as_array()
-            .and_then(|parts| {
-                parts
-                    .iter()
-                    .map(|p| {
-                        let i = p["Ident"].as_array()?;
-                        if i.len() != 2 || i[1] != 0 {
-                            return None;
-                        }
-                        i[0].as_str()
-                    })
-                    .collect::<Option<Vec<_>>>()
-            })
-            .map(|parts| parts.join("::"));
-        if name.as_deref() != Some(&expected)
+        let Some(parts) = m["name"].as_array() else {
+            continue;
+        };
+        if parts.last()?["Ident"][0].as_str() != Some(&t.name)
             || m["is_local"] != true
             || m["is_extern"] != false
             || m["has_errors"] != false
             || m["opacity"] != "Transparent"
             || !f["body"]["Structured"].is_object()
         {
-            return false;
+            continue;
         }
         let span = &m["span"]["Untagged"]["data"];
         let Some(file) = tr["files"]
-            .as_array()
-            .and_then(|files| files.iter().find(|f| f["id"] == span["file_id"]))
+            .as_array()?
+            .iter()
+            .find(|f| f["id"] == span["file_id"])
         else {
-            return false;
+            continue;
         };
         let Some(path) = file["name"]["Local"].as_str() else {
-            return false;
+            continue;
         };
         let root = Path::new(&s.scope.manifest_path).parent().unwrap();
-        root.join(path).canonicalize().ok() == Path::new(&t.file).canonicalize().ok()
-            && file["contents"]
+        if root.join(path).canonicalize().ok() != Path::new(&t.file).canonicalize().ok()
+            || !file["contents"]
                 .as_str()
                 .is_some_and(|c| fs::read_to_string(&t.file).is_ok_and(|source| source == c))
-            && span["beg"]["line"]
-                .as_u64()
-                .is_some_and(|line| line <= t.line as u64)
-            && span["end"]["line"]
-                .as_u64()
-                .is_some_and(|line| line >= t.line as u64)
-    })
-}
-fn mapped(s: &State, t: &Target, text: &str) -> bool {
-    if t.kind != Kind::Function {
-        return false;
+        {
+            continue;
+        }
+        let begin = (
+            span["beg"]["line"].as_u64()? as usize,
+            span["beg"]["col"].as_u64()? as usize,
+        );
+        let end = (
+            span["end"]["line"].as_u64()? as usize,
+            span["end"]["col"].as_u64()? as usize,
+        );
+        if begin <= (t.line, t.column) && (t.line, t.column) <= end {
+            matches.push((begin.0, begin.1, end.0, end.1));
+        }
     }
-    let rust_name = t.id.trim_end_matches("::Function").replace('-', "_");
-    let marker = format!("[{}]:", rust_name);
-    let Some((_, tail)) = text.split_once(&marker) else {
-        return false;
-    };
-    let Some((doc, body)) = tail.split_once("-/") else {
-        return false;
-    };
-    let root = Path::new(&s.scope.manifest_path).parent().unwrap();
-    let location = doc.lines().find_map(|l| l.trim().strip_prefix("Source: '"));
-    let Some((file, lines)) = location.and_then(|l| l.split_once("', lines ")) else {
-        return false;
-    };
-    let Some(start) = lines
-        .split(':')
-        .next()
-        .and_then(|v| v.parse::<usize>().ok())
-    else {
-        return false;
-    };
-    let end = lines
-        .split('-')
-        .nth(1)
-        .and_then(|v| v.split(':').next())
-        .and_then(|v| v.parse::<usize>().ok());
-    root.join(file).canonicalize().ok() == Path::new(&t.file).canonicalize().ok()
-        && start <= t.line
-        && end.is_some_and(|end| t.line <= end)
-        && body.trim_start().starts_with(&format!("def {} ", t.name))
+    if matches.len() == 1 {
+        matches.pop()
+    } else {
+        None
+    }
+}
+fn mapped(s: &State, t: &Target, text: &str, span: (usize, usize, usize, usize)) -> Option<String> {
+    let mut matches = vec![];
+    for doc in text.split("/-- ").skip(1) {
+        let Some((header, body)) = doc.split_once("-/") else {
+            continue;
+        };
+        if !header
+            .lines()
+            .next()
+            .is_some_and(|l| l.ends_with(&format!("::{}]:", t.name)))
+        {
+            continue;
+        }
+        let Some(location) = header
+            .lines()
+            .find_map(|l| l.trim().strip_prefix("Source: '"))
+        else {
+            continue;
+        };
+        let Some((file, positions)) = location.split_once("', lines ") else {
+            continue;
+        };
+        let root = Path::new(&s.scope.manifest_path).parent().unwrap();
+        if root.join(file).canonicalize().ok() != Path::new(&t.file).canonicalize().ok() {
+            continue;
+        }
+        if positions.split_whitespace().next()
+            != Some(format!("{}:{}-{}:{}", span.0, span.1, span.2, span.3).as_str())
+        {
+            continue;
+        }
+        let Some(def) = body.trim_start().strip_prefix("def ") else {
+            continue;
+        };
+        let Some(path) = def.split_whitespace().next() else {
+            continue;
+        };
+        if path.rsplit('.').next().map(|v| v.trim_matches(['«', '»'])) != Some(&t.name) {
+            continue;
+        }
+        if !path.chars().all(|c| {
+            c.is_alphanumeric() || (matches!(c, '_' | '.' | '«' | '»') || c == char::from(39))
+        }) {
+            continue;
+        }
+        matches.push(format!("ElicitGenerated.{path}"));
+    }
+    if matches.len() == 1 {
+        matches.pop()
+    } else {
+        None
+    }
 }
 fn lean_command(out: &Path, module: &str) -> Result<Command> {
     let mut c = lake()?;
@@ -408,9 +380,17 @@ pub fn execute(
     if o.code != Some(0) {
         return Ok((o, None));
     }
+    fs::write(
+        out.join("ElicitAdapter.lean"),
+        include_str!("lean/ElicitAdapter.lean"),
+    )?;
+    o = run(&mut lean_command(out, "ElicitAdapter")?)?;
+    if o.code != Some(0) {
+        return Ok((o, None));
+    }
     let m = manifest(&s.scope)?;
     let root = proof_root(&s.scope);
-    let mut contracts = "import ElicitGenerated\nopen Aeneas Aeneas.Std Result\n".to_string();
+    let mut contracts = "import ElicitAdapter\nimport ElicitGenerated\nopen Aeneas Aeneas.Std Result ElicitGenerated\n".to_string();
     if root.join("Specs.lean").exists() {
         fs::copy(root.join("Specs.lean"), out.join("Specs.lean"))?;
         o = run(&mut lean_command(out, "Specs")?)?;
@@ -422,19 +402,20 @@ pub fn execute(
     let mut eligible = BTreeMap::new();
     for t in s.targets.values().filter(|t| !t.removed) {
         if let Some(c) = m.contracts.get(&t.id) {
-            if mapped(s, t, &translated) && extracted(s, t, &llbc) {
-                match proposition(t, c) {
+            if let Some(function) =
+                extracted(s, t, &llbc).and_then(|span| mapped(s, t, &translated, span))
+            {
+                match proposition(t, c, &function) {
                     Ok(p) => {
                         contracts.push_str(&p);
                     }
                     Err(e) if !prove => return Err(e),
                     Err(_) => continue,
                 }
-                let full = t.closed_primitive
-                    && !t.trusted
-                    && t.calls.is_empty()
-                    && t.unresolved_calls.is_empty()
-                    && verifier::safe_project(s)?;
+                // Lean unfolds the actual translated body and its helpers. The
+                // transitive axiom audit also covers their assumptions; an opaque
+                // helper cannot be promoted merely because its caller translated.
+                let full = !t.trusted;
                 eligible.insert(t.id.clone(), (c, full));
             } else if !prove && t.kind.proof() {
                 bail!(
@@ -522,7 +503,7 @@ pub fn evidence(_s: &State, t: &Target, e: Option<&Value>, r: &mut Verification)
             r.scope = Coverage::FullContract;
             r.outcome = Outcome::Success;
             r.reusable = fingerprint::tcb_tracked(Tool::Aeneas);
-            r.summary = "Lean kernel checked the original function contract for all primitive inputs; standard axioms only".into();
+            r.summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only".into();
         } else {
             r.outcome = Outcome::Unresolved;
             r.assumptions

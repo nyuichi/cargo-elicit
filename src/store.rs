@@ -29,6 +29,12 @@ impl Store {
         bail!("elicit.toml not found; run cargo elicit init --tool creusot (or kani / aeneas)")
     }
     pub fn lock(&self, name: &str) -> Result<Lock> {
+        self.lock_for(name, std::time::Duration::ZERO)
+    }
+    pub(crate) fn state_lock(&self) -> Result<Lock> {
+        self.lock_for("state", std::time::Duration::from_secs(120))
+    }
+    fn lock_for(&self, name: &str, wait: std::time::Duration) -> Result<Lock> {
         fs::create_dir_all(self.root.join(".elicit/runtime"))?;
         let f = OpenOptions::new()
             .read(true)
@@ -36,9 +42,25 @@ impl Store {
             .create(true)
             .truncate(false)
             .open(self.root.join(format!(".elicit/runtime/{name}.lock")))?;
-        f.try_lock_exclusive()
-            .with_context(|| format!("{name} is locked by another cargo-elicit process"))?;
-        Ok(Lock(f))
+        let started = std::time::Instant::now();
+        loop {
+            match f.try_lock_exclusive() {
+                Ok(()) => return Ok(Lock(f)),
+                Err(e)
+                    if e.kind() == std::io::ErrorKind::WouldBlock && started.elapsed() < wait =>
+                {
+                    if crate::process::interrupted() {
+                        bail!("interrupted while waiting for {name} lock");
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(20));
+                }
+                Err(e) => {
+                    return Err(e).with_context(|| {
+                        format!("{name} is locked by another cargo-elicit process")
+                    });
+                }
+            }
+        }
     }
     pub fn config(&self) -> Result<Config> {
         let c: Config = toml::from_str(&fs::read_to_string(self.root.join("elicit.toml"))?)?;
@@ -73,7 +95,7 @@ impl Store {
         revision: Option<u64>,
         f: impl FnOnce(&mut State) -> Result<T>,
     ) -> Result<T> {
-        let _lock = self.lock("state")?;
+        let _lock = self.state_lock()?;
         let mut s = self.load()?;
         if revision.is_some_and(|r| r != s.revision) {
             bail!("revision conflict: current revision is {}", s.revision);

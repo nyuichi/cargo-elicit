@@ -17,13 +17,15 @@ if name=='charon':
   'files':[{'id':0,'name':{'Local':'src/lib.rs'},'contents':source}],
   'fun_decls':[{'item_meta':{'name':[{'Ident':['fixture',0]},{'Ident':['identity',0]}],
    'is_local':True,'is_extern':False,'has_errors':False,'opacity':'Transparent',
-   'span':{'Untagged':{'data':{'file_id':0,'beg':{'line':1},'end':{'line':3}}}}},
+   'span':{'Untagged':{'data':{'file_id':0,'beg':{'line':1,'col':0},'end':{'line':3,'col':1}}}}},
    'body':{'Structured':{}}}]}})
  case=os.environ.get('MOCK_AENEAS')
  if case=='opaque':data['translated']['fun_decls'][0]['item_meta']['opacity']='Opaque'
  if case=='missing':data['translated']['fun_decls']=[]
  if case=='wrongtarget':data['translated']['target_information'][0]['key']='other-target'
  if case=='errors':data['has_errors']=True
+ if case in ['specialized','specialized_mut','disabled_checks']:
+  data['translated']['options']={ {'specialized':'monomorphize','specialized_mut':'monomorphize_mut','disabled_checks':'skip_borrowck'}[case]:True }
  out.write_text(json.dumps(data));sys.exit(0)
 if name=='aeneas':
  if args==['-version']:

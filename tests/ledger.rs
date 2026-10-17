@@ -276,7 +276,7 @@ fn atomic_ledger_revision_and_lock_conflicts() {
     store.save(&mut s).unwrap();
     let revision = s.revision;
     let lock = store.lock("state").unwrap();
-    assert!(store.transaction(Some(revision), |_| Ok(())).is_err());
+    assert!(store.lock("state").is_err());
     drop(lock);
     store
         .transaction(Some(revision), |s| {
@@ -318,4 +318,32 @@ fn equal_rank_components_use_id_order() {
         scheduler::groups(&s),
         vec![vec!["y"], vec!["z"], vec!["a"], vec!["b"]]
     );
+}
+
+#[test]
+fn state_transaction_waits_for_concurrent_status_reconciliation() {
+    let d = tempfile::tempdir().unwrap();
+    let store = Store {
+        root: d.path().into(),
+    };
+    std::fs::write(
+        d.path().join("elicit.toml"),
+        toml::to_string(&Config::new(Tool::Kani)).unwrap(),
+    )
+    .unwrap();
+    let mut s = state();
+    store.save(&mut s).unwrap();
+    let held = store.lock("state").unwrap();
+    let release = std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        drop(held);
+    });
+    store
+        .transaction(Some(s.revision), |s| {
+            s.run.last_result = "serialized".into();
+            Ok(())
+        })
+        .unwrap();
+    release.join().unwrap();
+    assert_eq!(store.load().unwrap().run.last_result, "serialized");
 }

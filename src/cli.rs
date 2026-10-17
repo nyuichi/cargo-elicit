@@ -155,7 +155,7 @@ fn root(cli: &Cli) -> Result<PathBuf> {
         .to_path_buf())
 }
 pub fn sync(store: &Store, engine: &mut Analyzer) -> Result<State> {
-    let _lock = store.lock("state")?;
+    let _lock = store.state_lock()?;
     let mut s = store.load()?;
     let previous = serde_json::to_vec(&s)?;
     let package = analysis::package(
@@ -184,7 +184,7 @@ fn execute(cli: Cli) -> Result<i32> {
     if let Commands::Init { tool, scope } = &cli.command {
         let store = Store { root };
         let _run = store.lock("run")?;
-        let _state = store.lock("state")?;
+        let _state = store.state_lock()?;
         let config_path = store.root.join("elicit.toml");
         if !config_path.exists() {
             let tool =

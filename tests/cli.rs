@@ -444,6 +444,9 @@ fn aeneas_requires_matching_kernel_proof_and_standard_axioms() {
         "missing",
         "wrongtarget",
         "errors",
+        "specialized",
+        "specialized_mut",
+        "disabled_checks",
     ] {
         let out = p
             .cmd()

@@ -36,7 +36,7 @@ fn ok(root: &Path, args: &[&str]) {
 fn state(root: &Path) -> State {
     toml::from_str(&fs::read_to_string(root.join(".elicit/state.toml")).unwrap()).unwrap()
 }
-fn exercise(tool: &str) {
+fn exercise_fixture(tool: &str, fixture: &str) {
     let root = tempfile::Builder::new()
         .prefix(&format!("elicit-native-{tool}-"))
         .tempdir()
@@ -44,7 +44,7 @@ fn exercise(tool: &str) {
         .keep();
     let from = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
-        .join(tool);
+        .join(fixture);
     fs::create_dir_all(root.join("src")).unwrap();
     fs::create_dir_all(root.join("bin")).unwrap();
     for name in ["Cargo.toml", "Cargo.lock", "why3find.json", "src/lib.rs"] {
@@ -115,7 +115,51 @@ fn exercise(tool: &str) {
             .replace("required = false", "required = true"),
     )
     .unwrap();
-    ok(&root, &["run", "--retry"]);
+    if fixture == "aeneas-rich" {
+        let mut running = cmd(&root)
+            .args(["run", "--retry"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let mut observed = false;
+        while running.try_wait().unwrap().is_none() {
+            if !observed
+                && state(&root)
+                    .results
+                    .iter()
+                    .any(|r| r.outcome == cargo_elicit::model::Outcome::Success)
+            {
+                let status = cmd(&root).arg("status").output().unwrap();
+                if !status.status.success() {
+                    unsafe {
+                        libc::kill(running.id() as i32, libc::SIGINT);
+                    }
+                    let _ = running.wait();
+                    panic!(
+                        "{}: status failed during verification: {}",
+                        root.display(),
+                        String::from_utf8_lossy(&status.stderr)
+                    );
+                }
+                let text = String::from_utf8(status.stdout).unwrap();
+                assert!(text.contains("fully verified:"));
+                fs::write(root.join(".elicit/runtime/progress-status.txt"), text).unwrap();
+                observed = true;
+            }
+            thread::sleep(Duration::from_millis(100));
+        }
+        let output = running.wait_with_output().unwrap();
+        assert!(
+            output.status.success(),
+            "{}: {}",
+            root.display(),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(observed, "no mid-verification status observation was made");
+    } else {
+        ok(&root, &["run", "--retry"]);
+    }
     let s = state(&root);
     assert!(
         s.complete(true),
@@ -131,7 +175,7 @@ fn exercise(tool: &str) {
             )
             .all(|t| s.verified(&t.id))
     );
-    if tool == "aeneas" {
+    if fixture == "aeneas" {
         let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
         let original = fs::read_to_string(&proof).unwrap();
         let id = "elicit-aeneas-fixture::identity::Function";
@@ -180,16 +224,22 @@ fn exercise(tool: &str) {
 #[test]
 #[ignore = "requires Kani 0.68.x, matching nightly and rust-analyzer"]
 fn kani_both_modes_interruption_resume() {
-    exercise("kani");
+    exercise_fixture("kani", "kani");
 }
 #[test]
 #[ignore = "requires Creusot 0.14.x with Why3find/Why3/SMT setup and rust-analyzer"]
 fn creusot_both_modes_interruption_resume() {
-    exercise("creusot");
+    exercise_fixture("creusot", "creusot");
 }
 
 #[test]
 #[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
 fn aeneas_both_modes_interruption_resume() {
-    exercise("aeneas");
+    exercise_fixture("aeneas", "aeneas");
+}
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
+fn aeneas_methods_structs_slices_and_helpers() {
+    exercise_fixture("aeneas", "aeneas-rich");
 }
