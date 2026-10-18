@@ -1,0 +1,95 @@
+{
+  "segments": [
+    {
+      "segment": "round5-plain-1",
+      "elapsed_seconds": 1704.2251594209956,
+      "worker_command_active_seconds": 656.2724299430847,
+      "worker_without_active_command_seconds": 1045.9431502819061,
+      "outside_worker_seconds": 2.009579196004779,
+      "worker_turns": 1,
+      "started_command_items": 204,
+      "worker_deadlines": 0,
+      "plan_tasks": 0
+    },
+    {
+      "segment": "round9-elicit-1",
+      "elapsed_seconds": 1762.6067848270031,
+      "worker_command_active_seconds": 471.4140570163727,
+      "worker_without_active_command_seconds": 1055.5589423179626,
+      "outside_worker_seconds": 235.6337854926678,
+      "worker_turns": 7,
+      "started_command_items": 169,
+      "worker_deadlines": 0,
+      "plan_tasks": 0
+    },
+    {
+      "segment": "round9-continuation-1",
+      "elapsed_seconds": 3598.925251594992,
+      "worker_command_active_seconds": 1341.0959491729736,
+      "worker_without_active_command_seconds": 1671.47905087471,
+      "outside_worker_seconds": 586.3502515473083,
+      "worker_turns": 8,
+      "started_command_items": 193,
+      "worker_deadlines": 0,
+      "plan_tasks": 0
+    }
+  ],
+  "ordinary": {
+    "elapsed_seconds": 1704.2251594209956,
+    "worker_command_active_seconds": 656.2724299430847,
+    "worker_without_active_command_seconds": 1045.9431502819061,
+    "outside_worker_seconds": 2.009579196004779,
+    "worker_turns": 1,
+    "started_command_items": 204,
+    "worker_deadlines": 0,
+    "plan_tasks": 0
+  },
+  "product_two_segments": {
+    "elapsed_seconds": 5361.532036421995,
+    "worker_command_active_seconds": 1812.5100061893463,
+    "worker_without_active_command_seconds": 2727.0379931926727,
+    "outside_worker_seconds": 821.9840370399761,
+    "worker_turns": 15,
+    "started_command_items": 362,
+    "worker_deadlines": 0,
+    "plan_tasks": 0
+  },
+  "product_minus_ordinary": {
+    "elapsed_seconds": 3657.3068770009995,
+    "worker_command_active_seconds": 1156.2375762462616,
+    "worker_without_active_command_seconds": 1681.0948429107666,
+    "outside_worker_seconds": 819.9744578439713,
+    "worker_turns": 14,
+    "started_command_items": 158,
+    "worker_deadlines": 0,
+    "plan_tasks": 0
+  },
+  "ordinary_tokens": {
+    "inputTokens": 28327415,
+    "cachedInputTokens": 28067584,
+    "outputTokens": 76504,
+    "reasoningOutputTokens": 31477
+  },
+  "product_tokens_unique_threads": {
+    "inputTokens": 66515350,
+    "cachedInputTokens": 65408384,
+    "outputTokens": 166626,
+    "reasoningOutputTokens": 72101
+  },
+  "continuation_token_increment": {
+    "inputTokens": 46339812,
+    "cachedInputTokens": 45459200,
+    "outputTokens": 105714,
+    "reasoningOutputTokens": 51838
+  },
+  "resumed_same_thread": true,
+  "continuation_first_counter_equals_initial_last": true,
+  "notes": [
+    "Timing categories are disjoint observed wall intervals, not CPU time or a causal attribution of model computation.",
+    "Command intervals use the union of overlapping commandExecution start/completion events, clipped to worker windows.",
+    "No-command worker time includes generation, reasoning, request latency, other tool types and handoff/compaction effects; do not call all of it reasoning time.",
+    "Initial and continuation usage counters belong to the same resumed thread; use the final maximum, never sum the two cumulative summaries.",
+    "Resumption preparation138.34seconds and independent audits are outside the elapsed two-segment comparison.",
+    "This is a comparison of recorded separate trajectories, not a randomized causal ablation."
+  ]
+}

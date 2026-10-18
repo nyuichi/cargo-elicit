@@ -1,5 +1,7 @@
 # Iteration 9 same-binary continuation evidence
 
+**Token-count correction:** the same Codex thread was resumed. Its final usage already includes the initial segment; do not add the two cumulative summaries. Correct totals are 66,515,350 input (65,408,384 cached subset), 166,626 output. The older token paragraph below is superseded. Timed metrics and proof/audit artifacts are unchanged. See [the corrected latency analysis](../../../../docs/experiments/adler2-latency-analysis.md).
+
 The initial stopped 30-minute development trial is preserved separately in ../2026-10-18-iteration-9. This resumes exactly that case with the same frozen binary/model/settings, no attempt reset and no mathematical hints. It is not a fresh uninterrupted trial or matched speed comparison.
 
 All five selected APIs have current, approved full-contract success. Independent fresh extraction reproduces the generated model bytes; original Rust/manifest bytes are unchanged, selected original bodies are transparent and overflow checks remain enabled. All six modules compile. Exact-contract/transitive-standard-axiom audits accept the five selected APIs, two vector helpers and all 28 planned lemmas. Four additional independently typed/audited laws establish both codec roundtrips, split-update equivalence and checksum save/restore/resume; the latter two require representable concatenation and a matching concatenated slice.
