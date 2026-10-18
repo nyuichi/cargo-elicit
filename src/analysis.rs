@@ -620,6 +620,7 @@ impl Index {
             column: col,
             aliases: vec![],
             spec_hash: spec_hash.clone(),
+            approved_spec_hash: None,
             model_base_hash: String::new(),
             model_inputs: BTreeMap::new(),
             model_bindings: None,

@@ -15,6 +15,7 @@ fn target(id: &str, kind: Kind) -> Target {
         column: 0,
         aliases: vec![],
         spec_hash: format!("spec-{id}"),
+        approved_spec_hash: None,
         model_base_hash: String::new(),
         model_inputs: BTreeMap::new(),
         model_bindings: None,
@@ -542,14 +543,14 @@ fn checked_lemma_is_progress_but_never_api_completion_and_edits_invalidate_it() 
     assert!(!checked(&s, &p));
 }
 #[test]
-fn planner_inspects_goals_before_helpers_and_returns_to_caller() {
+fn planner_attempts_goal_before_helpers_and_returns_to_caller() {
     use cargo_elicit::plan::*;
     let mut s = state();
     s.tool = Tool::Aeneas;
     s.goal = VerificationGoal::SelectedApis(vec!["c".into()]);
     s.targets.get_mut("c").unwrap().calls.insert("a".into());
     let t = scheduler::next(&s, true, &Limits::default()).unwrap();
-    assert_eq!(t.kind, TaskKind::Plan);
+    assert_eq!(t.kind, TaskKind::Integrate);
     assert_eq!(t.targets, vec!["c"]);
     let p = ProofStep {
         id: "helper".into(),
@@ -721,4 +722,110 @@ fn saved_lemma_is_checked_before_reauthoring_and_new_input_reopens_checkpoint() 
     assert!(!checkpoint_needed(&s));
     s.input = "new proof input".into();
     assert!(checkpoint_needed(&s));
+}
+
+#[test]
+fn approved_specification_recovers_after_transient_metadata_fallback() {
+    let mut s = state();
+    s.results.push(proof("a"));
+    let accepted = s.targets["a"].spec_hash.clone();
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    fresh.iter_mut().find(|t| t.id == "a").unwrap().spec_hash = "fallback".into();
+    s.reconcile(fresh, vec![], "fallback-input".into());
+    assert!(!s.targets["a"].ready());
+    assert_eq!(s.targets["a"].approved_spec_hash.as_ref(), Some(&accepted));
+    let mut recovered: Vec<_> = s.targets.values().cloned().collect();
+    recovered
+        .iter_mut()
+        .find(|t| t.id == "a")
+        .unwrap()
+        .spec_hash = accepted;
+    s.reconcile(recovered, vec![], "recovered-proof-input".into());
+    assert!(s.targets["a"].ready());
+    // Recovering approval never reuses a proof for a different global input.
+    assert!(!s.verified("a"));
+}
+
+#[test]
+fn approval_recovery_does_not_accept_changed_contract_or_erase_runtime_flags() {
+    let mut s = state();
+    let accepted = s.targets["a"].spec_hash.clone();
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    let t = fresh.iter_mut().find(|t| t.id == "a").unwrap();
+    t.spec_hash = "genuinely-changed-reference".into();
+    s.reconcile(fresh, vec![], "new-reference".into());
+    assert!(!s.targets["a"].ready());
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    let t = fresh.iter_mut().find(|t| t.id == "a").unwrap();
+    t.spec_hash = "another-reference".into();
+    s.reconcile(fresh, vec![], "another-reference".into());
+    assert!(!s.targets["a"].ready());
+    s.targets.get_mut("a").unwrap().implementation_changed = true;
+    s.targets
+        .get_mut("a")
+        .unwrap()
+        .stale
+        .push("implementation changed".into());
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    fresh.iter_mut().find(|t| t.id == "a").unwrap().spec_hash = accepted;
+    s.reconcile(fresh, vec![], "original-reference".into());
+    assert!(!s.targets["a"].ready());
+    assert!(s.targets["a"].implementation_changed);
+    assert!(
+        s.targets["a"]
+            .stale
+            .contains(&"implementation changed".into())
+    );
+    assert!(
+        !s.targets["a"]
+            .stale
+            .contains(&"specification changed".into())
+    );
+}
+
+#[test]
+fn dependency_recovery_requires_exact_approved_identity() {
+    let mut s = state();
+    let accepted = s.targets["b"].spec_hash.clone();
+    s.targets
+        .get_mut("a")
+        .unwrap()
+        .dependencies
+        .insert("b".into(), accepted.clone());
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    fresh.iter_mut().find(|t| t.id == "b").unwrap().spec_hash = "changed".into();
+    s.reconcile(fresh, vec![], "changed".into());
+    assert!(!s.targets["a"].ready());
+    let mut fresh: Vec<_> = s.targets.values().cloned().collect();
+    fresh.iter_mut().find(|t| t.id == "b").unwrap().spec_hash = accepted;
+    s.reconcile(fresh, vec![], "restored".into());
+    assert!(s.targets["a"].ready());
+}
+
+#[test]
+fn legacy_stale_state_does_not_invent_an_approval() {
+    let mut s = state();
+    s.targets
+        .get_mut("a")
+        .unwrap()
+        .stale
+        .push("specification changed".into());
+    let fresh = s.targets.values().cloned().collect();
+    s.reconcile(fresh, vec![], "same".into());
+    assert!(s.targets["a"].approved_spec_hash.is_none());
+    assert!(!s.targets["a"].ready());
+}
+
+#[test]
+fn unvisited_roots_do_not_preempt_current_callers_proof_work() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into(), "c".into()]);
+    install(&mut s, vec![lemma_step("a")]).unwrap();
+    let task = scheduler::next(&s, true, &Limits::default()).unwrap();
+    assert_eq!(task.kind, TaskKind::ProveLemma);
+    assert_eq!(task.targets, vec!["a"]);
+    assert_eq!(task.work.as_deref(), Some("loop_bound"));
+    assert!(!s.proof_plan.inspected.contains_key("c"));
 }

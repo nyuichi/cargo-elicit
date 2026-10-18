@@ -272,41 +272,60 @@ pub fn lean_name(s: &str) -> bool {
         })
 }
 pub fn next(s: &State, limits: &Limits) -> Option<Task> {
-    let roots = roots(s);
-    // Probe/plan every selected goal before draining a leaf inventory. Within
-    // a root, preserve caller-specified plan order, respecting checked needs.
-    for root in &roots {
-        if goal_done(s, root) || !s.schedulable(root) {
-            continue;
-        }
-        if s.proof_plan.inspected.get(root) != Some(&inspection_input(s, root)) {
-            let task = Task {
-                kind: TaskKind::Plan,
-                targets: vec![root.clone()],
-                work: None,
-            };
-            if crate::scheduler::eligible(s, &task, limits) {
-                return Some(task);
-            }
+    // Continue a caller and its concrete prerequisites before inspecting an
+    // unrelated root. Delegated selected APIs retain their own proof plans.
+    for root in roots(s) {
+        if let Some(task) = next_root(s, &root, limits, &mut BTreeSet::new()) {
+            return Some(task);
         }
     }
-    for step in &s.proof_plan.steps {
-        if goal_done(s, &step.goal)
-            || checked(s, step)
-            || !step.needs.iter().all(|id| {
-                s.proof_plan
-                    .steps
-                    .iter()
-                    .find(|v| &v.id == id)
-                    .is_some_and(|v| checked(s, v))
-            })
-        {
+    None
+}
+fn next_root(
+    s: &State,
+    root: &str,
+    limits: &Limits,
+    visiting: &mut BTreeSet<String>,
+) -> Option<Task> {
+    if goal_done(s, root) || !s.schedulable(root) || !visiting.insert(root.to_owned()) {
+        return None;
+    }
+    if s.proof_plan.inspected.get(root) != Some(&inspection_input(s, root)) {
+        // The first turn is a real proof attempt with the normal worker budget,
+        // not a mandatory short planning phase for every selected API.
+        let task = Task {
+            kind: TaskKind::Integrate,
+            targets: vec![root.to_owned()],
+            work: None,
+        };
+        if crate::scheduler::eligible(s, &task, limits) {
+            return Some(task);
+        }
+    }
+    let mut pending = false;
+    let mut waiting_on_root = false;
+    for step in s.proof_plan.steps.iter().filter(|p| p.goal == root) {
+        if checked(s, step) {
+            continue;
+        }
+        pending = true;
+        if !step.needs.iter().all(|id| {
+            s.proof_plan
+                .steps
+                .iter()
+                .find(|p| &p.id == id)
+                .is_some_and(|p| checked(s, p))
+        }) {
             continue;
         }
         if delegated(s, step) {
+            waiting_on_root = true;
+            if let Some(task) = next_root(s, step.target.as_deref().unwrap(), limits, visiting) {
+                return Some(task);
+            }
             continue;
         }
-        let target = step.target.as_ref().unwrap_or(&step.goal);
+        let target = step.target.as_deref().unwrap_or(root);
         if !s.schedulable(target) {
             continue;
         }
@@ -316,63 +335,32 @@ pub fn next(s: &State, limits: &Limits) -> Option<Task> {
                 StepKind::Contract => TaskKind::Verify,
                 StepKind::Integrate => TaskKind::Integrate,
             },
-            targets: vec![target.clone()],
+            targets: vec![target.to_owned()],
             work: Some(step.id.clone()),
         };
         if crate::scheduler::eligible(s, &task, limits) {
             return Some(task);
         }
     }
-    // No declared prerequisite remains: return to the goal, not an unrelated API.
-    for root in &roots {
-        if goal_done(s, root) || !s.schedulable(root) {
-            continue;
-        }
-        if s.proof_plan.inspected.get(root) != Some(&inspection_input(s, root)) {
-            continue;
-        }
-        if s.proof_plan
-            .steps
-            .iter()
-            .any(|v| &v.goal == root && !checked(s, v))
-        {
-            continue;
-        }
+    if !pending {
         let task = Task {
             kind: TaskKind::Integrate,
-            targets: vec![root.clone()],
+            targets: vec![root.to_owned()],
             work: None,
         };
         if crate::scheduler::eligible(s, &task, limits) {
             return Some(task);
         }
     }
-    // A fresh failed checker result gets a bounded repair/planning turn. Its
-    // retry key excludes cache locations and diagnostic wording.
-    for root in &roots {
-        if goal_done(s, root) || !s.schedulable(root) {
-            continue;
-        }
-        if s.proof_plan
-            .steps
-            .iter()
-            .any(|p| &p.goal == root && delegated(s, p) && !checked(s, p))
-        {
-            continue;
-        }
-        if s.proof_plan
-            .steps
-            .iter()
-            .any(|v| &v.goal == root && !checked(s, v))
-        {
-            let task = Task {
-                kind: TaskKind::Plan,
-                targets: vec![root.clone()],
-                work: Some("repair".into()),
-            };
-            if crate::scheduler::eligible(s, &task, limits) {
-                return Some(task);
-            }
+    visiting.remove(root);
+    if !waiting_on_root {
+        let task = Task {
+            kind: TaskKind::Plan,
+            targets: vec![root.to_owned()],
+            work: Some("repair".into()),
+        };
+        if crate::scheduler::eligible(s, &task, limits) {
+            return Some(task);
         }
     }
     None

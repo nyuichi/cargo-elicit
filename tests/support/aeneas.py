@@ -44,5 +44,7 @@ if os.environ.get('MOCK_CHECK_FAIL')=='1':sys.exit(1)
 if source.name=='Audit.lean':
  if os.environ.get('MOCK_AENEAS')=='mismatch':sys.exit(1)
  axiom=os.environ.get('MOCK_AENEAS','propext')
- print("'ElicitAudit' depends on axioms: ["+axiom+"]")
+ import re
+ for index in re.findall(r'^elicit_audit (\d+) ',source.read_text(),re.M):
+  print('ELICIT_AUDIT='+json.dumps({'index':int(index),'checked':True,'axioms':[axiom]}))
 pathlib.Path(args[args.index('-o')+1]).touch()

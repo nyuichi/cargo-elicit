@@ -29,6 +29,58 @@ struct Contract {
     #[serde(default)]
     theorem: Option<String>,
 }
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct BatchAudit {
+    index: usize,
+    checked: bool,
+    axioms: Option<Vec<String>>,
+}
+impl BatchAudit {
+    fn accepted(&self) -> bool {
+        self.checked
+            && self.axioms.as_ref().is_some_and(|xs| {
+                xs.iter()
+                    .all(|x| matches!(x.as_str(), "propext" | "Classical.choice" | "Quot.sound"))
+            })
+    }
+    fn axiom_report(&self) -> String {
+        match &self.axioms {
+            Some(xs) if xs.is_empty() => "'ElicitAudit' does not depend on any axioms".into(),
+            Some(xs) => format!("'ElicitAudit' depends on axioms: [{}]", xs.join(", ")),
+            None => String::new(),
+        }
+    }
+}
+fn parse_batch_audits(text: &str, count: usize) -> Result<Vec<BatchAudit>> {
+    let mut rows = BTreeMap::new();
+    for line in text.lines().filter_map(|l| l.strip_prefix("ELICIT_AUDIT=")) {
+        let row: BatchAudit = serde_json::from_str(line).context("malformed batch audit row")?;
+        if row.index >= count || rows.insert(row.index, row).is_some() {
+            bail!("duplicate or unexpected batch audit index");
+        }
+    }
+    if rows.len() != count {
+        bail!("incomplete batch audit output");
+    }
+    Ok(rows.into_values().collect())
+}
+fn batch_audit_source(module: &str, roots: &[(&str, &str)]) -> Result<String> {
+    let mut source = format!(
+        "import {module}\n{}\nopen Aeneas Aeneas.Std Result ElicitGenerated\n",
+        include_str!("lean/ElicitAudit.lean")
+    );
+    for (index, (statement, theorem)) in roots.iter().enumerate() {
+        // Parse propositions inside the trusted command: malformed syntax must
+        // fail one root, never inject another Lean command into the batch.
+        source.push_str(&format!(
+            "elicit_audit {index} {} {}\n",
+            serde_json::to_string(statement)?,
+            serde_json::to_string(theorem)?
+        ));
+    }
+    Ok(source)
+}
 fn proof_root(scope: &Scope) -> PathBuf {
     Path::new(&scope.manifest_path)
         .parent()
@@ -656,27 +708,44 @@ pub fn execute(
         if o.code != Some(0) {
             return Ok((o, Some(json!({"phase":"lemmas"}))));
         }
-        for step in s
+        let steps: Vec<_> = s
             .proof_plan
             .steps
             .iter()
             .filter(|p| p.kind == crate::plan::StepKind::Lemma)
-        {
-            let (Some(statement), Some(theorem)) = (&step.statement, &step.theorem) else {
-                continue;
-            };
-            if !crate::plan::lean_name(theorem) {
-                bail!("invalid lemma theorem name");
-            }
-            let source = format!(
-                "import Lemmas\nopen Aeneas Aeneas.Std Result ElicitGenerated\ntheorem ElicitAudit : {statement} := {theorem}\n#print axioms ElicitAudit\n"
-            );
-            fs::write(out.join("Audit.lean"), source)?;
+            .collect();
+        let roots: Vec<_> = steps
+            .iter()
+            .map(|step| {
+                let statement = step
+                    .statement
+                    .as_deref()
+                    .context("missing lemma proposition")?;
+                let theorem = step.theorem.as_deref().context("missing lemma theorem")?;
+                if !crate::plan::lean_name(theorem) {
+                    bail!("invalid lemma theorem name");
+                }
+                Ok((statement, theorem))
+            })
+            .collect::<Result<_>>()?;
+        if !roots.is_empty() {
+            fs::write(
+                out.join("Audit.lean"),
+                batch_audit_source("Lemmas", &roots)?,
+            )?;
             o = run(&mut lean_command(out, "Audit")?)?;
-            if o.timeout || o.interrupted {
+            if o.code != Some(0) || o.timeout || o.interrupted {
                 return Ok((o, Some(json!({"phase":"lemma-audit"}))));
             }
-            lemmas.insert(step.id.clone(), json!({"checked":o.code==Some(0) && standard_axioms(&o.stdout),"step_hash":crate::plan::step_hash(step)}));
+            for (step, row) in steps
+                .iter()
+                .zip(parse_batch_audits(&o.stdout, roots.len())?)
+            {
+                lemmas.insert(
+                    step.id.clone(),
+                    json!({"checked":row.accepted(),"step_hash":crate::plan::step_hash(step)}),
+                );
+            }
         }
     }
     if !root.join("Proofs.lean").exists() {
@@ -689,27 +758,34 @@ pub fn execute(
         return Ok((o, Some(json!({"phase":"proofs","lemmas":lemmas}))));
     }
     let mut audits = BTreeMap::new();
+    let mut records = vec![];
     for (id, (c, full)) in eligible {
         let Some(theorem) = &c.theorem else { continue };
-        if !theorem
-            .split('.')
-            .all(|v| !v.is_empty() && v.chars().all(|c| c.is_ascii_alphanumeric() || c == '_'))
-        {
+        if !crate::plan::lean_name(theorem) {
             bail!("invalid Lean theorem name");
         }
-        let name = contract_name(&id);
-        let source = format!(
-            "import Proofs\ntheorem ElicitAudit : {name} := {theorem}\n#print axioms ElicitAudit\n"
-        );
-        fs::write(out.join("Audit.lean"), source)?;
+        records.push((id.clone(), contract_name(&id), theorem, full));
+    }
+    if !records.is_empty() {
+        let roots: Vec<_> = records
+            .iter()
+            .map(|(_, statement, theorem, _)| (statement.as_str(), theorem.as_str()))
+            .collect();
+        fs::write(
+            out.join("Audit.lean"),
+            batch_audit_source("Proofs", &roots)?,
+        )?;
         o = run(&mut lean_command(out, "Audit")?)?;
-        if o.timeout || o.interrupted {
-            return Ok((o, Some(json!({"phase":"audit"}))));
+        if o.code != Some(0) || o.timeout || o.interrupted {
+            return Ok((o, Some(json!({"phase":"audit","lemmas":lemmas}))));
         }
-        audits.insert(
-            id,
-            json!({"checked":o.code == Some(0),"full":full,"axioms":o.stdout}),
-        );
+        let rows = parse_batch_audits(&o.stdout, roots.len())?;
+        for ((id, _, _, full), row) in records.into_iter().zip(rows) {
+            audits.insert(
+                id,
+                json!({"checked":row.accepted(),"full":full,"axioms":row.axiom_report()}),
+            );
+        }
     }
     // An individual rejected theorem does not discard independent successful proofs.
     o.code = Some(0);
@@ -773,6 +849,26 @@ pub fn evidence(_s: &State, t: &Target, e: Option<&Value>, r: &mut Verification)
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn batch_audits_require_complete_unique_strict_rows_and_allowed_axioms() {
+        use super::parse_batch_audits;
+        let good = r#"ELICIT_AUDIT={"index":0,"checked":true,"axioms":[]}"#;
+        assert!(parse_batch_audits(good, 1).unwrap()[0].accepted());
+        for malformed in [
+            String::new(),
+            format!("{good}\n{good}"),
+            good.replace("\"index\":0", "\"index\":1"),
+            good.replace("\"axioms\":[]", "\"axioms\":[],\"unexpected\":true"),
+        ] {
+            assert!(parse_batch_audits(&malformed, 1).is_err());
+        }
+        for axiom in ["sorryAx", "projectAssumption", "Lean.ofReduceBool"] {
+            let row = good.replace("\"axioms\":[]", &format!("\"axioms\":[\"{axiom}\"]"));
+            assert!(!parse_batch_audits(&row, 1).unwrap()[0].accepted());
+        }
+        let unknown = good.replace("\"axioms\":[]", "\"axioms\":null");
+        assert!(!parse_batch_audits(&unknown, 1).unwrap()[0].accepted());
+    }
     #[test]
     fn malformed_or_unsupported_model_metadata_falls_back_conservatively() {
         use super::parse_model_inputs;

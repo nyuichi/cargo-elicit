@@ -129,6 +129,9 @@ pub struct Target {
     pub column: usize,
     pub aliases: Vec<String>,
     pub spec_hash: String,
+    /// Last explicitly accepted semantic identity, independent of transient metadata.
+    #[serde(default)]
+    pub approved_spec_hash: Option<String>,
     #[serde(default)]
     pub model_base_hash: String,
     #[serde(default)]
@@ -439,6 +442,11 @@ impl State {
                     new.spec_hash = new.model_hash();
                 }
                 new.specified = old.specified;
+                new.approved_spec_hash = old.approved_spec_hash.clone().or_else(|| {
+                    // Migrate only a currently ready legacy approval. A stale
+                    // legacy state does not establish which identity was accepted.
+                    old.ready().then(|| old.spec_hash.clone())
+                });
                 new.blocker = old.blocker.clone();
                 new.dependencies = old.dependencies.clone();
                 new.notes = old.notes.clone();
@@ -453,7 +461,9 @@ impl State {
                     new.stale
                         .push("existing API reclassified as proof helper; review required".into());
                 }
-                if old.spec_hash != new.spec_hash {
+                if new.approved_spec_hash.as_ref() == Some(&new.spec_hash) {
+                    new.stale.retain(|reason| reason != "specification changed");
+                } else if old.spec_hash != new.spec_hash {
                     new.stale.push("specification changed".into());
                 }
                 if old.body_hash != new.body_hash {
@@ -499,6 +509,10 @@ impl State {
                 if !hashes.get(d).is_some_and(|(v, removed)| v == h && !removed) {
                     t.stale
                         .push(format!("specification dependency changed: {d}"));
+                } else {
+                    t.stale.retain(|reason| {
+                        reason != &format!("specification dependency changed: {d}")
+                    });
                 }
             }
             t.stale.sort();

@@ -503,6 +503,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
                     t.required_units = units;
                 }
                 t.bind_models();
+                t.approved_spec_hash = Some(t.spec_hash.clone());
                 t.specified = true;
                 t.blocker = None;
                 t.stale.clear();
@@ -747,15 +748,21 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                     "verification environment failed before worker repair; inspect the recorded phase/cache"
                 );
             }
-            refreshed = task.targets.iter().all(|id| {
-                results
-                    .iter()
-                    .any(|r| &r.target == id && r.outcome == Outcome::Success)
-            });
             if process::interrupted() {
                 return Ok(130);
             }
             s = sync(store, engine)?;
+            // A successful kernel result does not complete a task whose
+            // specification is still unapproved, stale, or dependency-blocked.
+            refreshed = if let Some(work) = &task.work {
+                s.proof_plan
+                    .steps
+                    .iter()
+                    .find(|p| &p.id == work)
+                    .is_some_and(|p| crate::plan::checked(&s, p))
+            } else {
+                task.targets.iter().all(|id| s.verified(id))
+            };
         }
         if process::interrupted() {
             return Ok(130);

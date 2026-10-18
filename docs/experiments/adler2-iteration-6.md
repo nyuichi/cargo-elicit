@@ -1,0 +1,17 @@
+# Adler-32 development iteration 6
+
+Status: implementation validation passed; this iteration's authoring trial has not started.
+
+This is a product-only development follow-up to the [fresh goal-planning comparison](adler2-goal-planning.md). That comparison's ordinary arm remains the independently audited reference: five selected APIs, including original optimized loops, in 1,704.23 seconds. It is not a newly paired control for this iteration and must not be used to claim a new speed ratio.
+
+Astra reviewed that evidence and recommended one more bounded iteration: restore exactly approved specification identities after transient metadata changes; base checker-only completion on actual reconciled task state; remove the mandatory sweep of all unvisited roots before proof work; and batch independent Lean root audits. Broad metadata elaboration/certificate caching and mathematical proof hints are outside this change. The worker must attempt the original caller, identify actual missing obligations and retain useful checked checkpoints rather than merely enumerate speculative helpers.
+
+After implementation and real-tool validation, freeze source, binary, task and settings. Prepare a fresh unproved adler2 2.0.1 product case from the same archive, set exactly the five common API roots, preserve original Rust and Cargo bytes, and run one 1,800-second end-to-end work budget. Use the same resolved Codex model/settings and actual status/text/JSON/list observations, including their time. Do not overlap authoring with other compiler/audit/authoring workloads, supply human mathematical hints, or reuse earlier proof solutions. Keep failed and incomplete trials.
+
+The primary endpoint is complete original contracts for all five selected APIs. Separately record terminal current ledger, independently checked saved artifacts, actual core-authoring task start, checked facts connected to an original implementation loop, stale-recovery worker calls, audit duration, observations and actual usage counters. A root task name or lemma count alone is not loop-proof progress. Freeze state/events and source hashes before independent fresh extraction, model comparison, exact-statement and allowed-axiom audits.
+
+Discuss continuation with Astra after the audit. Continue if concrete, reproducible control/checking defects remain and support a bounded fix. Stop speculative tuning when those mechanisms are repaired, real core authoring has received meaningful time and no new clear mechanism-level improvement is supported. If the product completes all five APIs, use a separate fresh matched pair to check reproducibility before ending development iterations; one success is not a general speed claim.
+
+## Implementation validation
+
+Formatting, Clippy and Rust 1.86 passed. The regular suite passed 77 tests, and an additional CLI regression passed for a successful kernel refresh that still needs specification review (78 regular cases total). Real Lean/Aeneas batch testing accepted normal and implicitly specialized proofs while rejecting missing, malformed, type-mismatched, unsafe, admitted, project-axiom and colliding roots. Real native tests passed for metadata-fallback recovery and genuine referenced-model changes, and for the richer methods/structs/slices/helper/cache-deletion/resume fixture. The first batch integration attempt exposed a syntax conflict with Aeneas and was fixed before authoring trials; it was not a benchmark run.

@@ -803,3 +803,70 @@ fn selected_api_goal_and_revision_checked_plan_are_persisted_without_forging_pro
         cargo_elicit::plan::VerificationGoal::WholePackage
     ));
 }
+
+#[test]
+fn successful_kernel_refresh_does_not_skip_required_specification_review() {
+    use cargo_elicit::{plan::*, store::Store};
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let proof = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&proof).unwrap();
+    fs::write(proof.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
+    fs::write(proof.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    p.required();
+    let data: serde_json::Value = serde_json::from_slice(&p.ok(&["agent", "show"]).stdout).unwrap();
+    p.ok(&[
+        "agent",
+        "submit",
+        "fixture::identity::Function",
+        "--revision",
+        &data["revision"].to_string(),
+        "--note",
+        "Original accepted specification",
+    ]);
+    let id = "fixture::identity::Function";
+    let store = Store {
+        root: p.dir.path().to_path_buf(),
+    };
+    store
+        .transaction(None, |s| {
+            let t = s.targets.get_mut(id).unwrap();
+            // A stale legacy state has no known approved semantic identity. A
+            // successful proof must not replace the required specification review.
+            t.approved_spec_hash = None;
+            t.stale = vec!["specification changed".into()];
+            s.goal = VerificationGoal::SelectedApis(vec![id.into()]);
+            install(
+                s,
+                vec![ProofStep {
+                    id: "review_then_prove".into(),
+                    goal: id.into(),
+                    kind: StepKind::Contract,
+                    target: Some(id.into()),
+                    reason: "Review the unresolved selected specification".into(),
+                    needs: vec![],
+                    statement: None,
+                    theorem: None,
+                }],
+            )
+        })
+        .unwrap();
+    let out = p
+        .cmd()
+        .env("MOCK_CASE", "resubmit")
+        .args(["run", "--max-tasks", "1"])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(p.state().verified(id));
+    let events = fs::read_to_string(p.dir.path().join(".elicit/events.jsonl")).unwrap();
+    assert!(
+        events
+            .lines()
+            .map(|l| serde_json::from_str::<serde_json::Value>(l).unwrap())
+            .any(|e| e["event"] == "worker_started")
+    );
+}

@@ -1109,6 +1109,7 @@ mod tests {
             column: 7,
             aliases: vec![],
             spec_hash: "spec".into(),
+            approved_spec_hash: None,
             model_base_hash: String::new(),
             model_inputs: Default::default(),
             model_bindings: None,

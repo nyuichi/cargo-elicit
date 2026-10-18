@@ -548,5 +548,93 @@ end Checkpoint
     let s = store.load().unwrap();
     assert!(s.complete(true));
     assert!(!s.targets["elicit-aeneas-fixture::Marker::Struct"].ready());
+    // A transient failure in collecting semantic metadata must not permanently
+    // lose an unchanged approval. Recovery still requires fresh proof evidence
+    // when the global proof input changed.
+    let specs = proof_root.join("Specs.lean");
+    let original_specs = fs::read_to_string(&specs).unwrap();
+    fs::write(&specs, "import ElicitGenerated\ndef broken := (\n").unwrap();
+    ok(&root, &["status"]);
+    assert!(!state(&root).targets[id].ready());
+    fs::write(&specs, &original_specs).unwrap();
+    let proofs = proof_root.join("Proofs.lean");
+    fs::write(
+        &proofs,
+        format!(
+            "{}\n-- Require a fresh whole-input kernel check.\n",
+            fs::read_to_string(&proofs).unwrap()
+        ),
+    )
+    .unwrap();
+    ok(&root, &["status"]);
+    assert!(state(&root).targets[id].ready());
+    assert!(!state(&root).verified(id));
+    checkpoint();
+    assert!(state(&root).complete(true));
+    // An actually changed referenced model remains unapproved.
+    fs::write(
+        &specs,
+        original_specs.replace(": U32 := x", ": U32 := 0#u32"),
+    )
+    .unwrap();
+    ok(&root, &["status"]);
+    assert!(!state(&root).targets[id].ready());
     fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+#[ignore = "requires the pinned real Lean/Aeneas backend"]
+fn aeneas_batch_audits_isolate_invalid_roots_and_diagnostics() {
+    let root = tempfile::tempdir().unwrap();
+    let file = root.path().join("Batch.lean");
+    fs::write(
+        &file,
+        format!(
+            "import Aeneas\n{}\n{}",
+            include_str!("../src/lean/ElicitAudit.lean"),
+            r#"
+theorem good : True := True.intro
+theorem bad : False := by sorry
+axiom project : False
+theorem ElicitBatchAudit.root_5 : False := by sorry
+elicit_audit 0 "True" "good"
+elicit_audit 1 "True" "missing"
+elicit_audit 2 "False" "good"
+elicit_audit 3 "False" "bad"
+elicit_audit 4 "False" "project"
+elicit_audit 5 "True" "good"
+elicit_audit 6 "True" "good"
+elicit_audit 7 "malformed (" "good"
+theorem poly {α : Type u} (x : α) : x = x := rfl
+elicit_audit 8 "∀ {α : Type} (x : α), x = x" "poly"
+unsafe def forged : False := unsafeCast True.intro
+elicit_audit 9 "False" "forged"
+theorem implicitRoot {x : Nat} : x = x := rfl
+elicit_audit 10 "0 = 0" "implicitRoot"
+"#
+        ),
+    )
+    .unwrap();
+    let out = Command::new("lake")
+        .args(["env", "lean"])
+        .arg(&file)
+        .current_dir(Path::new(&std::env::var("AENEAS_HOME").unwrap()).join("backends/lean"))
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let rows: Vec<serde_json::Value> = String::from_utf8_lossy(&out.stdout)
+        .lines()
+        .filter_map(|line| line.strip_prefix("ELICIT_AUDIT="))
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    assert_eq!(rows.len(), 11);
+    for (index, row) in rows.iter().enumerate() {
+        assert_eq!(row["index"], index);
+        assert_eq!(row["checked"], matches!(index, 0 | 6 | 8 | 10));
+    }
 }

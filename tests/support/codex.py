@@ -18,7 +18,7 @@ for line in sys.stdin:
   if case=='approval':send({'id':777,'method':'item/commandExecution/requestApproval','params':{'threadId':thread,'turnId':turn,'command':'needs-human','cwd':os.getcwd()}});continue
   if case=='body':
    file=pathlib.Path(task['targets'][0]['file']);file.write_text(file.read_text().replace('{ x }','{ x.wrapping_add(1) }'))
-  if case in ('submit','body') and task['task']!='verify':
+  if case in ('submit','body','resubmit') and (task['task']!='verify' or case=='resubmit'):
    for target in task['targets']:
     exe=os.environ['ELICIT_BIN'];data=json.loads(subprocess.check_output([exe,'agent','show',target['id']]))
     subprocess.run([exe,'agent','submit',target['id'],'--revision',str(data['revision']),'--note','fixture: reviewed original contract'],stdout=subprocess.DEVNULL)
