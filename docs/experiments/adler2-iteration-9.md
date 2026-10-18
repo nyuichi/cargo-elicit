@@ -1,6 +1,6 @@
 # Adler-32 development iteration 9
 
-Status: implementation validation passed; fresh trial pending.
+Status: fresh trial and independent audit completed; same-binary practical continuation planned.
 
 [Iteration 8](adler2-iteration-8.md) retained its final checked input, but a selected child Integrate task reached its lifetime attempt cap despite producing caller-owned checked lemmas. Its three turns increased checked propositions from 8 to 16 to 19, while its credits remained zero. Its subsequent Plan repair also produced four lemmas; this omission is not claimed as the sole reason the full five-API goal remained incomplete. Astra approved this bounded follow-up.
 
@@ -15,3 +15,17 @@ Freeze timed state/events and authoring hashes before an outside-clock independe
 ## Implementation validation
 
 All 83 regular Rust tests passed (16 library, 25 CLI, 41 ledger and one process test). The CLI suite took 561.67 seconds. Formatting, Clippy with warnings denied and Rust 1.86 checks passed. Both local Python harness integration cases passed in 4.409 seconds. Original upstream six unit tests and four documentation tests passed outside the measurement. Astra reviewed the source and regression boundaries and found no freeze blocker. No additional native backend tests were required for this bookkeeping-only change.
+
+## Actual 30-minute development result
+
+The command finished normally with exit 1: 1,755.39 seconds of work and 7.21 seconds of terminal observation, 1,762.61 seconds total. The final current ledger retained **2/5 selected APIs (new and checksum) plus nine checked lemmas**. Independent fresh extraction and auditing took 40.77 seconds: six modules compile, original/runtime/manifest bytes and fresh generated model correspondence hold, both selected contracts and two vector-helper contracts pass with standard axioms only, and all nine recorded lemma propositions pass. Checked support includes conditional exact inner/remainder lane-loop execution, lane bounds/normalization and chunk partition/count properties. Full optimized compute, write_slice, adler32_slice and from_checksum remain unfinished.
+
+Write_slice received two checked-progress credits across four Integrate turns, so the delegated-credit fix operated in actual authoring. There were no report-only invalidations. Two checks share a source input but have different proof plans; this alone is not evidence of redundant work. Actual usage was 20,175,538 input tokens (19,949,184 cached subset) and 60,912 output tokens. Source CI passed (39093436726). Results do not establish a speed advantage over the retained ordinary reference.
+
+## User-directed practical continuation
+
+The user clarified that aggressive microtuning is unwanted and plausible completion within roughly three hours is sufficient; perfection is not required. Astra recommends stopping code changes and resuming this same case with this same frozen binary. Preserve all initial timed artifacts before resuming. The cumulative cap is 10,800 seconds, subtracting the initial end-to-end result and measured preparation/resumption wall time. Reserve another 300 seconds for terminal observations/cleanup inside that cap. Record the exact remaining work budget at launch. This is interrupted/resumed practical evaluation, not a fresh uninterrupted three-hour trial or matched speed comparison.
+
+Use the existing default task/attempt/finalization limits and actual status observations, including periodic ten-minute observations. Do not add mathematical hints, tactics, proof solutions or scheduler changes. Preserve existing attempts initially. If existing guards stop resumed authoring, at most one explicitly recorded existing --retry is allowed: save the stopped state, attempts and reason, then recompute the remaining cumulative budget. Do not silently reset history or restart the clock. On completion or reaching the cumulative cap, freeze and independently audit final artifacts, report proof extent and remaining obligations, consult Astra and end this case's tuning loop even if incomplete.
+
+[Initial evidence](../../experiments/adler2/results/2026-10-18-iteration-9/README.md) preserves the stopped trial separately from continuation.

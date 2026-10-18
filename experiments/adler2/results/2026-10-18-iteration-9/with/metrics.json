@@ -1,0 +1,47 @@
+{
+  "start_unix": 1792293816.823759,
+  "arm": "with",
+  "command": [
+    "cargo",
+    "elicit",
+    "run",
+    "--max-seconds",
+    "1784",
+    "--max-tasks",
+    "32"
+  ],
+  "exit": 1,
+  "end_to_end_seconds": 1762.6067848270031,
+  "timed_work_seconds": 1755.3946899479924,
+  "terminal_observation_seconds": 7.212094879010692,
+  "observation_seconds_total": 35.6650585210009,
+  "observation_seconds_during_run": 28.45337279100204,
+  "historical_api_proof_milestones": [
+    "checksum",
+    "new"
+  ],
+  "tokens": null,
+  "human_proof_hints": 0,
+  "api_selectors": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "continue_control": false,
+  "inner_cli_budget_seconds": 1784,
+  "outer_shutdown_margin_seconds": 2,
+  "original_sources_unchanged": true,
+  "source_hashes_before": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "source_hashes_after": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+}

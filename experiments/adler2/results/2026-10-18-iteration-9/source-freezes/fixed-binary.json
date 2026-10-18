@@ -1,0 +1,34 @@
+{
+  "source_public_commit": "acda58534adecc1bc64e46542f7b80017fe96432",
+  "source_local_commit": "2abbcca4ef2998f5d5aac86ed40ae3f6d9e7cb4e",
+  "tree": "0c576933b76e7f1ff1748d86ae41a0e21a829c24",
+  "installed_binary": "/workspace/toolchain/cargo/bin/cargo-elicit",
+  "binary_sha256": "fd5d869473ec3bcee4deea07213f2311342e669909555baabb4fdb1a270737fe",
+  "protocol": "docs/experiments/adler2-iteration-9.md",
+  "outer_work_budget_seconds": 1800,
+  "finalize_seconds": 60,
+  "reserve_cap_fraction": "1/4",
+  "outer_shutdown_margin_seconds": 2,
+  "selected_apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "trial_order": [
+    "with"
+  ],
+  "reference": "Retained round5 ordinary arm, not a new matched pair",
+  "validation": {
+    "regular_cases": 83,
+    "cli_seconds": 561.67,
+    "fmt": "passed",
+    "clippy": "passed",
+    "msrv_1_86": "passed",
+    "harness_cases": 2,
+    "harness_seconds": 4.409,
+    "native_backend": "unchanged; iteration8 validation retained",
+    "astra": "no freeze blocker"
+  }
+}

@@ -1,0 +1,10 @@
+AdlerProof.rem_wp : ∀ (self : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32),
+  0 < ↑q →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! % ↑q ⦄
+theorem IndependentLemma_13 : ∀ (self : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32),
+  0 < ↑q →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! % ↑q ⦄ :=
+AdlerProof.rem_wp
+'IndependentLemma_13' depends on axioms: [propext, Classical.choice, Quot.sound]

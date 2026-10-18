@@ -1,0 +1,5 @@
+  Installing cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `release` profile [optimized] target(s) in 14.23s
+   Replacing /workspace/toolchain/cargo/bin/cargo-elicit
+    Replaced package `cargo-elicit v0.1.0 (/workspace/cargo-elicit)` with `cargo-elicit v0.1.0 (/workspace/cargo-elicit)` (executable `cargo-elicit`)

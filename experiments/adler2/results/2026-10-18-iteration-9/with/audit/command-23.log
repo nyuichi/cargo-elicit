@@ -1,0 +1,40 @@
+/workspace/elicit-comparison/round9-product-audit/IndependentLemma_9.lean:4:110: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-product-audit/IndependentLemma_9.lean:4:140: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-product-audit/IndependentLemma_9.lean:4:210: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.inner_step : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8) (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem : Aeneas.Std.Slice Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  4 ≤ (↑bytes).length →
+    (∀ i < 4, ↑(↑a)[i]! + ↑(↑bytes)[i]! ≤ Aeneas.Std.U32.max) →
+      (∀ i < 4, ↑(↑b)[i]! + (↑(↑a)[i]! + ↑(↑bytes)[i]!) ≤ Aeneas.Std.U32.max) →
+        ElicitGenerated.algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ r =>
+          ∃ av bv,
+            r = Aeneas.Std.ControlFlow.cont ({ chunks := cs, remainder := rem }, av, bv) ∧
+              (∀ i < 4, ↑(↑av)[i]! = ↑(↑a)[i]! + ↑(↑bytes)[i]!) ∧
+                ∀ i < 4, ↑(↑bv)[i]! = ↑(↑b)[i]! + (↑(↑a)[i]! + ↑(↑bytes)[i]!) ⦄
+theorem IndependentLemma_9 : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8) (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem : Aeneas.Std.Slice Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  4 ≤ (↑bytes).length →
+    (∀ i < 4, ↑(↑a)[i]! + ↑(↑bytes)[i]! ≤ Aeneas.Std.U32.max) →
+      (∀ i < 4, ↑(↑b)[i]! + (↑(↑a)[i]! + ↑(↑bytes)[i]!) ≤ Aeneas.Std.U32.max) →
+        ElicitGenerated.algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ r =>
+          ∃ av bv,
+            r = Aeneas.Std.ControlFlow.cont ({ chunks := cs, remainder := rem }, av, bv) ∧
+              (∀ i < 4, ↑(↑av)[i]! = ↑(↑a)[i]! + ↑(↑bytes)[i]!) ∧
+                ∀ i < 4, ↑(↑bv)[i]! = ↑(↑b)[i]! + (↑(↑a)[i]! + ↑(↑bytes)[i]!) ⦄ :=
+AdlerProof.inner_step
+'IndependentLemma_9' depends on axioms: [propext, Classical.choice, Quot.sound]

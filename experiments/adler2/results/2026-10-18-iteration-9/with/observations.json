@@ -1,0 +1,146 @@
+[
+  {
+    "reason": "first_verified_record",
+    "at_seconds": 438.01628418099426,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 5.089459523995174
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.3384208810020937
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.169605824004975
+      }
+    ],
+    "elapsed_seconds": 9.597506028003409
+  },
+  {
+    "reason": "first_api_proof",
+    "at_seconds": 447.6141034070024,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.430034129007254
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.3759216949983966
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.322481492010411
+      }
+    ],
+    "elapsed_seconds": 7.128452299002674
+  },
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.9954011240043,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 6.855193168987171
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.5908763430052204
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.2813309820048744
+      }
+    ],
+    "elapsed_seconds": 11.727414463995956
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1755.3946947849909,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.3685119559959276
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.369769908997114
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "list",
+          "--json"
+        ],
+        "exit": 0,
+        "elapsed_seconds": 2.473387088000891
+      }
+    ],
+    "elapsed_seconds": 7.211685729998862
+  }
+]

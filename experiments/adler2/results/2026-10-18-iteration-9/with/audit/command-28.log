@@ -1,0 +1,8 @@
+AdlerProof.rem_mod_wp : ∀ (self : ElicitGenerated.algo.U32X4),
+  ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self ElicitGenerated.algo.Adler32.compute.MOD ⦃
+    out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! % 65521 ∧ ↑(↑out)[i]! ≤ 65520 ⦄
+theorem IndependentLemma_14 : ∀ (self : ElicitGenerated.algo.U32X4),
+  ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self ElicitGenerated.algo.Adler32.compute.MOD ⦃
+    out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! % 65521 ∧ ↑(↑out)[i]! ≤ 65520 ⦄ :=
+AdlerProof.rem_mod_wp
+'IndependentLemma_14' depends on axioms: [propext, Classical.choice, Quot.sound]

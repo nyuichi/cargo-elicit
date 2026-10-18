@@ -1,0 +1,14 @@
+/workspace/elicit-comparison/round9-product-audit/Proofs.lean:52:15: warning: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Prod.snd] at hfirst hsecond
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round9-product-audit/Proofs.lean:52:25: warning: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Prod.fst] at hfirst hsecond
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

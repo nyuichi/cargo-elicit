@@ -1,0 +1,4 @@
+AdlerProof.lane_budget : ∀ k ≤ 5552, 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296
+theorem IndependentLemma_1 : ∀ k ≤ 5552, 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296 :=
+AdlerProof.lane_budget
+'IndependentLemma_1' depends on axioms: [propext, Classical.choice, Quot.sound]

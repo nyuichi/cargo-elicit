@@ -1,0 +1,27 @@
+schema_version = 1
+
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun data out => out.val = (data.val.foldl (fun (s : Nat × Nat) x => let a := (s.1 + x.val) % 65521; (a, (s.2 + a) % 65521)) (1, 0)).1 + 65536 * (data.val.foldl (fun (s : Nat × Nat) x => let a := (s.1 + x.val) % 65521; (a, (s.2 + a) % 65521)) (1, 0)).2"
+theorem = "AdlerProof.adler32_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun out => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "AdlerProof.new_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self out => out.val = self.a.val + 65536 * self.b.val"
+theorem = "AdlerProof.checksum_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes out => (out.a.val, out.b.val) = AdlerSpec.run self.a.val self.b.val bytes.val"
+theorem = "AdlerProof.write_slice_correct"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun bytes => 4 ≤ bytes.val.length"
+ensures = "fun bytes out => ∀ i : Nat, i < 4 → out.val[i]!.val = bytes.val[i]!.val"
+theorem = "AdlerProof.from_correct"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun self other => ∀ i : Nat, i < 4 → self.val[i]!.val + other.val[i]!.val ≤ U32.max"
+ensures = "fun self other out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val + other.val[i]!.val"
+theorem = "AdlerProof.add_correct"

@@ -1,0 +1,183 @@
+{
+  "elapsed_seconds": 40.77400895000028,
+  "separate_fresh_extraction": true,
+  "byte_identical_generated_model": true,
+  "original_sources_identical": true,
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "ElicitGenerated": true,
+    "ElicitAdapter": true,
+    "Specs": true,
+    "ElicitContracts": true,
+    "Lemmas": true,
+    "Proofs": true
+  },
+  "api_contract_audits": {
+    "adler2::adler32_slice::Function": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "log": "command-8.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::new::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "AdlerProof.new_correct",
+      "log": "command-10.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "AdlerProof.checksum_correct",
+      "log": "command-12.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_98f3436459f22f5d",
+      "theorem": "AdlerProof.write_slice_correct",
+      "log": "command-14.log"
+    },
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "AdlerProof.from_correct",
+      "log": "command-16.log"
+    },
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_20b5198a3591154d",
+      "theorem": "AdlerProof.add_correct",
+      "log": "command-18.log"
+    }
+  },
+  "lemma_audits": {
+    "lane_budget": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (k : Nat), k \u2264 5552 \u2192 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+      "theorem": "AdlerProof.lane_budget",
+      "log": "command-20.log"
+    },
+    "chunks_partition": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} (n : Nat) (hn : 0 < n) (xs : List \u03b1), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs \u2227 (\u2200 c \u2208 (List.toChunksExact n hn xs).1, c.length = n) \u2227 (List.toChunksExact n hn xs).2.length < n",
+      "theorem": "AdlerProof.chunks_partition",
+      "log": "command-21.log"
+    },
+    "chunks_exact": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} (s : Slice \u03b1) (n : Usize), 0 < n.val \u2192 core.slice.Slice.chunks_exact s n \u2983 fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val \u2227 (\u2200 c \u2208 it.chunks, c.val.length = n.val) \u2227 it.remainder.val.length < n.val \u2984",
+      "theorem": "AdlerProof.chunks_exact_spec",
+      "log": "command-22.log"
+    },
+    "inner_step": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 \u2264 bytes.val.length) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val + bytes.val[i]!.val \u2264 U32.max) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) \u2264 U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b \u2983 fun r => \u2203 av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) \u2227 (\u2200 i : Nat, i < 4 \u2192 av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) \u2227 (\u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) \u2984",
+      "theorem": "AdlerProof.inner_step",
+      "log": "command-23.log"
+    },
+    "inner_loop_bounded": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : \u2200 c \u2208 cs, 4 \u2264 c.val.length) (hlen : cs.length \u2264 5552) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520), algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i \u2984",
+      "theorem": "AdlerProof.inner_loop_bounded",
+      "log": "command-24.log"
+    },
+    "remainder_inner_loop_bounded": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : \u2200 c \u2208 cs, 4 \u2264 c.val.length) (hlen : cs.length \u2264 5552) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520), algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i \u2984",
+      "theorem": "AdlerProof.remainder_inner_loop_bounded",
+      "log": "command-25.log"
+    },
+    "chunk_count_bound": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem source : Slice U8) (hpartition : (cs.map Slice.val).flatten ++ rem.val = source.val) (hfull : \u2200 c \u2208 cs, c.val.length = 4) (hlen : source.val.length \u2264 22208), cs.length \u2264 5552",
+      "theorem": "AdlerProof.chunk_count_bound",
+      "log": "command-26.log"
+    },
+    "lane_rem": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (self : algo.U32X4) (q : U32), 0 < q.val \u2192 algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = self.val[i]!.val % q.val \u2984",
+      "theorem": "AdlerProof.rem_wp",
+      "log": "command-27.log"
+    },
+    "lane_normalize": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (self : algo.U32X4), algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self algo.Adler32.compute.MOD \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = self.val[i]!.val % 65521 \u2227 out.val[i]!.val \u2264 65520 \u2984",
+      "theorem": "AdlerProof.rem_mod_wp",
+      "log": "command-28.log"
+    }
+  },
+  "frozen_authoring_sha256": {
+    "elicit-proofs/aeneas/Specs.lean": "a94da0aed41aae485cc8f5bec21c7f2d90b97512f7d0487fddb53dda31714b52",
+    "elicit-proofs/aeneas/Lemmas.lean": "d9202ad6316abc42e44f321eea870f9a6aec6aecf15b6da6d14edb720495a3cd",
+    "elicit-proofs/aeneas/Proofs.lean": "c599302349548ede2dc14782bf75c7625f42ed9791389b75100e2ea6ecbca86e",
+    "elicit-proofs/aeneas/contracts.toml": "224adcb73c1d68b6b619b2675491843b765e55e95e88d049fc82071e54133e7e"
+  },
+  "coverage_note": "Kernel acceptance is relative to the exact emitted proposition. Manually review universal API contracts and conditional/helper results before counting selected goals. This audit is outside the authoring clock."
+}

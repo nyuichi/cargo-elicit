@@ -1,0 +1,6 @@
+def ElicitContracts.c_0dfc1ce11e75ed00 : Prop :=
+∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  (fun bytes => 4 ≤ (↑bytes).length) bytes →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.from bytes = Aeneas.Std.Result.ok result ∧
+        (fun bytes out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑bytes)[i]!) bytes result

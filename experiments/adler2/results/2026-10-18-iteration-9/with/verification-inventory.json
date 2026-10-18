@@ -1,0 +1,217 @@
+{
+  "status": "partial_checkpoint_pending_official_check",
+  "scope": "selected APIs only",
+  "runtime_preserved": true,
+  "proof_root": "elicit-proofs/aeneas",
+  "roots": [
+    {
+      "rust_api": "Adler32::new",
+      "theorem": "AdlerProof.new_correct",
+      "contract": "ElicitContracts.c_8055bec449b87b3d",
+      "preconditions": [],
+      "ensures": "a=1 and b=0, successful execution",
+      "module": "Proofs.lean",
+      "status": "official scheduler ledger reports success in verification-5r3bJN"
+    },
+    {
+      "rust_api": "Adler32::compute (called by write_slice)",
+      "theorem": "AdlerProof.lane_budget",
+      "preconditions": [
+        "k <= 5552"
+      ],
+      "ensures": "65520+k*65520+255*k*(k+1)/2 < 2^32",
+      "module": "Lemmas.lean",
+      "status": "official scheduler lemma audit reports success in verification-5r3bJN; loop invariant connection remains"
+    },
+    {
+      "rust_api": "adler32_slice",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "preconditions": [],
+      "ensures": "successful execution and scalar Adler recurrence from (1,0)",
+      "module": null,
+      "status": "contract submitted; original-body proof attempt unresolved"
+    },
+    {
+      "rust_api": "Adler32::write_slice",
+      "theorem": "AdlerProof.write_slice_correct",
+      "preconditions": [],
+      "ensures": "successful execution and exact scalar recurrence from arbitrary representable state, normalizing empty input",
+      "module": null,
+      "status": "full contract prepared; original optimized loops unproved"
+    },
+    {
+      "rust_api": "Adler32::checksum",
+      "theorem": "AdlerProof.checksum_correct",
+      "preconditions": [],
+      "ensures": "successful execution and a+65536*b for every representable state",
+      "module": "Proofs.lean",
+      "status": "official scheduler ledger reports success in verification-EW6rvz"
+    },
+    {
+      "rust_api": "Adler32::from_checksum",
+      "theorem": null,
+      "preconditions": [],
+      "ensures": "decodes low and high 16-bit halves",
+      "module": null,
+      "status": "pending"
+    },
+    {
+      "rust_api": "Adler32::write_slice, pinned chunks_exact dependency",
+      "theorem": "AdlerProof.chunks_partition",
+      "preconditions": [
+        "0 < n"
+      ],
+      "ensures": "full chunk lengths equal n, flattened chunks plus remainder equal input, remainder shorter than n",
+      "module": "Lemmas.lean",
+      "status": "official scheduler ledger reports success in verification-EW6rvz"
+    },
+    {
+      "rust_api": "Adler32::write_slice, pinned chunks_exact call",
+      "theorem": "AdlerProof.chunks_exact_spec",
+      "preconditions": [
+        "0 < chunk_size.val"
+      ],
+      "ensures": "successful original model execution, exact chunk lengths, byte conservation and short remainder",
+      "module": "Lemmas.lean",
+      "status": "official scheduler ledger reports success in verification-EW6rvz"
+    },
+    {
+      "rust_api": "adler32_slice",
+      "theorem": "AdlerProof.slice_of_update",
+      "preconditions": [
+        "complete ElicitContracts.c_98f3436459f22f5d write_slice contract"
+      ],
+      "ensures": "complete ElicitContracts.c_8484fdd92cfcd3e7 slice contract",
+      "module": "Proofs.lean",
+      "status": "locally checked explicit implication only; full write_slice proof still required"
+    },
+    {
+      "rust_api": "U32X4::from",
+      "theorem": "AdlerProof.from_correct",
+      "contract": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "preconditions": [
+        "slice length >= 4"
+      ],
+      "ensures": "successful original execution and exact widening of each of the four bytes",
+      "module": "Proofs.lean (WP support in Lemmas.lean)",
+      "status": "official scheduler ledger reports success in verification-EFALCe"
+    },
+    {
+      "rust_api": "U32X4::add_assign",
+      "theorem": "AdlerProof.add_correct",
+      "contract": "ElicitContracts.c_20b5198a3591154d",
+      "preconditions": [
+        "each mathematical lane sum <= u32::MAX"
+      ],
+      "ensures": "successful original execution and exact elementwise lane sums",
+      "module": "Proofs.lean (WP support in Lemmas.lean)",
+      "status": "official scheduler ledger reports success in verification-EFALCe"
+    },
+    {
+      "rust_api": "Adler32::compute original inner loop body",
+      "theorem": "AdlerProof.inner_step",
+      "preconditions": [
+        "first chunk contains at least 4 bytes",
+        "a + byte fits u32 in each lane",
+        "b + a + byte fits u32 in each lane"
+      ],
+      "ensures": "consumes first chunk and returns exact updated a and b lanes",
+      "module": "Lemmas.lean",
+      "status": "official scheduler lemma audit reports success in verification-OcgYK3"
+    },
+    {
+      "rust_api": "Adler32::compute original complete full-chunk inner loop",
+      "theorem": "AdlerProof.inner_loop_bounded",
+      "preconditions": [
+        "at most 5552 chunks",
+        "each chunk has at least 4 bytes",
+        "each initial internal a/b lane <=65520"
+      ],
+      "ensures": "successful complete original loop execution, termination, and exact mathematical lane fold for all four lanes",
+      "module": "Lemmas.lean",
+      "status": "official scheduler lemma audit reports success in verification-kxmyom"
+    },
+    {
+      "rust_api": "Adler32::compute original complete remainder-chunk inner loop",
+      "theorem": "AdlerProof.remainder_inner_loop_bounded",
+      "preconditions": [
+        "same internal chunk-budget and lane-residue conditions"
+      ],
+      "ensures": "successful complete original loop execution and exact lane fold via checked definitional equality",
+      "module": "Lemmas.lean",
+      "status": "official scheduler lemma audit reports success in verification-kxmyom"
+    },
+    {
+      "rust_api": "Adler32::compute chunks_exact dependency",
+      "theorem": "AdlerProof.chunk_count_bound",
+      "preconditions": [
+        "chunk partition reconstructs source",
+        "every full chunk has length 4",
+        "local source chunk length <=22208"
+      ],
+      "ensures": "at most 5552 lane iterations",
+      "module": "Lemmas.lean",
+      "status": "official scheduler lemma audit reports success in verification-kxmyom"
+    },
+    {
+      "rust_api": "U32X4::rem_assign original method",
+      "theorem": "AdlerProof.rem_wp",
+      "preconditions": [
+        "divisor.val > 0"
+      ],
+      "ensures": "successful original execution and exact remainder of every lane",
+      "module": "Lemmas.lean",
+      "status": "local Lean check passed; official lemma audit pending"
+    },
+    {
+      "rust_api": "Adler32::compute vector normalization calls",
+      "theorem": "AdlerProof.rem_mod_wp",
+      "preconditions": [],
+      "ensures": "successful original remainder method at compute.MOD, exact modulo 65521 values and lane bounds <=65520",
+      "module": "Lemmas.lean",
+      "status": "local Lean check passed; official lemma audit pending"
+    }
+  ],
+  "checker_commands": [
+    "charon cargo --preset=aeneas --sysroot=default --dest .elicit/cache/inspection -- --manifest-path Cargo.toml --target x86_64-unknown-linux-gnu",
+    "aeneas -backend lean -dest .elicit/cache/inspection -namespace ElicitGenerated -emit-json .elicit/cache/inspection/adler2.llbc",
+    "lake env lean --root=<workspace>/.elicit/cache/inspection <workspace>/.elicit/cache/inspection/NewProof.lean",
+    "lake env lean --root=<workspace>/.elicit/cache/inspection <workspace>/.elicit/cache/inspection/Bounds.lean",
+    "cargo-elicit agent submit TARGET --revision CURRENT --note REASON (specification processing only; scheduler performs official proof audit)",
+    "LEAN_PATH=<recorded verification-5r3bJN> lake env lean --root=<workspace>/.elicit/cache/update <workspace>/.elicit/cache/update/ChunkLemmas.lean",
+    "LEAN_PATH=<workspace>/.elicit/cache/update:<recorded verification-5r3bJN> lake env lean --root=<workspace>/.elicit/cache/update <workspace>/.elicit/cache/update/Attempt.lean (unresolved at compute_loop0)",
+    "LEAN_PATH=<recorded verification-uyVkqa> lake env lean --root=<workspace>/.elicit/cache/codec <workspace>/.elicit/cache/codec/Attempt.lean (checksum contract passed)",
+    "LEAN_PATH=<workspace>/.elicit/cache/codec:<recorded verification-uyVkqa> lake env lean --root=<workspace>/.elicit/cache/codec <workspace>/.elicit/cache/codec/Compose.lean (explicit update-contract implication passed)",
+    "LEAN_PATH=<recorded verification-uyVkqa> lake env lean --root=<workspace>/.elicit/cache/codec <workspace>/.elicit/cache/codec/CheckLemmas.lean (corrected expected lemma propositions passed)",
+    "LEAN_PATH=<recorded verification-EW6rvz> lake env lean --root=<workspace>/.elicit/cache/lanes <workspace>/.elicit/cache/lanes/LaneSupport.lean (original helper WP proofs passed)",
+    "LEAN_PATH=<workspace>/.elicit/cache/lanes:<recorded verification-EW6rvz> lake env lean --root=<workspace>/.elicit/cache/lanes <workspace>/.elicit/cache/lanes/Body.lean (original inner body proof passed)",
+    "lake env lean NewHelpers.lean with the recorded model and exact auxiliary elicit_contract declarations (helper contract proofs passed; official wrapper still required)",
+    "LEAN_PATH=<recorded verification-EFALCe> lake env lean --root=<workspace>/.elicit/cache/inner-audit <workspace>/.elicit/cache/inner-audit/Check.lean (full repaired inner_step proposition and transitive axioms checked)",
+    "LEAN_PATH=<recorded verification-OcgYK3> lake env lean --root=<workspace>/.elicit/cache/inner-loop <workspace>/.elicit/cache/inner-loop/Loop.lean (complete original inner loops and derived prefix safety)",
+    "LEAN_PATH=<workspace>/.elicit/cache/inner-loop:<recorded verification-OcgYK3> lake env lean --root=<workspace>/.elicit/cache/inner-loop <workspace>/.elicit/cache/inner-loop/Check.lean (exact new plan propositions)",
+    "LEAN_PATH=<recorded verification-kxmyom> lake env lean --root=<workspace>/.elicit/cache/reduction <workspace>/.elicit/cache/reduction/Rem.lean"
+  ],
+  "remaining_obligations": [
+    "four-lane loop congruences and bounds",
+    "chunk iterator progress and decomposition",
+    "modular reduction preservation",
+    "lane recombination",
+    "codec decoding",
+    "codec roundtrips",
+    "split-update with concatenated slice representability",
+    "save/restore/resume equivalence"
+  ],
+  "unverified_out_of_scope": [
+    "generic BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "trusted_boundaries": [
+    "installed pinned Charon and Aeneas",
+    "standard Lean models",
+    "Lean kernel; official axiom audit pending"
+  ],
+  "prohibited_proof_shortcuts_used": false
+}
