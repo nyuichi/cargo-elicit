@@ -1,0 +1,44 @@
+[
+  {
+    "receipt": "audit-1792331422261.json",
+    "seconds": 74.482,
+    "stable": true,
+    "accepted_api_results": 5,
+    "phase": "audit"
+  },
+  {
+    "receipt": "audit-1792331532405.json",
+    "seconds": 73.065,
+    "stable": true,
+    "accepted_api_results": 5,
+    "phase": "audit"
+  },
+  {
+    "receipt": "check-1792329841323.json",
+    "seconds": 11.086,
+    "stable": false,
+    "accepted_api_results": 0,
+    "phase": "lemma-audit"
+  },
+  {
+    "receipt": "check-1792329879350.json",
+    "seconds": 15.643,
+    "stable": true,
+    "accepted_api_results": 0,
+    "phase": "audit"
+  },
+  {
+    "receipt": "check-1792329980250.json",
+    "seconds": 18.089,
+    "stable": true,
+    "accepted_api_results": 3,
+    "phase": "audit"
+  },
+  {
+    "receipt": "check-1792331223299.json",
+    "seconds": 72.038,
+    "stable": true,
+    "accepted_api_results": 5,
+    "phase": "audit"
+  }
+]

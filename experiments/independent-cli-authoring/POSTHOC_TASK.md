@@ -1,0 +1,9 @@
+# Analyze the completed fresh adler2 comparison
+
+Read the provided numeric summaries, investigator semantic/kernel audit results, author FINAL_REPORT documents, preparation/invalid-attempt record and relevant command timelines. Write PRODUCTIVITY_REVIEW.md in English. You are reviewing completed trials, not authoring or repairing proofs. Do not change proof artifacts or product code. Do not use subagents.
+
+Lead with whether this pair actually shows improved productivity for completing the five requested original APIs. Distinguish full completion, partial work, and supplementary laws. Explain concrete benefits/friction supported by the records, and distinguish your inference from worker self-report. Compute time and token ratios only for comparable outcomes. Cached input is included in input, not added to it. No monetary estimate without verified pricing.
+
+Include wall time, investigator audit time separately, token categories, failure/command counts with measurement limitations, observed status overhead and available check/audit costs. Do not equate shell item count or command text mentions with exact native process counts. Separate invalid environment attempts and authentication setup; optionally show their practical cost without silently hiding or attributing them to product proof orchestration. Missing metrics are unavailable, never zero.
+
+Do not infer statistical significance, general robustness or future crate performance from one pair. The old 28.40-minute baseline and old 89.36-minute product trajectory are context; the new matched pair is primary. Evaluate freedom of authoring, repeated work and progress visibility against the actual completion objective. Do not recommend adler-specific tuning merely because one proof tactic failed. Say clearly if evidence does not establish improvement.

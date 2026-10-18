@@ -1,0 +1,67 @@
+[
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.3025718710014,
+    "commands": [],
+    "note": "Artifact observation only; no ledger coverage inferred",
+    "proof_sources": [
+      "proofs/Vector.lean",
+      "proofs/Tmp4.lean",
+      "proofs/Tmp2.lean",
+      "proofs/Tmp.lean",
+      "proofs/Codec.lean",
+      "proofs/Tmp3.lean",
+      "proofs/Inspect.lean",
+      "proofs/generated/Adler2.lean"
+    ],
+    "seconds": 0.0011246700014453381
+  },
+  {
+    "reason": "checkpoint_30_minutes",
+    "at_seconds": 1801.6045322770005,
+    "commands": [],
+    "note": "Artifact observation only; no ledger coverage inferred",
+    "proof_sources": [
+      "proofs/Compute.lean",
+      "proofs/Vector.lean",
+      "proofs/Specification.lean",
+      "proofs/Audit.lean",
+      "proofs/Tail.lean",
+      "proofs/Combine.lean",
+      "proofs/Codec.lean",
+      "proofs/Mathematics.lean",
+      "proofs/Inner.lean",
+      "proofs/Outer.lean",
+      "proofs/Laws.lean",
+      "proofs/Sums.lean",
+      "proofs/Chunks.lean",
+      "proofs/API.lean",
+      "proofs/generated/Adler2.lean"
+    ],
+    "seconds": 0.0015392870009236503
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1878.6744157650028,
+    "commands": [],
+    "note": "Artifact observation only; no ledger coverage inferred",
+    "proof_sources": [
+      "proofs/Compute.lean",
+      "proofs/Vector.lean",
+      "proofs/Specification.lean",
+      "proofs/Audit.lean",
+      "proofs/Tail.lean",
+      "proofs/Combine.lean",
+      "proofs/Codec.lean",
+      "proofs/Mathematics.lean",
+      "proofs/Inner.lean",
+      "proofs/Outer.lean",
+      "proofs/Laws.lean",
+      "proofs/Sums.lean",
+      "proofs/Chunks.lean",
+      "proofs/API.lean",
+      "proofs/generated/Adler2.lean"
+    ],
+    "seconds": 0.0011932119996345136
+  }
+]

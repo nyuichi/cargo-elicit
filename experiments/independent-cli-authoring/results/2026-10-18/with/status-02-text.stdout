@@ -1,0 +1,14 @@
+Saved snapshot 7444da871e4a (1792329962148)
+Workspace currentness was not checked by this read. Use refresh, check or audit to observe inputs.
+5 obligations; audited at snapshot: false. This is not a whole-package claim.
+Adler32::new  audit=missing_or_stale  check=accepted  review=unreviewed
+Adler32::checksum  audit=missing_or_stale  check=accepted  review=unreviewed
+Adler32::from_checksum  audit=missing_or_stale  check=accepted  review=unreviewed
+Adler32::write_slice  audit=missing_or_stale  check=failed  review=unreviewed
+  audit: no kernel-checked theorem mapped to the complete original Rust contract
+  receipt: .elicit/evidence/check-1792329980250.json
+adler32_slice  audit=missing_or_stale  check=failed  review=unreviewed
+  audit: no kernel-checked theorem mapped to the complete original Rust contract
+  receipt: .elicit/evidence/check-1792329980250.json
+inventory limitation: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]
+inventory limitation: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]

@@ -1,0 +1,10 @@
+{
+  "scope": "Archived execution protocol files; content hashes recorded after runs, not a signed attestation",
+  "files": {
+    "README.md": "1510941300a57f79ff579a4e1806de05934688c700d7cabc78d4e47b22e7ee22",
+    "run.py": "361f95d2f2c068f97627c6bcf0445c7091a2dba03f886ffe3aa88602d3145496",
+    "TASK.md": "542ab9ae03d1f5512ca3950a3873dcf88ce51c406f8439d7ad82d15b09496155",
+    "prepare.py": "c74428fbc19f18df31363fb3c18017a91862ef27943665581ed8911bc051281d",
+    "test_observer.py": "3b018fba625f02ccd15f71047932533e5f7813fbb1695003de2356260daa2f4b"
+  }
+}

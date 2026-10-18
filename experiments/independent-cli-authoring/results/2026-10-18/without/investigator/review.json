@@ -1,0 +1,91 @@
+{
+  "reviewer": "Investigating agent separate from author; exact root statements and scalar/loop definitions read, then fresh extraction and kernel/axiom audit",
+  "selected_api_coverage": "5/5",
+  "original_sources_unchanged": true,
+  "source_hashes": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "api_semantic_review": [
+    {
+      "api": "Adler32::new",
+      "theorem": "AdlerProof.new_correct",
+      "accepted": true,
+      "property": "Original function equals ok(state 1,0)"
+    },
+    {
+      "api": "Adler32::checksum",
+      "theorem": "AdlerProof.checksum_correct",
+      "accepted": true,
+      "property": "Every representable u16 pair succeeds with natural value 65536*b+a"
+    },
+    {
+      "api": "Adler32::from_checksum",
+      "theorem": "AdlerProof.from_checksum_correct",
+      "accepted": true,
+      "property": "Every u32 succeeds with low/high 16-bit halves"
+    },
+    {
+      "api": "Adler32::write_slice",
+      "theorem": "AdlerProof.write_slice_correct",
+      "accepted": true,
+      "property": "Total WP, arbitrary representable state and byte slice, output exactly scalar recurrence with empty normalization"
+    },
+    {
+      "api": "adler32_slice",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "accepted": true,
+      "property": "Total WP, scalar recurrence from (1,0) then arithmetic encoding"
+    }
+  ],
+  "specification_review": {
+    "scalarStep": "a=(a+byte)%65521; b=(b+a)%65521",
+    "scalar": "Fold scalarStep after normalizing both seed halves",
+    "optimized_implementation": "compute_correct_ring covers the fresh original compute body; helper loop bounds come from actual chunk size, not a caller length assumption",
+    "representability": "Only standard argument/slice representability; no normalized-seed assumption or artificial total length cap",
+    "source_correspondence": "Fresh LLBC source contents match original bytes, selected bodies transparent with overflow checks; fresh unedited Lean model byte-identical to author model"
+  },
+  "additional_laws": {
+    "AdlerProof.codec_state_roundtrip": "Successful encode/restore preserves any state",
+    "AdlerProof.codec_checksum_roundtrip": "Successful restore/encode preserves any u32",
+    "AdlerProof.split_update": "Sequential and combined original updates both succeed and return equal full states, with concatenated-slice representability",
+    "AdlerProof.save_restore_resume": "Split update with checksum save/restore/resume equals one combined original update, with concatenated-slice representability",
+    "AdlerProof.scalar_append": "Mathematical scalar append law",
+    "AdlerProof.write_slice_empty": "Explicit empty-update normalization corollary"
+  },
+  "fresh_audit": {
+    "elapsed_seconds": 54.49125843899674,
+    "kernel_roots_checked": 22,
+    "all_standard_axioms_only": true,
+    "modules": {
+      "Adler2": true,
+      "Codec": true,
+      "Vector": true,
+      "Inner": true,
+      "Chunks": true,
+      "Mathematics": true,
+      "Outer": true,
+      "Sums": true,
+      "Tail": true,
+      "Combine": true,
+      "Compute": true,
+      "Specification": true,
+      "API": true,
+      "Laws": true
+    }
+  },
+  "whole_crate_verified": false,
+  "excluded": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Other targets/features"
+  ],
+  "limitations": [
+    "Semantic review is an investigator judgment, not inferred solely from compilation",
+    "Pinned compiler/extractor/translator/standard models and Lean kernel remain trusted",
+    "Diagnostic Tmp*/Inspect modules are not accepted evidence; only reviewed root closure was rebuilt"
+  ]
+}

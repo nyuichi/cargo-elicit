@@ -1,0 +1,282 @@
+{
+  "analysis_limitations": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "changed_inputs": [
+    "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Codec.lean",
+    "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Proofs.lean",
+    "@env:RUSTUP_TOOLCHAIN"
+  ],
+  "declared_obligations_audited_at_snapshot": false,
+  "goals": [
+    {
+      "audit": "missing_or_stale",
+      "check": "accepted",
+      "description": "",
+      "id": "Adler32::new",
+      "last_evidence": {
+        "accepted": true,
+        "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+        "kind": "check",
+        "phase": "audit",
+        "reason": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "receipt": ".elicit/evidence/check-1792329980250.json",
+        "recorded_at": 1792329980252,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/check-1792329980250",
+            "phase": "audit"
+          },
+          "elapsed_ms": 18089,
+          "id": "1792329962160-adler2::impl[ff6e69000b04949b]::new::Method-0",
+          "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+          "obligations": [
+            "ElicitContracts.c_8055bec449b87b3d"
+          ],
+          "outcome": "success",
+          "restrictions": [],
+          "reusable": true,
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+          "tool": "aeneas",
+          "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+          "trusted_base": [
+            "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+            "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+          ],
+          "units": [
+            "contract"
+          ]
+        },
+        "specification": "cef58da76761ff8e3ac8230f90eb4537a608c9718c9c47a83ed3a553a00c3d2d"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method"
+    },
+    {
+      "audit": "missing_or_stale",
+      "check": "accepted",
+      "description": "",
+      "id": "Adler32::checksum",
+      "last_evidence": {
+        "accepted": true,
+        "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+        "kind": "check",
+        "phase": "audit",
+        "reason": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "receipt": ".elicit/evidence/check-1792329980250.json",
+        "recorded_at": 1792329980252,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/check-1792329980250",
+            "phase": "audit"
+          },
+          "elapsed_ms": 18089,
+          "id": "1792329962160-adler2::impl[ff6e69000b04949b]::checksum::Method-0",
+          "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+          "obligations": [
+            "ElicitContracts.c_0a059b8c0885cf07"
+          ],
+          "outcome": "success",
+          "restrictions": [],
+          "reusable": true,
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "tool": "aeneas",
+          "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+          "trusted_base": [
+            "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+            "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+          ],
+          "units": [
+            "contract"
+          ]
+        },
+        "specification": "2179f7f0ae9c8cc5ef0d3fd00147c8c56af50f9541039d4cc8d77c3960cb4136"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+    },
+    {
+      "audit": "missing_or_stale",
+      "check": "accepted",
+      "description": "",
+      "id": "Adler32::from_checksum",
+      "last_evidence": {
+        "accepted": true,
+        "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+        "kind": "check",
+        "phase": "audit",
+        "reason": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "receipt": ".elicit/evidence/check-1792329980250.json",
+        "recorded_at": 1792329980252,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/check-1792329980250",
+            "phase": "audit"
+          },
+          "elapsed_ms": 18089,
+          "id": "1792329962160-adler2::impl[ff6e69000b04949b]::from_checksum::Method-0",
+          "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+          "obligations": [
+            "ElicitContracts.c_9a31b7b9cb8492b0"
+          ],
+          "outcome": "success",
+          "restrictions": [],
+          "reusable": true,
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+          "tool": "aeneas",
+          "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+          "trusted_base": [
+            "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+            "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+          ],
+          "units": [
+            "contract"
+          ]
+        },
+        "specification": "24a75a21ec5885a876a05fd0594d527d7aeb939b7c7be79d114df87873967009"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+    },
+    {
+      "audit": "missing_or_stale",
+      "check": "failed",
+      "description": "",
+      "id": "Adler32::write_slice",
+      "last_evidence": {
+        "accepted": false,
+        "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+        "kind": "check",
+        "phase": "audit",
+        "reason": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "receipt": ".elicit/evidence/check-1792329980250.json",
+        "recorded_at": 1792329980252,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/check-1792329980250",
+            "phase": "audit"
+          },
+          "elapsed_ms": 18089,
+          "id": "1792329962160-adler2::impl[ff6e69000b04949b]::write_slice::Method-0",
+          "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+          "obligations": [],
+          "outcome": "unresolved",
+          "restrictions": [],
+          "reusable": false,
+          "scope": "unknown",
+          "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+          "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "tool": "aeneas",
+          "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+          "trusted_base": [
+            "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+            "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+          ],
+          "units": [
+            "contract"
+          ]
+        },
+        "specification": "920262db8ca10114b877b3addff5292ee04d3ece176f4898eaf4d9f413d39f00"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    },
+    {
+      "audit": "missing_or_stale",
+      "check": "failed",
+      "description": "",
+      "id": "adler32_slice",
+      "last_evidence": {
+        "accepted": false,
+        "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+        "kind": "check",
+        "phase": "audit",
+        "reason": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "receipt": ".elicit/evidence/check-1792329980250.json",
+        "recorded_at": 1792329980252,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/check-1792329980250",
+            "phase": "audit"
+          },
+          "elapsed_ms": 18089,
+          "id": "1792329962160-adler2::adler32_slice::Function-0",
+          "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+          "obligations": [],
+          "outcome": "unresolved",
+          "restrictions": [],
+          "reusable": false,
+          "scope": "unknown",
+          "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+          "target": "adler2::adler32_slice::Function",
+          "tool": "aeneas",
+          "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+          "trusted_base": [
+            "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+            "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+          ],
+          "units": [
+            "contract"
+          ]
+        },
+        "specification": "1bb7b539cdcd515ce79f764657ba1b31b398e821378e5bd690395d08052cae2f"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "adler2::adler32_slice::Function"
+    }
+  ],
+  "observation": "saved_snapshot",
+  "observed_at_unix_ms": 1792329962148,
+  "schema": 2,
+  "scope": {
+    "all_features": false,
+    "config_path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit.toml",
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-independent-authoring-2026-10-18/cases/with"
+    ],
+    "manifest_path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": "x86_64-unknown-linux-gnu",
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/target",
+    "workspace_root": "/workspace/elicit-independent-authoring-2026-10-18/cases/with"
+  },
+  "snapshot": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+  "uncovered_public_inventory": [
+    "adler2::Adler32::Struct",
+    "adler2::adler32::Function",
+    "adler2::impl[6f07fcfab3542315]::default::Method",
+    "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+    "adler2::impl[c15b331ca2ffd1e4]::write::Method"
+  ],
+  "whole_package_claim": false,
+  "workspace_currentness": "not_observed_by_this_read; run refresh or check/audit"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "seconds": 5.238334306002798,
+    "text": "I\u2019ll read the benchmark requirements, develop the proofs with native tools, then run final validation and write `FINAL_REPORT.md`.\n"
+  },
+  {
+    "seconds": 65.43230676500025,
+    "text": "The first extraction and translation succeeded, including all loops in the optimized body. It also pulled in an opaque I/O type from an API outside the requested scope. I\u2019ll narrow extraction to the five requested APIs so the proof model avoids that declaration.\n"
+  },
+  {
+    "seconds": 225.54871572000047,
+    "text": "The narrowed extraction now succeeds and has no generated axioms. I\u2019m proving the constructor and codec APIs first, then moving to the loop invariants. The update proof will allow every `u16` initial state, including values at or above 65521.\n"
+  },
+  {
+    "seconds": 391.7159604010012,
+    "text": "The codec proofs are underway. Lean\u2019s bit-vector coercions and powers-of-two reductions are taking some work to reconcile with the arithmetic specifications. I\u2019ll keep these lemmas reusable for the save/restore laws.\n"
+  },
+  {
+    "seconds": 638.2788010830009,
+    "text": "Lean has checked the three constructor/codec API proofs and the optimized helpers for four-lane loads, addition, remainder, and multiplication. Next I\u2019ll prove the inner loops, including the bounds that keep each lane within `u32`.\n"
+  },
+  {
+    "seconds": 884.1496299820028,
+    "text": "Lean has checked both four-byte loops, including termination and the lane overflow bounds. It has also checked chunk decomposition and the modular arithmetic identity connecting the lanes to the scalar Adler recurrence. I\u2019m now joining those results through the outer chunk loop.\n"
+  },
+  {
+    "seconds": 1154.1079666450023,
+    "text": "The outer chunk loop is checked, including its calls to the inner loop and all modular reductions. The two sum loops and scalar tail loop are checked too. I\u2019m now assembling the end-to-end theorem and converting the modular result into the requested normalized scalar recurrence.\n"
+  },
+  {
+    "seconds": 1505.2276319810007,
+    "text": "The scalar specification is checked: it normalizes both seed halves, including for empty updates, then applies the per-byte recurrence modulo 65521. The assembled core proof has reached the final lane combination and tail processing; I\u2019m resolving the remaining machine-bound obligations.\n"
+  },
+  {
+    "seconds": 1553.961573261,
+    "text": "Lean has checked the complete optimized `compute` body, with no input-length bound beyond slice representability and no normalized-seed assumption. I\u2019ll now derive the five API results and optional laws, then rebuild and audit the proofs.\n"
+  },
+  {
+    "seconds": 1687.596263663003,
+    "text": "All five API proofs and the optional laws now pass Lean, including both codec roundtrips, split updates, and save/restore/resume. Both split laws explicitly require the concatenated slice to be representable. I\u2019m regenerating the model and rebuilding the proofs for final validation.\n"
+  },
+  {
+    "seconds": 1862.0288397360018,
+    "text": "Final validation passed: fresh extraction and translation, all proof modules, the 21-root axiom audit, 6 upstream unit tests, and 4 doctests. The runtime source and both manifests still match their original hashes. The report and inventory record the proved scope and trusted boundaries.\n"
+  },
+  {
+    "seconds": 1878.6113411200022,
+    "text": "Completed all five API proofs and optional laws. Final validation passed, including the axiom audit, 6 unit tests, and 4 doctests. Original runtime and manifest bytes are unchanged.\n\nSee [FINAL_REPORT.md](/workspace/elicit-independent-authoring-2026-10-18/cases/without/FINAL_REPORT.md). Reproduce with `./proofs/validate.sh`.\n\nWhole-crate verification remains outside the proved scope."
+  }
+]

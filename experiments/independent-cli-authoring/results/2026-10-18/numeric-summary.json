@@ -1,0 +1,102 @@
+{
+  "with": {
+    "status": "completed",
+    "end_to_end_seconds": 1776.5997864020028,
+    "token_usage_last_cumulative": {
+      "totalTokens": 20913889,
+      "inputTokens": 20858726,
+      "cachedInputTokens": 20608384,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 55163,
+      "reasoningOutputTokens": 15652
+    },
+    "noncached_input_tokens": 250342,
+    "completed_command_items": 143,
+    "failed_command_items": 65,
+    "repeated_failed_exact_commands_extra_occurrences": 0,
+    "observer_command_item_seconds_sum": 668.3136569060152,
+    "command_categories_overlapping": {
+      "elicit": {
+        "command_items": 21,
+        "observer_item_seconds_sum": 312.99130877800053
+      },
+      "lean": {
+        "command_items": 110,
+        "observer_item_seconds_sum": 556.9322547060146
+      },
+      "charon": {
+        "command_items": 11,
+        "observer_item_seconds_sum": 39.03675466299319
+      },
+      "aeneas": {
+        "command_items": 108,
+        "observer_item_seconds_sum": 657.8422388690087
+      },
+      "status": {
+        "command_items": 6,
+        "observer_item_seconds_sum": 80.33892681100042
+      }
+    },
+    "observation_seconds": 0.08867405500495806,
+    "original_sources_unchanged": true,
+    "context_compaction_events": 0,
+    "coverage": "Not inferred; supply investigator review and kernel audit",
+    "measurement_limits": [
+      "Command categories overlap and are text-based mentions, not exact native invocation counts; one shell command can spawn many native processes",
+      "Observer item intervals are not a disjoint wall-time decomposition; parallel items can overlap",
+      "App-server durationMs may be zero even for nonzero observer intervals",
+      "Cached input is a subset of input, not additional input",
+      "Repeated commands alone do not establish wasted work"
+    ]
+  },
+  "without": {
+    "status": "completed",
+    "end_to_end_seconds": 1878.678068559002,
+    "token_usage_last_cumulative": {
+      "totalTokens": 15673784,
+      "inputTokens": 15619642,
+      "cachedInputTokens": 15347456,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 54142,
+      "reasoningOutputTokens": 18341
+    },
+    "noncached_input_tokens": 272186,
+    "completed_command_items": 109,
+    "failed_command_items": 54,
+    "repeated_failed_exact_commands_extra_occurrences": 0,
+    "observer_command_item_seconds_sum": 315.6267336109995,
+    "command_categories_overlapping": {
+      "elicit": {
+        "command_items": 3,
+        "observer_item_seconds_sum": 1.9709335860025021
+      },
+      "lean": {
+        "command_items": 100,
+        "observer_item_seconds_sum": 315.58319552300236
+      },
+      "charon": {
+        "command_items": 18,
+        "observer_item_seconds_sum": 48.391878558992175
+      },
+      "aeneas": {
+        "command_items": 38,
+        "observer_item_seconds_sum": 54.8512502219819
+      },
+      "status": {
+        "command_items": 0,
+        "observer_item_seconds_sum": 0
+      }
+    },
+    "observation_seconds": 0.003857169002003502,
+    "original_sources_unchanged": true,
+    "context_compaction_events": 0,
+    "coverage": "Not inferred; supply investigator review and kernel audit",
+    "measurement_limits": [
+      "Command categories overlap and are text-based mentions, not exact native invocation counts; one shell command can spawn many native processes",
+      "Observer item intervals are not a disjoint wall-time decomposition; parallel items can overlap",
+      "App-server durationMs may be zero even for nonzero observer intervals",
+      "Cached input is a subset of input, not additional input",
+      "Repeated commands alone do not establish wasted work"
+    ]
+  }
+}

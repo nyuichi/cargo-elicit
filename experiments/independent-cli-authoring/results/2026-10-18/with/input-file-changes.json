@@ -1,0 +1,229 @@
+[
+  {
+    "receipt": "check-1792329841323.json",
+    "input": "6a4c154e7ef9fab6fa26541c670cd48d4cd707c10a7b473bff5d047901935592",
+    "stable": false,
+    "changed_inputs_since_previous_receipt": []
+  },
+  {
+    "receipt": "check-1792329879350.json",
+    "input": "b09ba22614c8e02aa414dec94a531ceb528cfd4b7e12f12b38b0010d0609108b",
+    "stable": true,
+    "changed_inputs_since_previous_receipt": [
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/PROGRESS.md",
+        "before": null,
+        "after": "dfa6c807190f4078ea92f96aeab2962eb59f2c0d2a2c37ef3d80cda31bf37295",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Proofs.lean",
+        "before": null,
+        "after": "5413291e9904a4b74f9949f774d642f2c8317e8072c6928ad1a5e64ba5f865ba",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Specs.lean",
+        "before": null,
+        "after": "b547efc40469a63587c3d1efa2bc3ee9882e140e0dc729e799aa779a8df5e16d",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/contracts.toml",
+        "before": null,
+        "after": "950f94208842517cc13d9a1abfc319a104351d96b6992615bdf977ff718c0aca",
+        "proof_source": true
+      }
+    ]
+  },
+  {
+    "receipt": "check-1792329980250.json",
+    "input": "7444da871e4ac16ab03abeeb75cb33b473cd6fd89ac0a1a5b16cc584d10e8c89",
+    "stable": true,
+    "changed_inputs_since_previous_receipt": [
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Codec.lean",
+        "before": null,
+        "after": "1d8d6f5f7475b4408c83ac64da17b4eeaad9256904333e482a70c21e2ca125ff",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Proofs.lean",
+        "before": "5413291e9904a4b74f9949f774d642f2c8317e8072c6928ad1a5e64ba5f865ba",
+        "after": "d266ac27bb1bb61c683bad993625b86099f680e7cef0f41bd390cf68ddb2a51c",
+        "proof_source": true
+      },
+      {
+        "path": "@env:RUSTUP_TOOLCHAIN",
+        "before": null,
+        "after": "6f9f4ff4a32d66a17fca023aa3099fae27b21936d17e0772a3ae7dd7922c0ede",
+        "proof_source": false
+      }
+    ]
+  },
+  {
+    "receipt": "check-1792331223299.json",
+    "input": "66a5febaabf6c58ddb5afb75d5eae628280e3b6be61d173fdb7da4e87d1c9e87",
+    "stable": true,
+    "changed_inputs_since_previous_receipt": [
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/PROGRESS.md",
+        "before": "dfa6c807190f4078ea92f96aeab2962eb59f2c0d2a2c37ef3d80cda31bf37295",
+        "after": "fd74a6d2e3bad93614ea7d67178b95ccbce617dfca07e0626684f4951f4b2bd2",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Api.lean",
+        "before": null,
+        "after": "f098b6e8ba663846a309fa38a1addd821d49e86e6524c83325ed99b432b67895",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Chunks.lean",
+        "before": null,
+        "after": "05458ee5348f6e3b4be585dea9db051592296d162077c2b4a12136383257ffb3",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/CodecLaws.lean",
+        "before": null,
+        "after": "3bc710245be7ef8d4390ba1040aa02128f6e976f2640645734f185c0256816f8",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Compute.lean",
+        "before": null,
+        "after": "cae6e1f1fc55078fc91a329d96e14d935381bc372db1388339d0bc08a42965d8",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Finish.lean",
+        "before": null,
+        "after": "e48fcc36324c5c6f6525c1a3dd7e156153018d0cb650688a66c2e0b9f3cb69b2",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/FinishLoops.lean",
+        "before": null,
+        "after": "02d77d18d0c5b9662bd1b5898af2beb7875672d288c7c61c84b32e64d5b80ab3",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Inner.lean",
+        "before": null,
+        "after": "e97039cfbf36f03fac0a1f71e838f22e4864e2f822f4cd1758897d3f6d66ba4f",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Laws.lean",
+        "before": null,
+        "after": "4c4d425a42fdb384b9f0bd57e07b3a793fb00a3feaf3b06c5c6fddaf14fafd14",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Math.lean",
+        "before": null,
+        "after": "ad2755fb1c03b690f93b2306ecc9fccbf1398c9e8d146313bbc6b6cc0a10d813",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Outer.lean",
+        "before": null,
+        "after": "6c99df38e82d6f22995cd886c01d612db6a71f01c509c833a8cb08258efaf0f1",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Proofs.lean",
+        "before": "d266ac27bb1bb61c683bad993625b86099f680e7cef0f41bd390cf68ddb2a51c",
+        "after": "6031e9232bc5cabbcb837132f8be2724da2b01ef045ff4ec9cec1536218fb810",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Vectors.lean",
+        "before": null,
+        "after": "ea8f483eb1a88ea4e9139764cc922a380aa1637c549769a64b599f776466d653",
+        "proof_source": true
+      }
+    ]
+  },
+  {
+    "receipt": "audit-1792331422261.json",
+    "input": "7e81b7d0d7961b363576738023899d2af2a401d5f438351f7d4b2c63a755603d",
+    "stable": true,
+    "changed_inputs_since_previous_receipt": [
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/FINAL_REPORT.md",
+        "before": null,
+        "after": "211b359588f3a8c80a29f9239d3caa31824b3dfc6c9520f182580cb0247bf418",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/PROGRESS.md",
+        "before": "fd74a6d2e3bad93614ea7d67178b95ccbce617dfca07e0626684f4951f4b2bd2",
+        "after": "8039ddf6e88de72f6f85427b2a9b013df07ad52fe4ce8a223fb7f5d074bad03e",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Laws.lean",
+        "before": "4c4d425a42fdb384b9f0bd57e07b3a793fb00a3feaf3b06c5c6fddaf14fafd14",
+        "after": "8fa14456685f961267979fcae96174158a96c675c50d04c3f87a48fb8eded040",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/Proofs.lean",
+        "before": "6031e9232bc5cabbcb837132f8be2724da2b01ef045ff4ec9cec1536218fb810",
+        "after": "f0286e3c20c4984c2994f27c40fc29abddfd15d5f622f0b89a54344d54c49503",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/elicit-proofs/aeneas/SpecReview.lean",
+        "before": null,
+        "after": "7a668385f8993bea2f7bc38b34414c7b721cbb333cd1beeffdb07b963559c24a",
+        "proof_source": true
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/scripts/validate.sh",
+        "before": null,
+        "after": "504c87cde4c6c0c86d12b6139cac4d9b4787d71ddd781e99faa0839add5daff7",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/scripts/verification-env.sh",
+        "before": null,
+        "after": "09c533210d4b99380e523ac675e37f4362bd54691698a09f3218e29d8e54abcf",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/verification-inventory.json",
+        "before": null,
+        "after": "3299cbdeeaaed07ceefde19941aa933b4fbff755fd2bbd9a2a39f6f6a3b66c82",
+        "proof_source": false
+      }
+    ]
+  },
+  {
+    "receipt": "audit-1792331532405.json",
+    "input": "287afb73fcfdc75ddbfb6724f05749c27b3b38b411441f87ca1f6313f805525b",
+    "stable": true,
+    "changed_inputs_since_previous_receipt": [
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/FINAL_REPORT.md",
+        "before": "211b359588f3a8c80a29f9239d3caa31824b3dfc6c9520f182580cb0247bf418",
+        "after": "dc25d07bf15a8607b8f97d501592a7141a711c3a68320f80a679dfab4e057202",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/PROGRESS.md",
+        "before": "8039ddf6e88de72f6f85427b2a9b013df07ad52fe4ce8a223fb7f5d074bad03e",
+        "after": "6955be850f0761f8c982bdba5da0e22eec1a9878613819331e1408a11797b747",
+        "proof_source": false
+      },
+      {
+        "path": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/verification-inventory.json",
+        "before": "3299cbdeeaaed07ceefde19941aa933b4fbff755fd2bbd9a2a39f6f6a3b66c82",
+        "after": "a9c55a6917d9fac93a9dc23f1b3f95d796b6ab6e16cf296c6af2950822ec94a4",
+        "proof_source": false
+      }
+    ]
+  }
+]

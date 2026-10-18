@@ -1,0 +1,10 @@
+[
+  {
+    "reason": "termination",
+    "at_seconds": 50.74651671299944,
+    "commands": [],
+    "note": "Artifact observation only; no ledger coverage inferred",
+    "proof_sources": [],
+    "seconds": 0.0005151349978405051
+  }
+]

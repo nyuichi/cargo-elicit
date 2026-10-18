@@ -1,0 +1,247 @@
+{
+  "scope": "Selected computation APIs of original adler2 2.0.1, x86_64-unknown-linux-gnu",
+  "specification": {
+    "module": "proofs/Specification.lean",
+    "definition": "AdlerProof.scalar",
+    "recurrence": "Normalize (a,b) to (a%65521,b%65521); fold a_next=(a+byte)%65521, b_next=(b+a_next)%65521.",
+    "assumptions": [
+      "Standard Aeneas U16/U32/U8/Slice representability only for the five APIs.",
+      "No normalized-seed assumption.",
+      "No artificial whole-input length bound."
+    ]
+  },
+  "targets": [
+    {
+      "rust_api": "Adler32::new",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.new_correct",
+        "AdlerProof.new_spec"
+      ],
+      "contract": "Successful return of state (1,0).",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/Codec.lean",
+        "proofs/API.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::checksum",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.checksum_correct",
+        "AdlerProof.checksum_spec"
+      ],
+      "contract": "Successful return c with c.val = 65536*s.b.val+s.a.val, for all u16 halves.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/Codec.lean",
+        "proofs/API.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::from_checksum",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.from_checksum_correct",
+        "AdlerProof.from_checksum_spec"
+      ],
+      "contract": "Successful return s with s.a.val=c.val%65536 and s.b.val=c.val/65536 for every u32.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/Codec.lean",
+        "proofs/API.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "Adler32::write_slice",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.write_slice_correct",
+        "AdlerProof.write_slice_empty"
+      ],
+      "contract": "Total successful execution; output halves equal scalar(s.a.val,s.b.val,bytes.val), including normalization for empty input.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/API.lean",
+        "proofs/Compute.lean",
+        "proofs/Specification.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "adler32_slice",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.adler32_slice_correct"
+      ],
+      "contract": "Total successful execution; c.val=65536*scalar(1,0,bytes).b+scalar(1,0,bytes).a.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/API.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "codec state roundtrip",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.codec_state_roundtrip"
+      ],
+      "contract": "checksum then from_checksum returns exactly the initial state.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/Laws.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "codec checksum roundtrip",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.codec_checksum_roundtrip"
+      ],
+      "contract": "from_checksum then checksum returns exactly the input u32.",
+      "preconditions": [],
+      "proof_modules": [
+        "proofs/Laws.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "split-update equivalence",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.split_update"
+      ],
+      "contract": "Sequential updates and update of concatenation both succeed and return equal full states.",
+      "preconditions": [
+        "left.val.length + right.val.length <= Usize.max (concatenated slice representability in the standard model)"
+      ],
+      "proof_modules": [
+        "proofs/Laws.lean",
+        "proofs/Specification.lean"
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "rust_api": "checksum save/restore/resume equivalence",
+      "status": "proved",
+      "theorem_roots": [
+        "AdlerProof.save_restore_resume"
+      ],
+      "contract": "Update, checksum save, restore, and resume equals update of the concatenation; all calls succeed.",
+      "preconditions": [
+        "left.val.length + right.val.length <= Usize.max (concatenated slice representability in the standard model)"
+      ],
+      "proof_modules": [
+        "proofs/Laws.lean"
+      ],
+      "remaining_obligations": []
+    }
+  ],
+  "module_order": [
+    "proofs/generated/Adler2.lean",
+    "proofs/Codec.lean",
+    "proofs/Vector.lean",
+    "proofs/Inner.lean",
+    "proofs/Chunks.lean",
+    "proofs/Mathematics.lean",
+    "proofs/Outer.lean",
+    "proofs/Sums.lean",
+    "proofs/Tail.lean",
+    "proofs/Combine.lean",
+    "proofs/Specification.lean",
+    "proofs/Compute.lean",
+    "proofs/API.lean",
+    "proofs/Laws.lean",
+    "proofs/Audit.lean"
+  ],
+  "core_theorem": "AdlerProof.compute_correct_ring",
+  "helper_theorems": [
+    "AdlerProof.vector_from",
+    "AdlerProof.vector_add",
+    "AdlerProof.vector_rem",
+    "AdlerProof.vector_mul",
+    "AdlerProof.inner_loop",
+    "AdlerProof.final_inner_loop",
+    "AdlerProof.outer_loop",
+    "AdlerProof.sum_loop",
+    "AdlerProof.sum_loop3",
+    "AdlerProof.tail_loop"
+  ],
+  "checker_commands": [
+    "./proofs/validate.sh",
+    "./proofs/extract.sh",
+    "proofs/lean.sh --root=proofs/generated -o proofs/generated/Adler2.olean proofs/generated/Adler2.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Codec.olean proofs/Codec.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Vector.olean proofs/Vector.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Inner.olean proofs/Inner.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Chunks.olean proofs/Chunks.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Mathematics.olean proofs/Mathematics.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Outer.olean proofs/Outer.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Sums.olean proofs/Sums.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Tail.olean proofs/Tail.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Combine.olean proofs/Combine.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Specification.olean proofs/Specification.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Compute.olean proofs/Compute.lean",
+    "proofs/lean.sh --root=proofs -o proofs/API.olean proofs/API.lean",
+    "proofs/lean.sh --root=proofs -o proofs/Laws.olean proofs/Laws.lean",
+    "proofs/lean.sh --root=proofs proofs/Audit.lean",
+    "cargo test --locked --target x86_64-unknown-linux-gnu",
+    "sha256sum -c proofs/runtime.sha256"
+  ],
+  "evidence": [
+    "proofs/logs/validation.log",
+    "proofs/logs/charon.log",
+    "proofs/logs/aeneas.log",
+    "proofs/logs/axioms.log",
+    "proofs/logs/cargo-test.log",
+    "proofs/runtime.sha256",
+    "proofs/logs/generated.sha256"
+  ],
+  "tools": {
+    "charon": "0.1.293 de8736f7c995ac54dc490345cef9ea5143c06c62",
+    "aeneas": "e62dd83",
+    "lean": "4.35.0 eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+    "charon_rust": "nightly-2026-09-17"
+  },
+  "extraction": {
+    "script": "proofs/extract.sh",
+    "manifest": "Cargo.toml",
+    "target": "x86_64-unknown-linux-gnu",
+    "preset": "aeneas",
+    "sysroot": "default",
+    "roots": [
+      "adler2::Adler32::new",
+      "adler2::Adler32::checksum",
+      "adler2::Adler32::from_checksum",
+      "adler2::Adler32::write_slice",
+      "adler2::adler32_slice"
+    ],
+    "fresh_unedited": true
+  },
+  "trusted_boundaries": [
+    "Lean kernel",
+    "propext",
+    "Classical.choice",
+    "Quot.sound",
+    "Installed standard Aeneas models, including scalars, slice/array operations, and iterators",
+    "Rust compiler / Charon extraction / Aeneas translation correctness",
+    "Physical memory layout and allocation validity represented abstractly by the standard model"
+  ],
+  "unverified": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Alternative targets",
+    "Translation pipeline correctness"
+  ],
+  "remaining_common_goal_obligations": [],
+  "whole_crate_verified": false,
+  "counterexamples": []
+}

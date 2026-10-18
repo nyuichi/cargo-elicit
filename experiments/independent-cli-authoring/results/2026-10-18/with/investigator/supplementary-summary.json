@@ -1,0 +1,76 @@
+{
+  "exit": 0,
+  "elapsed_seconds": 1.6598457059990324,
+  "fresh_audit_workspace": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/.elicit/cache/audit-lXWKA5",
+  "roots": {
+    "Proofs.decode_encode": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.encode_decode": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.scalar_update_append": {
+      "checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.split_update": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.save_restore_resume": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.split_save_restore_resume": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.update_eq_normalize_fold": {
+      "checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.update_cons": {
+      "checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    "Proofs.compute_spec": {
+      "checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  }
+}

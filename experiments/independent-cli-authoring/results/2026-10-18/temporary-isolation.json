@@ -1,0 +1,10 @@
+{
+  "purpose": "Remove treatment-created temporary proof files/helpers before fresh control; never pass old proof terms to control",
+  "archived_paths": [
+    "/tmp/ComputeTemp.lean",
+    "/tmp/Setup.lean",
+    "/tmp/SpecReview.lean",
+    "/tmp/adler-env.sh",
+    "/tmp/adler-lean.sh"
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "case": "Original adler2 2.0.1 selected computation APIs",
+  "authoring_scope": "Five total functional-correctness API properties plus optional codec/split/save-restore laws; no old proofs supplied",
+  "frozen_product_public_commit": "acc40d2a994bc9c944560c2aeb1b31243be1e278",
+  "settings_match": true,
+  "trials_per_arm": 1,
+  "order": [
+    "with",
+    "without"
+  ],
+  "budget_seconds_per_arm": 10800,
+  "end_to_end_seconds": {
+    "with": 1776.5997864020028,
+    "without": 1878.678068559002
+  },
+  "seconds_shorter_with": 102.0782821569992,
+  "with_over_without_time_ratio": 0.9456648353619755,
+  "observed_time_reduction_percent": 5.433516463802446,
+  "independently_accepted_apis": {
+    "with": 5,
+    "without": 5
+  },
+  "common_supplementary_behaviors": {
+    "codec_state_roundtrip": "both passed",
+    "codec_checksum_roundtrip": "both passed",
+    "split_update": "both passed, explicit concatenated-slice representability",
+    "split_save_restore_resume": "both passed, explicit concatenated-slice representability"
+  },
+  "author_independent_audit_seconds": {
+    "with": 79.93195166300211,
+    "with_additional_root_inspection": 1.6598457059990324,
+    "without": 54.49125843899674
+  },
+  "audit_time_caution": "Investigator audit layouts/root counts differ; timings reported separately, not used as a speed comparison",
+  "numeric_metrics": {
+    "with": {
+      "status": "completed",
+      "end_to_end_seconds": 1776.5997864020028,
+      "token_usage_last_cumulative": {
+        "totalTokens": 20913889,
+        "inputTokens": 20858726,
+        "cachedInputTokens": 20608384,
+        "cacheWriteInputTokens": 0,
+        "outputTokens": 55163,
+        "reasoningOutputTokens": 15652
+      },
+      "noncached_input_tokens": 250342,
+      "completed_command_items": 143,
+      "failed_command_items": 65,
+      "repeated_failed_exact_commands_extra_occurrences": 0,
+      "observer_command_item_seconds_sum": 668.3136569060152,
+      "command_categories_overlapping": {
+        "elicit": {
+          "command_items": 21,
+          "observer_item_seconds_sum": 312.99130877800053
+        },
+        "lean": {
+          "command_items": 110,
+          "observer_item_seconds_sum": 556.9322547060146
+        },
+        "charon": {
+          "command_items": 11,
+          "observer_item_seconds_sum": 39.03675466299319
+        },
+        "aeneas": {
+          "command_items": 108,
+          "observer_item_seconds_sum": 657.8422388690087
+        },
+        "status": {
+          "command_items": 6,
+          "observer_item_seconds_sum": 80.33892681100042
+        }
+      },
+      "observation_seconds": 0.08867405500495806,
+      "original_sources_unchanged": true,
+      "context_compaction_events": 0,
+      "coverage": "Not inferred; supply investigator review and kernel audit",
+      "measurement_limits": [
+        "Command categories overlap and are text-based mentions, not exact native invocation counts; one shell command can spawn many native processes",
+        "Observer item intervals are not a disjoint wall-time decomposition; parallel items can overlap",
+        "App-server durationMs may be zero even for nonzero observer intervals",
+        "Cached input is a subset of input, not additional input",
+        "Repeated commands alone do not establish wasted work"
+      ]
+    },
+    "without": {
+      "status": "completed",
+      "end_to_end_seconds": 1878.678068559002,
+      "token_usage_last_cumulative": {
+        "totalTokens": 15673784,
+        "inputTokens": 15619642,
+        "cachedInputTokens": 15347456,
+        "cacheWriteInputTokens": 0,
+        "outputTokens": 54142,
+        "reasoningOutputTokens": 18341
+      },
+      "noncached_input_tokens": 272186,
+      "completed_command_items": 109,
+      "failed_command_items": 54,
+      "repeated_failed_exact_commands_extra_occurrences": 0,
+      "observer_command_item_seconds_sum": 315.6267336109995,
+      "command_categories_overlapping": {
+        "elicit": {
+          "command_items": 3,
+          "observer_item_seconds_sum": 1.9709335860025021
+        },
+        "lean": {
+          "command_items": 100,
+          "observer_item_seconds_sum": 315.58319552300236
+        },
+        "charon": {
+          "command_items": 18,
+          "observer_item_seconds_sum": 48.391878558992175
+        },
+        "aeneas": {
+          "command_items": 38,
+          "observer_item_seconds_sum": 54.8512502219819
+        },
+        "status": {
+          "command_items": 0,
+          "observer_item_seconds_sum": 0
+        }
+      },
+      "observation_seconds": 0.003857169002003502,
+      "original_sources_unchanged": true,
+      "context_compaction_events": 0,
+      "coverage": "Not inferred; supply investigator review and kernel audit",
+      "measurement_limits": [
+        "Command categories overlap and are text-based mentions, not exact native invocation counts; one shell command can spawn many native processes",
+        "Observer item intervals are not a disjoint wall-time decomposition; parallel items can overlap",
+        "App-server durationMs may be zero even for nonzero observer intervals",
+        "Cached input is a subset of input, not additional input",
+        "Repeated commands alone do not establish wasted work"
+      ]
+    }
+  },
+  "with_checks": [
+    {
+      "receipt": "audit-1792331422261.json",
+      "seconds": 74.482,
+      "stable": true,
+      "accepted_api_results": 5,
+      "phase": "audit"
+    },
+    {
+      "receipt": "audit-1792331532405.json",
+      "seconds": 73.065,
+      "stable": true,
+      "accepted_api_results": 5,
+      "phase": "audit"
+    },
+    {
+      "receipt": "check-1792329841323.json",
+      "seconds": 11.086,
+      "stable": false,
+      "accepted_api_results": 0,
+      "phase": "lemma-audit"
+    },
+    {
+      "receipt": "check-1792329879350.json",
+      "seconds": 15.643,
+      "stable": true,
+      "accepted_api_results": 0,
+      "phase": "audit"
+    },
+    {
+      "receipt": "check-1792329980250.json",
+      "seconds": 18.089,
+      "stable": true,
+      "accepted_api_results": 3,
+      "phase": "audit"
+    },
+    {
+      "receipt": "check-1792331223299.json",
+      "seconds": 72.038,
+      "stable": true,
+      "accepted_api_results": 5,
+      "phase": "audit"
+    }
+  ],
+  "with_cache": {
+    "pipeline_stages": 84,
+    "cache_hits": 0,
+    "stage_elapsed_seconds_sum": 246.346,
+    "interpretation": "No measured cargo-elicit module-cache benefit; changed progress reports and execution environment changed verification context between checks"
+  },
+  "with_status_observer_seconds": 0.08867405500495806,
+  "invalid_environment_attempt_seconds": 50.74789104299998,
+  "human_proof_hints_during_valid_trials": 0,
+  "source_and_manifest_unchanged": true,
+  "historical_ordinary_28_40_minutes": "Context only, not the new control",
+  "interpretation": "Near parity in this pair; a 5.4% observed time difference is not evidence of general or causal productivity improvement",
+  "limitations": [
+    "One pair, no repeat distribution or statistical claim",
+    "Proof structure and tactic choices differed; both used modular arithmetic",
+    "Treatment preceded control; shared backend libraries warm, native author caches separate",
+    "Input/cache/output counters do not identify monetary or ChatGPT quota cost",
+    "App-server command durationMs was zero; observer command intervals are not CPU or exact native process times",
+    "Shell categories are heuristic text mentions, not exact native invocation counts",
+    "Pure status reads describe saved snapshots; intermediate currentness not inferred"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "purpose": "Codex posthoc productivity review, separate from both authoring trials",
+  "usage": {
+    "input_tokens": 285810,
+    "cached_input_tokens": 224640,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 3618,
+    "reasoning_output_tokens": 68
+  },
+  "included_in_authoring_metrics": false,
+  "elapsed_seconds": null,
+  "original_review_sha256": "a3c8ccc95d4de7bb2ff85dcdd8ad51d04eebc7da6a38276fc180230bdacd5dbc"
+}

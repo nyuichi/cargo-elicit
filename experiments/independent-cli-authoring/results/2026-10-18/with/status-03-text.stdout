@@ -1,0 +1,10 @@
+Saved snapshot 287afb73fcfd (1792331459325)
+Workspace currentness was not checked by this read. Use refresh, check or audit to observe inputs.
+5 obligations; audited at snapshot: true. This is not a whole-package claim.
+Adler32::new  audit=accepted  check=missing_or_stale  review=unreviewed
+Adler32::checksum  audit=accepted  check=missing_or_stale  review=unreviewed
+Adler32::from_checksum  audit=accepted  check=missing_or_stale  review=unreviewed
+Adler32::write_slice  audit=accepted  check=missing_or_stale  review=unreviewed
+adler32_slice  audit=accepted  check=missing_or_stale  review=unreviewed
+inventory limitation: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]
+inventory limitation: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]

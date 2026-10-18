@@ -4,6 +4,8 @@ These records preserve successful and unsuccessful trials, original measurements
 
 ## Start here
 
+- [Fresh adler2 authoring with the independent CLI](adler2-independent-cli.md): a new matched 0.2 CLI+skill versus ordinary Codex pair, fresh five-API proofs, independent audits, metrics and limits.
+
 - [Independent CLI redesign (0.2)](2026-10-18-independent-cli.md): the incompatible human/AI-common CLI, removed orchestration, cache/audit separation and mechanism validation. No new authoring speed claim.
 
 - [Why the recorded product trajectory took longer](adler2-latency-analysis.md): disjoint timing analysis of the 28.40-minute ordinary trial versus the 89.36-minute product trajectory, and the corrected resumed-thread token accounting.

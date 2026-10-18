@@ -1,0 +1,8 @@
+{
+  "ready": true,
+  "timed_authoring_started": true,
+  "environment_network_policy": "unrestricted, enforced",
+  "native_tools_ready": true,
+  "readiness_unix": 1792329837.0153005,
+  "initial_failure": "Codex access token refresh rejected; user asked to reauthenticate"
+}

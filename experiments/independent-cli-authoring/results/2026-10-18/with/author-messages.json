@@ -1,0 +1,54 @@
+[
+  {
+    "seconds": 3.7984026200028893,
+    "text": "I\u2019ll read the benchmark and cargo-elicit skill, then author the proofs and run final validation while preserving the runtime bytes. I\u2019m using the cargo-elicit skill to inspect obligations and record evidence."
+  },
+  {
+    "seconds": 72.26162932599982,
+    "text": "The five API targets are initialized, and I\u2019ve recorded hashes of the original manifest and source files. The optimized body uses four interleaved accumulators, so its proof will need bounds for both the lane sums and their recombination. Extraction is running; I\u2019ll use its generated signatures to write the contracts."
+  },
+  {
+    "seconds": 187.76956632200017,
+    "text": "Native Lean checks now pass for `new`, `from_checksum`, and `checksum`, including arbitrary 16-bit state halves and arbitrary 32-bit checksums. I\u2019ll run cargo-elicit\u2019s mapping and axiom checks next, then work on the loop invariants for `compute`."
+  },
+  {
+    "seconds": 375.12521034400197,
+    "text": "Cargo-elicit accepted the three codec API proofs. Lean also checks the vector helpers for indexing, addition, remainder, and multiplication, plus the algebra connecting one four-byte lane update to four scalar Adler steps. The inner-loop bounds account for the lane values carried across chunk boundaries."
+  },
+  {
+    "seconds": 656.1181082330004,
+    "text": "Both four-byte loops and the outer chunk loop now check in Lean. The outer proof terminates on the number of remaining chunks, so it places no bound on the whole input length. The remaining work is recombination, the final zero-to-three bytes, and composing the API proofs."
+  },
+  {
+    "seconds": 917.7686453130009,
+    "text": "The sum loops and scalar tail loop now check. I\u2019m proving the final recombination and casts, including empty updates from non-normalized seeds. I\u2019ve also encountered some dependent-type simplification issues in the iterator models; proving the iterator steps separately resolved them without changing the models."
+  },
+  {
+    "seconds": 1150.8415640270032,
+    "text": "The final recombination proof now passes, including the arithmetic bounds and state casts. Codec roundtrips and the scalar specification\u2019s concatenation law also pass. I\u2019m composing the checked pieces into `write_slice` and `adler32_slice`; after that I\u2019ll validate the complete roots with a fresh audit."
+  },
+  {
+    "seconds": 1233.7535605049998,
+    "text": "The proof is at the final composition step. No counterexample has emerged, and the contracts still quantify over every representable state and slice. One Lean elaboration pass is taking longer than the earlier modules; I\u2019ll check whether a local proof obligation needs simplifying."
+  },
+  {
+    "seconds": 1373.0417604410031,
+    "text": "All five API roots now pass native Lean checks, along with codec roundtrips, split updates, and save/restore/resume laws. The split laws explicitly require the concatenated slice to be representable. The six upstream tests and four doctests also pass. I\u2019m now checking source mapping and transitive axioms for the full proof graph."
+  },
+  {
+    "seconds": 1474.9160673400002,
+    "text": "Cargo-elicit accepted all five API contracts with complete source mapping. The transitive axiom checks report only `propext`, `Classical.choice`, and `Quot.sound` for the API and optional law roots. The original source and manifest hashes still match. I\u2019m writing the inventory and report before running the final fresh audit."
+  },
+  {
+    "seconds": 1636.1155281790016,
+    "text": "The report and inventory are written. The fresh audit is rebuilding the proof graph from new extraction and translation; validation has already rechecked the runtime hashes and passed all ten upstream tests and doctests. The report explicitly leaves I/O, Hasher laws, derived traits, no_std, and other targets unverified."
+  },
+  {
+    "seconds": 1666.0859188840004,
+    "text": "The fresh audit accepted all five APIs with full-contract coverage. It also rebuilt the optional laws, whose axiom sets contain only the allowed axioms. I\u2019m recording the result in the report and inventory, then running one final audit so the saved evidence includes those documentation updates."
+  },
+  {
+    "seconds": 1776.5145641330018,
+    "text": "Completed: all five selected APIs passed the final fresh audit. Codec, split-update, and save/restore/resume laws are proved; split laws require representable concatenation.\n\nOriginal source and manifest bytes are unchanged. Six unit tests and four doctests passed. Excluded scopes remain unverified.\n\n[Final report](/workspace/elicit-independent-authoring-2026-10-18/cases/with/FINAL_REPORT.md) \u00b7 [Verification inventory](/workspace/elicit-independent-authoring-2026-10-18/cases/with/verification-inventory.json)"
+  }
+]

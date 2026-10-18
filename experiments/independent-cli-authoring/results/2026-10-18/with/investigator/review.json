@@ -1,0 +1,148 @@
+{
+  "reviewer": "Investigating agent, separate from author; claims bound to fresh kernel audit and read exact definitions/types",
+  "selected_api_coverage": "5/5",
+  "original_sources_unchanged": true,
+  "source_hashes": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "tool": "Pinned Charon/Aeneas/Lean 4.35.0; frozen cargo-elicit 0.2 correspondence/exact-type checker",
+  "api_semantic_review": [
+    {
+      "api": "Adler32::new",
+      "theorem": "Proofs.new_spec",
+      "accepted": true,
+      "property": "Successful return has natural field values (1,0), no extra precondition"
+    },
+    {
+      "api": "Adler32::checksum",
+      "theorem": "Proofs.checksum_spec",
+      "accepted": true,
+      "property": "Every representable u16 pair successfully encodes to 65536*b+a"
+    },
+    {
+      "api": "Adler32::from_checksum",
+      "theorem": "Proofs.from_checksum_spec",
+      "accepted": true,
+      "property": "Every u32 successfully decodes to low/high 16-bit halves"
+    },
+    {
+      "api": "Adler32::write_slice",
+      "theorem": "Proofs.write_slice_spec",
+      "accepted": true,
+      "property": "Every representable state and byte slice successfully matches scalar recurrence modulo 65521, including empty normalization"
+    },
+    {
+      "api": "adler32_slice",
+      "theorem": "Proofs.adler32_slice_spec",
+      "accepted": true,
+      "property": "Successful scalar recurrence from (1,0), then arithmetic encoding"
+    }
+  ],
+  "specification_review": {
+    "state": "Natural values of original u16 fields",
+    "step": "a=(a+byte)%65521; b=(b+a)%65521",
+    "update": "Fold step from normalized initial pair; explicit equivalence to normalized fold from original pair checked",
+    "bounds": "Only actual representable Rust argument/slice bounds, no artificial total length cap or normalized-seed assumption",
+    "implementation_correspondence": "Fresh adapter audit maps exact original bodies/spans, generated actual signature and native contracts; optimized helper loops covered by compute_spec",
+    "lean_only_factoring": "finish factors the generated suffix; its total theorem is applied to the actual suffix through checked definitional equality/WP monotonicity, not an assumed alternative Rust implementation"
+  },
+  "additional_laws": {
+    "Proofs.decode_encode": "Checksum/restore identity for every state",
+    "Proofs.encode_decode": "Restore/checksum identity for every u32",
+    "Proofs.scalar_update_append": "Mathematical update append law",
+    "Proofs.split_update": "Two original updates equal one combined update, with concatenated-slice representability",
+    "Proofs.save_restore_resume": "Save/restore preserves subsequent original update for every state",
+    "Proofs.split_save_restore_resume": "Split+save/restore equals combined original update, with concatenated-slice representability"
+  },
+  "additional_kernel_checks": {
+    "exit": 0,
+    "elapsed_seconds": 1.6598457059990324,
+    "fresh_audit_workspace": "/workspace/elicit-independent-authoring-2026-10-18/cases/with/.elicit/cache/audit-lXWKA5",
+    "roots": {
+      "Proofs.decode_encode": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.encode_decode": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.scalar_update_append": {
+        "checked": true,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.split_update": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.save_restore_resume": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.split_save_restore_resume": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.update_eq_normalize_fold": {
+        "checked": true,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.update_cons": {
+        "checked": true,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "Proofs.compute_spec": {
+        "checked": true,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    }
+  },
+  "whole_crate_verified": false,
+  "excluded": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std",
+    "Other targets/features"
+  ],
+  "limits": [
+    "Semantic review is an explicit investigator judgment, not inferred from successful compilation",
+    "Compiler/extractor/translator/standard models and Lean kernel remain trusted",
+    "One authoring trial does not establish general performance or robustness"
+  ]
+}

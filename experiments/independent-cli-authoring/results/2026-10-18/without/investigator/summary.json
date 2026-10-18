@@ -1,0 +1,412 @@
+{
+  "elapsed_seconds": 54.49125843899674,
+  "fresh_model_byte_identical": true,
+  "original_source_sha256": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "Adler2": true,
+    "Codec": true,
+    "Vector": true,
+    "Inner": true,
+    "Chunks": true,
+    "Mathematics": true,
+    "Outer": true,
+    "Sums": true,
+    "Tail": true,
+    "Combine": true,
+    "Compute": true,
+    "Specification": true,
+    "API": true,
+    "Laws": true
+  },
+  "theorem_audits": {
+    "AdlerProof.new_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-16.log"
+    },
+    "AdlerProof.checksum_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-17.log"
+    },
+    "AdlerProof.from_checksum_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-18.log"
+    },
+    "AdlerProof.write_slice_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-19.log"
+    },
+    "AdlerProof.adler32_slice_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-20.log"
+    },
+    "AdlerProof.write_slice_empty": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-21.log"
+    },
+    "AdlerProof.codec_state_roundtrip": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-22.log"
+    },
+    "AdlerProof.codec_checksum_roundtrip": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-23.log"
+    },
+    "AdlerProof.split_update": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-24.log"
+    },
+    "AdlerProof.save_restore_resume": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-25.log"
+    },
+    "AdlerProof.compute_correct_ring": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-26.log"
+    },
+    "AdlerProof.vector_from": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-27.log"
+    },
+    "AdlerProof.vector_add": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-28.log"
+    },
+    "AdlerProof.vector_rem": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-29.log"
+    },
+    "AdlerProof.vector_mul": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-30.log"
+    },
+    "AdlerProof.inner_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-31.log"
+    },
+    "AdlerProof.final_inner_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-32.log"
+    },
+    "AdlerProof.outer_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-33.log"
+    },
+    "AdlerProof.sum_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-34.log"
+    },
+    "AdlerProof.sum_loop3": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-35.log"
+    },
+    "AdlerProof.tail_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-36.log"
+    },
+    "AdlerProof.scalar_append": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-37.log"
+    }
+  },
+  "review": {
+    "generated_model": "proofs/generated/Adler2.lean",
+    "generated_module": "Adler2",
+    "generated_sha256": "e05015d59551b97c9a937d6908ef1e2f4804a9c90d2c5c94091ce2e0674b510c",
+    "expected_source_sha256": {
+      "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+      "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+      "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+    },
+    "start_from": [
+      "adler2::Adler32::new",
+      "adler2::Adler32::checksum",
+      "adler2::Adler32::from_checksum",
+      "adler2::Adler32::write_slice",
+      "adler2::adler32_slice"
+    ],
+    "proof_modules": [
+      {
+        "module": "Codec",
+        "path": "proofs/Codec.lean",
+        "sha256": "43f1bb6a242b84780dd504591ca95803c705562a6bead610e29bf9ae5be0614c"
+      },
+      {
+        "module": "Vector",
+        "path": "proofs/Vector.lean",
+        "sha256": "d7359149ed780dc18939f9c503c90184a3d2dfe68c81e2d0caede0408bbdd9bf"
+      },
+      {
+        "module": "Inner",
+        "path": "proofs/Inner.lean",
+        "sha256": "6254e3a7bfb6484b5afc3fa1ad9332bb8e133345593aa149d1fbae58f3dbd660"
+      },
+      {
+        "module": "Chunks",
+        "path": "proofs/Chunks.lean",
+        "sha256": "bfd43b56727e476416e336a2c75e7af774f692fe5d998454564f291dc47e3c49"
+      },
+      {
+        "module": "Mathematics",
+        "path": "proofs/Mathematics.lean",
+        "sha256": "6a2902b99df87a6b0d04c8fefff8a8f9b12b7840f3b37e8cc0245a58d7f06b29"
+      },
+      {
+        "module": "Outer",
+        "path": "proofs/Outer.lean",
+        "sha256": "d4403ded9d53cf3646ceb107891129b8a51f9ed93a47cf448cb394db5e382dfd"
+      },
+      {
+        "module": "Sums",
+        "path": "proofs/Sums.lean",
+        "sha256": "661493fb454ce56fac9cd098fc45dcadb396e048847193da1890f2c2a6b7430e"
+      },
+      {
+        "module": "Tail",
+        "path": "proofs/Tail.lean",
+        "sha256": "30ffeaa74490fb156693d20ec0d141f23e8fbea16d464c5fc8f2016b1a625b67"
+      },
+      {
+        "module": "Combine",
+        "path": "proofs/Combine.lean",
+        "sha256": "4c8e81e0b58d0dd0726155efa26ac189b5e895e7bc362841b9ff205c86c88ebf"
+      },
+      {
+        "module": "Compute",
+        "path": "proofs/Compute.lean",
+        "sha256": "c2068121b1ba6de998c229e673b341b86d2f503f0a1fa10355896f8257717b44"
+      },
+      {
+        "module": "Specification",
+        "path": "proofs/Specification.lean",
+        "sha256": "8648d148592f4941e9262d8ab4223937ab58d3aa2a04f9f7c2a4657797a51c25"
+      },
+      {
+        "module": "API",
+        "path": "proofs/API.lean",
+        "sha256": "9b6116b8ff89cea4696ad964876c5a6a48648a7ccef4a02a5445a6cae487a7d0"
+      },
+      {
+        "module": "Laws",
+        "path": "proofs/Laws.lean",
+        "sha256": "5ba5b7c0b2e1e15f735298a830e8f2db0100716870d773b8f08dc2f7671292fb"
+      }
+    ],
+    "theorem_roots": [
+      {
+        "name": "AdlerProof.new_correct",
+        "module": "Codec"
+      },
+      {
+        "name": "AdlerProof.checksum_correct",
+        "module": "Codec"
+      },
+      {
+        "name": "AdlerProof.from_checksum_correct",
+        "module": "Codec"
+      },
+      {
+        "name": "AdlerProof.write_slice_correct",
+        "module": "API"
+      },
+      {
+        "name": "AdlerProof.adler32_slice_correct",
+        "module": "API"
+      },
+      {
+        "name": "AdlerProof.write_slice_empty",
+        "module": "API"
+      },
+      {
+        "name": "AdlerProof.codec_state_roundtrip",
+        "module": "Laws"
+      },
+      {
+        "name": "AdlerProof.codec_checksum_roundtrip",
+        "module": "Laws"
+      },
+      {
+        "name": "AdlerProof.split_update",
+        "module": "Laws"
+      },
+      {
+        "name": "AdlerProof.save_restore_resume",
+        "module": "Laws"
+      },
+      {
+        "name": "AdlerProof.compute_correct_ring",
+        "module": "Compute"
+      },
+      {
+        "name": "AdlerProof.vector_from",
+        "module": "Vector"
+      },
+      {
+        "name": "AdlerProof.vector_add",
+        "module": "Vector"
+      },
+      {
+        "name": "AdlerProof.vector_rem",
+        "module": "Vector"
+      },
+      {
+        "name": "AdlerProof.vector_mul",
+        "module": "Vector"
+      },
+      {
+        "name": "AdlerProof.inner_loop",
+        "module": "Inner"
+      },
+      {
+        "name": "AdlerProof.final_inner_loop",
+        "module": "Inner"
+      },
+      {
+        "name": "AdlerProof.outer_loop",
+        "module": "Outer"
+      },
+      {
+        "name": "AdlerProof.sum_loop",
+        "module": "Sums"
+      },
+      {
+        "name": "AdlerProof.sum_loop3",
+        "module": "Sums"
+      },
+      {
+        "name": "AdlerProof.tail_loop",
+        "module": "Tail"
+      },
+      {
+        "name": "AdlerProof.scalar_append",
+        "module": "Specification"
+      }
+    ],
+    "inspect_constants": [
+      "AdlerProof.scalar",
+      "AdlerProof.scalarStep",
+      "AdlerProof.rfold",
+      "AdlerProof.rstep",
+      "AdlerProof.concatSlice",
+      "AdlerProof.saveRestore",
+      "adler2.Adler32.write_slice",
+      "adler2.adler32_slice"
+    ],
+    "coverage_note": "Kernel audit only; explicit investigator semantic review separately classifies five APIs and additional laws."
+  },
+  "coverage_note": "These kernel/axiom checks do not establish semantic API coverage by themselves. Read exact root types, inspected definitions and the separate investigator review."
+}

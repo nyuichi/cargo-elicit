@@ -1,0 +1,6 @@
+{
+  "pipeline_stages": 84,
+  "cache_hits": 0,
+  "stage_elapsed_seconds_sum": 246.346,
+  "note": "Only product-owned cache telemetry; native Lean import/object reuse is not counted"
+}

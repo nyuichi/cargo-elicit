@@ -1,0 +1,106 @@
+[
+  {
+    "reason": "first_api_evidence",
+    "at_seconds": 212.91276930599997,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.011188039999979082
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.00954750500022783
+      }
+    ],
+    "seconds": 0.020765209003002383
+  },
+  {
+    "reason": "three_api_evidence",
+    "at_seconds": 212.93362108300062,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.010565617001702776
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.00981026499721338
+      }
+    ],
+    "seconds": 0.020393759001308354
+  },
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.4510605460018,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.013660917000379413
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.009241192998160841
+      }
+    ],
+    "seconds": 0.023105221000150777
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1776.5724511730004,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.014354808001371566
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.009997524000937119
+      }
+    ],
+    "seconds": 0.02440986600049655
+  }
+]

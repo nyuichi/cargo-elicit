@@ -1,0 +1,16 @@
+{
+  "model": "gpt-6.1-sol",
+  "modelProvider": "openai",
+  "reasoningEffort": null,
+  "serviceTier": null,
+  "approvalPolicy": "on-request",
+  "sandbox": {
+    "type": "workspaceWrite",
+    "writableRoots": [
+      "/workspace/toolchain"
+    ],
+    "networkAccess": true,
+    "excludeTmpdirEnvVar": false,
+    "excludeSlashTmp": false
+  }
+}

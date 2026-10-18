@@ -1,0 +1,14 @@
+   Compiling adler2 v2.0.1 (/workspace/elicit-independent-authoring-2026-10-18/cases/without)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (target/debug/deps/adler2-6221059c03f29df9)
+
+running 6 tests
+test tests::mixed ... ok
+test tests::wiki ... ok
+test tests::ones ... ok
+test tests::zeroes ... ok
+test tests::bufread ... ok
+test tests::resume ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "scope": {
+    "package": "adler2 2.0.1",
+    "features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "whole_crate_verified": false,
+    "runtime_manifest_hashes": "elicit-proofs/runtime.sha256",
+    "generated_models": "Fresh and unedited; retained under .elicit/evidence/ for each run",
+    "selected_api_count": 5
+  },
+  "specification": {
+    "module": "Specs",
+    "state": "Natural values of both u16 fields",
+    "modulus": 65521,
+    "update": "Fold scalar Specs.step from the normalized seed; equivalent to normalizing the fold from the original seed",
+    "encode": "65536*b+a",
+    "extra_preconditions": "None on selected APIs; slice representability is built into Aeneas Slice"
+  },
+  "api_roots": [
+    {
+      "rust_api": "Adler32::new",
+      "theorem": "Proofs.new_spec",
+      "proof_module": "Codec",
+      "proof_file": "elicit-proofs/aeneas/Codec.lean",
+      "contract": "ElicitContracts.c_8055bec449b87b3d",
+      "contract_file": "elicit-proofs/aeneas/contracts.toml",
+      "contract_and_preconditions": "No precondition; returns (1,0).",
+      "native_status": "proved",
+      "check_status": "accepted_full_contract",
+      "final_audit_status": "accepted_full_contract; stable fresh audit",
+      "remaining_obligations": [],
+      "audit_receipt": ".elicit/evidence/audit-1792331422261.json"
+    },
+    {
+      "rust_api": "Adler32::checksum",
+      "theorem": "Proofs.checksum_spec",
+      "proof_module": "Codec",
+      "proof_file": "elicit-proofs/aeneas/Codec.lean",
+      "contract": "ElicitContracts.c_0a059b8c0885cf07",
+      "contract_file": "elicit-proofs/aeneas/contracts.toml",
+      "contract_and_preconditions": "Every pair of u16 state halves; successful result has natural value 65536*b+a.",
+      "native_status": "proved",
+      "check_status": "accepted_full_contract",
+      "final_audit_status": "accepted_full_contract; stable fresh audit",
+      "remaining_obligations": [],
+      "audit_receipt": ".elicit/evidence/audit-1792331422261.json"
+    },
+    {
+      "rust_api": "Adler32::from_checksum",
+      "theorem": "Proofs.from_checksum_spec",
+      "proof_module": "Codec",
+      "proof_file": "elicit-proofs/aeneas/Codec.lean",
+      "contract": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "contract_file": "elicit-proofs/aeneas/contracts.toml",
+      "contract_and_preconditions": "Every u32; returns low half sum % 65536 and high half sum / 65536.",
+      "native_status": "proved",
+      "check_status": "accepted_full_contract",
+      "final_audit_status": "accepted_full_contract; stable fresh audit",
+      "remaining_obligations": [],
+      "audit_receipt": ".elicit/evidence/audit-1792331422261.json"
+    },
+    {
+      "rust_api": "Adler32::write_slice",
+      "theorem": "Proofs.write_slice_spec",
+      "proof_module": "Api",
+      "proof_file": "elicit-proofs/aeneas/Api.lean",
+      "contract": "ElicitContracts.c_98f3436459f22f5d",
+      "contract_file": "elicit-proofs/aeneas/contracts.toml",
+      "contract_and_preconditions": "Every representable state and byte slice; success and exact Specs.update, normalizing even empty updates.",
+      "native_status": "proved",
+      "check_status": "accepted_full_contract",
+      "final_audit_status": "accepted_full_contract; stable fresh audit",
+      "remaining_obligations": [],
+      "audit_receipt": ".elicit/evidence/audit-1792331422261.json"
+    },
+    {
+      "rust_api": "adler32_slice",
+      "theorem": "Proofs.adler32_slice_spec",
+      "proof_module": "Api",
+      "proof_file": "elicit-proofs/aeneas/Api.lean",
+      "contract": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "contract_file": "elicit-proofs/aeneas/contracts.toml",
+      "contract_and_preconditions": "Every representable byte slice; success and Specs.encode (Specs.update (1,0) bytes).",
+      "native_status": "proved",
+      "check_status": "accepted_full_contract",
+      "final_audit_status": "accepted_full_contract; stable fresh audit",
+      "remaining_obligations": [],
+      "audit_receipt": ".elicit/evidence/audit-1792331422261.json"
+    }
+  ],
+  "additional_laws": [
+    {
+      "theorem": "Proofs.decode_encode",
+      "proof_module": "CodecLaws",
+      "statement": "checksum then from_checksum is identity on all states",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.encode_decode",
+      "proof_module": "CodecLaws",
+      "statement": "from_checksum then checksum is identity on all u32 values",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.scalar_update_append",
+      "proof_module": "CodecLaws",
+      "statement": "Specs.update composes over list append",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.split_update",
+      "proof_module": "Laws",
+      "statement": "Two original API updates equal the combined update",
+      "preconditions": "(xs.val ++ ys.val).length <= Usize.max",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.save_restore_resume",
+      "proof_module": "Laws",
+      "statement": "Save/restore before update preserves execution",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.split_save_restore_resume",
+      "proof_module": "Laws",
+      "statement": "Save/restore between pieces equals combined update",
+      "preconditions": "(xs.val ++ ys.val).length <= Usize.max",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.update_eq_normalize_fold",
+      "proof_module": "SpecReview",
+      "statement": "Normalize-first specification equals normalize-after scalar fold",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    },
+    {
+      "theorem": "Proofs.update_cons",
+      "proof_module": "SpecReview",
+      "statement": "Specification obeys scalar recurrence on nonempty lists",
+      "preconditions": "none",
+      "status": "kernel_checked; imported into final audit proof graph; explicit axiom output in Proofs.log"
+    }
+  ],
+  "module_order": [
+    "ElicitGenerated (generated)",
+    "ElicitAdapter (generated)",
+    "Specs",
+    "ElicitContracts (generated)",
+    "Codec",
+    "Math",
+    "Vectors",
+    "Inner",
+    "Chunks",
+    "Outer",
+    "FinishLoops",
+    "Finish",
+    "Compute",
+    "Api",
+    "CodecLaws",
+    "SpecReview",
+    "Laws",
+    "Proofs"
+  ],
+  "supporting_roots": {
+    "Proofs.compute_spec": "Original optimized core, unrestricted representable state and slice",
+    "Proofs.vec_from_spec": "Original byte-vector indexing and conversions",
+    "Proofs.vec_add_spec": "Original checked lane addition under internally established overflow bounds",
+    "Proofs.vec_rem_spec": "Original lane remainders with positive divisor",
+    "Proofs.vec_mul_spec": "Original lane multiplication under internally established overflow bounds",
+    "Proofs.inner_spec": "First four-byte loop, including termination and modular semantics",
+    "Proofs.inner1_spec": "Remainder four-byte loop",
+    "Proofs.outer_spec": "Whole-chunk loop, termination by remaining chunks, no global length bound",
+    "Proofs.sum_spec": "First lane-sum loop",
+    "Proofs.sum3_spec": "Second lane-sum loop",
+    "Proofs.tail_spec": "Scalar tail loop",
+    "Proofs.finish_spec": "Exact generated suffix, machine recombination, remainder and casts"
+  },
+  "checker_commands": [
+    "source scripts/verification-env.sh",
+    "cargo elicit check",
+    "cargo elicit audit",
+    "cargo elicit status",
+    "bash scripts/validate.sh",
+    "cargo test --locked --target x86_64-unknown-linux-gnu",
+    "sha256sum -c elicit-proofs/runtime.sha256",
+    "Native iteration: lake env lean --root=<absolute proof directory> -o <temporary module.olean> <absolute module.lean>; LEAN_PATH includes temporary products, checker generated directory, authored directory"
+  ],
+  "evidence": {
+    "accepted_check_receipt": ".elicit/evidence/check-1792331223299.json",
+    "final_audit": "Latest .elicit/evidence/audit-*.json: final repeat includes completed report and inventory",
+    "snapshot": ".elicit/snapshot.json",
+    "optional_law_axioms": "Final audit evidence logs/Proofs.log",
+    "api_exact_types_and_axioms": "Final audit evidence logs/Audit.log",
+    "accepted_audit_receipt": ".elicit/evidence/audit-1792331422261.json",
+    "audit_stable": true,
+    "axiom_inspection": "All selected APIs, optional laws, semantic bridge lemmas and compute_spec inspected in fresh Proofs.log; only allowed axioms"
+  },
+  "trusted_boundaries": [
+    "Original Rust source correspondence and x86_64 scope through pinned Charon de8736f7c995ac54dc490345cef9ea5143c06c62",
+    "Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation and standard Rust models",
+    "Lean 4.35.0 kernel",
+    "Allowed axioms: propext, Classical.choice, Quot.sound",
+    "cargo-elicit exact-type/axiom audit and evidence bookkeeping",
+    "Independent semantic assessment of specifications; no semantic review receipt claimed"
+  ],
+  "unverified": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std configuration",
+    "Alternative targets",
+    "Whole crate beyond the selected APIs"
+  ],
+  "remaining_common_goal_obligations": [],
+  "counterexamples": []
+}
