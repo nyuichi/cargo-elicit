@@ -338,21 +338,34 @@ pub fn verify(
         results.push(r);
     }
     // The Aeneas invocation audits every eligible contract. Preserve all its
-    // independent successful results, not only the scheduler's requested root.
+    // completed per-root verdicts, not only the scheduler's requested root.
+    // Missing theorems are real audited outcomes too; retaining them avoids
+    // rerunning the whole pipeline solely to fill an identical-input result.
     if s.tool == Tool::Aeneas && !process::interrupted() && after.as_ref().ok() == Some(&before) {
-        if let Ok((_, Some(evidence))) = &execute {
+        if let Ok((o, Some(evidence))) = &execute {
             for t in s.targets.values().filter(|t| {
                 t.ready()
                     && s.dependencies_ready(&t.id)
                     && !ids.contains(&t.id)
                     && !s.verified(&t.id)
             }) {
+                if o.code != Some(0)
+                    || o.timeout
+                    || o.interrupted
+                    || !evidence["targets"][&t.id]["checked"].is_boolean()
+                {
+                    continue; // No per-root audit completed (build failure, absent mapping, etc.).
+                }
                 let mut r = base(&s, &t.id, &version);
                 r.elapsed_ms = started.elapsed().as_millis() as u64;
                 crate::aeneas::evidence(&s, t, Some(evidence), &mut r)?;
-                if r.outcome == Outcome::Success {
-                    results.push(r);
+                if r.outcome != Outcome::Success {
+                    r.diagnostic = Some(Diagnostic {
+                        phase: evidence["phase"].as_str().unwrap_or("audit").into(),
+                        cache: dir.to_string_lossy().into_owned(),
+                    });
                 }
+                results.push(r);
             }
         }
     }
@@ -431,7 +444,12 @@ pub fn verify(
     {
         bail!("verification environment failed during lemma checkpoint; inspect the latest cache");
     }
-    Ok(results)
+    // Observation persistence must not make a requested proof fail merely
+    // because another independently audited root is unresolved.
+    Ok(results
+        .into_iter()
+        .filter(|r| ids.is_empty() || ids.contains(&r.target) || r.outcome == Outcome::Success)
+        .collect())
 }
 pub(crate) fn safe_project(s: &State) -> Result<bool> {
     let manifest: toml::Value = toml::from_str(&fs::read_to_string(&s.scope.manifest_path)?)?;

@@ -1,0 +1,15 @@
+# Adler-32 development iteration 7
+
+Status: implementation validation passed; authoring has not started.
+
+Astra reviewed [iteration 6](adler2-iteration-6.md) and recommended a bounded follow-up: correct local `Proofs → Lemmas` operational-report invalidation, preserve actual completed batch negative verdicts on their exact input, and allow continued productive proof tasks without giving credits to repeated recorded propositions or plan aliases. No mathematical hints, case-specific proof strategy or previous proof solution is supplied.
+
+After validation, freeze source and binary and run a fresh product-only case from the same adler2 2.0.1 archive for a 1,800-second work budget, same five APIs and resolved model/settings. Retain round5's ordinary reference; this is not a newly paired comparison or speed ratio. Include actual status/text/JSON/list observations. No competing local compiler/audit/authoring workloads run during the trial. Original Rust and manifest bytes must remain unchanged. Freeze authoring/state/events before separate fresh extraction, exact-contract and standard-axiom auditing. Report timed ledger and independently checked artifacts separately.
+
+Check whether report edits retain current checkpoints, identical-input negative observations avoid duplicate checks, core continuation is possible, and original loop facts connect to complete API contracts. Consult Astra again after the result and audit. Continue only for a concrete reproducible mechanism with a bounded fix; if full five-API completion occurs, run a fresh matched pair before stopping. Otherwise stop tuning when concrete defects are repaired and meaningful core authoring reveals no further clear mechanism-level improvement.
+
+## Validation
+
+The regular suite passed 80 cases, formatting and Clippy passed, and Rust 1.86 checked successfully. The real native checkpoint fixture passed in 323.89 seconds, including actual `Proofs` importing `Lemmas`, report-only updates retaining current evidence, an empty-request batch saving actual missing-root verdicts with audit cache diagnostics, changed proof inputs reopening checks, and genuine model changes requiring approval. A second actual native test passed in 94.60 seconds: the requested original API succeeds while an independently audited missing theorem is recorded without poisoning the requested result. Library-level tests use normal public `cli::sync` reconciliation when entering the test executable, whose binary identity is a distinct tracked input. No fingerprint guard is bypassed.
+
+Development fixture failures are retained separately: an intentionally rejected step was not reset, restoring exact old proof bytes legitimately reactivated old success, and direct library verification correctly rejected a CLI-to-test-binary input mismatch. These were corrected in the test setup before freezing. An initial `1.86.0` channel alias attempted a blocked download; the installed `1.86` toolchain passed. Original upstream six unit and four documentation tests passed outside the authoring clock.

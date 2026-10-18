@@ -829,3 +829,106 @@ fn unvisited_roots_do_not_preempt_current_callers_proof_work() {
     assert_eq!(task.work.as_deref(), Some("loop_bound"));
     assert!(!s.proof_plan.inspected.contains_key("c"));
 }
+
+#[test]
+fn productive_checked_work_preserves_attempt_budget_without_recrediting_aliases() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    let task = Task {
+        kind: TaskKind::Verify,
+        targets: vec!["a".into()],
+        work: None,
+    };
+    let step = lemma_step("a");
+    install(&mut s, vec![step.clone()]).unwrap();
+    let mut attempt = Attempt {
+        total: 3,
+        no_progress: 0,
+        failed: false,
+        ..Default::default()
+    };
+    s.run.attempts.insert(task.key(), attempt.clone());
+    assert!(!scheduler::eligible(&s, &task, &Limits::default()));
+    assert!(scheduler::checked_work(&s, &task).is_empty());
+    s.proof_plan.evidence.insert(
+        step.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&step),
+            outcome: Outcome::Success,
+            cache: "fixture".into(),
+        },
+    );
+    scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    assert_eq!(attempt.progress_credits, 1);
+    s.run.attempts.insert(task.key(), attempt.clone());
+    assert!(scheduler::eligible(&s, &task, &Limits::default()));
+    let mut alias = step.clone();
+    alias.id = "alias".into();
+    alias.theorem = Some("Other.name".into());
+    alias.needs = vec![step.id.clone()];
+    s.proof_plan.steps.push(alias.clone());
+    s.proof_plan.evidence.insert(
+        alias.id.clone(),
+        LemmaEvidence {
+            input: s.input.clone(),
+            step_hash: step_hash(&alias),
+            outcome: Outcome::Success,
+            cache: "other".into(),
+        },
+    );
+    scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    assert_eq!(attempt.progress_credits, 1);
+    let unrelated = Task {
+        kind: TaskKind::Verify,
+        targets: vec!["c".into()],
+        work: None,
+    };
+    assert!(scheduler::checked_work(&s, &unrelated).is_empty());
+    let helper_work = ProofStep {
+        id: "compute".into(),
+        goal: "a".into(),
+        kind: StepKind::Contract,
+        target: Some("c".into()),
+        reason: "A depends on helper C".into(),
+        needs: vec![step.id.clone()],
+        statement: None,
+        theorem: None,
+    };
+    s.proof_plan.steps.push(helper_work);
+    let helper_task = Task {
+        kind: TaskKind::Verify,
+        targets: vec!["c".into()],
+        work: Some("compute".into()),
+    };
+    assert_eq!(
+        scheduler::checked_work(&s, &helper_task),
+        scheduler::checked_work(&s, &task)
+    );
+
+    for n in 2..=3 {
+        attempt.total += 1;
+        let mut new_step = step.clone();
+        new_step.id = format!("checkpoint_{n}");
+        new_step.statement = Some(format!("{n} = {n}"));
+        s.proof_plan.evidence.insert(
+            new_step.id.clone(),
+            LemmaEvidence {
+                input: s.input.clone(),
+                step_hash: step_hash(&new_step),
+                outcome: Outcome::Success,
+                cache: "fixture".into(),
+            },
+        );
+        s.proof_plan.steps.push(new_step);
+        scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    }
+    assert_eq!(attempt.progress_credits, 3);
+    s.run.attempts.insert(task.key(), attempt.clone());
+    assert!(scheduler::eligible(&s, &task, &Limits::default()));
+    attempt.failed = true;
+    attempt.last_input = scheduler::task_input(&s, &task);
+    s.run.attempts.insert(task.key(), attempt);
+    assert!(!scheduler::eligible(&s, &task, &Limits::default()));
+}

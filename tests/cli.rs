@@ -537,6 +537,36 @@ fn operational_reports_do_not_change_simple_crate_inputs() {
 }
 
 #[test]
+fn local_lemma_import_tracks_content_and_dynamic_inputs_conservatively() {
+    for lemma in [
+        "import ElicitContracts\ntheorem local_fact : True := trivial\n",
+        "import Lean\n#eval IO.FS.readFile \"PROGRESS.md\"\n",
+        "import Custom\n",
+        "import Lemmas.Untracked\n",
+    ] {
+        let p = Project::new("aeneas", SOURCE);
+        let root = p.dir.path().join("elicit-proofs/aeneas");
+        fs::create_dir_all(&root).unwrap();
+        fs::write(root.join("Proofs.lean"), "import Lemmas\n").unwrap();
+        fs::write(root.join("Lemmas.lean"), lemma).unwrap();
+        fs::write(p.dir.path().join("PROGRESS.md"), "one\n").unwrap();
+        p.ok(&["status"]);
+        let original = p.state().input;
+        fs::write(p.dir.path().join("PROGRESS.md"), "two\n").unwrap();
+        p.ok(&["status"]);
+        assert_eq!(original == p.state().input, lemma.contains("local_fact"));
+        let before_lemma = p.state().input;
+        fs::write(
+            root.join("Lemmas.lean"),
+            format!("{lemma}\n-- Changed lemma input.\n"),
+        )
+        .unwrap();
+        p.ok(&["status"]);
+        assert_ne!(before_lemma, p.state().input);
+    }
+}
+
+#[test]
 fn build_scripts_and_file_input_macros_keep_report_invalidation() {
     for extra in [
         "pub const REPORT: &str = include_str!(\"../PROGRESS.md\");",

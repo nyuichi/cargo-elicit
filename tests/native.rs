@@ -36,6 +36,16 @@ fn ok(root: &Path, args: &[&str]) {
 fn state(root: &Path) -> State {
     toml::from_str(&fs::read_to_string(root.join(".elicit/state.toml")).unwrap()).unwrap()
 }
+// Library verification has this test executable's tracked identity. Use normal
+// production reconciliation when crossing between the CLI and this process.
+fn verify_in_process(
+    store: &cargo_elicit::store::Store,
+    ids: &[String],
+) -> Vec<cargo_elicit::model::Verification> {
+    let mut analyzer = cargo_elicit::analysis::Analyzer::default();
+    let s = cargo_elicit::cli::sync(store, &mut analyzer).unwrap();
+    cargo_elicit::verifier::verify(store, ids, Some(s.revision), 120).unwrap()
+}
 fn prepare_fixture(tool: &str, fixture: &str) -> PathBuf {
     let root = tempfile::Builder::new()
         .prefix(&format!("elicit-native-{tool}-"))
@@ -526,10 +536,17 @@ end Checkpoint
     checkpoint();
     assert!(!checked(&store.load().unwrap(), &wrong));
     // Selected completion does not require authoring the unrelated Marker type.
+    store
+        .transaction(None, |s| install(s, vec![step.clone()]))
+        .unwrap();
     fs::write(proof_root.join("Lemmas.lean"), source).unwrap();
     let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures/aeneas/elicit-proofs/aeneas/Proofs.lean");
-    fs::copy(fixture, proof_root.join("Proofs.lean")).unwrap();
+    fs::write(
+        proof_root.join("Proofs.lean"),
+        format!("import Lemmas\n{}", fs::read_to_string(fixture).unwrap()),
+    )
+    .unwrap();
     ok(&root, &["status"]);
     let revision = state(&root).revision.to_string();
     ok(
@@ -548,6 +565,52 @@ end Checkpoint
     let s = store.load().unwrap();
     assert!(s.complete(true));
     assert!(!s.targets["elicit-aeneas-fixture::Marker::Struct"].ready());
+    // Supported local composition must not make operational reports proof inputs.
+    for report in ["PROGRESS.md", "verification-inventory.json"] {
+        fs::write(root.join(report), "Operational observation only.\n").unwrap();
+    }
+    ok(&root, &["status"]);
+    let after_reports = state(&root);
+    assert_eq!(s.input, after_reports.input);
+    assert!(after_reports.complete(true));
+    assert!(checked(&after_reports, &step));
+    // A completed batch records missing roots as unresolved on this exact input.
+    let proofs = proof_root.join("Proofs.lean");
+    let original_proofs = fs::read_to_string(&proofs).unwrap();
+    fs::write(&proofs, "import Lemmas\n").unwrap();
+    ok(&root, &["status"]);
+    verify_in_process(&store, &[]);
+    let missing = state(&root);
+    assert!(
+        missing
+            .results
+            .iter()
+            .filter(|r| r.target == id && r.input == missing.input)
+            .all(|r| r.diagnostic.as_ref().is_some_and(|d| d.phase == "audit"
+                && Path::new(&d.cache).join("ElicitGenerated.lean").is_file()))
+    );
+    assert!(missing.results.iter().any(|r| r.target == id
+        && r.input == missing.input
+        && r.outcome == cargo_elicit::model::Outcome::Unresolved));
+    assert!(
+        cargo_elicit::aeneas::prepared_targets(&missing)
+            .unwrap()
+            .is_empty()
+    );
+    fs::write(
+        &proofs,
+        format!("{original_proofs}\n-- A new tracked proof input.\n"),
+    )
+    .unwrap();
+    ok(&root, &["status"]);
+    assert!(
+        !cargo_elicit::aeneas::prepared_targets(&state(&root))
+            .unwrap()
+            .is_empty()
+    );
+    checkpoint();
+    assert!(state(&root).complete(true));
+
     // A transient failure in collecting semantic metadata must not permanently
     // lose an unchanged approval. Recovery still requires fresh proof evidence
     // when the global proof input changed.
@@ -637,4 +700,61 @@ elicit_audit 10 "0 = 0" "implicitRoot"
         assert_eq!(row["index"], index);
         assert_eq!(row["checked"], matches!(index, 0 | 6 | 8 | 10));
     }
+}
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
+fn aeneas_requested_success_is_not_poisoned_by_independent_missing_root() {
+    use cargo_elicit::{model::Outcome, store::Store};
+    let root = prepare_fixture("aeneas", "aeneas");
+    let source = root.join("src/lib.rs");
+    fs::write(
+        &source,
+        format!(
+            "{}\npub fn other(x:u32)->u32 {{ x }}\n",
+            fs::read_to_string(&source).unwrap()
+        ),
+    )
+    .unwrap();
+    let manifest = root.join("elicit-proofs/aeneas/contracts.toml");
+    fs::write(&manifest, format!("{}\n[contracts.\"elicit-aeneas-fixture::other::Function\"]\nensures = \"fun x result => result = x\"\ntheorem = \"Proofs.missing_other\"\n", fs::read_to_string(&manifest).unwrap())).unwrap();
+    ok(&root, &["init", "--tool", "aeneas"]);
+    let id = "elicit-aeneas-fixture::identity::Function";
+    let other = "elicit-aeneas-fixture::other::Function";
+    for target in [id, other] {
+        let revision = state(&root).revision.to_string();
+        ok(
+            &root,
+            &[
+                "agent",
+                "submit",
+                target,
+                "--revision",
+                &revision,
+                "--note",
+                "Reviewed original identity API",
+            ],
+        );
+    }
+    let store = Store { root: root.clone() };
+    let results = verify_in_process(&store, &[id.into()]);
+    assert!(
+        results
+            .iter()
+            .any(|r| r.target == id && r.outcome == Outcome::Success)
+    );
+    assert!(results.iter().all(|r| r.outcome == Outcome::Success));
+    let s = state(&root);
+    assert!(s.verified(id));
+    assert!(!s.verified(other));
+    assert!(s.results.iter().any(|r| r.target == other
+        && r.input == s.input
+        && r.outcome == Outcome::Unresolved
+        && r.diagnostic.is_some()));
+    assert!(
+        cargo_elicit::aeneas::prepared_targets(&s)
+            .unwrap()
+            .is_empty()
+    );
+    fs::remove_dir_all(root).unwrap();
 }

@@ -270,6 +270,10 @@ impl Task {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Attempt {
     pub total: u32,
+    #[serde(default)]
+    pub progress_credits: u32,
+    #[serde(default)]
+    pub checked_work: BTreeSet<String>,
     pub no_progress: u32,
     pub last_input: String,
     pub failed: bool,

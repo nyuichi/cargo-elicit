@@ -362,18 +362,20 @@ pub(crate) fn reports_are_independent(scope: &Scope, files: &BTreeSet<PathBuf>) 
                     .filter(|l| l.trim_start().starts_with("import "))
                 {
                     for module in line.split_whitespace().skip(1) {
-                        if ![
-                            "ElicitGenerated",
-                            "ElicitContracts",
-                            "Specs",
-                            "Aeneas",
-                            "Mathlib",
-                            "Std",
-                            "Lean",
-                            "Init",
-                        ]
-                        .iter()
-                        .any(|m| module == *m || module.starts_with(&format!("{m}.")))
+                        if !(module == "Lemmas"
+                            && files.contains(&proof_root.join("aeneas/Lemmas.lean")))
+                            && ![
+                                "ElicitGenerated",
+                                "ElicitContracts",
+                                "Specs",
+                                "Aeneas",
+                                "Mathlib",
+                                "Std",
+                                "Lean",
+                                "Init",
+                            ]
+                            .iter()
+                            .any(|m| module == *m || module.starts_with(&format!("{m}.")))
                         {
                             return Ok(false);
                         }

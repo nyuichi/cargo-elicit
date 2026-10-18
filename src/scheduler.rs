@@ -53,9 +53,50 @@ pub fn task_input(s: &State, t: &Task) -> String {
         .unwrap(),
     )
 }
+// Scheduling credit is bookkeeping, never proof acceptance. Use proposition
+// text rather than plan IDs/theorem selectors so aliases and changed needs do
+// not buy another attempt. Omitting model changes is intentionally conservative.
+pub fn checked_work(s: &State, task: &Task) -> BTreeSet<String> {
+    let mut facts = BTreeSet::new();
+    let owner = task
+        .work
+        .as_ref()
+        .and_then(|id| s.proof_plan.steps.iter().find(|p| &p.id == id))
+        .map(|p| &p.goal);
+    for step in &s.proof_plan.steps {
+        if owner.map_or_else(
+            || task.targets.contains(&step.goal),
+            |goal| goal == &step.goal,
+        ) && step.kind == crate::plan::StepKind::Lemma
+            && crate::plan::checked(s, step)
+        {
+            if let Some(statement) = &step.statement {
+                facts.insert(format!(
+                    "lemma:{}",
+                    statement.split_whitespace().collect::<Vec<_>>().join(" ")
+                ));
+            }
+        }
+    }
+    for id in &task.targets {
+        if s.verified(id) {
+            facts.insert(format!("api:{id}:{}", s.targets[id].spec_hash));
+        }
+    }
+    facts
+}
+pub fn record_checked_progress(attempt: &mut Attempt, facts: BTreeSet<String>) {
+    let novel = facts
+        .iter()
+        .any(|fact| !attempt.checked_work.contains(fact));
+    attempt.checked_work.extend(facts);
+    if novel {
+        attempt.progress_credits = (attempt.progress_credits + 1).min(attempt.total);
+    }
+}
 pub fn eligible(s: &State, t: &Task, l: &Limits) -> bool {
     s.run.attempts.get(&t.key()).is_none_or(|a| {
-        a.total < l.max_attempts
+        a.total.saturating_sub(a.progress_credits) < l.max_attempts
             && a.no_progress < l.max_no_progress
             && !(a.failed && a.last_input == task_input(s, t))
     })

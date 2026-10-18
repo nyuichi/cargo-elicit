@@ -707,6 +707,8 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 started: now(),
             });
             let a = s.run.attempts.entry(key.clone()).or_default();
+            a.checked_work
+                .extend(scheduler::checked_work(&before, &task));
             a.total += 1;
             a.last_input = input.clone();
             a.failed = true;
@@ -902,6 +904,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         store.transaction(None, |s| {
             s.run.active = None;
             let attempt = s.run.attempts.entry(key.clone()).or_default();
+            scheduler::record_checked_progress(attempt, scheduler::checked_work(&after, &task));
             attempt.failed = !success && !progress;
             attempt.no_progress = if progress { 0 } else { attempt.no_progress + 1 };
             attempt.last_input = scheduler::task_input(&after, &task);
