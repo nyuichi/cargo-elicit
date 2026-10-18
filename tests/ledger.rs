@@ -948,3 +948,103 @@ fn finalization_reserve_is_bounded_and_only_reduces_proof_authoring() {
     limits.finalize_seconds = 0;
     assert_eq!(scheduler::authoring_seconds(&limits, true), 40);
 }
+
+#[test]
+fn delegated_child_credits_new_caller_lemmas_but_not_siblings_or_old_associations() {
+    use cargo_elicit::plan::*;
+    let mut s = state();
+    s.tool = Tool::Aeneas;
+    s.targets.insert("d".into(), target("d", Kind::Function));
+    let task = Task {
+        kind: TaskKind::Integrate,
+        targets: vec!["b".into()],
+        work: None,
+    };
+    let delegation = |id: &str, caller: &str, child: &str| ProofStep {
+        id: id.into(),
+        goal: caller.into(),
+        kind: StepKind::Contract,
+        target: Some(child.into()),
+        reason: "Caller delegates a selected prerequisite".into(),
+        needs: vec![],
+        statement: None,
+        theorem: None,
+    };
+    let checked = |s: &mut State, id: &str, goal: &str| {
+        let mut step = lemma_step(goal);
+        step.id = id.into();
+        step.statement = Some(format!("{id} = {id}"));
+        s.proof_plan.evidence.insert(
+            id.into(),
+            LemmaEvidence {
+                input: s.input.clone(),
+                step_hash: step_hash(&step),
+                outcome: Outcome::Success,
+                cache: "fixture".into(),
+            },
+        );
+        s.proof_plan.steps.push(step);
+    };
+    checked(&mut s, "old_caller_fact", "a");
+    let mut attempt = Attempt {
+        total: 3,
+        checked_work: scheduler::known_checked_work(&s),
+        ..Default::default()
+    };
+    // Adding an edge makes an existing fact relevant, but earns no new credit.
+    s.proof_plan.steps.push(delegation("child", "a", "b"));
+    s.proof_plan.steps.push(delegation("sibling", "a", "c"));
+    scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    assert_eq!(attempt.progress_credits, 0);
+    checked(&mut s, "sibling_fact", "c");
+    checked(&mut s, "unrelated_fact", "d");
+    scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    assert_eq!(attempt.progress_credits, 0);
+    checked(&mut s, "new_caller_fact", "a");
+    scheduler::record_checked_progress(&mut attempt, scheduler::checked_work(&s, &task));
+    assert_eq!(attempt.progress_credits, 1);
+    s.run.attempts.insert(task.key(), attempt.clone());
+    assert!(scheduler::eligible(&s, &task, &Limits::default()));
+    assert_eq!(scheduler::checked_work(&s, &task).len(), 2);
+    // Directed ancestors are transitive; cycles terminate, and API credit is
+    // never widened from child targets to its caller or siblings.
+    s.proof_plan.steps.push(delegation("ancestor", "d", "a"));
+    s.proof_plan.steps.push(delegation("cycle", "a", "d"));
+    s.results.extend([proof("a"), proof("c"), proof("d")]);
+    assert_eq!(scheduler::checked_work(&s, &task).len(), 3);
+    assert!(
+        scheduler::checked_work(&s, &task)
+            .iter()
+            .all(|fact| fact.starts_with("lemma:"))
+    );
+    // A non-selected helper edge must not create a delegated selected root.
+    s.goal = VerificationGoal::SelectedApis(vec!["b".into()]);
+    assert_eq!(scheduler::checked_work(&s, &task).len(), 2);
+    s.goal = VerificationGoal::SelectedApis(vec!["a".into()]);
+    assert!(scheduler::checked_work(&s, &task).is_empty());
+}
+
+#[test]
+fn iteration_8_selected_child_replays_caller_owned_checked_facts() {
+    let s: State = toml::from_str(include_str!(
+        "../experiments/adler2/results/2026-10-18-iteration-8/with/terminal-state.toml"
+    ))
+    .unwrap();
+    let task = Task {
+        kind: TaskKind::Integrate,
+        targets: vec!["adler2::impl[ff6e69000b04949b]::write_slice::Method".into()],
+        work: None,
+    };
+    let facts = scheduler::checked_work(&s, &task);
+    assert_eq!(facts.len(), 23);
+    assert!(facts.iter().all(|fact| fact.starts_with("lemma:")));
+    let mut attempt = Attempt {
+        total: 3,
+        ..Default::default()
+    };
+    scheduler::record_checked_progress(&mut attempt, facts.clone());
+    assert_eq!(attempt.progress_credits, 1);
+    attempt.checked_work = scheduler::known_checked_work(&s);
+    scheduler::record_checked_progress(&mut attempt, facts);
+    assert_eq!(attempt.progress_credits, 1);
+}

@@ -446,7 +446,7 @@ pub fn task_input(s: &State, task: &Task) -> String {
     )
 }
 
-fn delegated(s: &State, step: &ProofStep) -> bool {
+pub(crate) fn delegated(s: &State, step: &ProofStep) -> bool {
     step.kind == StepKind::Contract
         && step
             .target

@@ -68,33 +68,69 @@ pub fn task_input(s: &State, t: &Task) -> String {
 // Scheduling credit is bookkeeping, never proof acceptance. Use proposition
 // text rather than plan IDs/theorem selectors so aliases and changed needs do
 // not buy another attempt. Omitting model changes is intentionally conservative.
-pub fn checked_work(s: &State, task: &Task) -> BTreeSet<String> {
-    let mut facts = BTreeSet::new();
-    let owner = task
-        .work
-        .as_ref()
-        .and_then(|id| s.proof_plan.steps.iter().find(|p| &p.id == id))
-        .map(|p| &p.goal);
-    for step in &s.proof_plan.steps {
-        if owner.map_or_else(
-            || task.targets.contains(&step.goal),
-            |goal| goal == &step.goal,
-        ) && step.kind == crate::plan::StepKind::Lemma
-            && crate::plan::checked(s, step)
-        {
-            if let Some(statement) = &step.statement {
-                facts.insert(format!(
-                    "lemma:{}",
-                    statement.split_whitespace().collect::<Vec<_>>().join(" ")
-                ));
-            }
-        }
-    }
-    for id in &task.targets {
+fn checked_lemmas(s: &State, goals: Option<&BTreeSet<String>>) -> BTreeSet<String> {
+    s.proof_plan
+        .steps
+        .iter()
+        .filter(|step| {
+            goals.is_none_or(|goals| goals.contains(&step.goal))
+                && step.kind == crate::plan::StepKind::Lemma
+                && crate::plan::checked(s, step)
+        })
+        .filter_map(|step| step.statement.as_ref())
+        .map(|statement| {
+            format!(
+                "lemma:{}",
+                statement.split_whitespace().collect::<Vec<_>>().join(" ")
+            )
+        })
+        .collect()
+}
+fn insert_checked_apis(s: &State, ids: &[String], facts: &mut BTreeSet<String>) {
+    for id in ids {
         if s.verified(id) {
             facts.insert(format!("api:{id}:{}", s.targets[id].spec_hash));
         }
     }
+}
+/// Snapshot globally known facts before a turn, so moving existing work into
+/// its scope cannot earn credit. Existing per-attempt history is retained too.
+pub fn known_checked_work(s: &State) -> BTreeSet<String> {
+    let mut facts = checked_lemmas(s, None);
+    insert_checked_apis(
+        s,
+        &s.targets.keys().cloned().collect::<Vec<_>>(),
+        &mut facts,
+    );
+    facts
+}
+pub fn checked_work(s: &State, task: &Task) -> BTreeSet<String> {
+    let mut goals = task
+        .work
+        .as_ref()
+        .and_then(|id| s.proof_plan.steps.iter().find(|p| &p.id == id))
+        .map_or_else(
+            || task.targets.iter().cloned().collect(),
+            |p| BTreeSet::from([p.goal.clone()]),
+        );
+    // A selected child can produce lemmas owned by its callers. Follow only
+    // reverse delegation edges: siblings and unrelated roots are not callers.
+    loop {
+        let previous = goals.len();
+        for step in &s.proof_plan.steps {
+            if crate::plan::delegated(s, step)
+                && step.target.as_ref().is_some_and(|id| goals.contains(id))
+            {
+                goals.insert(step.goal.clone());
+            }
+        }
+        if goals.len() == previous {
+            break;
+        }
+    }
+    let mut facts = checked_lemmas(s, Some(&goals));
+    // API credit remains scoped to the actual task targets.
+    insert_checked_apis(s, &task.targets, &mut facts);
     facts
 }
 pub fn record_checked_progress(attempt: &mut Attempt, facts: BTreeSet<String>) {

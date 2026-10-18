@@ -710,7 +710,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             });
             let a = s.run.attempts.entry(key.clone()).or_default();
             a.checked_work
-                .extend(scheduler::checked_work(&before, &task));
+                .extend(scheduler::known_checked_work(&before));
             a.total += 1;
             a.last_input = input.clone();
             a.failed = true;
