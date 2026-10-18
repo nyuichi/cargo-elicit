@@ -47,7 +47,9 @@ cargo elicit run --retry --max-tasks 10 --max-seconds 1200
 
 The requested features and target, along with resolved features and the default host target, are saved and displayed at initialization. The Kani 0.68 adapter supports only the host target. Changing the saved verifier or build scope is rejected, preserving the existing ledger. Use a separate working directory for a different configuration.
 
-Default run limits are 32 tasks, 3,600 seconds overall, 600 seconds per task, 600 seconds per verification, three cumulative attempts per task, and two consecutive attempts without progress. These defaults appear in CLI `--help` and can be overridden with arguments. The same failure is not retried on identical inputs. After reviewing the approach, use `run --retry` to retry explicitly.
+For the planned workflow, default run limits are 32 tasks, 3,600 seconds overall, 600 seconds per task, 600 seconds per verification, three cumulative attempts per task, and two consecutive attempts without progress. These defaults appear in CLI `--help` and can be overridden with arguments. The same failure is not retried on identical inputs. After reviewing the approach, use `run --retry` to retry explicitly.
+
+Aeneas defaults to autonomous authoring: one worker receives the entire selected API set and the remaining overall authoring budget. `--task-seconds` and `--plan-seconds` do not split that work. It chooses its own proof order and saves source artifacts, then records semantic review once with `agent stage --all --note REASON`. After the worker stops, cargo-elicit checks stable artifacts and records matching reviews and kernel evidence. `collect` performs this acceptance without starting a model. Interruptions and authoring deadlines preserve resumable work. Use `run --workflow planned` for the previous step dispatcher; Kani and Creusot continue to use it by default. See [autonomous Aeneas authoring](docs/autonomous-aeneas.md).
 
 The `run` exit codes are 0 for goal completion, 1 for unresolved work, 2 for configuration or environment errors, and 130 for interruption. `status` and `list` return 0 on a successful read, even if work remains unresolved.
 

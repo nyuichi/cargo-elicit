@@ -14,6 +14,8 @@ The analysis and correction are preserved in [commit 529441599c628028404f2ea202f
 
 - [Near-parity feasibility and plan](adler2-parity-plan.md): conditional time budgets, the required controller change and early rejection criteria, reviewed with Astra before implementation.
 
+- [Autonomous authoring implementation](autonomous-authoring-implementation.md): the implemented goal-set controller, staged artifact acceptance, Astra review fixes and separately measured fixed-artifact cost. This is not a new live authoring speed comparison.
+
 ## Important facts and corrections
 
 | Record | What it establishes |

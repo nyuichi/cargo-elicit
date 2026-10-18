@@ -84,7 +84,13 @@ impl Project {
         c
     }
     fn call(&self, a: &[&str]) -> Output {
-        self.cmd().args(a).output().unwrap()
+        // Existing scheduler tests exercise the explicitly supported planned workflow.
+        let mut cmd = self.cmd();
+        cmd.args(a);
+        if a.first() == Some(&"run") {
+            cmd.args(["--workflow", "planned"]);
+        }
+        cmd.output().unwrap()
     }
     fn ok(&self, a: &[&str]) -> Output {
         let o = self.call(a);
@@ -140,7 +146,7 @@ fn completed_notification_without_work_is_not_success() {
     let o = p
         .cmd()
         .env("MOCK_CASE", "noop")
-        .args(["run"])
+        .args(["run", "--workflow", "planned"])
         .output()
         .unwrap();
     assert_eq!(o.status.code(), Some(1));
@@ -155,7 +161,7 @@ fn completed_notification_without_work_is_not_success() {
     let o = p
         .cmd()
         .env("MOCK_CASE", "noop")
-        .args(["run"])
+        .args(["run", "--workflow", "planned"])
         .output()
         .unwrap();
     assert_eq!(o.status.code(), Some(1));
@@ -451,7 +457,7 @@ fn aeneas_requires_matching_kernel_proof_and_standard_axioms() {
         let out = p
             .cmd()
             .env("MOCK_AENEAS", rejection)
-            .args(["run", "--retry"])
+            .args(["run", "--workflow", "planned", "--retry"])
             .output()
             .unwrap();
         assert_eq!(
@@ -692,7 +698,7 @@ fn prepared_proofs_are_checked_before_unrelated_worker_tasks() {
     let out = p
         .cmd()
         .env("MOCK_CASE", "noop")
-        .args(["run", "--max-tasks", "1"])
+        .args(["run", "--workflow", "planned", "--max-tasks", "1"])
         .output()
         .unwrap();
     assert_eq!(
@@ -883,7 +889,7 @@ fn successful_kernel_refresh_does_not_skip_required_specification_review() {
     let out = p
         .cmd()
         .env("MOCK_CASE", "resubmit")
-        .args(["run", "--max-tasks", "1"])
+        .args(["run", "--workflow", "planned", "--max-tasks", "1"])
         .output()
         .unwrap();
     assert!(
@@ -899,4 +905,231 @@ fn successful_kernel_refresh_does_not_skip_required_specification_review() {
             .map(|l| serde_json::from_str::<serde_json::Value>(l).unwrap())
             .any(|e| e["event"] == "worker_started")
     );
+}
+
+#[test]
+fn autonomous_goal_set_stages_once_and_collects_without_individual_submissions() {
+    let p = Project::new(
+        "aeneas",
+        "pub fn identity(x:u32)->u32 { x }\npub fn other(x:u32)->u32 { x }\n",
+    );
+    let root = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&root).unwrap();
+    fs::write(root.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n[contracts.\"fixture::other::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.other_spec\"\n").unwrap();
+    fs::write(root.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    p.required();
+    let out = p
+        .cmd()
+        .env("MOCK_CASE", "stage")
+        .args(["run", "--task-seconds", "1", "--max-seconds", "90"])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&out.stdout),
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let s = p.state();
+    assert!(s.complete(true));
+    assert!(s.proof_plan.steps.is_empty());
+    assert_eq!(s.run.attempts.len(), 1);
+    let task: serde_json::Value = serde_json::from_slice(
+        &fs::read(p.dir.path().join(".elicit/runtime/last-task.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(task["targets"].as_array().unwrap().len(), 2);
+    assert!(task["targets"].as_array().unwrap().iter().all(|t| {
+        t["aeneas_contract"]
+            .as_str()
+            .unwrap()
+            .starts_with("ElicitContracts.c_")
+            && t["specification_ready"] == false
+    }));
+    let before = s.run.output_tokens;
+    p.ok(&["collect"]);
+    assert_eq!(p.state().run.output_tokens, before);
+    assert!(p.dir.path().join(".elicit/last-review.json").exists());
+    // Joint review must rebind previously declared specification dependencies.
+    let revision = p.state().revision.to_string();
+    p.ok(&[
+        "agent",
+        "depend",
+        "fixture::other::Function",
+        "fixture::identity::Function",
+        "--revision",
+        &revision,
+    ]);
+    let manifest = root.join("contracts.toml");
+    fs::write(
+        &manifest,
+        fs::read_to_string(&manifest)
+            .unwrap()
+            .replacen("result = x", "result = x ∧ True", 1),
+    )
+    .unwrap();
+    p.ok(&[
+        "agent",
+        "stage",
+        "--all",
+        "--note",
+        "Reviewed caller and changed helper together",
+    ]);
+    p.ok(&["collect"]);
+    let s = p.state();
+    assert_eq!(
+        s.targets["fixture::other::Function"].dependencies["fixture::identity::Function"],
+        s.targets["fixture::identity::Function"].spec_hash
+    );
+    assert!(s.complete(true));
+    // An unchanged timed-out input must be eligible for a real recheck.
+    fs::write(
+        root.join("Proofs.lean"),
+        "import ElicitContracts\n-- refresh\n",
+    )
+    .unwrap();
+    let timeout = p
+        .cmd()
+        .env("MOCK_AENEAS", "wait")
+        .args(["collect", "--seconds", "10"])
+        .output()
+        .unwrap();
+    assert_eq!(timeout.status.code(), Some(1));
+    assert!(
+        p.state()
+            .results
+            .iter()
+            .any(|r| r.outcome == cargo_elicit::model::Outcome::Timeout)
+    );
+    p.ok(&["collect"]);
+    assert!(p.state().complete(true));
+}
+
+#[test]
+fn saved_sources_require_explicit_current_semantic_review() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let root = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&root).unwrap();
+    let contracts = "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n";
+    fs::write(root.join("contracts.toml"), contracts).unwrap();
+    fs::write(root.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    p.required();
+    assert_eq!(p.call(&["collect"]).status.code(), Some(1));
+    assert!(!p.state().targets["fixture::identity::Function"].specified);
+    p.ok(&[
+        "agent",
+        "stage",
+        "--all",
+        "--note",
+        "Reviewed the identity postcondition",
+    ]);
+    fs::write(
+        root.join("contracts.toml"),
+        contracts.replace("result = x", "result = result"),
+    )
+    .unwrap();
+    assert_eq!(p.call(&["collect"]).status.code(), Some(2));
+    assert!(!p.state().targets["fixture::identity::Function"].specified);
+    p.ok(&[
+        "agent",
+        "stage",
+        "--all",
+        "--note",
+        "Explicitly reviewed revised postcondition",
+    ]);
+    fs::write(
+        root.join("Proofs.lean"),
+        "import ElicitContracts\n-- proof term edits are allowed after review\n",
+    )
+    .unwrap();
+    p.ok(&["collect"]);
+    assert!(p.state().complete(true));
+}
+
+#[test]
+#[cfg(unix)]
+fn autonomous_interruption_before_edits_resumes_without_retry() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let root = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&root).unwrap();
+    fs::write(root.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
+    fs::write(root.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
+    p.required();
+    let mut child = p
+        .cmd()
+        .env("MOCK_CASE", "interrupt")
+        .args(["run"])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+        .unwrap();
+    let end = Instant::now() + Duration::from_secs(30);
+    while !p.dir.path().join(".elicit/runtime/mock-started").exists() {
+        assert!(Instant::now() < end);
+        thread::sleep(Duration::from_millis(50));
+    }
+    unsafe {
+        libc::kill(child.id() as i32, libc::SIGINT);
+    }
+    assert_eq!(child.wait().unwrap().code(), Some(130));
+    let output = p
+        .cmd()
+        .env("MOCK_CASE", "stage")
+        .args(["run"])
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(p.state().complete(true));
+}
+
+#[test]
+fn staged_unmapped_contract_without_proofs_is_never_approved() {
+    let p = Project::new("aeneas", "pub fn identity(x:u32)->u32 { x }\n");
+    let root = p.dir.path().join("elicit-proofs/aeneas");
+    fs::create_dir_all(&root).unwrap();
+    fs::write(root.join("contracts.toml"), "schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x result => result = x\"\n").unwrap();
+    p.required();
+    p.ok(&[
+        "agent",
+        "stage",
+        "--all",
+        "--note",
+        "Reviewed postcondition, not yet mapped",
+    ]);
+    let out = p
+        .cmd()
+        .env("MOCK_AENEAS", "missing")
+        .args(["collect"])
+        .output()
+        .unwrap();
+    assert_eq!(
+        out.status.code(),
+        Some(1),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let s = p.state();
+    assert!(!s.targets["fixture::identity::Function"].specified);
+    assert!(
+        !s.processed_contracts
+            .contains("fixture::identity::Function")
+    );
+    assert!(p.dir.path().join(".elicit/staged-review.json").exists());
+    // Tool setup/build failure must keep its environment-error classification.
+    let out = p
+        .cmd()
+        .env("MOCK_CHECK_FAIL", "1")
+        .args(["collect"])
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(2));
+    assert!(!p.state().targets["fixture::identity::Function"].specified);
+    // A fresh valid mapping can process the same saved reviewed contract.
+    assert_eq!(p.call(&["collect"]).status.code(), Some(1));
+    assert!(p.state().targets["fixture::identity::Function"].ready());
+    assert!(!p.state().verified("fixture::identity::Function"));
 }

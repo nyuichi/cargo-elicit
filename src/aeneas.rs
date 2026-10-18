@@ -81,7 +81,7 @@ fn batch_audit_source(module: &str, roots: &[(&str, &str)]) -> Result<String> {
     }
     Ok(source)
 }
-fn proof_root(scope: &Scope) -> PathBuf {
+pub(crate) fn proof_root(scope: &Scope) -> PathBuf {
     Path::new(&scope.manifest_path)
         .parent()
         .unwrap()
@@ -101,6 +101,18 @@ fn manifest(scope: &Scope) -> Result<Manifest> {
 }
 pub fn contract_name(id: &str) -> String {
     format!("ElicitContracts.c_{}", &fingerprint::hash(id)[..16])
+}
+pub fn declared_targets(s: &State) -> Result<Vec<String>> {
+    Ok(manifest(&s.scope)?
+        .contracts
+        .keys()
+        .filter(|id| {
+            s.targets
+                .get(*id)
+                .is_some_and(|t| !t.removed && s.unsupported(id).is_none())
+        })
+        .cloned()
+        .collect())
 }
 // Collect existing declared proofs before opening unrelated specification work.
 // Names are only candidates: fresh extraction, kernel checks and axiom audits
@@ -238,7 +250,7 @@ fn model_inputs(scope: &Scope, targets: &[Target]) -> Result<Option<ModelInputs>
         .collect();
     let key = fingerprint::hash(serde_json::to_vec(&(
         &context,
-        fs::read(&source)?,
+        crate::lean_modules::Modules::load(&proof_root(scope))?.model_digest(),
         contracts,
     ))?);
     let cache = Path::new(&scope.manifest_path)
@@ -312,8 +324,15 @@ fn model_inputs(scope: &Scope, targets: &[Target]) -> Result<Option<ModelInputs>
 
 pub fn attach_specs(scope: &Scope, targets: &mut [Target]) -> Result<()> {
     let m = manifest(scope)?;
-    let models = fs::read(proof_root(scope).join("Specs.lean")).unwrap_or_default();
-    let semantic = model_inputs(scope, targets).unwrap_or(None);
+    let models = crate::lean_modules::Modules::load(&proof_root(scope))
+        .map(|p| p.model_digest())
+        .unwrap_or_else(|_| "unavailable local Lean graph".into());
+    let project = crate::lean_modules::Modules::load(&proof_root(scope));
+    let semantic = if project.as_ref().is_ok_and(|p| p.standard_layout()) {
+        model_inputs(scope, targets).unwrap_or(None)
+    } else {
+        None
+    };
     for t in targets {
         let c = m.contracts.get(&t.id);
         t.model_base_hash = fingerprint::hash(serde_json::to_vec(&(
@@ -578,8 +597,8 @@ fn lean_command(out: &Path, module: &str) -> Result<Command> {
     c.args(["env", "lean"])
         .arg(format!("--root={}", out.display()))
         .arg("-o")
-        .arg(out.join(format!("{module}.olean")))
-        .arg(out.join(format!("{module}.lean")));
+        .arg(crate::lean_modules::module_path(out, module, "olean"))
+        .arg(crate::lean_modules::module_path(out, module, "lean"));
     // Modules can only be loaded from this run's fresh cache, never old proof objects.
     c.env("LEAN_PATH", out);
     Ok(c)
@@ -589,6 +608,21 @@ pub fn execute(
     out: &Path,
     prove: bool,
     seconds: u64,
+) -> Result<(process::Output, Option<Value>)> {
+    let mut processed = std::collections::BTreeSet::new();
+    let (output, evidence) = execute_inner(s, out, prove, seconds, &mut processed)?;
+    let evidence = evidence.map(|mut evidence| {
+        evidence["processed_contracts"] = json!(processed);
+        evidence
+    });
+    Ok((output, evidence))
+}
+fn execute_inner(
+    s: &State,
+    out: &Path,
+    prove: bool,
+    seconds: u64,
+    processed: &mut std::collections::BTreeSet<String>,
 ) -> Result<(process::Output, Option<Value>)> {
     let start = Instant::now();
     let run = |cmd: &mut Command| {
@@ -661,12 +695,18 @@ pub fn execute(
     }
     let m = manifest(&s.scope)?;
     let root = proof_root(&s.scope);
+    let project = crate::lean_modules::Modules::load(&root)?;
+    let mut built =
+        std::collections::BTreeSet::from(["ElicitGenerated".into(), "ElicitAdapter".into()]);
     let mut contracts = "import ElicitAdapter\nimport ElicitGenerated\nopen Aeneas Aeneas.Std Result ElicitGenerated\n".to_string();
-    if root.join("Specs.lean").exists() {
-        fs::copy(root.join("Specs.lean"), out.join("Specs.lean"))?;
-        o = run(&mut lean_command(out, "Specs")?)?;
-        if o.code != Some(0) {
-            return Ok((o, Some(json!({"phase":"contracts"}))));
+    if project.contains("Specs") {
+        for module in project.order(&["Specs"], &built)? {
+            project.copy(&module, out)?;
+            o = run(&mut lean_command(out, &module)?)?;
+            if o.code != Some(0) {
+                return Ok((o, Some(json!({"phase":"contracts"}))));
+            }
+            built.insert(module);
         }
         contracts.insert_str(0, "import Specs\n");
     }
@@ -698,15 +738,22 @@ pub fn execute(
     }
     fs::write(out.join("ElicitContracts.lean"), contracts)?;
     o = run(&mut lean_command(out, "ElicitContracts")?)?;
+    if o.code == Some(0) && !o.timeout && !o.interrupted {
+        processed.extend(eligible.keys().cloned());
+    }
     if o.code != Some(0) || !prove {
         return Ok((o, Some(json!({"phase":"contracts"}))));
     }
+    built.insert("ElicitContracts".into());
     let mut lemmas = BTreeMap::new();
-    if root.join("Lemmas.lean").exists() {
-        fs::copy(root.join("Lemmas.lean"), out.join("Lemmas.lean"))?;
-        o = run(&mut lean_command(out, "Lemmas")?)?;
-        if o.code != Some(0) {
-            return Ok((o, Some(json!({"phase":"lemmas"}))));
+    if project.contains("Lemmas") {
+        for module in project.order(&["Lemmas"], &built)? {
+            project.copy(&module, out)?;
+            o = run(&mut lean_command(out, &module)?)?;
+            if o.code != Some(0) {
+                return Ok((o, Some(json!({"phase":"lemmas"}))));
+            }
+            built.insert(module);
         }
         let steps: Vec<_> = s
             .proof_plan
@@ -752,10 +799,13 @@ pub fn execute(
         o.code = Some(0);
         return Ok((o, Some(json!({"phase":"lemma-audit","lemmas":lemmas}))));
     }
-    fs::copy(root.join("Proofs.lean"), out.join("Proofs.lean"))?;
-    o = run(&mut lean_command(out, "Proofs")?)?;
-    if o.code != Some(0) {
-        return Ok((o, Some(json!({"phase":"proofs","lemmas":lemmas}))));
+    for module in project.order(&["Proofs"], &built)? {
+        project.copy(&module, out)?;
+        o = run(&mut lean_command(out, &module)?)?;
+        if o.code != Some(0) {
+            return Ok((o, Some(json!({"phase":"proofs","lemmas":lemmas}))));
+        }
+        built.insert(module);
     }
     let mut audits = BTreeMap::new();
     let mut records = vec![];

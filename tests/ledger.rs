@@ -1048,3 +1048,54 @@ fn iteration_8_selected_child_replays_caller_owned_checked_facts() {
     scheduler::record_checked_progress(&mut attempt, facts);
     assert_eq!(attempt.progress_credits, 1);
 }
+
+#[test]
+fn cumulative_usage_is_idempotent_across_resume_and_independent_threads() {
+    let mut run = RunState {
+        thread: Some("old".into()),
+        input_tokens: 100,
+        output_tokens: 20,
+        ..Default::default()
+    };
+    run.record_usage("old", (140, 90, 30));
+    run.record_usage("old", (140, 90, 30));
+    assert_eq!(run.usage_for("old"), (140, 90, 30));
+    run.start_thread("new");
+    assert_eq!(run.input_tokens, 0);
+    run.record_usage("new", (50, 20, 10));
+    run.start_thread("old");
+    assert_eq!(run.usage_for("old"), (140, 90, 30));
+    assert_eq!(run.usage_for("new"), (50, 20, 10));
+    assert_eq!(run.output_tokens, 30);
+}
+
+#[test]
+fn selected_proven_goals_are_distinct_from_incomplete_inventory() {
+    let mut s = state();
+    s.goal = cargo_elicit::plan::VerificationGoal::SelectedApis(vec!["a".into()]);
+    s.processing_input = s.input.clone();
+    s.tool = Tool::Aeneas;
+    s.results.clear();
+    s.analysis_incomplete.push(
+        "attribute may generate or hide definitions; review required: custom attribute".into(),
+    );
+    let mut result = proof("a");
+    result.tool = Tool::Aeneas;
+    s.results.push(result);
+    assert_eq!(s.selected_goals_verified(), Some(true));
+    assert!(s.complete(true));
+    assert!(!s.inventory_complete(true));
+    assert!(!s.complete(false));
+    s.tool = Tool::Kani;
+    s.results[0].tool = Tool::Kani;
+    assert!(!s.complete(true));
+    s.tool = Tool::Aeneas;
+    s.results[0].tool = Tool::Aeneas;
+    s.analysis_incomplete.push(
+        "custom compiler flags may change cfg; semantic/structural scope needs review".into(),
+    );
+    assert!(!s.complete(true));
+    s.analysis_incomplete.pop();
+    s.targets.get_mut("b").unwrap().implementation_changed = true;
+    assert!(!s.complete(true));
+}

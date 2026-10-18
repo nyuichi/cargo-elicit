@@ -22,6 +22,9 @@ cargo-elicit checks the tool versions and fingerprints installed backend sources
 
 ## Project files
 
+Aeneas now defaults to [autonomous goal-set authoring and staged artifact collection](autonomous-aeneas.md). Use `run --workflow planned` to select the previous step dispatcher.
+
+
 ```sh
 cargo elicit init --tool aeneas
 cargo elicit agent show 'my-crate::identity::Function'

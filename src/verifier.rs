@@ -421,6 +421,17 @@ pub fn verify(
                 .is_ok_and(|(o, _)| o.code == Some(0) && !o.timeout && !o.interrupted)
         {
             state.processing_input = before.clone();
+            state.processed_contracts = execute
+                .as_ref()
+                .ok()
+                .and_then(|(_, e)| e.as_ref())
+                .and_then(|e| e["processed_contracts"].as_array())
+                .map(|ids| {
+                    ids.iter()
+                        .filter_map(|id| id.as_str().map(str::to_owned))
+                        .collect()
+                })
+                .unwrap_or_default();
         }
         for r in &results {
             if let Some(old) = state.results.iter_mut().find(|p| p.id == r.id) {

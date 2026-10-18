@@ -240,6 +240,7 @@ pub struct Verification {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
 pub enum TaskKind {
+    Author,
     Recheck,
     Specify,
     Verify,
@@ -286,7 +287,15 @@ pub struct Active {
     pub started: u64,
 }
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct TokenUsage {
+    pub input: u64,
+    pub cached: u64,
+    pub output: u64,
+}
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RunState {
+    #[serde(default)]
+    pub usage_by_thread: BTreeMap<String, TokenUsage>,
     pub thread: Option<String>,
     pub active: Option<Active>,
     pub attempts: BTreeMap<String, Attempt>,
@@ -296,6 +305,47 @@ pub struct RunState {
     pub output_tokens: u64,
     pub elapsed_ms: u64,
 }
+impl RunState {
+    pub fn usage_for(&self, thread: &str) -> (u64, u64, u64) {
+        self.usage_by_thread
+            .get(thread)
+            .map(|u| (u.input, u.cached, u.output))
+            .unwrap_or_else(|| {
+                if self.thread.as_deref() == Some(thread) {
+                    (
+                        self.input_tokens,
+                        self.cached_input_tokens,
+                        self.output_tokens,
+                    )
+                } else {
+                    (0, 0, 0)
+                }
+            })
+    }
+    pub fn start_thread(&mut self, thread: &str) {
+        if let Some(old) = self.thread.clone() {
+            let u = self.usage_by_thread.entry(old).or_default();
+            u.input = u.input.max(self.input_tokens);
+            u.cached = u.cached.max(self.cached_input_tokens);
+            u.output = u.output.max(self.output_tokens);
+        }
+        let usage = self.usage_for(thread);
+        self.thread = Some(thread.into());
+        self.input_tokens = usage.0;
+        self.cached_input_tokens = usage.1;
+        self.output_tokens = usage.2;
+    }
+    pub fn record_usage(&mut self, thread: &str, usage: (u64, u64, u64)) {
+        self.start_thread(thread);
+        let u = self.usage_by_thread.entry(thread.into()).or_default();
+        u.input = u.input.max(usage.0);
+        u.cached = u.cached.max(usage.1);
+        u.output = u.output.max(usage.2);
+        self.input_tokens = u.input;
+        self.cached_input_tokens = u.cached;
+        self.output_tokens = u.output;
+    }
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct State {
     pub schema_version: u32,
@@ -304,6 +354,8 @@ pub struct State {
     pub scope: Scope,
     pub input: String,
     pub processing_input: String,
+    #[serde(default)]
+    pub processed_contracts: BTreeSet<String>,
     #[serde(default)]
     pub context_input: String,
     #[serde(default)]
@@ -326,6 +378,7 @@ impl State {
             scope,
             input: String::new(),
             processing_input: String::new(),
+            processed_contracts: BTreeSet::new(),
             context_input: String::new(),
             input_files: BTreeMap::new(),
             goal: Default::default(),
@@ -411,20 +464,15 @@ impl State {
                 })
             })
     }
-    pub fn complete(&self, required: bool) -> bool {
-        if let crate::plan::VerificationGoal::SelectedApis(ids) = &self.goal {
-            return !ids.is_empty()
-                && self.processing_input == self.input
-                && self.analysis_incomplete.is_empty()
-                && !self.targets.values().any(|t| {
-                    t.visibility != Visibility::Auxiliary && (t.removed || t.implementation_changed)
-                })
-                && ids.iter().all(|id| {
-                    self.targets.get(id).is_some_and(|t| {
-                        !t.removed && t.ready() && (!required || self.verified(id))
-                    })
-                });
+    pub fn selected_goals_verified(&self) -> Option<bool> {
+        match &self.goal {
+            crate::plan::VerificationGoal::SelectedApis(ids) => {
+                Some(!ids.is_empty() && ids.iter().all(|id| self.verified(id)))
+            }
+            _ => None,
         }
+    }
+    pub fn inventory_complete(&self, required: bool) -> bool {
         self.processing_input == self.input
             && self.analysis_incomplete.is_empty()
             && !self
@@ -436,6 +484,33 @@ impl State {
                 .values()
                 .filter(|t| !t.removed && t.visibility != Visibility::Auxiliary)
                 .all(|t| t.ready() && (!required || !t.kind.proof() || self.verified(&t.id)))
+    }
+    pub fn complete(&self, required: bool) -> bool {
+        if let crate::plan::VerificationGoal::SelectedApis(ids) = &self.goal {
+            let inventory_only = self.analysis_incomplete.iter().all(|reason| {
+                [
+                    "attribute may generate or hide definitions;",
+                    "macro-generated definitions need review:",
+                    "glob re-export requires public reachability review",
+                    "unresolved calls in ",
+                ]
+                .iter()
+                .any(|prefix| reason.starts_with(prefix))
+            });
+            return !ids.is_empty()
+                && (self.analysis_incomplete.is_empty()
+                    || self.tool == Tool::Aeneas && required && inventory_only)
+                && self.processing_input == self.input
+                && !self.targets.values().any(|t| {
+                    t.visibility != Visibility::Auxiliary && (t.removed || t.implementation_changed)
+                })
+                && ids.iter().all(|id| {
+                    self.targets.get(id).is_some_and(|t| {
+                        !t.removed && t.ready() && (!required || self.verified(id))
+                    })
+                });
+        }
+        self.inventory_complete(required)
     }
     pub fn reconcile(&mut self, fresh: Vec<Target>, incomplete: Vec<String>, input: String) {
         let seen: BTreeSet<_> = fresh.iter().map(|t| t.id.clone()).collect();

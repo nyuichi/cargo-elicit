@@ -429,10 +429,7 @@ pub fn task_input(s: &State, task: &Task) -> String {
     } else {
         s.input_files
             .iter()
-            .filter(|(path, _)| {
-                path.ends_with("Lemmas.lean")
-                    || task.kind != TaskKind::ProveLemma && path.ends_with("Proofs.lean")
-            })
+            .filter(|(path, _)| path.ends_with(".lean"))
             .collect()
     };
     fingerprint::hash(

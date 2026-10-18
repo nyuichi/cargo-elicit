@@ -1,8 +1,11 @@
 pub mod aeneas;
 pub mod agent;
 pub mod analysis;
+pub mod autonomous;
 pub mod cli;
+pub mod collection;
 pub mod fingerprint;
+pub mod lean_modules;
 pub mod model;
 pub mod plan;
 pub mod process;

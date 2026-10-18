@@ -1,0 +1,94 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 0,
+  "complete": true,
+  "functions_methods_impls": {
+    "specified": 5,
+    "total": 19,
+    "verified": 5
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "inventory_complete": false,
+  "proof_plan": {
+    "evidence": {},
+    "inspected": {},
+    "last_checkpoint": "58db0a91ed37bbfd4a080b7cb8fd969d6a87f2e7d7a44ad6fc50cbcbac2a7c63",
+    "steps": []
+  },
+  "required": true,
+  "revision": 4,
+  "run": {
+    "active": null,
+    "attempts": {},
+    "cached_input_tokens": 0,
+    "elapsed_ms": 0,
+    "input_tokens": 0,
+    "last_result": "",
+    "output_tokens": 0,
+    "thread": null,
+    "usage_by_thread": {}
+  },
+  "saved_artifacts": {
+    "lean_source_modules": 12,
+    "note": "Saved source is not proof evidence; only current full-contract results count.",
+    "staged_review": "none"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/target",
+    "workspace_root": "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case"
+  },
+  "selected_goals_verified": true,
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

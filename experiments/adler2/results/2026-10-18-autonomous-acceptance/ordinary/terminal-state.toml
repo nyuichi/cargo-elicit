@@ -1,0 +1,849 @@
+schema_version = 1
+revision = 4
+tool = "aeneas"
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+processing_input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+processed_contracts = [
+    "adler2::adler32_slice::Function",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+context_input = "b06dc0d43cc6248995008a3dfbc48658fa8723716cce9edda27cf758172db0dd"
+analysis_incomplete = [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]",
+]
+
+[scope]
+package = "adler2"
+manifest_path = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/Cargo.toml"
+workspace_root = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case"
+target_directory = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/target"
+features = []
+resolved_features = [
+    "default",
+    "std",
+]
+all_features = false
+no_default_features = false
+target = "x86_64-unknown-linux-gnu"
+local_roots = ["/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case"]
+
+[input_files]
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/.cargo_vcs_info.json" = "08071a308400282ad18ca2de0df6d1f2dc270475f69aa483740ce311af3f63e0"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/AGENTS.md" = "db942b0a2728ced7e5856924e07932293aeb39e7a21c6ab73baf405d46dd7bf8"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/BENCHMARK_COMPLETE.json" = "17aae2faf5e02e5c26820c0465c458d4af82619e81db5fd8d948be6a18f7d36c"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/BENCHMARK_TASK.md" = "63e6e1ad5df43e100528ed47210532c1c6e97c60c51d998b00ee28763ad3e0db"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/CHANGELOG.md" = "04fa29ec6eb6b05b706247ecac2cbc7075792dbfcea0bf52715782cf42132e94"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/Cargo.lock" = "6c12e08499900e3c56b99cb7c2aac79202ea6417305c906a1ff93684200c5398"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/Cargo.toml" = "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/Cargo.toml.orig" = "077df9094ac86443a4d05305f74782bd237c1f15fa39640463e4c62e9e4a310a"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/LICENSE-0BSD" = "861399f8c21c042b110517e76dc6b63a2b334276c8cf17412fc3c8908ca8dc17"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/LICENSE-APACHE" = "8ada45cd9f843acf64e4722ae262c622a2b3b3007c7310ef36ac1061a30f6adb"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/LICENSE-MIT" = "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/PROGRESS.md" = "c4344c8ff99af077a8362881c69b386dff9a5be6e89dfede7c7ac16d75716b80"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/README.md" = "cd955d5d6a49161e6f7a04df4a5963581b66ed43fd5096b2dedca8e295efe4f9"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/RELEASE_PROCESS.md" = "a86cd10fc70f167f8d00e9e4ce0c6b4ebdfa1865058390dffd1e0ad4d3e68d9d"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/benches/bench.rs" = "d67bef1c7f36ed300a8fbcf9d50b9dfdead1fd340bf87a4d47d99a0c1c042c04"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/APIs.lean" = "a9c400b76b82f50d930472451655317a87dd13b5a8e1b3af3bf19df426baff19"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Algebra.lean" = "eceddb39518f621acbf6492794b3dcba590a6fcb5efd61ba617dd097789d9a66"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Chunks.lean" = "f260555ab2fa6c2546f3792c912872647cccf7b514b6a64026b6fa4adc7e4d9d"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Core.lean" = "5152d06d9664a0354bc11bf2f1807853e637edb056722234cbd9c554be97bc1e"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Loops.lean" = "7ce366d9e41c40cfc567f0b8302558133b17ea4fbd33535101de6624037a9407"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Micro.lean" = "85c93f85624fec64df8e706e0c8ef635c4557bd723c0235b0cd5f7252706ab4d"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Outer.lean" = "61474256d4e0322682ee833af54d4228d298d11a5fdfd362d8774a75efaf3d30"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Proofs.lean" = "62858c93e998ed8d20359385df4f93415708448fe9762048f16fe3610a3b7fe3"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/SeedProofs.lean" = "58ed1c7a7880f50f69137509b1a4acee6b62b46dbd820d1e32b672e0ec81d9b4"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Spec.lean" = "5b6a2c8c9227eabc04f43dc3823fa7755134c1f0e5210ebc8fabb4d2d811bd17"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Specs.lean" = "64b969f24370933c8ac1397ba552a7c0b565db11d7f22194da26963556ecffa3"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/Tail.lean" = "a08387ea3af76a11c1f0d1d31399c982894d30248a2048fb9c775108bb7b7530"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/elicit-proofs/aeneas/contracts.toml" = "e0f35a44041da737e97e8ef07d3229c443c4457494a493f0ff78e636eeaff56a"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs" = "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs" = "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+"/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/verification-inventory.json" = "4daa9625f0bed591a2449ef0aab6471cf3700df6df53349d1be89a8c276a41f6"
+"@binary" = "43047cc3f50b54b4984e463d307f483b8c8a53c05b25e9d3cd825a95884aa87d"
+"@env:AENEAS_HOME" = "58a9bdc7a8a8d08de5c2e796aa1215d0846d23ee25adf146e2c81246e853ddf2"
+"@env:ELAN_HOME" = "c45d160bea2b21e8713e8530fb651155d82fae75afe9f988dd970016b08f0cc5"
+"@installed_tcb" = "e2b6f9618563b6472ed6fc5579365f8636897bee7eac3f38b71d6d4b4448eeb2"
+"@rustc_version" = "8d024f010cb129e859e7cd10c88d4dd52656fa49294e77ca0309e7ed72c452b4"
+"@scope" = "b0e98c38b81063eae5f256f4db5c4ba2552036a3b2a4af6a61ab97ed82740500"
+"@verifier_version" = "8ad7219c62718827594880dc37f074b007783e816719c19975ce47ec14b61794"
+
+[goal]
+kind = "selected_apis"
+apis = [
+    "adler2::adler32_slice::Function",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+
+[proof_plan]
+last_checkpoint = "58db0a91ed37bbfd4a080b7cb8fd969d6a87f2e7d7a44ad6fc50cbcbac2a7c63"
+steps = []
+
+[proof_plan.evidence]
+
+[proof_plan.inspected]
+
+[targets."adler2::Adler32::Struct"]
+id = "adler2::Adler32::Struct"
+name = "Adler32"
+kind = "struct"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 87
+column = 11
+aliases = []
+spec_hash = "a15ebb62434f0c349e6da77d1e67f46a5a9db5acba253831dbc6523ea81e8d00"
+model_base_hash = "4545e9a2319801574ec7fb63b33cb8cb45aaecef671753509d2be89ce9351f20"
+model_bindings = ["@source"]
+body_hash = "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b"
+original_body = "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b"
+source_hash = "58b0f9283ab6b7be92fc750b5829eb6089081a552d3e472604943a7beeac01c2"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = []
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::Adler32::Struct".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::Adler32::Struct".dependencies]
+
+[targets."adler2::adler32::Function"]
+id = "adler2::adler32::Function"
+name = "adler32"
+kind = "function"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 206
+column = 7
+aliases = []
+spec_hash = "6e55a74fa05fc26b67c3292a8ee723a7e641ecc06e4158d46fe900a28659e1ed"
+model_base_hash = "04a348822946cfa9a83022e742edffae379f75268d2296ae66ce4e1f66327c15"
+body_hash = "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982"
+original_body = "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982"
+source_hash = "0024fcf38cca85f0b0d1a295b1d20585d5bd21005525df02fcf4c71afc253b3c"
+specified = false
+stale = []
+calls = [
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::adler32::Function".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::adler32::Function".dependencies]
+
+[targets."adler2::adler32_slice::Function"]
+id = "adler2::adler32_slice::Function"
+name = "adler32_slice"
+kind = "function"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 170
+column = 7
+aliases = []
+spec_hash = "4c500525bff2fc25891fbe91c7e4a19da5509cd00c6139c1bb831fb69b921757"
+approved_spec_hash = "4c500525bff2fc25891fbe91c7e4a19da5509cd00c6139c1bb831fb69b921757"
+model_base_hash = "4678881de7a80fe3e7ed686e0dc8be3fa45b8ba1c1d34ba6ca55046f51761d41"
+body_hash = "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555"
+original_body = "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555"
+source_hash = "97d4504776e2772c6da9e92efd39b035f87ced72c2f6b1c51267fa8786f28c5f"
+specified = true
+stale = []
+calls = [
+    "adler2::impl[ff6e69000b04949b]::checksum::Method",
+    "adler2::impl[ff6e69000b04949b]::new::Method",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::adler32_slice::Function".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::adler32_slice::Function".dependencies]
+
+[targets."adler2::algo::U32X4::Struct"]
+id = "adler2::algo::U32X4::Struct"
+name = "U32X4"
+kind = "struct"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 112
+column = 7
+aliases = []
+spec_hash = "3765ec8429fbd0c5a150e21d762ea704d7ec8540cc563c7439b37e1dfe4b5676"
+model_base_hash = "831f24ca5937d30263723eb4342d56596d57c1ffc7f4d3474e9623d35b0bbf17"
+model_bindings = ["@source"]
+body_hash = "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf"
+original_body = "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf"
+source_hash = "d35cb9265b34caa4947340633fa9980a02e097c51ffb32730ec706445971d5fb"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = []
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::U32X4::Struct".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::U32X4::Struct".dependencies]
+
+[targets."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+id = "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+name = "from"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 116
+column = 7
+aliases = ["U32X4::from"]
+spec_hash = "dd2a7c2f4ba21313125da24951b84622407fc71a888639465fc64d1051ebc86c"
+model_base_hash = "2ef6cfe60ab81a6d848e6998639541d62d6096f7f9e8db9f5c6c074b02b3cb45"
+body_hash = "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea"
+original_body = "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea"
+source_hash = "4fb1338e13355312d8a5ba10ccd12839d66100e152cd3f2e6b28d69e5f2358df"
+specified = false
+stale = []
+calls = ["adler2::algo::U32X4::Struct"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[16f54fa5277eca59]::from::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[16f54fa5277eca59]::from::Method".dependencies]
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::TraitImpl"]
+id = "adler2::algo::impl[334e2f0b7170a532]::TraitImpl"
+name = "impl[334e2f0b7170a532]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 137
+column = 0
+aliases = []
+spec_hash = "6dd8e11ca1d377f1773c922ed7a080549374d6b98f7f1772a3c22ad8ae6da512"
+model_base_hash = "ae5e3c15fb05e3a97b16f0be45fa2a4380cf5de85b6ca77e9ae3723a71c5e811"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "f639ac78d3dfda9f7b13291c795f9fdc0518fb5d0f68618baa0cf3775cea04ae"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::TraitImpl".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+id = "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+name = "rem_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 139
+column = 7
+aliases = ["U32X4::rem_assign"]
+spec_hash = "a7f78f8ef5f917791adc8e7654c835eeb3430e28ad94210683f18bd23120eaf3"
+model_base_hash = "769a6fd610a1d705361515ede5000ec20498ba9739ce1598661012b2994a38e0"
+body_hash = "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b"
+original_body = "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b"
+source_hash = "66db39952f9f71f02df8e55372adaafe962cfab79ef72d5093873b017a71cbd8"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[6142b20c00108117]::TraitImpl"]
+id = "adler2::algo::impl[6142b20c00108117]::TraitImpl"
+name = "impl[6142b20c00108117]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 147
+column = 0
+aliases = []
+spec_hash = "4888a1eae20ac220580353a6df6dfd406b31ff59a648b65525e9348b28275a0b"
+model_base_hash = "e13cfd422449790438b220015b71ed2c3bcffad197302bd9ec7c9cc892fa5a29"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "b2eeee3e5d2da95501ada435b5deb639911e17793bddcb7ac15432cdc5bb46c2"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[6142b20c00108117]::TraitImpl".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[6142b20c00108117]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+id = "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+name = "mul_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 149
+column = 7
+aliases = ["U32X4::mul_assign"]
+spec_hash = "49705d321cd6a673bae36ae0fd81e222942b9e5e56fceb6e01df2442a117a41d"
+model_base_hash = "1c296abe2f82e287ef92f3b53cb8f858dcf4394d436eccc81c619ae2a04a6b4e"
+body_hash = "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154"
+original_body = "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154"
+source_hash = "e8e926372320ab99a0b7769523ebf530467a0cce58d99ef4a556ba1dc29345f0"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[6142b20c00108117]::mul_assign::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[6142b20c00108117]::mul_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::TraitImpl"]
+id = "adler2::algo::impl[a6c2352d886692d1]::TraitImpl"
+name = "impl[a6c2352d886692d1]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 126
+column = 0
+aliases = []
+spec_hash = "fd81ef01db25002b7db29be7fbfe53575096bad659546bc45768650f02e40bb8"
+model_base_hash = "da93794253f4fd76f42dfa3bd4b7801dcc6cd638d778bf3e3fa2362a4d6e1b0a"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "b967d2cd18f50044f492de85c8b56fe1fe158369080a8ad734ceddb0de347d0a"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::TraitImpl".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::TraitImpl".dependencies]
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+id = "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+name = "add_assign"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 128
+column = 7
+aliases = ["U32X4::add_assign"]
+spec_hash = "3c78769019527f04bdde075fa944fbe27bd2d7dc7ebfe0367baef24b7240d25c"
+model_base_hash = "9e2f1f7fa62a9788826ca6a6eb049dcc121e8452b954a5b1cb1895ebe25f0539"
+body_hash = "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0"
+original_body = "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0"
+source_hash = "b97cc042f57de2ad09112f844e27619c0efc689108b4dbc9e75b348812aa8f65"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method".dependencies]
+
+[targets."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+id = "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+name = "compute"
+kind = "method"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/algo.rs"
+line = 5
+column = 18
+aliases = ["Adler32::compute"]
+spec_hash = "ecbe0ef598c119788df192019463e3632d66e127cb684231628b682c68ace96e"
+model_base_hash = "11e64859f4a4de0da2046bdc977b4025e278daa67799a15affde66bf677e57ee"
+body_hash = "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7"
+original_body = "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7"
+source_hash = "606f4c14f15bae2bfe2f969661aa94e0a5a5407ae42814400964a6c9d4fe9391"
+specified = false
+stale = []
+calls = [
+    "adler2::algo::U32X4::Struct",
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+]
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::algo::impl[ff6e69000b04949b]::compute::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::algo::impl[ff6e69000b04949b]::compute::Method".dependencies]
+
+[targets."adler2::impl[6f07fcfab3542315]::TraitImpl"]
+id = "adler2::impl[6f07fcfab3542315]::TraitImpl"
+name = "impl[6f07fcfab3542315]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 147
+column = 0
+aliases = []
+spec_hash = "dcd7071e554d57b83f3f2a9326e2809839bc4c5032462a9a954f987307d41c3c"
+model_base_hash = "88790936b3dc505ce05656980c29cadb4d1e04209af00ef7a925fcc7886ba4b4"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "44fff493a12db58fbe145c83b0ac6bf2d2469e3ee2205b012aca95c476ecb538"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[6f07fcfab3542315]::TraitImpl".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[6f07fcfab3542315]::TraitImpl".dependencies]
+
+[targets."adler2::impl[6f07fcfab3542315]::default::Method"]
+id = "adler2::impl[6f07fcfab3542315]::default::Method"
+name = "default"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 149
+column = 7
+aliases = ["Adler32::default"]
+spec_hash = "67c9987a1283fe0c1a73a2614ef273aea0ea0610d868f7297ef6859d84480405"
+model_base_hash = "83b4323ac720bcef37d59e3c780c2e3a7dd3f5562e23b42a3c1bd99dd46ad7dd"
+body_hash = "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de"
+original_body = "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de"
+source_hash = "400cc3fbd43f61f54249cf655e813cad1afe405c5579f115d2475d84284bbc3e"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[6f07fcfab3542315]::default::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[6f07fcfab3542315]::default::Method".dependencies]
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::TraitImpl"]
+id = "adler2::impl[c15b331ca2ffd1e4]::TraitImpl"
+name = "impl[c15b331ca2ffd1e4]"
+kind = "trait_impl"
+visibility = "internal"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 154
+column = 0
+aliases = []
+spec_hash = "93fe2c6016254d79e9b271d0a6954192c42d480304e090e9cabfde9d91bb002d"
+model_base_hash = "61a6d248d14c1098198fcf637b164865cceb15f3ee7ebf4a1701ac636c602ee6"
+body_hash = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+original_body = "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+source_hash = "a2fe3639f2d37af3db4cceb10328cc43b72d1330910b83c83dbe074f36011f65"
+specified = false
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::TraitImpl".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::TraitImpl".dependencies]
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::finish::Method"]
+id = "adler2::impl[c15b331ca2ffd1e4]::finish::Method"
+name = "finish"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 156
+column = 7
+aliases = ["Adler32::finish"]
+spec_hash = "bb69362f43b52ce552f76e1086e9be7d464115d3bca9e490d39dd7326e79b610"
+model_base_hash = "27686e03bddb80afe948452c161254df75893d627b6538ecd666e95dc9476419"
+body_hash = "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f"
+original_body = "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f"
+source_hash = "1505a87e2f073c6988c54eb4df9ad54d253f2346c37ca26fe21755b67f63c8db"
+specified = false
+stale = []
+calls = ["adler2::impl[ff6e69000b04949b]::checksum::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::finish::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::finish::Method".dependencies]
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::write::Method"]
+id = "adler2::impl[c15b331ca2ffd1e4]::write::Method"
+name = "write"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 160
+column = 7
+aliases = ["Adler32::write"]
+spec_hash = "4e645bdac5f59f84cba53ce03574324187cb008c0e6dd41bfdda781994eb895c"
+model_base_hash = "0c84ea97c193a09ad45bf5ff34d320acdff3100b7a7fe01901e6ce0ae41b6ba8"
+body_hash = "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9"
+original_body = "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9"
+source_hash = "27a4bf64e91abdf2c3baa4582bb5805612b644b7578df5a188ed67a9b5694ecf"
+specified = false
+stale = []
+calls = ["adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = []
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::write::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[c15b331ca2ffd1e4]::write::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+id = "adler2::impl[ff6e69000b04949b]::checksum::Method"
+name = "checksum"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 134
+column = 11
+aliases = ["Adler32::checksum"]
+spec_hash = "69851fa81bfbc8e67d395f4def54e569bb2b2159f8af5b3f4f9e5a58f38234a2"
+approved_spec_hash = "69851fa81bfbc8e67d395f4def54e569bb2b2159f8af5b3f4f9e5a58f38234a2"
+model_base_hash = "8671d4321b3809e597ce8a4ea27eff4781256405857a3d080664599b6b8d9480"
+body_hash = "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d"
+original_body = "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d"
+source_hash = "9b63a8ddf10b9bc46cd81b8c1f64807166e8889bb8ea02f88e1012a843af9563"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::checksum::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[ff6e69000b04949b]::checksum::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+id = "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+name = "from_checksum"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 125
+column = 17
+aliases = ["Adler32::from_checksum"]
+spec_hash = "c28d5adf96c72d2d85d05efb96a5298b0c8a5d962a5772b59313bb686c957403"
+approved_spec_hash = "c28d5adf96c72d2d85d05efb96a5298b0c8a5d962a5772b59313bb686c957403"
+model_base_hash = "275997402f4c8ecb6610d618bcc28eed8ecfab7d5a8a2ca12b7d35c3539839df"
+body_hash = "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a"
+original_body = "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a"
+source_hash = "9b482623374061248426ababc357fcb2462d89278a7a8658efb415d3e808bc19"
+specified = true
+stale = []
+calls = []
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::from_checksum::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[ff6e69000b04949b]::from_checksum::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::new::Method"]
+id = "adler2::impl[ff6e69000b04949b]::new::Method"
+name = "new"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 95
+column = 11
+aliases = ["Adler32::new"]
+spec_hash = "e93204fc4a6d8264dab0aeeee9f5b64737fa667f4d861e424c43e20170d487b5"
+approved_spec_hash = "e93204fc4a6d8264dab0aeeee9f5b64737fa667f4d861e424c43e20170d487b5"
+model_base_hash = "eb630d02446a79cd41d38645545d2f8c87447eea824847b343d6ebb6d3302241"
+body_hash = "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2"
+original_body = "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2"
+source_hash = "49ea3906b29d132d531be9932d6f18e45c6d5142908277cc78d56d45b68c6094"
+specified = true
+stale = []
+calls = ["adler2::impl[6f07fcfab3542315]::default::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::new::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[ff6e69000b04949b]::new::Method".dependencies]
+
+[targets."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+id = "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+name = "write_slice"
+kind = "method"
+visibility = "public"
+file = "/workspace/elicit-comparison/autonomous-acceptance-2026-10-18/ordinary/case/src/lib.rs"
+line = 142
+column = 11
+aliases = ["Adler32::write_slice"]
+spec_hash = "79fd12e45a3c4acd574c866db802dfd99c9f3f48ee5957744ab6126c2da4b8d4"
+approved_spec_hash = "79fd12e45a3c4acd574c866db802dfd99c9f3f48ee5957744ab6126c2da4b8d4"
+model_base_hash = "eb488c075492e334b0d40af2d7954f84d840bde4a7d532bfc1cd4bf0c7ef4c79"
+body_hash = "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a"
+original_body = "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a"
+source_hash = "252e2ca113cca57fd2be28243932d08843c232df559340ca3132d8f75075e0b6"
+specified = true
+stale = []
+calls = ["adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+unresolved_calls = []
+required_units = ["contract"]
+notes = ["Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"]
+removed = false
+implementation_changed = false
+closed_primitive = false
+trusted = false
+
+[targets."adler2::impl[ff6e69000b04949b]::write_slice::Method".model_inputs]
+"@source" = "00281b0e11cb3ade83fb6c7154ca08b904f3915ff4edfd55d188cb0fc50f4e71"
+
+[targets."adler2::impl[ff6e69000b04949b]::write_slice::Method".dependencies]
+
+[[results]]
+id = "1-adler2::adler32_slice::Function-0"
+target = "adler2::adler32_slice::Function"
+units = ["contract"]
+obligations = ["ElicitContracts.c_8484fdd92cfcd3e7"]
+scope = "full_contract"
+assumptions = []
+restrictions = []
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = [
+    "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+    "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models",
+]
+reusable = true
+outcome = "success"
+summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+elapsed_ms = 68485
+
+[[results]]
+id = "1-adler2::impl[ff6e69000b04949b]::checksum::Method-0"
+target = "adler2::impl[ff6e69000b04949b]::checksum::Method"
+units = ["contract"]
+obligations = ["ElicitContracts.c_0a059b8c0885cf07"]
+scope = "full_contract"
+assumptions = []
+restrictions = []
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = [
+    "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+    "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models",
+]
+reusable = true
+outcome = "success"
+summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+elapsed_ms = 68485
+
+[[results]]
+id = "1-adler2::impl[ff6e69000b04949b]::from_checksum::Method-0"
+target = "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+units = ["contract"]
+obligations = ["ElicitContracts.c_9a31b7b9cb8492b0"]
+scope = "full_contract"
+assumptions = []
+restrictions = []
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = [
+    "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+    "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models",
+]
+reusable = true
+outcome = "success"
+summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+elapsed_ms = 68485
+
+[[results]]
+id = "1-adler2::impl[ff6e69000b04949b]::new::Method-0"
+target = "adler2::impl[ff6e69000b04949b]::new::Method"
+units = ["contract"]
+obligations = ["ElicitContracts.c_8055bec449b87b3d"]
+scope = "full_contract"
+assumptions = []
+restrictions = []
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = [
+    "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+    "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models",
+]
+reusable = true
+outcome = "success"
+summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+elapsed_ms = 68485
+
+[[results]]
+id = "1-adler2::impl[ff6e69000b04949b]::write_slice::Method-0"
+target = "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+units = ["contract"]
+obligations = ["ElicitContracts.c_98f3436459f22f5d"]
+scope = "full_contract"
+assumptions = []
+restrictions = []
+input = "3025a1d26a70041e92153e7def512775c8bc57861539b9c477ffabdef8f9c829"
+tool = "aeneas"
+tool_version = "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)"
+trusted_base = [
+    "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+    "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models",
+]
+reusable = true
+outcome = "success"
+summary = "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+elapsed_ms = 68485
+
+[run]
+last_result = ""
+input_tokens = 0
+cached_input_tokens = 0
+output_tokens = 0
+elapsed_ms = 0
+
+[run.usage_by_thread]
+
+[run.attempts]

@@ -22,6 +22,9 @@ if name=='charon':
    'is_local':True,'is_extern':False,'has_errors':False,'opacity':'Transparent',
    'span':{'Untagged':{'data':{'file_id':0,'beg':{'line':1,'col':0},'end':{'line':3,'col':1}}}}},
    'body':{'Structured':{}}}]}})
+ if 'pub fn other' in source:
+  import copy
+  other=copy.deepcopy(data['translated']['fun_decls'][0]);other['item_meta']['name'][1]['Ident'][0]='other';other['item_meta']['span']['Untagged']['data']['beg']['line']=2;data['translated']['fun_decls'].append(other)
  case=os.environ.get('MOCK_AENEAS')
  if case=='opaque':data['translated']['fun_decls'][0]['item_meta']['opacity']='Opaque'
  if case=='missing':data['translated']['fun_decls']=[]
@@ -35,6 +38,8 @@ if name=='aeneas':
   print('aeneas e62dd83d133d9043e7d3628096838b7430f36565');sys.exit(0)
  out=pathlib.Path(args[args.index('-dest')+1])
  (out/'Fixture.lean').write_text("namespace ElicitGenerated\n/-- [fixture::identity]:\n Source: 'src/lib.rs', lines 1:0-3:1\n-/\ndef identity (x : U32) : Result U32 := .ok x\nend ElicitGenerated\n")
+ if 'pub fn other' in pathlib.Path('src/lib.rs').read_text():
+  with (out/'Fixture.lean').open('a') as f:f.write("namespace ElicitGenerated\n/-- [fixture::other]:\n Source: 'src/lib.rs', lines 2:0-3:1\n-/\ndef other (x : U32) : Result U32 := .ok x\nend ElicitGenerated\n")
  sys.exit(0)
 assert name=='lake' and args[:2]==['env','lean']
 if '--version' in args:print('Lean (version 4.35.0)');sys.exit(0)

@@ -1,0 +1,170 @@
+{
+  "ordinary_reference_seconds": 1704.225159,
+  "interpretation": "Measured gross saved-artifact processing cost, conservatively appended to B for conditional arithmetic; not measured new authoring or net causal overhead.",
+  "layouts": {
+    "ordinary": {
+      "total_seconds": 99.74712318300226,
+      "total_minutes": 1.6624520530500377,
+      "conditional_B_plus_gross_H_minutes": 30.06620470305004,
+      "fraction_of_B": 0.05852931031808706,
+      "under_10_percent_gross_budget": true,
+      "under_20_percent_gross_budget": true,
+      "selected_apis_complete": true,
+      "inventory_complete": false,
+      "verification_stage_seconds": 67.409,
+      "commands": [
+        {
+          "args": [
+            "init",
+            "--tool",
+            "aeneas",
+            "--api",
+            "new",
+            "--api",
+            "checksum",
+            "--api",
+            "from_checksum",
+            "--api",
+            "write_slice",
+            "--api",
+            "adler32_slice"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 12.729149557999335,
+          "log": "command-0.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.974052091998601,
+          "log": "command-1.log"
+        },
+        {
+          "args": [
+            "agent",
+            "stage",
+            "--all",
+            "--note",
+            "Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 3.7607472319978115,
+          "log": "command-2.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.8752032260017586,
+          "log": "command-3.log"
+        },
+        {
+          "args": [
+            "collect",
+            "--seconds",
+            "600"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 77.5462862960012,
+          "log": "command-4.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.8548561390016403,
+          "log": "command-5.log"
+        }
+      ]
+    },
+    "product": {
+      "total_seconds": 216.29815654599952,
+      "total_minutes": 3.6049692757666585,
+      "conditional_B_plus_gross_H_minutes": 32.00872192576666,
+      "fraction_of_B": 0.12691876739627425,
+      "under_10_percent_gross_budget": false,
+      "under_20_percent_gross_budget": true,
+      "selected_apis_complete": true,
+      "inventory_complete": false,
+      "verification_stage_seconds": 170.839,
+      "commands": [
+        {
+          "args": [
+            "init",
+            "--tool",
+            "aeneas",
+            "--api",
+            "new",
+            "--api",
+            "checksum",
+            "--api",
+            "from_checksum",
+            "--api",
+            "write_slice",
+            "--api",
+            "adler32_slice"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 25.501040224000462,
+          "log": "command-0.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.941797431998566,
+          "log": "command-1.log"
+        },
+        {
+          "args": [
+            "agent",
+            "stage",
+            "--all",
+            "--note",
+            "Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 3.6291689169993333,
+          "log": "command-2.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.8564384480014269,
+          "log": "command-3.log"
+        },
+        {
+          "args": [
+            "collect",
+            "--seconds",
+            "600"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 181.4337673500013,
+          "log": "command-4.log"
+        },
+        {
+          "args": [
+            "status",
+            "--json"
+          ],
+          "exit": 0,
+          "elapsed_seconds": 1.93040852500053,
+          "log": "command-5.log"
+        }
+      ]
+    }
+  }
+}

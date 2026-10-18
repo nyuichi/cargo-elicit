@@ -14,6 +14,11 @@ for line in sys.stdin:
   task=json.loads(p['input'][0]['text']);send({'id':id,'result':{'turn':{'id':turn,'status':'inProgress'}}})
   pathlib.Path('.elicit/runtime/mock-started').write_text('started')
   case=os.getenv('MOCK_CASE','submit')
+  pathlib.Path('.elicit/runtime/last-task.json').write_text(json.dumps(task))
+  if case=='stage':
+   assert task['task']=='author' and 'proof_plan' not in task
+   assert task['turn_seconds']>1
+   subprocess.run([os.environ['ELICIT_BIN'],'agent','stage','--all','--note','Reviewed all original arbitrary-input contracts'],check=True,stdout=subprocess.DEVNULL)
   if case.startswith('deadline_'):
    name='Lemmas.lean' if case=='deadline_lemma' else 'Proofs.lean'
    pathlib.Path('elicit-proofs/aeneas',name).write_text(pathlib.Path('.elicit/cache/deadline-edit.txt').read_text())

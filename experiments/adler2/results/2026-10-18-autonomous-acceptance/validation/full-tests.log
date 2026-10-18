@@ -1,0 +1,146 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.87s
+     Running unittests src/lib.rs (target/debug/deps/cargo_elicit-175a08d09303b12d)
+
+running 18 tests
+test aeneas::tests::axiom_audit_excludes_admitted_and_project_proofs ... ok
+test aeneas::tests::malformed_or_unsupported_model_metadata_falls_back_conservatively ... ok
+test fingerprint::environment_regressions::order_and_overridden_paths_do_not_change_effective_inputs ... ok
+test fingerprint::report_dependencies::namespaced_optional_dependencies_are_not_mistaken_for_inactive_inputs ... ok
+test aeneas::tests::batch_audits_require_complete_unique_strict_rows_and_allowed_axioms ... ok
+test fingerprint::tests::installed_digest_cache_detects_same_size_edits_with_restored_mtime ... ok
+test lean_modules::tests::graph_orders_nested_imports_and_rejects_cycles_missing_sources_and_reserved_names ... ok
+test lean_modules::tests::models_track_imported_sources_but_not_independent_proof_edits ... ok
+test verifier::tests::body_closure_rejects_implicit_custom_types_and_cfg ... ok
+test verifier::tests::contracts_cannot_hide_external_calls_or_variables ... ok
+test verifier::tests::creusot_trusted_and_absent_target_are_not_proof ... ok
+test verifier::tests::interrupted_inspection_is_not_a_source_change ... ok
+test verifier::tests::bounded_and_generic_success_stays_partial ... ok
+test verifier::tests::unknown_or_stuck_why3_tree_is_not_complete ... ok
+test verifier::tests::failed_property_is_not_hidden_by_summary_success ... ok
+test verifier::tests::native_kani_schema_maps_original_contract ... ok
+test verifier::tests::restricted_harness_or_stub_is_not_full_api ... ok
+test verifier::tests::zero_checks_and_unexecuted_are_never_proof ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/main.rs (target/debug/deps/cargo_elicit-5497aaef1e0f2db5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/cli.rs (target/debug/deps/cli-5080ccc934cabd8b)
+
+running 29 tests
+test aliases_cfg_traits_and_impl_identities ... ok
+test autonomous_interruption_before_edits_resumes_without_retry ... ok
+test both_modes_and_partial_evidence ... ok
+test completed_notification_without_work_is_not_success ... ok
+test docs_do_not_turn_public_api_into_proof_helper ... ok
+test build_scripts_and_file_input_macros_keep_report_invalidation ... ok
+test autonomous_goal_set_stages_once_and_collects_without_individual_submissions ... ok
+test formal_verifier_environment_failure_exits_two ... ok
+test interrupted_checker_is_retained_as_interrupted_without_fingerprint_errors ... ok
+test issue_does_not_create_a_recheck_loop ... ok
+test interruption_resume_and_run_lock_both_verifiers ... ok
+test aeneas_requires_matching_kernel_proof_and_standard_axioms has been running for over 60 seconds
+test operational_reports_do_not_change_simple_crate_inputs ... ok
+test lean_file_reading_and_rust_path_attributes_keep_report_invalidation ... ok
+test revision_conflict_preserves_state ... ok
+test prepared_proofs_are_checked_before_unrelated_worker_tasks ... ok
+test runtime_edits_remain_blocked_and_sources_preserved ... ok
+test selected_api_goal_and_revision_checked_plan_are_persisted_without_forging_proof ... ok
+test saved_sources_require_explicit_current_semantic_review ... ok
+test simple_aeneas_cargo_selector_and_overridden_lean_path_are_not_source_changes ... ok
+test local_lemma_import_tracks_content_and_dynamic_inputs_conservatively ... ok
+test syntax_failure_does_not_mark_specified ... ok
+test staged_unmapped_contract_without_proofs_is_never_approved ... ok
+test unchanged_status_reuses_persisted_semantic_analysis ... ok
+test verifier_switch_rejected_without_erasing_ledger ... ok
+test successful_kernel_refresh_does_not_skip_required_specification_review ... ok
+test workspace_requires_explicit_single_package ... ok
+test worker_failure_and_unattended_approval_stop ... ok
+test unsupported_aeneas_trait_contract_does_not_poison_method_submission ... ok
+test aeneas_requires_matching_kernel_proof_and_standard_axioms ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 427.03s
+
+     Running tests/ledger.rs (target/debug/deps/ledger-d97cf7028e30378a)
+
+running 43 tests
+test assumptions_and_restrictions_are_not_infrastructure ... ok
+test additional_diagnostics_and_regressions_are_not_forward_progress ... ok
+test approval_recovery_does_not_accept_changed_contract_or_erase_runtime_flags ... ok
+test approved_specification_recovers_after_transient_metadata_fallback ... ok
+test cannot_shrink_denominator_by_reclassifying ... ok
+test cumulative_usage_is_idempotent_across_resume_and_independent_threads ... ok
+test checked_lemma_is_progress_but_never_api_completion_and_edits_invalidate_it ... ok
+test cycles_cannot_discharge_each_other ... ok
+test callee_first_and_scc_order ... ok
+test deleted_definitions_retain_history ... ok
+test dependency_recovery_requires_exact_approved_identity ... ok
+test delegated_child_credits_new_caller_lemmas_but_not_siblings_or_old_associations ... ok
+test direct_dependency_propagation_stops_at_unchanged_spec ... ok
+test equal_rank_components_use_id_order ... ok
+test every_required_unit_needed ... ok
+test failed_prerequisite_returns_to_bounded_replanning ... ok
+test finalization_reserve_is_bounded_and_only_reduces_proof_authoring ... ok
+test fallback_model_stamps_continue_tracking_changes_after_a_bound_name_disappears ... ok
+test finite_attempts_survive_changing_helpers ... ok
+test full_coverage_only ... ok
+test atomic_ledger_revision_and_lock_conflicts ... ok
+test issue_blocks_until_semantic_context_changes ... ok
+test legacy_stale_state_does_not_invent_an_approval ... ok
+test notes_do_not_invalidate_proof ... ok
+test plan_edits_cannot_reuse_a_different_lemma_and_selectors_reject_ambiguity ... ok
+test planner_attempts_goal_before_helpers_and_returns_to_caller ... ok
+test plan_retry_keys_ignore_checker_cache_paths_and_explanatory_text ... ok
+test iteration_8_selected_child_replays_caller_owned_checked_facts ... ok
+test plans_reject_cycles_unknown_dependencies_and_foreign_goals ... ok
+test recheck_failure_is_not_reopened_by_other_proof_edits ... ok
+test root_dependency_uses_its_own_prerequisites_and_rejects_delegation_cycles ... ok
+test productive_checked_work_preserves_attempt_budget_without_recrediting_aliases ... ok
+test saved_lemma_is_checked_before_reauthoring_and_new_input_reopens_checkpoint ... ok
+test selected_goals_do_not_require_unrelated_apis_but_never_hide_package_inventory ... ok
+test selected_proven_goals_are_distinct_from_incomplete_inventory ... ok
+test types_have_no_independent_verified ... ok
+test type_model_review_survives_extension_but_not_changed_definitions ... ok
+test undeclared_inputs_invalidate_proof_but_not_regenerate_specs ... ok
+test unsupported_traits_remain_visible_without_scheduling_retries ... ok
+test unvisited_roots_do_not_preempt_current_callers_proof_work ... ok
+test verification_not_starved_by_unspecified_targets ... ok
+test worker_body_changes_cannot_complete ... ok
+test state_transaction_waits_for_concurrent_status_reconciliation ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 10 tests
+test aeneas_autonomous_collects_nested_sources_and_rejects_imported_axioms ... ignored, requires pinned Charon/Aeneas and Lean 4.35.0
+test aeneas_batch_audits_isolate_invalid_roots_and_diagnostics ... ignored, requires the pinned real Lean/Aeneas backend
+test aeneas_both_modes_interruption_resume ... ignored, requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer
+test aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt ... ignored, requires pinned Charon/Aeneas and Lean 4.35.0
+test aeneas_methods_structs_slices_and_helpers ... ignored, requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer
+test aeneas_model_dependencies_do_not_turn_documentation_into_specification_changes ... ignored, requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer
+test aeneas_planned_lemma_checkpoints_and_caller_registration ... ignored, requires pinned Charon/Aeneas and Lean 4.35.0
+test aeneas_requested_success_is_not_poisoned_by_independent_missing_root ... ignored, requires pinned Charon/Aeneas and Lean 4.35.0
+test creusot_both_modes_interruption_resume ... ignored, requires Creusot 0.14.x with Why3find/Why3/SMT setup and rust-analyzer
+test kani_both_modes_interruption_resume ... ignored, requires Kani 0.68.x, matching nightly and rust-analyzer
+
+test result: ok. 0 passed; 0 failed; 10 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/process.rs (target/debug/deps/process-45b903f06cc2a83d)
+
+running 1 test
+test timeout_stops_descendants ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+   Doc-tests cargo_elicit
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

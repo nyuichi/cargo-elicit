@@ -113,7 +113,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
         assert_eq!(worker.wait().unwrap().code(), Some(130));
         assert!(state(&root).run.active.is_some());
     }
-    ok(&root, &["run", "--retry"]);
+    ok(&root, &["run", "--workflow", "planned", "--retry"]);
     let s = state(&root);
     assert!(
         s.complete(false),
@@ -131,7 +131,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
     .unwrap();
     if fixture == "aeneas-rich" {
         let mut running = cmd(&root)
-            .args(["run", "--retry"])
+            .args(["run", "--workflow", "planned", "--retry"])
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
@@ -172,7 +172,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
         );
         assert!(observed, "no mid-verification status observation was made");
     } else {
-        ok(&root, &["run", "--retry"]);
+        ok(&root, &["run", "--workflow", "planned", "--retry"]);
     }
     let s = state(&root);
     assert!(
@@ -229,7 +229,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             !extended.verified(id),
             "proof input edits still require a fresh kernel check"
         );
-        ok(&root, &["run"]);
+        ok(&root, &["run", "--workflow", "planned"]);
         assert!(state(&root).complete(true));
         assert_eq!(
             workers,
@@ -260,7 +260,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             "old identity proof accepted for constant-zero model"
         );
         fs::write(&specs, &extended_source).unwrap();
-        ok(&root, &["run", "--retry"]);
+        ok(&root, &["run", "--workflow", "planned", "--retry"]);
         assert!(state(&root).complete(true));
         fs::write(&specs, format!("{extended_source}\nnamespace FixtureModel\ninductive Extra where | first | second\nend FixtureModel\n")).unwrap();
         ok(&root, &["status"]);
@@ -277,7 +277,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             "inductive declaration metadata was approximated"
         );
         fs::write(&specs, extended_source).unwrap();
-        ok(&root, &["run", "--retry"]);
+        ok(&root, &["run", "--workflow", "planned", "--retry"]);
         assert!(state(&root).complete(true));
     }
     if tool == "aeneas" {
@@ -326,7 +326,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
                 ],
             );
         }
-        ok(&root, &["run"]);
+        ok(&root, &["run", "--workflow", "planned"]);
         assert!(state(&root).complete(true));
         assert_eq!(
             workers_before,
@@ -383,7 +383,7 @@ fn exercise_fixture(tool: &str, fixture: &str) {
             );
         }
         fs::write(&proof, original).unwrap();
-        ok(&root, &["run", "--retry"]);
+        ok(&root, &["run", "--workflow", "planned", "--retry"]);
         assert!(state(&root).complete(true));
     }
     fs::remove_dir_all(root.join(".elicit/cache")).unwrap();
@@ -423,7 +423,7 @@ fn aeneas_methods_structs_slices_and_helpers() {
 fn aeneas_model_dependencies_do_not_turn_documentation_into_specification_changes() {
     let root = prepare_fixture("aeneas", "aeneas");
     ok(&root, &["init", "--tool", "aeneas"]);
-    ok(&root, &["run"]);
+    ok(&root, &["run", "--workflow", "planned"]);
     let before = state(&root);
     assert!(before.complete(false));
     let id = "elicit-aeneas-fixture::identity::Function";
@@ -834,6 +834,8 @@ fn aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt() {
             )
             .args([
                 "run",
+                "--workflow",
+                "planned",
                 "--max-tasks",
                 "1",
                 "--max-seconds",
@@ -951,4 +953,99 @@ fn aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt() {
         println!("{case}: passed in {:.2}s", elapsed.as_secs_f64());
         fs::remove_dir_all(root).unwrap();
     }
+}
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
+fn aeneas_autonomous_collects_nested_sources_and_rejects_imported_axioms() {
+    let root = prepare_fixture("aeneas", "aeneas");
+    let proofs = root.join("elicit-proofs/aeneas");
+    fs::create_dir(proofs.join("Support")).unwrap();
+    fs::create_dir(proofs.join("Models")).unwrap();
+    fs::rename(
+        proofs.join("Proofs.lean"),
+        proofs.join("Support/Identity.lean"),
+    )
+    .unwrap();
+    fs::write(proofs.join("Proofs.lean"), "import Support.Identity\n").unwrap();
+    fs::rename(
+        proofs.join("Specs.lean"),
+        proofs.join("Models/Identity.lean"),
+    )
+    .unwrap();
+    fs::write(proofs.join("Specs.lean"), "import Models.Identity\n").unwrap();
+    fs::write(
+        root.join("elicit.toml"),
+        "[agent]\nprovider=\"codex\"\n[verification]\ntool=\"aeneas\"\nrequired=true\n",
+    )
+    .unwrap();
+    ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
+    let output = cmd(&root)
+        .env("MOCK_CASE", "stage")
+        .args(["run", "--task-seconds", "1", "--max-seconds", "180"])
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let id = "elicit-aeneas-fixture::identity::Function";
+    assert!(state(&root).complete(true));
+    assert!(state(&root).proof_plan.steps.is_empty());
+    let hash = state(&root).targets[id].spec_hash.clone();
+    fs::write(proofs.join("Support/Identity.lean"), format!("import ElicitContracts\naxiom projectAssumption : {}\nnamespace Proofs\ntheorem identity_spec : {} := projectAssumption\nend Proofs\n",cargo_elicit::aeneas::contract_name(id),cargo_elicit::aeneas::contract_name(id))).unwrap();
+    ok(&root, &["status"]);
+    assert_eq!(hash, state(&root).targets[id].spec_hash);
+    assert!(!state(&root).verified(id));
+    let out = cmd(&root).args(["collect"]).output().unwrap();
+    assert_eq!(
+        out.status.code(),
+        Some(1),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(
+        !state(&root).verified(id),
+        "an imported project axiom must fail the transitive audit"
+    );
+    let result = state(&root)
+        .results
+        .into_iter()
+        .rev()
+        .find(|r| r.target == id)
+        .unwrap();
+    let diagnostic = result.diagnostic.unwrap();
+    assert_eq!(
+        diagnostic.phase, "audit",
+        "the theorem must reach the axiom audit"
+    );
+    assert!(
+        Path::new(&diagnostic.cache)
+            .join("Support/Identity.olean")
+            .is_file()
+    );
+    ok(
+        &root,
+        &[
+            "agent",
+            "stage",
+            "--all",
+            "--note",
+            "Reviewed identity contract",
+        ],
+    );
+    let model = proofs.join("Models/Identity.lean");
+    fs::write(
+        &model,
+        fs::read_to_string(&model)
+            .unwrap()
+            .replace(":= x", ":= x + 1"),
+    )
+    .unwrap();
+    let out = cmd(&root).args(["collect"]).output().unwrap();
+    assert_eq!(out.status.code(), Some(2));
+    assert!(!state(&root).targets[id].ready());
+    fs::remove_dir_all(root).unwrap();
 }

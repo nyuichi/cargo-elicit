@@ -1,5 +1,7 @@
 # Goal-directed Aeneas verification
 
+This page describes `run --workflow planned`. The Aeneas default is now [autonomous authoring and collection](autonomous-aeneas.md).
+
 Select API roots independently of the Cargo build configuration:
 
 ```sh

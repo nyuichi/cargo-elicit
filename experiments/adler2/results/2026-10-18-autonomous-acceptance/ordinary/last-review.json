@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "context": "b06dc0d43cc6248995008a3dfbc48658fa8723716cce9edda27cf758172db0dd",
+  "targets": {
+    "adler2::adler32_slice::Function": "4c500525bff2fc25891fbe91c7e4a19da5509cd00c6139c1bb831fb69b921757",
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": "69851fa81bfbc8e67d395f4def54e569bb2b2159f8af5b3f4f9e5a58f38234a2",
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "c28d5adf96c72d2d85d05efb96a5298b0c8a5d962a5772b59313bb686c957403",
+    "adler2::impl[ff6e69000b04949b]::new::Method": "e93204fc4a6d8264dab0aeeee9f5b64737fa667f4d861e424c43e20170d487b5",
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method": "79fd12e45a3c4acd574c866db802dfd99c9f3f48ee5957744ab6126c2da4b8d4"
+  },
+  "note": "Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"
+}

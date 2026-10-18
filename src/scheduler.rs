@@ -44,6 +44,9 @@ pub fn authoring_seconds(limits: &Limits, required: bool) -> u64 {
     limits.max_seconds - reserved
 }
 pub fn task_input(s: &State, t: &Task) -> String {
+    if t.kind == TaskKind::Author {
+        return s.input.clone();
+    }
     if t.work.is_some()
         || matches!(
             t.kind,

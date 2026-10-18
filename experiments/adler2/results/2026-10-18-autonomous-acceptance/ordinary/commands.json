@@ -1,0 +1,71 @@
+[
+  {
+    "args": [
+      "init",
+      "--tool",
+      "aeneas",
+      "--api",
+      "new",
+      "--api",
+      "checksum",
+      "--api",
+      "from_checksum",
+      "--api",
+      "write_slice",
+      "--api",
+      "adler32_slice"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 12.729149557999335,
+    "log": "command-0.log"
+  },
+  {
+    "args": [
+      "status",
+      "--json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.974052091998601,
+    "log": "command-1.log"
+  },
+  {
+    "args": [
+      "agent",
+      "stage",
+      "--all",
+      "--note",
+      "Investigator replay: previously reviewed saved arbitrary-input contracts; no new authoring"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 3.7607472319978115,
+    "log": "command-2.log"
+  },
+  {
+    "args": [
+      "status",
+      "--json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.8752032260017586,
+    "log": "command-3.log"
+  },
+  {
+    "args": [
+      "collect",
+      "--seconds",
+      "600"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 77.5462862960012,
+    "log": "command-4.log"
+  },
+  {
+    "args": [
+      "status",
+      "--json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.8548561390016403,
+    "log": "command-5.log"
+  }
+]

@@ -44,10 +44,18 @@ enum Commands {
     },
     /// Resume work, bounded by task/time/attempt limits. Exit: 0 complete, 1 unresolved, 2 environment, 130 interrupted.
     Run {
+        /// Aeneas defaults to autonomous goal-set authoring; planned retains step dispatch.
+        #[arg(long, value_enum)]
+        workflow: Option<crate::autonomous::Workflow>,
         #[arg(long)]
         retry: bool,
         #[command(flatten)]
         limits: Limits,
+    },
+    /// Collect stable staged Aeneas artifacts without starting a model worker.
+    Collect {
+        #[arg(long, default_value_t = 600)]
+        seconds: u64,
     },
     Status {
         #[arg(long)]
@@ -86,6 +94,14 @@ struct ScopeArgs {
 }
 #[derive(Subcommand)]
 enum AgentCommand {
+    /// Stage an explicit semantic review; proofs are collected after the worker stops.
+    Stage {
+        ids: Vec<String>,
+        #[arg(long, conflicts_with = "ids")]
+        all: bool,
+        #[arg(long)]
+        note: String,
+    },
     /// Install a JSON proof plan {"steps": [...]} without accepting proof evidence.
     Plan {
         #[arg(long)]
@@ -315,7 +331,36 @@ fn execute(cli: Cli) -> Result<i32> {
             display(&s, &store.config()?, as_json, true, public)?;
             Ok(0)
         }
-        Commands::Run { retry, limits } => run(&store, &mut engine, retry, &limits),
+        Commands::Run {
+            retry,
+            limits,
+            workflow,
+        } => {
+            let tool = store.config()?.verification.tool;
+            let workflow = workflow.unwrap_or(if tool == Tool::Aeneas {
+                crate::autonomous::Workflow::Autonomous
+            } else {
+                crate::autonomous::Workflow::Planned
+            });
+            if workflow == crate::autonomous::Workflow::Autonomous {
+                crate::autonomous::run(&store, &mut engine, retry, &limits)
+            } else {
+                run(&store, &mut engine, retry, &limits)
+            }
+        }
+        Commands::Collect { seconds } => {
+            if seconds == 0 {
+                bail!("collection seconds must be positive");
+            }
+            let _run = store.lock("run")?;
+            let s = crate::collection::collect(&store, &mut engine, seconds)?;
+            display(&s, &store.config()?, false, false, false)?;
+            Ok(if s.complete(store.config()?.verification.required) {
+                0
+            } else {
+                1
+            })
+        }
         Commands::Agent { command } => agent(&store, &mut engine, command),
         Commands::AcceptImplementation { id, reason } => {
             let _worker = store.lock("worker")?;
@@ -336,7 +381,13 @@ fn execute(cli: Cli) -> Result<i32> {
         Commands::Init { .. } => unreachable!(),
     }
 }
-fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Result<()> {
+pub(crate) fn display(
+    s: &State,
+    c: &Config,
+    as_json: bool,
+    list: bool,
+    public: bool,
+) -> Result<()> {
     let targets:Vec<_>=s.targets.values().filter(|t|!public || t.visibility==Visibility::Public).map(|t|{let mut v=serde_json::to_value(t).unwrap();if t.kind.proof(){v["verified"]=json!(s.verified(&t.id));}v["unsupported"]=json!(s.unsupported(&t.id));v["verification_results"]=json!(s.results.iter().filter(|r|r.target==t.id).map(|r|json!({"result":r,"stale":r.input!=s.input || !s.dependencies_ready(&t.id)})).collect::<Vec<_>>());v}).collect();
     let active: Vec<_> = s
         .targets
@@ -345,8 +396,31 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
         .collect();
     let types: Vec<_> = active.iter().filter(|t| !t.kind.proof()).collect();
     let functions: Vec<_> = active.iter().filter(|t| t.kind.proof()).collect();
-    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"goal":s.goal,"proof_plan":s.proof_plan,"checked_lemmas":s.proof_plan.steps.iter().filter(|p| p.kind==crate::plan::StepKind::Lemma && crate::plan::checked(s,p)).count(),"complete":s.complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"blocked":active.iter().filter(|t| t.blocker.is_some() || s.unsupported(&t.id).is_some()).map(|t| json!({"id":t.id,"reason":s.unsupported(&t.id).map(str::to_string).or_else(||t.blocker.as_ref().map(|b|b.reason.clone()))})).collect::<Vec<_>>(),"analysis_incomplete":s.analysis_incomplete,"run":s.run});
+    let summary = json!({"revision":s.revision,"scope":s.scope,"tool":s.tool,"required":c.verification.required,"goal":s.goal,"proof_plan":s.proof_plan,"checked_lemmas":s.proof_plan.steps.iter().filter(|p| p.kind==crate::plan::StepKind::Lemma && crate::plan::checked(s,p)).count(),"complete":s.complete(c.verification.required),"selected_goals_verified":s.selected_goals_verified(),"inventory_complete":s.inventory_complete(c.verification.required),"types_traits":{"total":types.len(),"specified":types.iter().filter(|t|t.ready()).count()},"functions_methods_impls":{"total":functions.len(),"specified":functions.iter().filter(|t|t.ready()).count(),"verified":functions.iter().filter(|t|s.verified(&t.id)).count()},"blocked":active.iter().filter(|t| t.blocker.is_some() || s.unsupported(&t.id).is_some()).map(|t| json!({"id":t.id,"reason":s.unsupported(&t.id).map(str::to_string).or_else(||t.blocker.as_ref().map(|b|b.reason.clone()))})).collect::<Vec<_>>(),"analysis_incomplete":s.analysis_incomplete,"run":s.run});
+    let store = Store {
+        root: std::path::Path::new(&s.scope.manifest_path)
+            .parent()
+            .unwrap()
+            .to_path_buf(),
+    };
+    let staged = crate::collection::status(&store, s);
+    let modules = crate::lean_modules::Modules::load(&crate::aeneas::proof_root(&s.scope))
+        .map(|p| p.len())
+        .ok();
+    let mut summary = summary;
+    summary["saved_artifacts"] = json!({"lean_source_modules":modules,"staged_review":staged,"note":"Saved source is not proof evidence; only current full-contract results count."});
     if !as_json {
+        println!(
+            "Selected goals verified: {:?}; inventory complete: {}",
+            s.selected_goals_verified(),
+            s.inventory_complete(c.verification.required)
+        );
+        if s.tool == Tool::Aeneas {
+            println!(
+                "Saved Lean modules: {:?}; staged semantic review: {} (saved files alone are not verified)",
+                modules, staged
+            );
+        }
         println!("Goal: {}", serde_json::to_string(&s.goal)?);
         println!(
             "Proof plan: {} steps, {} current checked lemmas",
@@ -421,6 +495,10 @@ fn display(s: &State, c: &Config, as_json: bool, list: bool, public: bool) -> Re
 fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<i32> {
     let s = sync(store, engine)?;
     match command {
+        AgentCommand::Stage { ids, all, note } => {
+            crate::collection::stage(store, &s, &ids, all, &note)?;
+            println!("semantic review staged; no specification or proof accepted yet");
+        }
         AgentCommand::Plan { file, revision } => {
             #[derive(serde::Deserialize)]
             #[serde(deny_unknown_fields)]
@@ -788,7 +866,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 codex = Some(Codex::connect(store, &s, config.verification.required)?);
                 let c = codex.as_ref().unwrap();
                 store.transaction(None, |s| {
-                    s.run.thread = Some(c.thread.clone());
+                    s.run.start_thread(&c.thread);
                     Ok(())
                 })?;
                 s = store.load()?;
@@ -932,9 +1010,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             s.run.last_result = attempt.last_result.clone();
             s.run.elapsed_ms = start.elapsed().as_millis() as u64;
             if let Some(c) = &codex {
-                s.run.input_tokens = c.usage.0;
-                s.run.cached_input_tokens = c.usage.1;
-                s.run.output_tokens = c.usage.2;
+                s.run.record_usage(&c.thread,c.usage);
             }
             Ok(())
         })?;

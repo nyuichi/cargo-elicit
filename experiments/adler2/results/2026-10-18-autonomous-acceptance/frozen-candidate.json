@@ -1,0 +1,31 @@
+{
+  "binary_sha256": "43047cc3f50b54b4984e463d307f483b8c8a53c05b25e9d3cd825a95884aa87d",
+  "profile": "release",
+  "source_sha256": {
+    "src/aeneas.rs": "00ab9099bb0a80d1ae40773ae1c287f7e6776ccf5c3b25c486bcb066ab9c0a76",
+    "src/agent.rs": "d17f17ffb48ce71b4134b38e9f6c128c5e6d2c5d47ea2984ad41f7014727c2bb",
+    "src/analysis.rs": "a99509f631a43d25ef4197d127f85cec7218112e30acb3c809d0cec92a04f1ae",
+    "src/autonomous.rs": "b292e5c648987f2059d77ff3bf176d354b5776638c50d0432733240120cee173",
+    "src/cli.rs": "2801cc598d3403366d8f51916baf2c25e3db20dbef467f7f158f7b03278ce063",
+    "src/collection.rs": "639e07e82f9bc9552e90c4a989b474d1bbb70411e86d072a1ec8ff62d52bbe88",
+    "src/fingerprint.rs": "b3eab423133f615c8c2f3f3d2a7699912baf4c0ed604183b0eb2dc2470200236",
+    "src/lean_modules.rs": "53da875421765a7156edf3d078d621616dbdda49fa114ca961245b4b51839b47",
+    "src/lib.rs": "43cf96f167e2c0206daac10840dc52eb2553772e8d629fdf0234f33a69174824",
+    "src/main.rs": "33b8a1adaa2692f59b044ffb489d430b6efdfb350230760677862b1aff489c25",
+    "src/model.rs": "f47a24c8b121e056e35c87e2aea4978af394b16ecbdc5c19118e7478dd8f286a",
+    "src/plan.rs": "30565ee239e65a0aa78496099110295edd98f8ed864a433111d7713acf71e045",
+    "src/process.rs": "33bb7cf734945a3e5827b95ecc713f058ff74bc331a6891e0157c15a33c0a151",
+    "src/scheduler.rs": "3e83bd1046733ace83e52e74c08d9c6d5bc1ff661c091b294c5df6262e20b309",
+    "src/store.rs": "06c7e76ca2b6730ff1d8017a38d786965d02b6d567304cd1bbd0faa78ed66d03",
+    "src/verifier.rs": "8afd30921ea68790ec46efd7a6700fc6dbec822737deddda78a562fc8fe34201",
+    "Cargo.toml": "1ed1d0415f50d61882c96921d087e983fb91fc2e3034e540483711d60042a7b6",
+    "Cargo.lock": "d6b2a05561ba487f9a9b57bb6762e017a5e6d580d3f0b100aa8e35a07a1b4892",
+    "scripts/replay-autonomous-artifacts.py": "ffe174ce4f75a4b19e6b7b267e5ef39117300f139d5bfb5992905a9e9ab6d243"
+  },
+  "aeneas": "e62dd83d133d9043e7d3628096838b7430f36565",
+  "charon": "de8736f7c995ac54dc490345cef9ea5143c06c62",
+  "lean": "4.35.0",
+  "no_live_llm": true,
+  "project_compiled_objects_reused": false,
+  "installed_toolchain_digest_cache": "warm"
+}
