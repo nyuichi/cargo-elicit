@@ -18,7 +18,7 @@ Relevant code: src/agent.rs instructions and task payload; src/plan.rs next_root
 
 The current adapter copies and builds a fixed Specs/Lemmas/Proofs arrangement. Task input filtering also names Lemmas.lean and Proofs.lean specifically. The product's completed update proof costs approximately 150 seconds to rebuild; adding the decoder to the same module repeats it. Small independent proofs should be able to live in separate tracked local modules, with their import dependencies managed consistently across local development, task inputs and official acceptance.
 
-**Splitting files alone does not reduce current official verification cost.** Each official invocation uses a fresh cache and rebuilds its modules. Two distinct improvements must be reviewed separately:
+**Splitting files alone does not avoid rebuilding unchanged modules during current official verification.** Each official invocation uses a fresh cache and rebuilds its modules; no official speedup from compiled-module reuse is assumed. Source refactoring may independently change Lean elaboration cost. Two distinct improvements must be reviewed separately:
 
 1. Flexible local source modules and a dependency graph, allowing local incremental development and avoiding unnecessarily monolithic proof editing.
 2. Official compiled-module reuse, only when provenance validates the original Rust/generated model, contracts, module source, transitive imports, toolchain/binary/configuration and compiled outputs. The existence of an old .olean is insufficient.

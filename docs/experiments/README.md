@@ -12,6 +12,8 @@ The analysis and correction are preserved in [commit 529441599c628028404f2ea202f
 
 - [Astra improvement review](adler2-improvement-review.md): general design candidates, measured evidence, untested hypotheses and what should remain unchanged. This is advice, not an implemented change.
 
+- [Near-parity feasibility and plan](adler2-parity-plan.md): conditional time budgets, the required controller change and early rejection criteria, reviewed with Astra before implementation.
+
 ## Important facts and corrections
 
 | Record | What it establishes |
