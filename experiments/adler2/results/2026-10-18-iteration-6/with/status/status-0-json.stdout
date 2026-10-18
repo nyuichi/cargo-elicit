@@ -1,0 +1,172 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 1,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 4,
+    "total": 19,
+    "verified": 0
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {
+      "lane_bound": {
+        "cache": "/workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-0f2DnN",
+        "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+        "outcome": "success",
+        "step_hash": "2b813fb845f1470becd24dadf7affcb68d73c6be81f592a79c089ff0303e9555"
+      }
+    },
+    "inspected": {
+      "adler2::adler32_slice::Function": "7a56ea0746818332cab15dce674c5ff8d952c7cd905aa02e1817da5d6f7c28d3"
+    },
+    "last_checkpoint": "cc60aa2615cd00983816bf3b6638d2a652e97a47035e827bb57bdd4850bb4ffd",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_bound",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The two byte-lane loops need an overflow bound for their running weighted sums between reductions.",
+        "statement": "∀ n a b : Nat, n ≤ 5552 → a ≤ 65520 → b ≤ 65520 → b + n * a + 255 * (n * (n + 1) / 2) < 4294967296",
+        "target": null,
+        "theorem": "AdlerProof.lane_bound"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "compute",
+        "kind": "contract",
+        "needs": [
+          "lane_bound"
+        ],
+        "reason": "write_slice unfolds directly to compute; prove all six loops, bounds, indexing, termination and weighted-lane equivalence to the scalar recurrence for arbitrary u16 seeds.",
+        "statement": null,
+        "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "write",
+        "kind": "contract",
+        "needs": [
+          "compute"
+        ],
+        "reason": "The original caller updates its initial state through this method; require exact scalar state after every representable slice, including empty input.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "new",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The caller starts the recurrence at (1,0); unfold the original Default method directly.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "checksum",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The caller returns the packed final scalar state; establish the arithmetic meaning of the shift and bitwise or.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice",
+        "kind": "integrate",
+        "needs": [
+          "new",
+          "write",
+          "checksum"
+        ],
+        "reason": "Return to the original three-call body and combine successful execution with the full scalar recurrence contract.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      }
+    ]
+  },
+  "required": true,
+  "revision": 25,
+  "run": {
+    "active": null,
+    "attempts": {
+      "Integrate:adler2::adler32_slice::Function": {
+        "failed": false,
+        "last_input": "c78df9cbb75fe6dc695e5c01bc0ea5e32313764406eeb5d1d5cec6a763a289f0",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 3995904,
+    "elapsed_ms": 510040,
+    "input_tokens": 4076677,
+    "last_result": "unresolved; same task/input suppressed",
+    "output_tokens": 15571,
+    "thread": "01a14c72-4d5f-7932-bd57-5e0e6b58024b"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round6-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round6-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round6-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round6-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

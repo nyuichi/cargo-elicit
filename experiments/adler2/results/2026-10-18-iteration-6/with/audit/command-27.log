@@ -1,0 +1,6 @@
+@AdlerProof.chunks_remainder_spec : ∀ {α : Type} (it : Aeneas.Std.core.slice.iter.ChunksExact α),
+  it.getRemainder ⦃ r => r = it.remainder ⦄
+theorem IndependentLemma_5 : ∀ {α : Type} (it : Aeneas.Std.core.slice.iter.ChunksExact α),
+  it.getRemainder ⦃ r => r = it.remainder ⦄ :=
+fun {α} => AdlerProof.chunks_remainder_spec
+'IndependentLemma_5' depends on axioms: [propext, Classical.choice, Quot.sound]

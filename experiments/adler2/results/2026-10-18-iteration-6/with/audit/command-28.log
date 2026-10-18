@@ -1,0 +1,46 @@
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_8.lean:5:25: warning: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_8.lean:6:6: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_8.lean:7:6: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.inner_step_spec : ∀ (chunk remainder : Aeneas.Std.Slice Aeneas.Std.U8)
+  (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8)) (a b : ElicitGenerated.algo.U32X4),
+  4 ≤ chunk.length →
+    (∀ (i : Fin 4), AdlerSpec.lane a i + ↑(↑chunk)[↑i]! ≤ Aeneas.Std.U32.max) →
+      (∀ (i : Fin 4), AdlerSpec.lane b i + (AdlerSpec.lane a i + ↑(↑chunk)[↑i]!) ≤ Aeneas.Std.U32.max) →
+        ElicitGenerated.algo.Adler32.compute_loop0_loop0.body { chunks := chunk :: chunks, remainder := remainder } a
+            b ⦃
+          r =>
+          ∃ av bv,
+            r = Aeneas.Std.ControlFlow.cont ({ chunks := chunks, remainder := remainder }, av, bv) ∧
+              ∀ (i : Fin 4),
+                AdlerSpec.lane av i = AdlerSpec.lane a i + ↑(↑chunk)[↑i]! ∧
+                  AdlerSpec.lane bv i = AdlerSpec.lane b i + (AdlerSpec.lane a i + ↑(↑chunk)[↑i]!) ⦄
+theorem IndependentLemma_8 : ∀ (chunk remainder : Aeneas.Std.Slice Aeneas.Std.U8)
+  (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8)) (a b : ElicitGenerated.algo.U32X4),
+  4 ≤ chunk.length →
+    (∀ (i : Fin 4), AdlerSpec.lane a i + ↑(↑chunk)[↑i]! ≤ Aeneas.Std.U32.max) →
+      (∀ (i : Fin 4), AdlerSpec.lane b i + (AdlerSpec.lane a i + ↑(↑chunk)[↑i]!) ≤ Aeneas.Std.U32.max) →
+        ElicitGenerated.algo.Adler32.compute_loop0_loop0.body { chunks := chunk :: chunks, remainder := remainder } a
+            b ⦃
+          r =>
+          ∃ av bv,
+            r = Aeneas.Std.ControlFlow.cont ({ chunks := chunks, remainder := remainder }, av, bv) ∧
+              ∀ (i : Fin 4),
+                AdlerSpec.lane av i = AdlerSpec.lane a i + ↑(↑chunk)[↑i]! ∧
+                  AdlerSpec.lane bv i = AdlerSpec.lane b i + (AdlerSpec.lane a i + ↑(↑chunk)[↑i]!) ⦄ :=
+AdlerProof.inner_step_spec
+'IndependentLemma_8' depends on axioms: [propext, Classical.choice, Quot.sound]

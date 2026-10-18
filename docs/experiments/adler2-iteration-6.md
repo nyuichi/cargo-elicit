@@ -1,6 +1,6 @@
 # Adler-32 development iteration 6
 
-Status: implementation validation passed; this iteration's authoring trial has not started.
+Status: trial and independent audit completed; Astra recommends a bounded follow-up.
 
 This is a product-only development follow-up to the [fresh goal-planning comparison](adler2-goal-planning.md). That comparison's ordinary arm remains the independently audited reference: five selected APIs, including original optimized loops, in 1,704.23 seconds. It is not a newly paired control for this iteration and must not be used to claim a new speed ratio.
 
@@ -15,3 +15,17 @@ Discuss continuation with Astra after the audit. Continue if concrete, reproduci
 ## Implementation validation
 
 Formatting, Clippy and Rust 1.86 passed. The regular suite passed 77 tests, and an additional CLI regression passed for a successful kernel refresh that still needs specification review (78 regular cases total). Real Lean/Aeneas batch testing accepted normal and implicitly specialized proofs while rejecting missing, malformed, type-mismatched, unsafe, admitted, project-axiom and colliding roots. Real native tests passed for metadata-fallback recovery and genuine referenced-model changes, and for the richer methods/structs/slices/helper/cache-deletion/resume fixture. The first batch integration attempt exposed a syntax conflict with Aeneas and was fixed before authoring trials; it was not a benchmark run.
+
+## Measured outcome
+
+The fresh product trial took 1,807.60 seconds including the terminal observation (1,801.07 seconds of work). It completed none of the five selected APIs in the timed ledger. Fifteen lemma checkpoints were historically accepted, but none remained current at termination. The final input change at 1,773.18 seconds changed only `PROGRESS.md` and `verification-inventory.json`: the supported `import Lemmas` had incorrectly activated conservative whole-source fingerprinting. This is operational-report invalidation, not a final proof edit.
+
+Independent fresh extraction and audit took 49.47 seconds. Generated model bytes match, original Rust and manifest bytes are unchanged, and all six proof modules compile. All fifteen exact planned lemma propositions pass with standard axioms only. They include original inner-step, inner-loop and remainder-loop results, with internally justified bounds, and aliases of these results. They are not fifteen distinct loop proofs. Two mapped vector helper contracts pass. An existing constructor proof, `new_body`, also satisfies the exact emitted constructor contract in a separate unscored assignment audit; the manifest names a missing `new_correct`, so this is one saved selected-API artifact, zero mapped selected API successes, and zero timed successes. The decoder has no final mapped contract. Full compute, outer-loop composition and all-five completion remain absent.
+
+Unlike the preceding product trial, real compute authoring started: its task was dispatched at 553.49 seconds and its worker began at 577.25 seconds. Three compute tasks produced checkpoints; none were classified as no progress. The initial caller task consumed approximately 476 seconds of worker time. A vector helper task began late and was cut off. Batch audit subprocesses fell from 130/243 seconds in the preceding trial to 20/41.58 seconds; cumulative processing stages fell from approximately 656 to 381 seconds. These overlapping stage totals explain mechanisms, not a new end-to-end speed ratio. Usage was 17,095,730 input tokens, including 16,877,440 cached input tokens, and 63,560 output tokens.
+
+## Continuation decision
+
+Astra recommends continuing because two directly observed defects remain: local `Lemmas` imports incorrectly cause report invalidation, and completed batch negative verdicts are discarded, causing identical input to pass through the full checker up to three times. The next change will preserve tracked local module composition and actual completed negative verdicts without accepting changed proofs or inferring outcomes from build failures. Productive checkpoint tasks also exhaust the lifetime three-attempt cap; a deterministic regression should establish the independent scheduling defect before changing its accounting. The late helper dispatch is not attributed solely to this cap, since real prerequisites were also pending.
+
+[Evidence and hashes](../../experiments/adler2/results/2026-10-18-iteration-6/README.md) include frozen ledger, observations, actual artifacts, independent audits and validation logs. The retained ordinary reference completed five APIs in 1,704.23 seconds; it is not a fresh paired control for this iteration. No general product speed advantage has been demonstrated.

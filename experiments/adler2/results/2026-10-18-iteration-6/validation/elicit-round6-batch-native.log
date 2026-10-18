@@ -1,0 +1,37 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 1 test
+
+thread 'aeneas_batch_audits_isolate_invalid_roots_and_diagnostics' (1398980) panicked at tests/native.rs:624:5:
+/tmp/.tmpTjZdhv/Batch.lean:27:43: error: unexpected token ':='; expected '}'
+/tmp/.tmpTjZdhv/Batch.lean:42:8: warning: declaration uses `sorry`
+/tmp/.tmpTjZdhv/Batch.lean:44:8: warning: declaration uses `sorry`
+/tmp/.tmpTjZdhv/Batch.lean:45:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:46:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:47:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:48:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:49:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:50:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:51:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:52:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:54:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:55:0: warning: Definition `forged` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+/tmp/.tmpTjZdhv/Batch.lean:56:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+/tmp/.tmpTjZdhv/Batch.lean:58:0: error: elaboration function for `commandElicit_audit___` has not been implemented
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test aeneas_batch_audits_isolate_invalid_roots_and_diagnostics ... FAILED
+
+failures:
+
+failures:
+    aeneas_batch_audits_isolate_invalid_roots_and_diagnostics
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 2.26s
+
+error: test failed, to rerun pass `--test native`

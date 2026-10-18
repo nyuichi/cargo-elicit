@@ -1,0 +1,36 @@
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_11.lean:5:6: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_11.lean:6:6: warning: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_11.lean:7:6: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_11.lean:8:6: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.safe_lanes_bound : ∀ (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8)) (k : ℕ) (a b : Fin 4 → ℕ),
+  k + chunks.length ≤ 5552 →
+    (∀ c ∈ chunks, 4 ≤ c.length) →
+      (∀ (i : Fin 4), a i ≤ 65520 + k * 255) →
+        (∀ (i : Fin 4), b i ≤ 65520 + k * 65520 + 255 * (k * (k + 1) / 2)) → AdlerSpec.safeLanes chunks a b
+theorem IndependentLemma_11 : ∀ (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8)) (k : ℕ) (a b : Fin 4 → ℕ),
+  k + chunks.length ≤ 5552 →
+    (∀ c ∈ chunks, 4 ≤ c.length) →
+      (∀ (i : Fin 4), a i ≤ 65520 + k * 255) →
+        (∀ (i : Fin 4), b i ≤ 65520 + k * 65520 + 255 * (k * (k + 1) / 2)) → AdlerSpec.safeLanes chunks a b :=
+AdlerProof.safe_lanes_bound
+'IndependentLemma_11' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,4 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 1 test

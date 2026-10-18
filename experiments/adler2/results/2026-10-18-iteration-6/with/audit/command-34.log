@@ -1,0 +1,6 @@
+@AdlerProof.chunks_count_bound : ∀ {α : Type} {n : ℕ} (hn : 0 < n) (xs : List α),
+  (Aeneas.Std.List.toChunksExact n hn xs).1.length * n ≤ xs.length
+theorem IndependentLemma_14 : ∀ {α : Type} {n : ℕ} (hn : 0 < n) (xs : List α),
+  (Aeneas.Std.List.toChunksExact n hn xs).1.length * n ≤ xs.length :=
+fun {α} {n} => AdlerProof.chunks_count_bound
+'IndependentLemma_14' depends on axioms: [propext, Classical.choice, Quot.sound]

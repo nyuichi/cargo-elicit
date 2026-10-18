@@ -1,0 +1,30 @@
+schema_version = 1
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun data out => out.val = AdlerSpec.encode (AdlerSpec.run 1 0 data.val)"
+theorem = "AdlerProof.adler32_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun out => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "AdlerProof.new_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes out => (out.a.val, out.b.val) = AdlerSpec.run self.a.val self.b.val bytes.val"
+theorem = "AdlerProof.write_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self out => out.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerProof.checksum_correct"
+
+[contracts."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+ensures = "fun self bytes out => (out.a.val, out.b.val) = AdlerSpec.run self.a.val self.b.val bytes.val"
+theorem = "AdlerProof.compute_correct"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun bytes => 4 ≤ bytes.length"
+ensures = "fun bytes out => ∀ i : Fin 4, AdlerSpec.lane out i = bytes.val[i.val]!.val"
+theorem = "AdlerProof.vector_from_correct"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun self other => ∀ i : Fin 4, AdlerSpec.lane self i + AdlerSpec.lane other i ≤ U32.max"
+ensures = "fun self other out => ∀ i : Fin 4, AdlerSpec.lane out i = AdlerSpec.lane self i + AdlerSpec.lane other i"
+theorem = "AdlerProof.vector_add_correct"

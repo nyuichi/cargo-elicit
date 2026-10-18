@@ -1,0 +1,4 @@
+AdlerProof.vector_add_correct : ElicitContracts.c_20b5198a3591154d
+theorem IndependentAPI_6 : ElicitContracts.c_20b5198a3591154d :=
+AdlerProof.vector_add_correct
+'IndependentAPI_6' depends on axioms: [propext, Classical.choice, Quot.sound]

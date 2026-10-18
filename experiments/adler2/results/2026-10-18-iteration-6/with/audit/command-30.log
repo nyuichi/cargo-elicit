@@ -1,0 +1,4 @@
+AdlerProof.triangular_succ : ∀ (k : ℕ), (k + 1) * (k + 1 + 1) / 2 = k * (k + 1) / 2 + (k + 1)
+theorem IndependentLemma_10 : ∀ (k : ℕ), (k + 1) * (k + 1 + 1) / 2 = k * (k + 1) / 2 + (k + 1) :=
+AdlerProof.triangular_succ
+'IndependentLemma_10' depends on axioms: [propext, Quot.sound]

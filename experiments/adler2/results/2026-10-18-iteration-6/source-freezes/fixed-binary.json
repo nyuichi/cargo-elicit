@@ -1,0 +1,26 @@
+{
+  "source_public_commit": "4f1325597b4adca6e346c904f94fb93abe5a3611",
+  "source_local_commit": "e546143222b0c0b49171b20f35b355da1422df3b",
+  "tree": "53648764668dcd8064972009446406eab4556fab",
+  "installed_binary": "/workspace/toolchain/cargo/bin/cargo-elicit",
+  "binary_sha256": "416853800ba3fd628dc8519097f94d3b0c1069e86df5577f4074e110f3f5797e",
+  "protocol": "docs/experiments/adler2-iteration-6.md",
+  "work_budget_seconds": 1800,
+  "selected_apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "trial_order": [
+    "with"
+  ],
+  "reference": "Round5 ordinary arm; retained independently audited reference, not a new paired control",
+  "validation": {
+    "regular_cases": 78,
+    "native_batch_seconds": 2.12,
+    "native_metadata_checkpoint_seconds": 232.66,
+    "native_rich_seconds": 234.88
+  }
+}

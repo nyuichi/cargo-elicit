@@ -1,0 +1,10 @@
+/workspace/elicit-comparison/round6-product-audit/Lemmas.lean:160:14: warning: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round6-product-audit/Lemmas.lean:161:13: warning: Unused tactic linter: `intros` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

@@ -1,0 +1,6 @@
+AdlerProof.lane_bound : ∀ (n a b : ℕ),
+  n ≤ 5552 → a ≤ 65520 → b ≤ 65520 → b + n * a + 255 * (n * (n + 1) / 2) < 4294967296
+theorem IndependentLemma_0 : ∀ (n a b : ℕ),
+  n ≤ 5552 → a ≤ 65520 → b ≤ 65520 → b + n * a + 255 * (n * (n + 1) / 2) < 4294967296 :=
+AdlerProof.lane_bound
+'IndependentLemma_0' depends on axioms: [propext, Quot.sound]

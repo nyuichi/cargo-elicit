@@ -1,0 +1,189 @@
+{
+  "verified_selected_apis": [],
+  "theorem_roots": [
+    {
+      "theorem": "AdlerProof.lane_bound",
+      "rust_api": "Adler32::compute",
+      "contract": "n<=5552; a,b<=65520 imply b+n*a+255*(n*(n+1)/2)<2^32",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.run_append",
+      "rust_api": null,
+      "contract": "scalar model split law for arbitrary mathematical lists; API concatenation must be representable",
+      "module": "Lemmas.lean",
+      "status": "locally checked model law; no API proof"
+    },
+    {
+      "theorem": "AdlerProof.slice_of_update",
+      "rust_api": "adler32_slice",
+      "contract": "conditional on full write_slice result and universal checksum correctness",
+      "module": "Lemmas.lean",
+      "status": "locally checked conditional integration; no API proof"
+    },
+    {
+      "theorem": "AdlerProof.new_body",
+      "rust_api": "Adler32::new",
+      "contract": "successful return with halves (1,0)",
+      "module": "Proofs.lean",
+      "status": "saved direct body proof; official checking pending"
+    },
+    {
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "rust_api": "adler32_slice",
+      "contract": "every representable byte slice; scalar recurrence from (1,0)",
+      "module": "Proofs.lean",
+      "status": "not proved; full contract accepted as specification"
+    },
+    {
+      "theorem": "AdlerProof.chunks_exact_lengths",
+      "rust_api": "Adler32::compute (standard slice model dependency)",
+      "contract": "every complete model chunk has exactly the requested positive size",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.chunks_remainder_lt",
+      "rust_api": "Adler32::compute (standard slice model dependency)",
+      "contract": "model remainder length is strictly less than the requested positive size",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.chunks_reconstruct",
+      "rust_api": "Adler32::compute (standard slice model dependency)",
+      "contract": "flattened full chunks followed by remainder equal the original input",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.chunks_exact_spec",
+      "rust_api": "Adler32::compute (standard slice model dependency)",
+      "contract": "WP rule for actual standard chunks_exact: exact chunk sizes, remainder bound and reconstruction",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.chunks_remainder_spec",
+      "rust_api": "Adler32::compute (standard slice model dependency)",
+      "contract": "WP rule for actual standard getRemainder: returns the saved remainder",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.compute_correct",
+      "rust_api": "Adler32::compute",
+      "contract": "arbitrary representable initial state and byte slice; exact scalar recurrence including empty normalization",
+      "module": "Proofs.lean",
+      "status": "not proved; full contract accepted as specification"
+    },
+    {
+      "theorem": "AdlerProof.vector_from_correct",
+      "rust_api": "U32X4::from",
+      "contract": "requires at least four bytes; returns original first four byte values in four u32 lanes",
+      "module": "Proofs.lean",
+      "status": "official scheduler kernel check succeeded in verification-JIXMgG"
+    },
+    {
+      "theorem": "AdlerProof.vector_add_correct",
+      "rust_api": "U32X4::add_assign",
+      "contract": "requires each lane sum to fit u32; successful pointwise addition for all four lanes",
+      "module": "Proofs.lean",
+      "status": "official scheduler kernel check succeeded in verification-JIXMgG"
+    },
+    {
+      "theorem": "AdlerProof.inner_step_spec",
+      "rust_api": "Adler32::compute inner loop body",
+      "contract": "requires four-byte chunk and both additions to fit each lane; returns exact next iterator, a and b lane values",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.inner_loop_spec",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "complete original inner loop; explicit prefix-safety precondition; exact raw lane output; termination",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.triangular_succ",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "weighted sum invariant arithmetic recurrence",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.safe_lanes_bound",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "all prefix bounds from at most 5552 updates and explicit worst-case lane seed bounds",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.inner_loop_bounded",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "complete original inner loop for its natural internal block limit with normalized vector seeds",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.remainder_loop_bounded",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "complete original final-chunk lane loop under the same internal bounds",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.chunks_count_bound",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "actual chunks_exact model count times chunk width does not exceed input length",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.inner_iter_rule",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "caller-facing iterator-shaped original inner-loop WP rule",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    },
+    {
+      "theorem": "AdlerProof.remainder_iter_rule",
+      "rust_api": "Adler32::compute translated loop or standard-model dependency",
+      "contract": "caller-facing original final-chunk loop WP rule",
+      "module": "Lemmas.lean",
+      "status": "official scheduler kernel check succeeded; cache /workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-cf39qe"
+    }
+  ],
+  "proof_directory": "elicit-proofs/aeneas",
+  "checker_commands": [
+    "cargo-elicit agent submit TARGET --revision N --note REASON",
+    "cd $AENEAS_HOME/backends/lean; LEAN_PATH=WORKSPACE/.elicit/cache/attempt lake env lean --root=WORKSPACE/.elicit/cache/attempt WORKSPACE/.elicit/cache/attempt/Support.lean",
+    "cd $AENEAS_HOME/backends/lean; LEAN_PATH=WORKSPACE/.elicit/cache/verification-JIXMgG lake env lean --root=WORKSPACE/.elicit/cache/attempt WORKSPACE/.elicit/cache/attempt/NewInnerCheck.lean"
+  ],
+  "remaining_obligations": [
+    "Full arbitrary-input Adler32::compute contract: outer modular invariant, vector reductions, lane-to-scalar reconstruction and final combining/serial loops",
+    "Full selected API contracts for new, checksum, from_checksum, write_slice and adler32_slice; new_body is a direct body theorem without the mapped API theorem",
+    "Codec roundtrips and save/restore/resume equivalence",
+    "API split equivalence with explicit concatenated-slice representability; only the scalar model split law is proved"
+  ],
+  "trusted_boundaries": [
+    "installed Charon and Aeneas",
+    "installed standard models",
+    "Lean kernel; allowed axioms only propext, Classical.choice, Quot.sound"
+  ],
+  "unverified_out_of_scope": [
+    "BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "preserved": [
+    "src/",
+    "Cargo.toml",
+    "Cargo.toml.orig"
+  ],
+  "status": "Partial verification only; selected-API goal incomplete"
+}

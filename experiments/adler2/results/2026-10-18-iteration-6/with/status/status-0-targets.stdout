@@ -1,0 +1,1136 @@
+{
+  "summary": {
+    "analysis_incomplete": [
+      "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+      "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+    ],
+    "blocked": [
+      {
+        "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      }
+    ],
+    "checked_lemmas": 1,
+    "complete": false,
+    "functions_methods_impls": {
+      "specified": 4,
+      "total": 19,
+      "verified": 0
+    },
+    "goal": {
+      "apis": [
+        "adler2::adler32_slice::Function",
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "kind": "selected_apis"
+    },
+    "proof_plan": {
+      "evidence": {
+        "lane_bound": {
+          "cache": "/workspace/elicit-comparison/round6-cases/adler2-with/.elicit/cache/verification-0f2DnN",
+          "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+          "outcome": "success",
+          "step_hash": "2b813fb845f1470becd24dadf7affcb68d73c6be81f592a79c089ff0303e9555"
+        }
+      },
+      "inspected": {
+        "adler2::adler32_slice::Function": "7a56ea0746818332cab15dce674c5ff8d952c7cd905aa02e1817da5d6f7c28d3"
+      },
+      "last_checkpoint": "cc60aa2615cd00983816bf3b6638d2a652e97a47035e827bb57bdd4850bb4ffd",
+      "steps": [
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "lane_bound",
+          "kind": "lemma",
+          "needs": [],
+          "reason": "The two byte-lane loops need an overflow bound for their running weighted sums between reductions.",
+          "statement": "∀ n a b : Nat, n ≤ 5552 → a ≤ 65520 → b ≤ 65520 → b + n * a + 255 * (n * (n + 1) / 2) < 4294967296",
+          "target": null,
+          "theorem": "AdlerProof.lane_bound"
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "compute",
+          "kind": "contract",
+          "needs": [
+            "lane_bound"
+          ],
+          "reason": "write_slice unfolds directly to compute; prove all six loops, bounds, indexing, termination and weighted-lane equivalence to the scalar recurrence for arbitrary u16 seeds.",
+          "statement": null,
+          "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "write",
+          "kind": "contract",
+          "needs": [
+            "compute"
+          ],
+          "reason": "The original caller updates its initial state through this method; require exact scalar state after every representable slice, including empty input.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "new",
+          "kind": "contract",
+          "needs": [],
+          "reason": "The caller starts the recurrence at (1,0); unfold the original Default method directly.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "checksum",
+          "kind": "contract",
+          "needs": [],
+          "reason": "The caller returns the packed final scalar state; establish the arithmetic meaning of the shift and bitwise or.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "slice",
+          "kind": "integrate",
+          "needs": [
+            "new",
+            "write",
+            "checksum"
+          ],
+          "reason": "Return to the original three-call body and combine successful execution with the full scalar recurrence contract.",
+          "statement": null,
+          "target": "adler2::adler32_slice::Function",
+          "theorem": null
+        }
+      ]
+    },
+    "required": true,
+    "revision": 25,
+    "run": {
+      "active": null,
+      "attempts": {
+        "Integrate:adler2::adler32_slice::Function": {
+          "failed": false,
+          "last_input": "c78df9cbb75fe6dc695e5c01bc0ea5e32313764406eeb5d1d5cec6a763a289f0",
+          "last_result": "unresolved; same task/input suppressed",
+          "no_progress": 0,
+          "total": 1
+        }
+      },
+      "cached_input_tokens": 3995904,
+      "elapsed_ms": 510040,
+      "input_tokens": 4076677,
+      "last_result": "unresolved; same task/input suppressed",
+      "output_tokens": 15571,
+      "thread": "01a14c72-4d5f-7932-bd57-5e0e6b58024b"
+    },
+    "scope": {
+      "all_features": false,
+      "features": [],
+      "local_roots": [
+        "/workspace/elicit-comparison/round6-cases/adler2-with"
+      ],
+      "manifest_path": "/workspace/elicit-comparison/round6-cases/adler2-with/Cargo.toml",
+      "no_default_features": false,
+      "package": "adler2",
+      "requested_target": null,
+      "resolved_features": [
+        "default",
+        "std"
+      ],
+      "target": "x86_64-unknown-linux-gnu",
+      "target_directory": "/workspace/elicit-comparison/round6-cases/adler2-with/target",
+      "workspace_root": "/workspace/elicit-comparison/round6-cases/adler2-with"
+    },
+    "tool": "aeneas",
+    "types_traits": {
+      "specified": 0,
+      "total": 2
+    }
+  },
+  "targets": [
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::Adler32::Struct",
+      "implementation_changed": false,
+      "kind": "struct",
+      "line": 87,
+      "model_base_hash": "4545e9a2319801574ec7fb63b33cb8cb45aaecef671753509d2be89ce9351f20",
+      "model_bindings": [
+        "@source"
+      ],
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "Adler32",
+      "notes": [],
+      "original_body": "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b",
+      "removed": false,
+      "required_units": [],
+      "source_hash": "58b0f9283ab6b7be92fc750b5829eb6089081a552d3e472604943a7beeac01c2",
+      "spec_hash": "950bab9ef97253d1095850bd4e26a9c3c8cb4fb3245bbd83c4d388ce42e4770c",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::adler32::Function",
+      "implementation_changed": false,
+      "kind": "function",
+      "line": 206,
+      "model_base_hash": "04a348822946cfa9a83022e742edffae379f75268d2296ae66ce4e1f66327c15",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "adler32",
+      "notes": [],
+      "original_body": "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "0024fcf38cca85f0b0d1a295b1d20585d5bd21005525df02fcf4c71afc253b3c",
+      "spec_hash": "4acd46ff415a40f00dfdb229131535f5227908416ce2037eb66310352c81d78e",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": "5c6ef6434e3e5c102d533431d9af5c467a559f6e679cb43476e9d943c0227c96",
+      "blocker": null,
+      "body_hash": "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::adler32_slice::Function",
+      "implementation_changed": false,
+      "kind": "function",
+      "line": 170,
+      "model_base_hash": "02f2508111c02222227737139f1f58775af33c6881172a6817991e6e1c16513d",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "adler32_slice",
+      "notes": [
+        "Full contract elaborates; request proof diagnostic",
+        "Full contract and original body inspection checkpoint",
+        "Checkpoint: full recurrence contract, concrete loop plan, locally checked lane bound and conditional original-caller integration; kernel checking pending"
+      ],
+      "original_body": "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "97d4504776e2772c6da9e92efd39b035f87ced72c2f6b1c51267fa8786f28c5f",
+      "spec_hash": "5c6ef6434e3e5c102d533431d9af5c467a559f6e679cb43476e9d943c0227c96",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 0,
+            "id": "24-adler2::adler32_slice::Function-0",
+            "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+            "obligations": [],
+            "outcome": "interrupted",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "verification started, not finalized",
+            "target": "adler2::adler32_slice::Function",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::U32X4::Struct",
+      "implementation_changed": false,
+      "kind": "struct",
+      "line": 112,
+      "model_base_hash": "831f24ca5937d30263723eb4342d56596d57c1ffc7f4d3474e9623d35b0bbf17",
+      "model_bindings": [
+        "@source"
+      ],
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "U32X4",
+      "notes": [],
+      "original_body": "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf",
+      "removed": false,
+      "required_units": [],
+      "source_hash": "d35cb9265b34caa4947340633fa9980a02e097c51ffb32730ec706445971d5fb",
+      "spec_hash": "b2273f1f91dfbd5fdceb9855451f53e8cf1a5266d9de382ff47cd7644bb9026b",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::from"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea",
+      "calls": [
+        "adler2::algo::U32X4::Struct"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 116,
+      "model_base_hash": "2ef6cfe60ab81a6d848e6998639541d62d6096f7f9e8db9f5c6c074b02b3cb45",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "from",
+      "notes": [],
+      "original_body": "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "4fb1338e13355312d8a5ba10ccd12839d66100e152cd3f2e6b28d69e5f2358df",
+      "spec_hash": "5a54616a08d55a5b6fc0188a3d2a0676c4ac6b383d294faafc1821aca2ebef1d",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 137,
+      "model_base_hash": "ae5e3c15fb05e3a97b16f0be45fa2a4380cf5de85b6ca77e9ae3723a71c5e811",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "impl[334e2f0b7170a532]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "f639ac78d3dfda9f7b13291c795f9fdc0518fb5d0f68618baa0cf3775cea04ae",
+      "spec_hash": "d58ce99628edfbbe0bad431218497ff7baef40442456ed7d8b7f78a70313f835",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::rem_assign"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 139,
+      "model_base_hash": "769a6fd610a1d705361515ede5000ec20498ba9739ce1598661012b2994a38e0",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "rem_assign",
+      "notes": [],
+      "original_body": "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "66db39952f9f71f02df8e55372adaafe962cfab79ef72d5093873b017a71cbd8",
+      "spec_hash": "4a45017a30bbaf32b3e64981e0962d072ecdf1a4221d35f2dc47f59e8b3477c6",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 147,
+      "model_base_hash": "e13cfd422449790438b220015b71ed2c3bcffad197302bd9ec7c9cc892fa5a29",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "impl[6142b20c00108117]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b2eeee3e5d2da95501ada435b5deb639911e17793bddcb7ac15432cdc5bb46c2",
+      "spec_hash": "a9e5103c7310449564cfe5425a2878be19458097184def944bc2fba11089cc37",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::mul_assign"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 149,
+      "model_base_hash": "1c296abe2f82e287ef92f3b53cb8f858dcf4394d436eccc81c619ae2a04a6b4e",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "mul_assign",
+      "notes": [],
+      "original_body": "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "e8e926372320ab99a0b7769523ebf530467a0cce58d99ef4a556ba1dc29345f0",
+      "spec_hash": "5ae1defba45ba34db97730e1facecaee10cfe03250b5a78a1df72e2ce0dc5e70",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 126,
+      "model_base_hash": "da93794253f4fd76f42dfa3bd4b7801dcc6cd638d778bf3e3fa2362a4d6e1b0a",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "impl[a6c2352d886692d1]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b967d2cd18f50044f492de85c8b56fe1fe158369080a8ad734ceddb0de347d0a",
+      "spec_hash": "a7704b52ce7155d85f05d50e1e973213b19fac6be3905f94cd1258fb93323ba5",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::add_assign"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 128,
+      "model_base_hash": "9e2f1f7fa62a9788826ca6a6eb049dcc121e8452b954a5b1cb1895ebe25f0539",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "add_assign",
+      "notes": [],
+      "original_body": "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b97cc042f57de2ad09112f844e27619c0efc689108b4dbc9e75b348812aa8f65",
+      "spec_hash": "00a4272a5c7c2beee8e9dcf9a683c09595b4d2f0a9a7b631289492239ab5adef",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::compute"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7",
+      "calls": [
+        "adler2::algo::U32X4::Struct",
+        "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+      ],
+      "closed_primitive": false,
+      "column": 18,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 5,
+      "model_base_hash": "11e64859f4a4de0da2046bdc977b4025e278daa67799a15affde66bf677e57ee",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "compute",
+      "notes": [],
+      "original_body": "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "606f4c14f15bae2bfe2f969661aa94e0a5a5407ae42814400964a6c9d4fe9391",
+      "spec_hash": "979590b5bc82c23e83cd9ae63752c1ac47e8ddd44e1f3f7e1326e99184d5f248",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 147,
+      "model_base_hash": "88790936b3dc505ce05656980c29cadb4d1e04209af00ef7a925fcc7886ba4b4",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "impl[6f07fcfab3542315]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "44fff493a12db58fbe145c83b0ac6bf2d2469e3ee2205b012aca95c476ecb538",
+      "spec_hash": "7f119bd65b957d3149231cf2c4c6c8378c72de99efe55e95c68d2cf9cdc874eb",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::default"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[6f07fcfab3542315]::default::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 149,
+      "model_base_hash": "83b4323ac720bcef37d59e3c780c2e3a7dd3f5562e23b42a3c1bd99dd46ad7dd",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "default",
+      "notes": [],
+      "original_body": "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "400cc3fbd43f61f54249cf655e813cad1afe405c5579f115d2475d84284bbc3e",
+      "spec_hash": "9293946a8ed2e12ab3890f02f0858fc689a1afcda8784f03cc355817508f9554",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 154,
+      "model_base_hash": "61a6d248d14c1098198fcf637b164865cceb15f3ee7ebf4a1701ac636c602ee6",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "impl[c15b331ca2ffd1e4]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "a2fe3639f2d37af3db4cceb10328cc43b72d1330910b83c83dbe074f36011f65",
+      "spec_hash": "3cc3c527655665c760a2fff27ea6a71168d76e1b9702448ae68732ca98ea9341",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::finish"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 156,
+      "model_base_hash": "27686e03bddb80afe948452c161254df75893d627b6538ecd666e95dc9476419",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "finish",
+      "notes": [],
+      "original_body": "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "1505a87e2f073c6988c54eb4df9ad54d253f2346c37ca26fe21755b67f63c8db",
+      "spec_hash": "134ebf6323b33e8133ef659682e1d8ced29a8ab299f5fb15f9e7842b67b6ab91",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::write"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::write::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 160,
+      "model_base_hash": "0c84ea97c193a09ad45bf5ff34d320acdff3100b7a7fe01901e6ce0ae41b6ba8",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "write",
+      "notes": [],
+      "original_body": "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "27a4bf64e91abdf2c3baa4582bb5805612b644b7578df5a188ed67a9b5694ecf",
+      "spec_hash": "06309dc49ffdc2ddeb5d13c8da1fb6b212f39d290c393ad492d86e621120da27",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::checksum"
+      ],
+      "approved_spec_hash": "e967706ba97b362b9159c2b08273631cd953be04a3336bddc8d725bdb833279e",
+      "blocker": null,
+      "body_hash": "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 134,
+      "model_base_hash": "82c88df97b0f61963f7f059b69f61c059e50ce1ac1616cd970c86c9f4c665424",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "checksum",
+      "notes": [
+        "Full caller-facing contract checkpoint; no completed API verification claimed"
+      ],
+      "original_body": "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "9b63a8ddf10b9bc46cd81b8c1f64807166e8889bb8ea02f88e1012a843af9563",
+      "spec_hash": "e967706ba97b362b9159c2b08273631cd953be04a3336bddc8d725bdb833279e",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 0,
+            "id": "24-adler2::impl[ff6e69000b04949b]::checksum::Method-0",
+            "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+            "obligations": [],
+            "outcome": "interrupted",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "verification started, not finalized",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::from_checksum"
+      ],
+      "approved_spec_hash": null,
+      "blocker": null,
+      "body_hash": "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 17,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 125,
+      "model_base_hash": "598330ff319678ff8fe256e90f2bda4c003a609111dae39e47ed3caed0df02fb",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "from_checksum",
+      "notes": [],
+      "original_body": "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "9b482623374061248426ababc357fcb2462d89278a7a8658efb415d3e808bc19",
+      "spec_hash": "cb92a4650f7e7c867b67b43d989163292211f76b974ac7795f168f30c3fe1319",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::new"
+      ],
+      "approved_spec_hash": "1454d76e1b63516ac4ce4f5a7f9a8c717ee1a48c6a9d1bd0f4a4efb1036f0b19",
+      "blocker": null,
+      "body_hash": "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2",
+      "calls": [
+        "adler2::impl[6f07fcfab3542315]::default::Method"
+      ],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 95,
+      "model_base_hash": "d8b97b6fd2601317430476e3a403a5d80be3328318612133fa613c4243d3a469",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "new",
+      "notes": [
+        "Full caller-facing contract checkpoint; no completed API verification claimed"
+      ],
+      "original_body": "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "49ea3906b29d132d531be9932d6f18e45c6d5142908277cc78d56d45b68c6094",
+      "spec_hash": "1454d76e1b63516ac4ce4f5a7f9a8c717ee1a48c6a9d1bd0f4a4efb1036f0b19",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 0,
+            "id": "24-adler2::impl[ff6e69000b04949b]::new::Method-0",
+            "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+            "obligations": [],
+            "outcome": "interrupted",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "verification started, not finalized",
+            "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::write_slice"
+      ],
+      "approved_spec_hash": "53d2ec9d34dbcd72b34e9bc353fa8c42473af8ccc344d530a3c2dd5196f54788",
+      "blocker": null,
+      "body_hash": "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a",
+      "calls": [
+        "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+      ],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round6-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 142,
+      "model_base_hash": "739afd6df9271ace2809683b0db6f63167cc8a77f6b448cbf3ef194c0ddb3b46",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "c8100841060d38a527ac43e8bb50040ea7711b9b513726b33e3de809f4bc866b"
+      },
+      "name": "write_slice",
+      "notes": [
+        "Full caller-facing contract checkpoint; no completed API verification claimed"
+      ],
+      "original_body": "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "252e2ca113cca57fd2be28243932d08843c232df559340ca3132d8f75075e0b6",
+      "spec_hash": "53d2ec9d34dbcd72b34e9bc353fa8c42473af8ccc344d530a3c2dd5196f54788",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 0,
+            "id": "24-adler2::impl[ff6e69000b04949b]::write_slice::Method-0",
+            "input": "bd918dc8ec041bc31d9c70f6d9ae3a742aef0b4b0dfedd060dfe6836d56124e3",
+            "obligations": [],
+            "outcome": "interrupted",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "verification started, not finalized",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    }
+  ]
+}

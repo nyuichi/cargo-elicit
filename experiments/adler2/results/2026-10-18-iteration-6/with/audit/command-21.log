@@ -1,0 +1,7 @@
+def ElicitContracts.c_20b5198a3591154d : Prop :=
+∀ (self other : ElicitGenerated.algo.U32X4),
+  (fun self other => ∀ (i : Fin 4), AdlerSpec.lane self i + AdlerSpec.lane other i ≤ Aeneas.Std.U32.max) self other →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign self other = Aeneas.Std.Result.ok result ∧
+        (fun self other out => ∀ (i : Fin 4), AdlerSpec.lane out i = AdlerSpec.lane self i + AdlerSpec.lane other i)
+          self other result

@@ -1,0 +1,18 @@
+/workspace/elicit-comparison/round6-product-audit/IndependentLemma_9.lean:5:25: warning: Variable name `hs` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hs
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.inner_loop_spec : ∀ (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (remainder : Aeneas.Std.Slice Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  AdlerSpec.safeLanes chunks (AdlerSpec.lane a) (AdlerSpec.lane b) →
+    ElicitGenerated.algo.Adler32.compute_loop0_loop0 { chunks := chunks, remainder := remainder } a b ⦃ av bv =>
+      (AdlerSpec.lane av, AdlerSpec.lane bv) = AdlerSpec.rawLanes chunks (AdlerSpec.lane a) (AdlerSpec.lane b) ⦄
+theorem IndependentLemma_9 : ∀ (chunks : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (remainder : Aeneas.Std.Slice Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  AdlerSpec.safeLanes chunks (AdlerSpec.lane a) (AdlerSpec.lane b) →
+    ElicitGenerated.algo.Adler32.compute_loop0_loop0 { chunks := chunks, remainder := remainder } a b ⦃ av bv =>
+      (AdlerSpec.lane av, AdlerSpec.lane bv) = AdlerSpec.rawLanes chunks (AdlerSpec.lane a) (AdlerSpec.lane b) ⦄ :=
+AdlerProof.inner_loop_spec
+'IndependentLemma_9' depends on axioms: [propext, Classical.choice, Quot.sound]
