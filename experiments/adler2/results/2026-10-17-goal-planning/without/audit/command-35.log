@@ -1,0 +1,10 @@
+Verification.lane_bound_step : ∀ (k x a b : ℕ),
+  k < 5552 →
+    x ≤ 255 →
+      a ≤ 65520 + k * 255 →
+        2 * b ≤ 2 * 65520 + 2 * k * 65520 + 255 * k * (k + 1) →
+          a + x ≤ Aeneas.Std.U32.max ∧
+            b + (a + x) ≤ Aeneas.Std.U32.max ∧
+              a + x ≤ 65520 + (k + 1) * 255 ∧
+                2 * (b + (a + x)) ≤ 2 * 65520 + 2 * (k + 1) * 65520 + 255 * (k + 1) * (k + 2)
+'Verification.lane_bound_step' depends on axioms: [propext, Classical.choice, Quot.sound]

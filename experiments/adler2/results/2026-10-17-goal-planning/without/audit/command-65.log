@@ -1,0 +1,1379 @@
+def Verification.scalar : ℕ × ℕ → List Aeneas.Std.U8 → ℕ × ℕ :=
+fun s xs => List.foldl Verification.scalarStep (Verification.normalize s) xs
+def Verification.scalarStep : ℕ × ℕ → Aeneas.Std.U8 → ℕ × ℕ :=
+fun s x =>
+  have a := (s.1 + ↑x) % 65521;
+  (a, (s.2 + a) % 65521)
+def Verification.normalize : ℕ × ℕ → ℕ × ℕ :=
+fun s => (s.1 % 65521, s.2 % 65521)
+theorem Verification.compute_correct : ∀ (self : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec (adler2.algo.Adler32.compute self bytes) fun r =>
+    (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes :=
+fun self bytes =>
+  id
+    (Eq.mpr
+      (id
+        (congrArg
+          (fun _a =>
+            Aeneas.Std.WP.spec
+              (do
+                let a ← Aeneas.Std.lift (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                let b ← Aeneas.Std.lift (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                have a1 : Aeneas.Std.Array (Aeneas.Std.UScalar Aeneas.Std.UScalarTy.U32) 4#usize :=
+                  Aeneas.Std.Array.repeat 4#usize 0#u32
+                have i : Aeneas.Std.Usize := bytes.len
+                have i1 : Aeneas.Std.Usize := bytes.len
+                let i2 ← i1 % 4#usize
+                let i3 ← i - i2
+                let (bytes1, remainder) ← Aeneas.Std.core.slice.Slice.split_at bytes i3
+                let i4 ← _a
+                let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 i4
+                let remainder_chunk ← chunk_iter.getRemainder
+                let (b1, a_vec, b_vec) ← adler2.algo.Adler32.compute_loop0 i4 chunk_iter a b a1 a1
+                let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                have i5 : Aeneas.Std.Usize := remainder_chunk.len
+                let i6 ← Aeneas.Std.lift (Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 i5)
+                let i7 ← i6 * a
+                let b2 ← b1 + i7
+                let a_vec2 ←
+                  adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1 adler2.algo.Adler32.compute.MOD
+                let b_vec2 ←
+                  adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1 adler2.algo.Adler32.compute.MOD
+                let b3 ← b2 % adler2.algo.Adler32.compute.MOD
+                let b_vec3 ← adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                let i9 ← adler2.algo.Adler32.compute.MOD - i8
+                let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                let i11 ← i10 + i9
+                let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                let i13 ← adler2.algo.Adler32.compute.MOD - i12
+                let i14 ← i13 * 2#u32
+                let i15 ← a2.index_usize 2#usize
+                let i16 ← i15 + i14
+                let a3 ← a2.update 2#usize i16
+                let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                let i18 ← adler2.algo.Adler32.compute.MOD - i17
+                let i19 ← i18 * 3#u32
+                let i20 ← a3.index_usize 3#usize
+                let i21 ← i20 + i19
+                let a4 ← a3.update 3#usize i21
+                let s ← Aeneas.Std.lift (Aeneas.Std.Array.to_slice a_vec2)
+                let iter1 ← Aeneas.Std.core.slice.Slice.iter s
+                let a5 ← adler2.algo.Adler32.compute_loop2 iter1 a
+                let s1 ← Aeneas.Std.lift a4.to_slice
+                let iter2 ← Aeneas.Std.core.slice.Slice.iter s1
+                let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                let i22 ← a6 % adler2.algo.Adler32.compute.MOD
+                let i23 ← Aeneas.Std.lift (Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22)
+                let i24 ← b5 % adler2.algo.Adler32.compute.MOD
+                let i25 ← Aeneas.Std.lift (Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24)
+                Aeneas.Std.Result.ok { a := i23, b := i25 })
+              fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes)
+          Verification.chunk_size))
+      (Eq.mpr
+        (id
+          (congrFun'
+            (congrArg Aeneas.Std.WP.spec
+              (Eq.trans
+                (congrArg (Aeneas.Std.bind (Aeneas.Std.Result.ok (Aeneas.Std.core.convert.num.FromU32U16.from self.a)))
+                  (funext fun a =>
+                    Eq.trans
+                      (congrArg
+                        (Aeneas.Std.bind (Aeneas.Std.Result.ok (Aeneas.Std.core.convert.num.FromU32U16.from self.b)))
+                        (funext fun b =>
+                          congrArg (Aeneas.Std.bind (bytes.len % 4#usize))
+                            (funext fun i2 =>
+                              congrArg (Aeneas.Std.bind (bytes.len - i2))
+                                (funext fun i3 =>
+                                  congrArg (Aeneas.Std.bind (Aeneas.Std.core.slice.Slice.split_at bytes i3))
+                                    (congrArg Aeneas.Std.uncurry
+                                      (funext fun bytes1 =>
+                                        funext fun remainder =>
+                                          Eq.trans
+                                            (congrArg (Aeneas.Std.bind (Aeneas.Std.Result.ok 22208#usize))
+                                              (funext fun i4 =>
+                                                congrArg
+                                                  (Aeneas.Std.bind (Aeneas.Std.core.slice.Slice.chunks_exact bytes1 i4))
+                                                  (funext fun chunk_iter =>
+                                                    congrArg (Aeneas.Std.bind chunk_iter.getRemainder)
+                                                      (funext fun remainder_chunk =>
+                                                        congrArg
+                                                          (Aeneas.Std.bind
+                                                            (adler2.algo.Adler32.compute_loop0 i4 chunk_iter a b
+                                                              (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                              (Aeneas.Std.Array.repeat 4#usize 0#u32)))
+                                                          (congrArg Aeneas.Std.uncurry
+                                                            (funext fun b1 =>
+                                                              congrArg Aeneas.Std.uncurry
+                                                                (funext fun a_vec =>
+                                                                  funext fun b_vec =>
+                                                                    congrArg
+                                                                      (Aeneas.Std.bind
+                                                                        (Aeneas.Std.core.slice.Slice.chunks_exact
+                                                                          remainder_chunk 4#usize))
+                                                                      (funext fun iter =>
+                                                                        congrArg
+                                                                          (Aeneas.Std.bind
+                                                                            (adler2.algo.Adler32.compute_loop1 iter
+                                                                              a_vec b_vec))
+                                                                          (congrArg Aeneas.Std.uncurry ⋯)))))))))
+                                            (Aeneas.Std.bind_ok 22208#usize fun i4 => do
+                                              let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 i4
+                                              let remainder_chunk ← chunk_iter.getRemainder
+                                              let (b1, a_vec, b_vec) ←
+                                                adler2.algo.Adler32.compute_loop0 i4 chunk_iter a b
+                                                    (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                    (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                              let iter ←
+                                                Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                              let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                              let i7 ←
+                                                Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len * a
+                                              let b2 ← b1 + i7
+                                              let a_vec2 ←
+                                                adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1
+                                                    65521#u32
+                                              let b_vec2 ←
+                                                adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1
+                                                    65521#u32
+                                              let b3 ← b2 % 65521#u32
+                                              let b_vec3 ←
+                                                adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                                              let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                              let i9 ← 65521#u32 - i8
+                                              let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                              let i11 ← i10 + i9
+                                              let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                              let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                              let i13 ← 65521#u32 - i12
+                                              let i14 ← i13 * 2#u32
+                                              let i15 ← a2.index_usize 2#usize
+                                              let i16 ← i15 + i14
+                                              let a3 ← a2.update 2#usize i16
+                                              let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                              let i18 ← 65521#u32 - i17
+                                              let i19 ← i18 * 3#u32
+                                              let i20 ← a3.index_usize 3#usize
+                                              let i21 ← i20 + i19
+                                              let a4 ← a3.update 3#usize i21
+                                              let iter1 ←
+                                                Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                                              let a5 ← adler2.algo.Adler32.compute_loop2 iter1 a
+                                              let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                              let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                              let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                                              let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                              let i22 ← a6 % 65521#u32
+                                              let i24 ← b5 % 65521#u32
+                                              Aeneas.Std.Result.ok
+                                                  { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                    b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })))))))
+                      (Aeneas.Std.bind_ok (Aeneas.Std.core.convert.num.FromU32U16.from self.b) fun b => do
+                        let i2 ← bytes.len % 4#usize
+                        let i3 ← bytes.len - i2
+                        let (bytes1, remainder) ← Aeneas.Std.core.slice.Slice.split_at bytes i3
+                        let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                        let remainder_chunk ← chunk_iter.getRemainder
+                        let (b1, a_vec, b_vec) ←
+                          adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter a b
+                              (Aeneas.Std.Array.repeat 4#usize 0#u32) (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                        let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                        let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                        let i7 ← Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len * a
+                        let b2 ← b1 + i7
+                        let a_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1 65521#u32
+                        let b_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1 65521#u32
+                        let b3 ← b2 % 65521#u32
+                        let b_vec3 ← adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                        let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                        let i9 ← 65521#u32 - i8
+                        let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                        let i11 ← i10 + i9
+                        let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                        let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                        let i13 ← 65521#u32 - i12
+                        let i14 ← i13 * 2#u32
+                        let i15 ← a2.index_usize 2#usize
+                        let i16 ← i15 + i14
+                        let a3 ← a2.update 2#usize i16
+                        let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                        let i18 ← 65521#u32 - i17
+                        let i19 ← i18 * 3#u32
+                        let i20 ← a3.index_usize 3#usize
+                        let i21 ← i20 + i19
+                        let a4 ← a3.update 3#usize i21
+                        let iter1 ← Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                        let a5 ← adler2.algo.Adler32.compute_loop2 iter1 a
+                        let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                        let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                        let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                        let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                        let i22 ← a6 % 65521#u32
+                        let i24 ← b5 % 65521#u32
+                        Aeneas.Std.Result.ok
+                            { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                              b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })))
+                (Aeneas.Std.bind_ok (Aeneas.Std.core.convert.num.FromU32U16.from self.a) fun a => do
+                  let i2 ← bytes.len % 4#usize
+                  let i3 ← bytes.len - i2
+                  let (bytes1, remainder) ← Aeneas.Std.core.slice.Slice.split_at bytes i3
+                  let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                  let remainder_chunk ← chunk_iter.getRemainder
+                  let (b1, a_vec, b_vec) ←
+                    adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter a
+                        (Aeneas.Std.core.convert.num.FromU32U16.from self.b) (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                        (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                  let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                  let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                  let i7 ← Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len * a
+                  let b2 ← b1 + i7
+                  let a_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1 65521#u32
+                  let b_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1 65521#u32
+                  let b3 ← b2 % 65521#u32
+                  let b_vec3 ← adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                  let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                  let i9 ← 65521#u32 - i8
+                  let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                  let i11 ← i10 + i9
+                  let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                  let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                  let i13 ← 65521#u32 - i12
+                  let i14 ← i13 * 2#u32
+                  let i15 ← a2.index_usize 2#usize
+                  let i16 ← i15 + i14
+                  let a3 ← a2.update 2#usize i16
+                  let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                  let i18 ← 65521#u32 - i17
+                  let i19 ← i18 * 3#u32
+                  let i20 ← a3.index_usize 3#usize
+                  let i21 ← i20 + i19
+                  let a4 ← a3.update 3#usize i21
+                  let iter1 ← Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                  let a5 ← adler2.algo.Adler32.compute_loop2 iter1 a
+                  let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                  let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                  let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                  let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                  let i22 ← a6 % 65521#u32
+                  let i24 ← b5 % 65521#u32
+                  Aeneas.Std.Result.ok
+                      { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                        b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })))
+            fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes))
+        (Aeneas.Std.WP.spec_bind
+          (Aeneas.Std.Usize.rem_spec bytes.len
+            (of_eq_true
+              (Eq.trans
+                (congrFun'
+                  (congrArg Ne
+                    (Aeneas.Std.UScalar.ofNatCore_val_eq
+                      (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.Usize 4 adler2.algo.U32X4._proof_1)))
+                  0)
+                (Eq.trans (Aeneas.ScalarTac.Nat_neq_zero_iff._simp_1 4) (eq_true_of_decide (Eq.refl true))))))
+          ((of_eq_true
+                (iff_self
+                  (∀ (x : Aeneas.Std.UScalar Aeneas.Std.UScalarTy.Usize),
+                    ↑x = ↑bytes.len % ↑4#usize →
+                      Aeneas.Std.WP.spec
+                        (do
+                          let i3 ← bytes.len - x
+                          let (bytes1, remainder) ← Aeneas.Std.core.slice.Slice.split_at bytes i3
+                          let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                          let remainder_chunk ← chunk_iter.getRemainder
+                          let (b1, a_vec, b_vec) ←
+                            adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                (Aeneas.Std.Array.repeat 4#usize 0#u32) (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                          let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                          let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                          let i7 ←
+                            Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len *
+                                Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                          let b2 ← b1 + i7
+                          let a_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1 65521#u32
+                          let b_vec2 ← adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1 65521#u32
+                          let b3 ← b2 % 65521#u32
+                          let b_vec3 ← adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                          let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                          let i9 ← 65521#u32 - i8
+                          let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                          let i11 ← i10 + i9
+                          let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                          let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                          let i13 ← 65521#u32 - i12
+                          let i14 ← i13 * 2#u32
+                          let i15 ← a2.index_usize 2#usize
+                          let i16 ← i15 + i14
+                          let a3 ← a2.update 2#usize i16
+                          let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                          let i18 ← 65521#u32 - i17
+                          let i19 ← i18 * 3#u32
+                          let i20 ← a3.index_usize 3#usize
+                          let i21 ← i20 + i19
+                          let a4 ← a3.update 3#usize i21
+                          let iter1 ← Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                          let a5 ←
+                            adler2.algo.Adler32.compute_loop2 iter1 (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                          let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                          let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                          let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                          let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                          let i22 ← a6 % 65521#u32
+                          let i24 ← b5 % 65521#u32
+                          Aeneas.Std.Result.ok
+                              { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                        fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes))).mpr
+            (id fun x hmod =>
+              Aeneas.Std.WP.spec_bind
+                (Aeneas.Std.Usize.sub_spec
+                  (Eq.mpr
+                    (id (congrArg (LE.le ↑x) (Aeneas.Std.Usize.ofNatCore_val_eq (Aeneas.Std.Slice.len._proof_2 bytes))))
+                    (Verification.compute_correct._proof_1_7 bytes x
+                      (Eq.mp
+                        (congrArg (Eq ↑x)
+                          (congrArg (HMod.hMod ↑bytes.len)
+                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                              (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.Usize 4
+                                adler2.algo.U32X4._proof_1))))
+                        hmod))))
+                ((of_eq_true
+                      (Eq.trans
+                        (congr (congrArg Iff (forall_congr fun x_1 => Verification.compute_correct._simp_1_5))
+                          (forall_congr fun x_1 => Verification.compute_correct._simp_1_5))
+                        (iff_self
+                          (∀ (x_1 : Aeneas.Std.UScalar Aeneas.Std.UScalarTy.Usize),
+                            ↑x_1 = ↑bytes.len - ↑x →
+                              ↑x ≤ ↑bytes.len →
+                                Aeneas.Std.WP.spec
+                                  (do
+                                    let (bytes1, remainder) ← Aeneas.Std.core.slice.Slice.split_at bytes x_1
+                                    let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                                    let remainder_chunk ← chunk_iter.getRemainder
+                                    let (b1, a_vec, b_vec) ←
+                                      adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                    let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                    let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                    let i7 ←
+                                      Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len *
+                                          Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                    let b2 ← b1 + i7
+                                    let a_vec2 ←
+                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1 65521#u32
+                                    let b_vec2 ←
+                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1 65521#u32
+                                    let b3 ← b2 % 65521#u32
+                                    let b_vec3 ←
+                                      adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                                    let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                    let i9 ← 65521#u32 - i8
+                                    let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                    let i11 ← i10 + i9
+                                    let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                    let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                    let i13 ← 65521#u32 - i12
+                                    let i14 ← i13 * 2#u32
+                                    let i15 ← a2.index_usize 2#usize
+                                    let i16 ← i15 + i14
+                                    let a3 ← a2.update 2#usize i16
+                                    let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                    let i18 ← 65521#u32 - i17
+                                    let i19 ← i18 * 3#u32
+                                    let i20 ← a3.index_usize 3#usize
+                                    let i21 ← i20 + i19
+                                    let a4 ← a3.update 3#usize i21
+                                    let iter1 ← Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                                    let a5 ←
+                                      adler2.algo.Adler32.compute_loop2 iter1
+                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                    let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                    let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                    let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                                    let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                    let i22 ← a6 % 65521#u32
+                                    let i24 ← b5 % 65521#u32
+                                    Aeneas.Std.Result.ok
+                                        { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                          b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                                  fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes)))).mpr
+                  (id fun x_1 =>
+                    Eq.mpr (id Verification.compute_correct._simp_1_5) fun hn _ =>
+                      Aeneas.Std.WP.spec_bind
+                        (Aeneas.Std.core.slice.Slice.split_at.spec bytes x_1
+                          (id
+                            (Verification.compute_correct._proof_1_8 bytes x
+                              (Eq.mp
+                                (congrArg (Eq ↑x)
+                                  (congrArg (HMod.hMod ↑bytes.len)
+                                    (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                      (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.Usize 4
+                                        adler2.algo.U32X4._proof_1))))
+                                hmod)
+                              x_1 hn _)))
+                        ((of_eq_true
+                              (Eq.trans
+                                (congr
+                                  (congrArg Iff
+                                    (Eq.trans Verification.compute_correct._simp_1_3
+                                      (forall_congr fun a =>
+                                        forall_congr fun b =>
+                                          Eq.trans
+                                            (implies_congr
+                                              (Eq.refl
+                                                (a.length = ↑x_1 ∧
+                                                  b.length = bytes.length - ↑x_1 ∧
+                                                    ↑a = List.take ↑x_1 ↑bytes ∧ ↑b = List.drop ↑x_1 ↑bytes))
+                                              (congrFun'
+                                                (congrArg Aeneas.Std.WP.spec
+                                                  (Aeneas.Std.uncurry_apply_pair
+                                                    (fun bytes1 remainder => do
+                                                      let chunk_iter ←
+                                                        Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                                                      let remainder_chunk ← chunk_iter.getRemainder
+                                                      let (b1, a_vec, b_vec) ←
+                                                        adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                                            (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                            (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                            (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                            (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                      let iter ←
+                                                        Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                                      let (a_vec1, b_vec1) ←
+                                                        adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                                      let i7 ←
+                                                        Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32
+                                                              remainder_chunk.len *
+                                                            Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                                      let b2 ← b1 + i7
+                                                      let a_vec2 ←
+                                                        adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign
+                                                            a_vec1 65521#u32
+                                                      let b_vec2 ←
+                                                        adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign
+                                                            b_vec1 65521#u32
+                                                      let b3 ← b2 % 65521#u32
+                                                      let b_vec3 ←
+                                                        adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign
+                                                            b_vec2 4#u32
+                                                      let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                                      let i9 ← 65521#u32 - i8
+                                                      let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                                      let i11 ← i10 + i9
+                                                      let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                                      let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                                      let i13 ← 65521#u32 - i12
+                                                      let i14 ← i13 * 2#u32
+                                                      let i15 ← a2.index_usize 2#usize
+                                                      let i16 ← i15 + i14
+                                                      let a3 ← a2.update 2#usize i16
+                                                      let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                                      let i18 ← 65521#u32 - i17
+                                                      let i19 ← i18 * 3#u32
+                                                      let i20 ← a3.index_usize 3#usize
+                                                      let i21 ← i20 + i19
+                                                      let a4 ← a3.update 3#usize i21
+                                                      let iter1 ←
+                                                        Aeneas.Std.core.slice.Slice.iter
+                                                            (Aeneas.Std.Array.to_slice a_vec2)
+                                                      let a5 ←
+                                                        adler2.algo.Adler32.compute_loop2 iter1
+                                                            (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                      let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                                      let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                                      let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                                                      let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                                      let i22 ← a6 % 65521#u32
+                                                      let i24 ← b5 % 65521#u32
+                                                      Aeneas.Std.Result.ok
+                                                          { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                            b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                                                    a b))
+                                                fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes))
+                                            (Eq.trans Verification.compute_correct._simp_1_5
+                                              (implies_congr (Eq.refl (a.length = ↑x_1))
+                                                (Eq.trans Verification.compute_correct._simp_1_5
+                                                  (implies_congr (Eq.refl (b.length = bytes.length - ↑x_1))
+                                                    Verification.compute_correct._simp_1_5)))))))
+                                  (forall_congr fun x =>
+                                    forall_congr fun x_2 =>
+                                      Eq.trans Verification.compute_correct._simp_1_5
+                                        (implies_congr (Eq.refl (x.length = ↑x_1))
+                                          (Eq.trans Verification.compute_correct._simp_1_5
+                                            (implies_congr (Eq.refl (x_2.length = bytes.length - ↑x_1))
+                                              (Eq.trans Verification.compute_correct._simp_1_5
+                                                (implies_congr (Eq.refl (↑x = List.take ↑x_1 ↑bytes))
+                                                  (implies_congr (Eq.refl (↑x_2 = List.drop ↑x_1 ↑bytes))
+                                                    (congrFun'
+                                                      (congrArg Aeneas.Std.WP.spec
+                                                        (Aeneas.Std.uncurry_apply_pair
+                                                          (fun bytes1 remainder => do
+                                                            let chunk_iter ←
+                                                              Aeneas.Std.core.slice.Slice.chunks_exact bytes1
+                                                                  22208#usize
+                                                            let remainder_chunk ← chunk_iter.getRemainder
+                                                            let (b1, a_vec, b_vec) ←
+                                                              adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                                  (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                  (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                            let iter ←
+                                                              Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk
+                                                                  4#usize
+                                                            let (a_vec1, b_vec1) ←
+                                                              adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                                            let i7 ←
+                                                              Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32
+                                                                    remainder_chunk.len *
+                                                                  Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                                            let b2 ← b1 + i7
+                                                            let a_vec2 ←
+                                                              adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign
+                                                                  a_vec1 65521#u32
+                                                            let b_vec2 ←
+                                                              adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign
+                                                                  b_vec1 65521#u32
+                                                            let b3 ← b2 % 65521#u32
+                                                            let b_vec3 ←
+                                                              adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign
+                                                                  b_vec2 4#u32
+                                                            let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                                            let i9 ← 65521#u32 - i8
+                                                            let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                                            let i11 ← i10 + i9
+                                                            let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                                            let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                                            let i13 ← 65521#u32 - i12
+                                                            let i14 ← i13 * 2#u32
+                                                            let i15 ← a2.index_usize 2#usize
+                                                            let i16 ← i15 + i14
+                                                            let a3 ← a2.update 2#usize i16
+                                                            let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                                            let i18 ← 65521#u32 - i17
+                                                            let i19 ← i18 * 3#u32
+                                                            let i20 ← a3.index_usize 3#usize
+                                                            let i21 ← i20 + i19
+                                                            let a4 ← a3.update 3#usize i21
+                                                            let iter1 ←
+                                                              Aeneas.Std.core.slice.Slice.iter
+                                                                  (Aeneas.Std.Array.to_slice a_vec2)
+                                                            let a5 ←
+                                                              adler2.algo.Adler32.compute_loop2 iter1
+                                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                            let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                                            let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                                            let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                                                            let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                                            let i22 ← a6 % 65521#u32
+                                                            let i24 ← b5 % 65521#u32
+                                                            Aeneas.Std.Result.ok
+                                                                {
+                                                                  a :=
+                                                                    Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16
+                                                                      i22,
+                                                                  b :=
+                                                                    Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16
+                                                                      i24 })
+                                                          x x_2))
+                                                      fun r =>
+                                                      (↑r.a, ↑r.b) =
+                                                        Verification.scalar (↑self.a, ↑self.b) ↑bytes)))))))))
+                                (iff_self
+                                  (∀ (a b : Aeneas.Std.Slice Aeneas.Std.U8),
+                                    a.length = ↑x_1 →
+                                      b.length = bytes.length - ↑x_1 →
+                                        ↑a = List.take ↑x_1 ↑bytes →
+                                          ↑b = List.drop ↑x_1 ↑bytes →
+                                            Aeneas.Std.WP.spec
+                                              (do
+                                                let chunk_iter ← Aeneas.Std.core.slice.Slice.chunks_exact a 22208#usize
+                                                let remainder_chunk ← chunk_iter.getRemainder
+                                                let (b1, a_vec, b_vec) ←
+                                                  adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                                      (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                      (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                      (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                      (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                let iter ←
+                                                  Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                                let (a_vec1, b_vec1) ←
+                                                  adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                                let i7 ←
+                                                  Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len *
+                                                      Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                                let b2 ← b1 + i7
+                                                let a_vec2 ←
+                                                  adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1
+                                                      65521#u32
+                                                let b_vec2 ←
+                                                  adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1
+                                                      65521#u32
+                                                let b3 ← b2 % 65521#u32
+                                                let b_vec3 ←
+                                                  adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2
+                                                      4#u32
+                                                let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                                let i9 ← 65521#u32 - i8
+                                                let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                                let i11 ← i10 + i9
+                                                let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                                let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                                let i13 ← 65521#u32 - i12
+                                                let i14 ← i13 * 2#u32
+                                                let i15 ← a2.index_usize 2#usize
+                                                let i16 ← i15 + i14
+                                                let a3 ← a2.update 2#usize i16
+                                                let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                                let i18 ← 65521#u32 - i17
+                                                let i19 ← i18 * 3#u32
+                                                let i20 ← a3.index_usize 3#usize
+                                                let i21 ← i20 + i19
+                                                let a4 ← a3.update 3#usize i21
+                                                let iter1 ←
+                                                  Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                                                let a5 ←
+                                                  adler2.algo.Adler32.compute_loop2 iter1
+                                                      (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                                let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                                let iter3 ← Aeneas.Std.core.slice.Slice.iter b
+                                                let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                                let i22 ← a6 % 65521#u32
+                                                let i24 ← b5 % 65521#u32
+                                                Aeneas.Std.Result.ok
+                                                    { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                      b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                                              fun r =>
+                                              (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes)))).mpr
+                          fun x_2 x_3 =>
+                          Eq.mpr
+                            (id
+                              (Eq.trans Verification.compute_correct._simp_1_5
+                                (implies_congr (Eq.refl (x_2.length = ↑x_1))
+                                  (Eq.trans Verification.compute_correct._simp_1_5
+                                    (implies_congr (Eq.refl (x_3.length = bytes.length - ↑x_1))
+                                      (Eq.trans Verification.compute_correct._simp_1_5
+                                        (implies_congr (Eq.refl (↑x_2 = List.take ↑x_1 ↑bytes))
+                                          (implies_congr (Eq.refl (↑x_3 = List.drop ↑x_1 ↑bytes))
+                                            (congrFun'
+                                              (congrArg Aeneas.Std.WP.spec
+                                                (Aeneas.Std.uncurry_apply_pair
+                                                  (fun bytes1 remainder => do
+                                                    let chunk_iter ←
+                                                      Aeneas.Std.core.slice.Slice.chunks_exact bytes1 22208#usize
+                                                    let remainder_chunk ← chunk_iter.getRemainder
+                                                    let (b1, a_vec, b_vec) ←
+                                                      adler2.algo.Adler32.compute_loop0 22208#usize chunk_iter
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                    let iter ←
+                                                      Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                                    let (a_vec1, b_vec1) ←
+                                                      adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                                    let i7 ←
+                                                      Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32
+                                                            remainder_chunk.len *
+                                                          Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                                    let b2 ← b1 + i7
+                                                    let a_vec2 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1
+                                                          65521#u32
+                                                    let b_vec2 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1
+                                                          65521#u32
+                                                    let b3 ← b2 % 65521#u32
+                                                    let b_vec3 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2
+                                                          4#u32
+                                                    let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                                    let i9 ← 65521#u32 - i8
+                                                    let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                                    let i11 ← i10 + i9
+                                                    let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                                    let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                                    let i13 ← 65521#u32 - i12
+                                                    let i14 ← i13 * 2#u32
+                                                    let i15 ← a2.index_usize 2#usize
+                                                    let i16 ← i15 + i14
+                                                    let a3 ← a2.update 2#usize i16
+                                                    let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                                    let i18 ← 65521#u32 - i17
+                                                    let i19 ← i18 * 3#u32
+                                                    let i20 ← a3.index_usize 3#usize
+                                                    let i21 ← i20 + i19
+                                                    let a4 ← a3.update 3#usize i21
+                                                    let iter1 ←
+                                                      Aeneas.Std.core.slice.Slice.iter
+                                                          (Aeneas.Std.Array.to_slice a_vec2)
+                                                    let a5 ←
+                                                      adler2.algo.Adler32.compute_loop2 iter1
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                    let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                                    let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                                    let iter3 ← Aeneas.Std.core.slice.Slice.iter remainder
+                                                    let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                                    let i22 ← a6 % 65521#u32
+                                                    let i24 ← b5 % 65521#u32
+                                                    Aeneas.Std.Result.ok
+                                                        { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                          b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                                                  x_2 x_3))
+                                              fun r =>
+                                              (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes)))))))))
+                            fun hlen0 hlen1 hval0 hval1 =>
+                            Aeneas.Std.WP.spec_bind
+                              (Verification.chunks_exact_correct x_2 22208#usize
+                                (of_eq_true
+                                  (Eq.trans
+                                    (Eq.trans
+                                      (congrFun'
+                                        (congrArg GT.gt
+                                          (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                            (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.Usize 22208
+                                              (of_decide_eq_true (id (Eq.refl true))))))
+                                        0)
+                                      gt_iff_lt._simp_2)
+                                    (eq_true_of_decide (Eq.refl true)))))
+                              ((of_eq_true
+                                    (Eq.trans
+                                      (congr
+                                        (congrArg Iff
+                                          (forall_congr fun x =>
+                                            Eq.trans Verification.compute_correct._simp_1_5
+                                              (implies_congr (Eq.refl (∀ c ∈ x.chunks, (↑c).length = ↑22208#usize))
+                                                Verification.compute_correct._simp_1_5)))
+                                        (forall_congr fun x =>
+                                          Eq.trans Verification.compute_correct._simp_1_5
+                                            (implies_congr (Eq.refl (∀ c ∈ x.chunks, (↑c).length = ↑22208#usize))
+                                              Verification.compute_correct._simp_1_5)))
+                                      (iff_self
+                                        (∀ (x : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8),
+                                          (∀ c ∈ x.chunks, (↑c).length = ↑22208#usize) →
+                                            (List.map Aeneas.Std.Slice.val x.chunks).flatten ++ ↑x.remainder = ↑x_2 →
+                                              (↑x.remainder).length < ↑22208#usize →
+                                                Aeneas.Std.WP.spec
+                                                  (do
+                                                    let remainder_chunk ← x.getRemainder
+                                                    let (b1, a_vec, b_vec) ←
+                                                      adler2.algo.Adler32.compute_loop0 22208#usize x
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                          (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                    let iter ←
+                                                      Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                                    let (a_vec1, b_vec1) ←
+                                                      adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                                    let i7 ←
+                                                      Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32
+                                                            remainder_chunk.len *
+                                                          Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                                    let b2 ← b1 + i7
+                                                    let a_vec2 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1
+                                                          65521#u32
+                                                    let b_vec2 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1
+                                                          65521#u32
+                                                    let b3 ← b2 % 65521#u32
+                                                    let b_vec3 ←
+                                                      adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2
+                                                          4#u32
+                                                    let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                                    let i9 ← 65521#u32 - i8
+                                                    let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                                    let i11 ← i10 + i9
+                                                    let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                                    let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                                    let i13 ← 65521#u32 - i12
+                                                    let i14 ← i13 * 2#u32
+                                                    let i15 ← a2.index_usize 2#usize
+                                                    let i16 ← i15 + i14
+                                                    let a3 ← a2.update 2#usize i16
+                                                    let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                                    let i18 ← 65521#u32 - i17
+                                                    let i19 ← i18 * 3#u32
+                                                    let i20 ← a3.index_usize 3#usize
+                                                    let i21 ← i20 + i19
+                                                    let a4 ← a3.update 3#usize i21
+                                                    let iter1 ←
+                                                      Aeneas.Std.core.slice.Slice.iter
+                                                          (Aeneas.Std.Array.to_slice a_vec2)
+                                                    let a5 ←
+                                                      adler2.algo.Adler32.compute_loop2 iter1
+                                                          (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                    let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                                    let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                                    let iter3 ← Aeneas.Std.core.slice.Slice.iter x_3
+                                                    let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                                    let i22 ← a6 % 65521#u32
+                                                    let i24 ← b5 % 65521#u32
+                                                    Aeneas.Std.Result.ok
+                                                        { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                          b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 })
+                                                  fun r =>
+                                                  (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes)))).mpr
+                                fun x_4 =>
+                                Eq.mpr
+                                  (id
+                                    (Eq.trans Verification.compute_correct._simp_1_5
+                                      (implies_congr (Eq.refl (∀ c ∈ x_4.chunks, (↑c).length = ↑22208#usize))
+                                        Verification.compute_correct._simp_1_5)))
+                                  fun hchunks hflat hrem =>
+                                  Eq.mpr
+                                    (id
+                                      (congrFun'
+                                        (congrArg Aeneas.Std.WP.spec
+                                          (Aeneas.Std.bind_ok x_4.remainder fun remainder_chunk => do
+                                            let (b1, a_vec, b_vec) ←
+                                              adler2.algo.Adler32.compute_loop0 22208#usize x_4
+                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                                  (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                  (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                            let iter ← Aeneas.Std.core.slice.Slice.chunks_exact remainder_chunk 4#usize
+                                            let (a_vec1, b_vec1) ← adler2.algo.Adler32.compute_loop1 iter a_vec b_vec
+                                            let i7 ←
+                                              Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U32 remainder_chunk.len *
+                                                  Aeneas.Std.core.convert.num.FromU32U16.from self.a
+                                            let b2 ← b1 + i7
+                                            let a_vec2 ←
+                                              adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a_vec1
+                                                  65521#u32
+                                            let b_vec2 ←
+                                              adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign b_vec1
+                                                  65521#u32
+                                            let b3 ← b2 % 65521#u32
+                                            let b_vec3 ←
+                                              adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign b_vec2 4#u32
+                                            let i8 ← Aeneas.Std.Array.index_usize a_vec2 1#usize
+                                            let i9 ← 65521#u32 - i8
+                                            let i10 ← Aeneas.Std.Array.index_usize b_vec3 1#usize
+                                            let i11 ← i10 + i9
+                                            let a2 ← Aeneas.Std.Array.update b_vec3 1#usize i11
+                                            let i12 ← Aeneas.Std.Array.index_usize a_vec2 2#usize
+                                            let i13 ← 65521#u32 - i12
+                                            let i14 ← i13 * 2#u32
+                                            let i15 ← a2.index_usize 2#usize
+                                            let i16 ← i15 + i14
+                                            let a3 ← a2.update 2#usize i16
+                                            let i17 ← Aeneas.Std.Array.index_usize a_vec2 3#usize
+                                            let i18 ← 65521#u32 - i17
+                                            let i19 ← i18 * 3#u32
+                                            let i20 ← a3.index_usize 3#usize
+                                            let i21 ← i20 + i19
+                                            let a4 ← a3.update 3#usize i21
+                                            let iter1 ←
+                                              Aeneas.Std.core.slice.Slice.iter (Aeneas.Std.Array.to_slice a_vec2)
+                                            let a5 ←
+                                              adler2.algo.Adler32.compute_loop2 iter1
+                                                  (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                            let iter2 ← Aeneas.Std.core.slice.Slice.iter a4.to_slice
+                                            let b4 ← adler2.algo.Adler32.compute_loop3 iter2 b3
+                                            let iter3 ← Aeneas.Std.core.slice.Slice.iter x_3
+                                            let (a6, b5) ← adler2.algo.Adler32.compute_loop4 iter3 a5 b4
+                                            let i22 ← a6 % 65521#u32
+                                            let i24 ← b5 % 65521#u32
+                                            Aeneas.Std.Result.ok
+                                                { a := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i22,
+                                                  b := Aeneas.Std.UScalar.cast Aeneas.Std.UScalarTy.U16 i24 }))
+                                        fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes))
+                                    (have hzero :=
+                                      id fun j =>
+                                        have hc :=
+                                          Decidable.byContradiction fun a =>
+                                            Verification.compute_correct._proof_1_10 bytes x x_1 x_2 x_3 x_4 j a;
+                                        Or.casesOn hc
+                                          (fun hc =>
+                                            of_eq_true
+                                              (Eq.trans
+                                                (congr
+                                                  (congrArg And
+                                                    (Eq.trans
+                                                      (congr
+                                                        (congrArg LE.le
+                                                          (Eq.trans
+                                                            (congrArg Aeneas.Std.UScalar.val
+                                                              (GetElem.getElem.congr_simp
+                                                                ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                (Eq.trans
+                                                                  (congrArg Aeneas.Std.Array.val
+                                                                    (Aeneas.Std.Array.from.congr_simp
+                                                                      (List.replicate (↑4#usize) 0#u32)
+                                                                      [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                      (congrFun'
+                                                                        (congrArg List.replicate
+                                                                          (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                            (Aeneas.Std.UScalar.bound_suffices
+                                                                              Aeneas.Std.UScalarTy.Usize 4
+                                                                              (of_decide_eq_true (id (Eq.refl true))))))
+                                                                        0#u32)
+                                                                      (Aeneas.Std.Array.repeat._proof_1 4#usize 0#u32)))
+                                                                  (Aeneas.Std.Array.from_val
+                                                                    [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                    (congrFun'
+                                                                        (congrArg List.replicate
+                                                                          (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                            (Aeneas.Std.UScalar.bound_suffices
+                                                                              Aeneas.Std.UScalarTy.Usize 4
+                                                                              (of_decide_eq_true (id (Eq.refl true))))))
+                                                                        0#u32 ▸
+                                                                      Aeneas.Std.Array.repeat._proof_1 4#usize 0#u32)))
+                                                                (↑j) 0 hc
+                                                                (Verification.lane._proof_1
+                                                                  (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                              (Aeneas.Std.UScalar.bound_suffices
+                                                                Aeneas.Std.UScalarTy.U32 0
+                                                                (of_decide_eq_true (id (Eq.refl true)))))))
+                                                        (Eq.trans (congrArg (HAdd.hAdd 65520) (zero_mul 255))
+                                                          (add_zero 65520)))
+                                                      zero_le._simp_1))
+                                                  (Eq.trans
+                                                    (congr
+                                                      (congrArg LE.le
+                                                        (Eq.trans
+                                                          (congrArg (HMul.hMul 2)
+                                                            (Eq.trans
+                                                              (congrArg Aeneas.Std.UScalar.val
+                                                                (GetElem.getElem.congr_simp
+                                                                  ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                  [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                  (Eq.trans
+                                                                    (congrArg Aeneas.Std.Array.val
+                                                                      (Aeneas.Std.Array.from.congr_simp
+                                                                        (List.replicate (↑4#usize) 0#u32)
+                                                                        [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                        (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                              (Aeneas.Std.UScalar.bound_suffices
+                                                                                Aeneas.Std.UScalarTy.Usize 4
+                                                                                (of_decide_eq_true
+                                                                                  (id (Eq.refl true))))))
+                                                                          0#u32)
+                                                                        (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                    (Aeneas.Std.Array.from_val
+                                                                      [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                      (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                              (Aeneas.Std.UScalar.bound_suffices
+                                                                                Aeneas.Std.UScalarTy.Usize 4
+                                                                                (of_decide_eq_true
+                                                                                  (id (Eq.refl true))))))
+                                                                          0#u32 ▸
+                                                                        Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                  (↑j) 0 hc
+                                                                  (Verification.lane._proof_1
+                                                                    (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                (Aeneas.Std.UScalar.bound_suffices
+                                                                  Aeneas.Std.UScalarTy.U32 0
+                                                                  (of_decide_eq_true (id (Eq.refl true)))))))
+                                                          (mul_zero 2)))
+                                                      (Eq.trans
+                                                        (congr
+                                                          (congrArg HAdd.hAdd
+                                                            (Eq.trans
+                                                              (congrArg (HAdd.hAdd 131040)
+                                                                (Eq.trans
+                                                                  (congrFun' (congrArg HMul.hMul (mul_zero 2)) 65520)
+                                                                  (zero_mul 65520)))
+                                                              (add_zero 131040)))
+                                                          (Eq.trans
+                                                            (congr (congrArg HMul.hMul (mul_zero 255)) (zero_add 1))
+                                                            (mul_one 0)))
+                                                        (add_zero 131040)))
+                                                    zero_le._simp_1))
+                                                (and_self True)))
+                                          fun h =>
+                                          Or.casesOn h
+                                            (fun hc =>
+                                              of_eq_true
+                                                (Eq.trans
+                                                  (congr
+                                                    (congrArg And
+                                                      (Eq.trans
+                                                        (congr
+                                                          (congrArg LE.le
+                                                            (Eq.trans
+                                                              (congrArg Aeneas.Std.UScalar.val
+                                                                (GetElem.getElem.congr_simp
+                                                                  ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                  [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                  (Eq.trans
+                                                                    (congrArg Aeneas.Std.Array.val
+                                                                      (Aeneas.Std.Array.from.congr_simp
+                                                                        (List.replicate (↑4#usize) 0#u32)
+                                                                        [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                        (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                              (Aeneas.Std.UScalar.bound_suffices
+                                                                                Aeneas.Std.UScalarTy.Usize 4
+                                                                                (of_decide_eq_true
+                                                                                  (id (Eq.refl true))))))
+                                                                          0#u32)
+                                                                        (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                    (Aeneas.Std.Array.from_val
+                                                                      [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                      (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                              (Aeneas.Std.UScalar.bound_suffices
+                                                                                Aeneas.Std.UScalarTy.Usize 4
+                                                                                (of_decide_eq_true
+                                                                                  (id (Eq.refl true))))))
+                                                                          0#u32 ▸
+                                                                        Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                  (↑j) 1 hc
+                                                                  (Verification.lane._proof_1
+                                                                    (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                (Aeneas.Std.UScalar.bound_suffices
+                                                                  Aeneas.Std.UScalarTy.U32 0
+                                                                  (of_decide_eq_true (id (Eq.refl true)))))))
+                                                          (Eq.trans (congrArg (HAdd.hAdd 65520) (zero_mul 255))
+                                                            (add_zero 65520)))
+                                                        zero_le._simp_1))
+                                                    (Eq.trans
+                                                      (congr
+                                                        (congrArg LE.le
+                                                          (Eq.trans
+                                                            (congrArg (HMul.hMul 2)
+                                                              (Eq.trans
+                                                                (congrArg Aeneas.Std.UScalar.val
+                                                                  (GetElem.getElem.congr_simp
+                                                                    ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                    [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                    (Eq.trans
+                                                                      (congrArg Aeneas.Std.Array.val
+                                                                        (Aeneas.Std.Array.from.congr_simp
+                                                                          (List.replicate (↑4#usize) 0#u32)
+                                                                          [0#u32, 0#u32, 0#u32, ⋯]
+                                                                          (congrFun'
+                                                                            (congrArg List.replicate
+                                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                                (Aeneas.Std.UScalar.bound_suffices
+                                                                                  Aeneas.Std.UScalarTy.Usize 4 ⋯)))
+                                                                            0#u32)
+                                                                          (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                      (Aeneas.Std.Array.from_val
+                                                                        [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                        (congrFun'
+                                                                            (congrArg List.replicate
+                                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                                (Aeneas.Std.UScalar.bound_suffices
+                                                                                  Aeneas.Std.UScalarTy.Usize 4 ⋯)))
+                                                                            0#u32 ▸
+                                                                          Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                    (↑j) 1 hc
+                                                                    (Verification.lane._proof_1
+                                                                      (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                                (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                  (Aeneas.Std.UScalar.bound_suffices
+                                                                    Aeneas.Std.UScalarTy.U32 0
+                                                                    (of_decide_eq_true (id (Eq.refl true)))))))
+                                                            (mul_zero 2)))
+                                                        (Eq.trans
+                                                          (congr
+                                                            (congrArg HAdd.hAdd
+                                                              (Eq.trans
+                                                                (congrArg (HAdd.hAdd 131040)
+                                                                  (Eq.trans
+                                                                    (congrFun' (congrArg HMul.hMul (mul_zero 2)) 65520)
+                                                                    (zero_mul 65520)))
+                                                                (add_zero 131040)))
+                                                            (Eq.trans
+                                                              (congr (congrArg HMul.hMul (mul_zero 255)) (zero_add 1))
+                                                              (mul_one 0)))
+                                                          (add_zero 131040)))
+                                                      zero_le._simp_1))
+                                                  (and_self True)))
+                                            fun h =>
+                                            Or.casesOn h
+                                              (fun hc =>
+                                                of_eq_true
+                                                  (Eq.trans
+                                                    (congr
+                                                      (congrArg And
+                                                        (Eq.trans
+                                                          (congr
+                                                            (congrArg LE.le
+                                                              (Eq.trans
+                                                                (congrArg Aeneas.Std.UScalar.val
+                                                                  (GetElem.getElem.congr_simp
+                                                                    ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                    [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                    (Eq.trans
+                                                                      (congrArg Aeneas.Std.Array.val
+                                                                        (Aeneas.Std.Array.from.congr_simp
+                                                                          (List.replicate (↑4#usize) 0#u32)
+                                                                          [0#u32, 0#u32, ⋯, ⋯]
+                                                                          (congrFun'
+                                                                            (congrArg List.replicate
+                                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq ⋯))
+                                                                            0#u32)
+                                                                          (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                      (Aeneas.Std.Array.from_val
+                                                                        [0#u32, 0#u32, 0#u32, ⋯]
+                                                                        (congrFun'
+                                                                            (congrArg List.replicate
+                                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq ⋯))
+                                                                            0#u32 ▸
+                                                                          Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                    (↑j) 2 hc
+                                                                    (Verification.lane._proof_1
+                                                                      (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                                (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                  (Aeneas.Std.UScalar.bound_suffices
+                                                                    Aeneas.Std.UScalarTy.U32 0
+                                                                    (of_decide_eq_true (id (Eq.refl true)))))))
+                                                            (Eq.trans (congrArg (HAdd.hAdd 65520) (zero_mul 255))
+                                                              (add_zero 65520)))
+                                                          zero_le._simp_1))
+                                                      (Eq.trans
+                                                        (congr
+                                                          (congrArg LE.le
+                                                            (Eq.trans
+                                                              (congrArg (HMul.hMul 2)
+                                                                (Eq.trans
+                                                                  (congrArg Aeneas.Std.UScalar.val
+                                                                    (GetElem.getElem.congr_simp
+                                                                      ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                      [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                      (Eq.trans
+                                                                        (congrArg Aeneas.Std.Array.val
+                                                                          (Aeneas.Std.Array.from.congr_simp
+                                                                            (List.replicate (↑⋯) 0#u32) [0#u32, ⋯, ⋯]
+                                                                            (congrFun' (congrArg List.replicate ⋯)
+                                                                              0#u32)
+                                                                            (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                              0#u32)))
+                                                                        (Aeneas.Std.Array.from_val [0#u32, 0#u32, ⋯, ⋯]
+                                                                          (congrFun' (congrArg List.replicate ⋯) 0#u32 ▸
+                                                                            Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                              0#u32)))
+                                                                      (↑j) 2 hc
+                                                                      (Verification.lane._proof_1
+                                                                        (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                                  (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                    (Aeneas.Std.UScalar.bound_suffices
+                                                                      Aeneas.Std.UScalarTy.U32 0
+                                                                      (of_decide_eq_true (id (Eq.refl true)))))))
+                                                              (mul_zero 2)))
+                                                          (Eq.trans
+                                                            (congr
+                                                              (congrArg HAdd.hAdd
+                                                                (Eq.trans
+                                                                  (congrArg (HAdd.hAdd 131040)
+                                                                    (Eq.trans
+                                                                      (congrFun' (congrArg HMul.hMul (mul_zero 2))
+                                                                        65520)
+                                                                      (zero_mul 65520)))
+                                                                  (add_zero 131040)))
+                                                              (Eq.trans
+                                                                (congr (congrArg HMul.hMul (mul_zero 255)) (zero_add 1))
+                                                                (mul_one 0)))
+                                                            (add_zero 131040)))
+                                                        zero_le._simp_1))
+                                                    (and_self True)))
+                                              fun hc =>
+                                              of_eq_true
+                                                (Eq.trans
+                                                  (congr
+                                                    (congrArg And
+                                                      (Eq.trans
+                                                        (congr
+                                                          (congrArg LE.le
+                                                            (Eq.trans
+                                                              (congrArg Aeneas.Std.UScalar.val
+                                                                (GetElem.getElem.congr_simp
+                                                                  ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                  [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                  (Eq.trans
+                                                                    (congrArg Aeneas.Std.Array.val
+                                                                      (Aeneas.Std.Array.from.congr_simp
+                                                                        (List.replicate (↑4#usize) 0#u32)
+                                                                        [0#u32, 0#u32, ⋯, ⋯]
+                                                                        (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq ⋯))
+                                                                          0#u32)
+                                                                        (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                    (Aeneas.Std.Array.from_val [0#u32, 0#u32, 0#u32, ⋯]
+                                                                      (congrFun'
+                                                                          (congrArg List.replicate
+                                                                            (Aeneas.Std.UScalar.ofNatCore_val_eq ⋯))
+                                                                          0#u32 ▸
+                                                                        Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                          0#u32)))
+                                                                  (↑j) 3 hc
+                                                                  (Verification.lane._proof_1
+                                                                    (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                (Aeneas.Std.UScalar.bound_suffices
+                                                                  Aeneas.Std.UScalarTy.U32 0
+                                                                  (of_decide_eq_true (id (Eq.refl true)))))))
+                                                          (Eq.trans (congrArg (HAdd.hAdd 65520) (zero_mul 255))
+                                                            (add_zero 65520)))
+                                                        zero_le._simp_1))
+                                                    (Eq.trans
+                                                      (congr
+                                                        (congrArg LE.le
+                                                          (Eq.trans
+                                                            (congrArg (HMul.hMul 2)
+                                                              (Eq.trans
+                                                                (congrArg Aeneas.Std.UScalar.val
+                                                                  (GetElem.getElem.congr_simp
+                                                                    ↑(Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                                                    [0#u32, 0#u32, 0#u32, 0#u32]
+                                                                    (Eq.trans
+                                                                      (congrArg Aeneas.Std.Array.val
+                                                                        (Aeneas.Std.Array.from.congr_simp
+                                                                          (List.replicate (↑⋯) 0#u32) [0#u32, ⋯, ⋯]
+                                                                          (congrFun' (congrArg List.replicate ⋯) 0#u32)
+                                                                          (Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                      (Aeneas.Std.Array.from_val [0#u32, 0#u32, ⋯, ⋯]
+                                                                        (congrFun' (congrArg List.replicate ⋯) 0#u32 ▸
+                                                                          Aeneas.Std.Array.repeat._proof_1 4#usize
+                                                                            0#u32)))
+                                                                    (↑j) 3 hc
+                                                                    (Verification.lane._proof_1
+                                                                      (Aeneas.Std.Array.repeat 4#usize 0#u32) j)))
+                                                                (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                                                  (Aeneas.Std.UScalar.bound_suffices
+                                                                    Aeneas.Std.UScalarTy.U32 0
+                                                                    (of_decide_eq_true (id (Eq.refl true)))))))
+                                                            (mul_zero 2)))
+                                                        (Eq.trans
+                                                          (congr
+                                                            (congrArg HAdd.hAdd
+                                                              (Eq.trans
+                                                                (congrArg (HAdd.hAdd 131040)
+                                                                  (Eq.trans
+                                                                    (congrFun' (congrArg HMul.hMul (mul_zero 2)) 65520)
+                                                                    (zero_mul 65520)))
+                                                                (add_zero 131040)))
+                                                            (Eq.trans
+                                                              (congr (congrArg HMul.hMul (mul_zero 255)) (zero_add 1))
+                                                              (mul_one 0)))
+                                                          (add_zero 131040)))
+                                                      zero_le._simp_1))
+                                                  (and_self True));
+                                    Aeneas.Std.WP.spec_bind
+                                      (Verification.outer_loop x_4.chunks x_4.remainder
+                                        (Aeneas.Std.core.convert.num.FromU32U16.from self.a)
+                                        (Aeneas.Std.core.convert.num.FromU32U16.from self.b)
+                                        (Aeneas.Std.Array.repeat 4#usize 0#u32) (Aeneas.Std.Array.repeat 4#usize 0#u32)
+                                        (Eq.mpr (id (congrFun' ⋯ ⋯)) ⋯) ⋯ ⋯ ⋯)
+                                      ⋯))))))))))
+theorem Verification.write_slice_correct : ∀ (self : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec (self.write_slice bytes) fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes :=
+fun self bytes => Verification.compute_correct self bytes
+theorem Verification.adler32_slice_correct : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec (adler2.adler32_slice bytes) fun sum =>
+    ↑sum = 65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1 :=
+fun bytes =>
+  id
+    (Eq.mpr
+      (id
+        (congrArg
+          (fun _a =>
+            Aeneas.Std.WP.spec
+              (do
+                let h ← _a
+                let h1 ← h.write_slice bytes
+                h1.checksum)
+              fun sum => ↑sum = 65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1)
+          Verification.new_correct))
+      (Eq.mpr
+        (id
+          (congrFun'
+            (congrArg Aeneas.Std.WP.spec
+              (Aeneas.Std.bind_ok { a := 1#u16, b := 0#u16 } fun h => do
+                let h1 ← h.write_slice bytes
+                h1.checksum))
+            fun sum => ↑sum = 65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1))
+        (Aeneas.Std.WP.spec_bind (Verification.write_slice_correct { a := 1#u16, b := 0#u16 } bytes)
+          ((of_eq_true
+                (iff_self
+                  (∀ (x : adler2.Adler32),
+                    (↑x.a, ↑x.b) = Verification.scalar (↑1#u16, ↑0#u16) ↑bytes →
+                      Aeneas.Std.WP.spec x.checksum fun sum =>
+                        ↑sum =
+                          65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1))).mpr
+            fun x hh =>
+            Aeneas.Std.WP.spec_mono (Verification.checksum_correct x)
+              ((of_eq_true
+                    (iff_self
+                      (∀ (x_1 : Aeneas.Std.U32),
+                        ↑x_1 = 65536 * ↑x.b + ↑x.a →
+                          ↑x_1 =
+                            65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1))).mpr
+                fun x_1 hsum =>
+                have ha :=
+                  congrArg Prod.fst
+                    (Eq.mp
+                      (congrArg (Eq (↑x.a, ↑x.b))
+                        (congrFun'
+                          (congrArg Verification.scalar
+                            (congr
+                              (congrArg Prod.mk
+                                (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                  (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.U16 1
+                                    (of_decide_eq_true (id (Eq.refl true))))))
+                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.U16 0
+                                  (of_decide_eq_true (id (Eq.refl true)))))))
+                          ↑bytes))
+                      hh);
+                have hb :=
+                  congrArg Prod.snd
+                    (Eq.mp
+                      (congrArg (Eq (↑x.a, ↑x.b))
+                        (congrFun'
+                          (congrArg Verification.scalar
+                            (congr
+                              (congrArg Prod.mk
+                                (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                  (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.U16 1
+                                    (of_decide_eq_true (id (Eq.refl true))))))
+                              (Aeneas.Std.UScalar.ofNatCore_val_eq
+                                (Aeneas.Std.UScalar.bound_suffices Aeneas.Std.UScalarTy.U16 0
+                                  (of_decide_eq_true (id (Eq.refl true)))))))
+                          ↑bytes))
+                      hh);
+                of_eq_true
+                  (Eq.trans
+                    (Eq.trans
+                      (congrFun'
+                        (congrArg Eq
+                          (Eq.trans hsum
+                            (congr (congrArg HAdd.hAdd (congrArg (HMul.hMul 65536) (id (id hb)))) (id (id ha)))))
+                        (65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1))
+                      Nat.add_left_cancel_iff._simp_1)
+                    (eq_self (Verification.scalar (1, 0) ↑bytes).1)))))))

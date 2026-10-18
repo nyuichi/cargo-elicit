@@ -1,0 +1,10 @@
+Verification.save_restore_resume_correct : ∀ (self : adler2.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑xs ++ ↑ys).length ≤ Aeneas.Std.Usize.max →
+    Aeneas.Std.WP.spec
+      (do
+        let mid ← self.write_slice xs
+        let sum ← mid.checksum
+        let restored ← adler2.Adler32.from_checksum sum
+        restored.write_slice ys)
+      fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) (↑xs ++ ↑ys)
+'Verification.save_restore_resume_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

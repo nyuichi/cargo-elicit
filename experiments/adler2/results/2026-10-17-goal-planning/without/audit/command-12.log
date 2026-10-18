@@ -1,0 +1,6 @@
+'Verification.split_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.resume_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.write_slice_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.adler32_slice_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.split_updates_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.save_restore_resume_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

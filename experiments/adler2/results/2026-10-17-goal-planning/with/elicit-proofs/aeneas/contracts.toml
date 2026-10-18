@@ -1,0 +1,45 @@
+schema_version = 1
+
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun data out => let s := data.val.foldl (fun (s : Nat × Nat) x => let a := (s.1 + x.val) % 65521; (a, (s.2 + a) % 65521)) (1, 0); out.val = 65536 * s.2 + s.1"
+theorem = "AdlerProof.adler32_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self out => out.val = 65536 * self.b.val + self.a.val"
+theorem = "AdlerProof.checksum_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun out => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "AdlerProof.new_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes out => let s := AdlerModel.update self.a.val self.b.val bytes.val; out.a.val = s.1 ∧ out.b.val = s.2"
+theorem = "AdlerProof.write_slice_correct"
+
+[contracts."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+ensures = "fun self bytes out => let s := AdlerModel.update self.a.val self.b.val bytes.val; out.a.val = s.1 ∧ out.b.val = s.2"
+theorem = "AdlerProof.compute_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+ensures = "fun sum out => out.a.val = sum.val % 65536 ∧ out.b.val = sum.val / 65536"
+theorem = "AdlerProof.from_checksum_correct"
+
+[contracts."adler2::algo::impl[16f54fa5277eca59]::from::Method"]
+requires = "fun bytes => 4 ≤ bytes.val.length"
+ensures = "fun bytes out => out.val.map (fun x => x.val) = (bytes.val.take 4).map (fun x => x.val)"
+theorem = "AdlerProof.lane_from_correct"
+
+[contracts."adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"]
+requires = "fun self other => ∀ i < 4, self.val[i]!.val + other.val[i]!.val < 4294967296"
+ensures = "fun self other out => ∀ i < 4, out.val[i]!.val = self.val[i]!.val + other.val[i]!.val"
+theorem = "AdlerProof.lane_add_correct"
+
+[contracts."adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"]
+requires = "fun self quotient => quotient.val ≠ 0"
+ensures = "fun self quotient out => ∀ i < 4, out.val[i]!.val = self.val[i]!.val % quotient.val"
+theorem = "AdlerProof.lane_rem_correct"
+
+[contracts."adler2::algo::impl[6142b20c00108117]::mul_assign::Method"]
+requires = "fun self rhs => ∀ i < 4, self.val[i]!.val * rhs.val < 4294967296"
+ensures = "fun self rhs out => ∀ i < 4, out.val[i]!.val = self.val[i]!.val * rhs.val"
+theorem = "AdlerProof.lane_mul_correct"

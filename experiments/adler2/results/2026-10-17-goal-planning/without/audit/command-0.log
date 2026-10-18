@@ -1,0 +1,4 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling adler2 v2.0.1 (/workspace/elicit-comparison/round5-cases/adler2-without)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s

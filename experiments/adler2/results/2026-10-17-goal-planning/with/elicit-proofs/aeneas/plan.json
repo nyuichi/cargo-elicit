@@ -1,0 +1,201 @@
+{
+  "steps": [
+    {
+      "id": "new",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "reason": "Translated caller initializes state through original Default.default; prove successful return with a=1,b=0 directly.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "checksum",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "reason": "Caller encodes final state; prove successful output value 65536*b+a for all u16 halves, including bitwise shift/or arithmetic.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "decode",
+      "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "reason": "Selected API decodes arbitrary u32; prove low/high halves without normalized-state assumptions, then attempt codec roundtrips.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "lane_from",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "reason": "Inner translated chunk loop indexes four bytes; require slice length at least four and return the corresponding four u32 values.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "lane_add",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "reason": "Both inner chunk loops add byte lanes and cumulative lanes; prove componentwise addition under per-lane u32 sum bounds.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "lane_rem",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "reason": "Chunk boundaries normalize lanes; prove componentwise remainder for a nonzero divisor.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "lane_mul",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "reason": "Final lane recombination multiplies b lanes by four; prove componentwise product under per-lane u32 product bounds.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "compute",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+      "reason": "Prove total original optimized body equals scalar fold from arbitrary u16 state, normalized even on empty input. Establish iterator progress, four-lane weighted-sum congruences, bounds through 5552 lane iterations, chunk-boundary preservation, recombination and serial tail. No input-length bound.",
+      "needs": [
+        "lane_from",
+        "lane_add",
+        "lane_rem",
+        "lane_mul"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "write",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "reason": "Lift full compute recurrence to original public mutable-state API; attempt split-update and save/restore/resume laws with explicit concatenated-slice representability.",
+      "needs": [
+        "compute"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "integrate",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "integrate",
+      "target": "adler2::adler32_slice::Function",
+      "reason": "Compose successful initialization, full arbitrary-input write recurrence, and checksum encoding at original caller.",
+      "needs": [
+        "new",
+        "write",
+        "checksum"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "checksum_integrate",
+      "goal": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "kind": "integrate",
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "reason": "Direct full checksum proof completed in Proofs.lean: original translated body succeeds and equals 65536*b+a for every representable state. No missing helper prerequisites. Export checksum_spec for caller integration.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "new_integrate",
+      "goal": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "kind": "integrate",
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "reason": "Full constructor proof completed by reduction of the original new and transitive Default.default bodies; new_spec exported for the caller. No additional prerequisites.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "chunks_length",
+      "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+      "needs": [],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), \u2200 c \u2208 (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n",
+      "theorem": "AdlerProof.exact_chunks_length"
+    },
+    {
+      "id": "chunks_remainder_lt",
+      "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+      "needs": [],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), (Aeneas.Std.List.toChunksExact n hn xs).2.length < n",
+      "theorem": "AdlerProof.exact_chunks_remainder_lt"
+    },
+    {
+      "id": "chunks_reconstruct",
+      "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+      "needs": [],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs",
+      "theorem": "AdlerProof.exact_chunks_reconstruct"
+    },
+    {
+      "id": "compute_for_write",
+      "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "kind": "contract",
+      "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+      "reason": "Full arbitrary-state recurrence of original compute; use exact chunk decomposition plus four-lane and arithmetic invariants from caller plan.",
+      "needs": [
+        "chunks_length",
+        "chunks_remainder_lt",
+        "chunks_reconstruct"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "write_integrate",
+      "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "kind": "integrate",
+      "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "reason": "Original write_slice is definitionally the original compute; return to the full public recurrence contract after compute proof.",
+      "needs": [
+        "compute_for_write"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "decode_integrate",
+      "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "kind": "integrate",
+      "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "reason": "Full decoder theorem and both codec roundtrips checked locally in Proofs.lean; exact generated contract includes success and low/high-half values for every u32. No helper prerequisite remains.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Verification.vector_from : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑bytes).length = 4 →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.from bytes) fun r =>
+      Verification.vals r = List.map Aeneas.Std.UScalar.val ↑bytes
+'Verification.vector_from' depends on axioms: [propext, Classical.choice, Quot.sound]

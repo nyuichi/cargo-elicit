@@ -1,0 +1,9 @@
+{
+  "apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ]
+}

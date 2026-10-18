@@ -1,0 +1,3 @@
+'Verification.vector_loop_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.normalize_equal_of_toZ_equal' depends on axioms: [propext, Quot.sound]
+'Verification.combine_projection' depends on axioms: [propext, Quot.sound]

@@ -1,0 +1,4 @@
+Verification.sum_loop_b : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (b : Aeneas.Std.U32),
+  ↑b + Verification.tailSum it ≤ Aeneas.Std.U32.max →
+    Aeneas.Std.WP.spec (adler2.algo.Adler32.compute_loop3 it b) fun r => ↑r = ↑b + Verification.tailSum it
+'Verification.sum_loop_b' depends on axioms: [propext, Classical.choice, Quot.sound]

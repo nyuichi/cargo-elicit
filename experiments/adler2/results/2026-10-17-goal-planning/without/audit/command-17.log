@@ -1,0 +1,7 @@
+Verification.encode_decode : ∀ (s : Aeneas.Std.U32),
+  Aeneas.Std.WP.spec
+    (do
+      let h ← adler2.Adler32.from_checksum s
+      h.checksum)
+    fun s' => s' = s
+'Verification.encode_decode' depends on axioms: [propext, Classical.choice, Quot.sound]

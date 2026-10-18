@@ -1,0 +1,6 @@
+def ElicitContracts.c_20b5198a3591154d : Prop :=
+∀ (self other : ElicitGenerated.algo.U32X4),
+  (fun self other => ∀ i < 4, ↑(↑self)[i]! + ↑(↑other)[i]! < 4294967296) self other →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign self other = Aeneas.Std.Result.ok result ∧
+        (fun self other out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! + ↑(↑other)[i]!) self other result

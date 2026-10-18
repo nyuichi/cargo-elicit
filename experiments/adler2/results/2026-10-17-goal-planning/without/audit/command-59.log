@@ -1,0 +1,4 @@
+Verification.adler32_slice_correct : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec (adler2.adler32_slice bytes) fun sum =>
+    ↑sum = 65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1
+'Verification.adler32_slice_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

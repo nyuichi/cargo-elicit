@@ -1,0 +1,9 @@
+/workspace/elicit-comparison/round5-product-audit/ElicitContracts.lean:7:138: warning: Variable name `self` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _self
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round5-product-audit/ElicitContracts.lean:13:96: warning: Unused tactic linter: `intros` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

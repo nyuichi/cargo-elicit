@@ -1,0 +1,4 @@
+AdlerProof.lane_rem_correct : ElicitContracts.c_f321f3834d6c15c0
+theorem IndependentAPI_8 : ElicitContracts.c_f321f3834d6c15c0 :=
+AdlerProof.lane_rem_correct
+'IndependentAPI_8' depends on axioms: [propext, Classical.choice, Quot.sound]

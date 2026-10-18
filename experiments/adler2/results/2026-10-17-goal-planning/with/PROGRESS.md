@@ -1,0 +1,11 @@
+Partial verification result
+
+The original Rust sources and Cargo manifest are unchanged. Persistent specifications and checked proof sources are in elicit-proofs/aeneas. No admitted proof, project axiom, native_decide, runtime rewrite, or public input restriction was introduced.
+
+The ledger records successful full-contract kernel checks at earlier inputs for new, checksum, from_checksum and all four explicit lane helper methods. Some entries became stale when later specification/proof inputs changed; verification-inventory.json records the evidence inputs and stale flags rather than claiming current whole-goal completion. Checksum was resubmitted with its unchanged complete theorem at the final integration checkpoint. Only the official wrapper records proof evidence.
+
+Proofs.lean contains the exact generated API-contract theorems and caller-facing elicit_spec rules. Codec roundtrips cover all u32 values and all representable states. The save_restore_resume theorem equates the exact translated continuation Result for every suffix; it does not independently prove that write_slice succeeds. The complete module passes local Lean checking against the recorded generated cache. Lemmas.lean contains the officially checked chunk-size, remainder-bound and reconstruction lemmas.
+
+The full arbitrary-input contracts for compute, write_slice and adler32_slice are stated but remain unproved. Missing obligations include nested-loop termination/invariants, lane weighted-sum correspondence, arithmetic bounds across chunk boundaries, recombination and the serial tail. The original compute probe reaches these obligations after split_at. A separate split-update proof was attempted with explicit concatenated-slice representability; it remains unfinished because the original recurrence proof is missing. No counterexample was found or claimed.
+
+Checker details, theorem mappings, preconditions, evidence inputs and remaining obligations are in verification-inventory.json. Scratch attempts and unedited generated model copies are under .elicit/cache. Generic BufRead I/O, Hasher laws, derived traits, no_std and alternative targets remain unverified. This is not whole-crate or selected-goal completion.

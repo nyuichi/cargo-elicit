@@ -1,0 +1,1313 @@
+{
+  "timeline": [
+    {
+      "at_seconds": 18.136,
+      "event": "task_started",
+      "data": {
+        "input": "fa30fa55a29ab4da0ad18c7efaac245ed36221f0344109015531f2f72c3badfc",
+        "revision": 3,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        },
+        "task_input": "43dee6dc02debdaa2220c1e9afef2e4461412bb5d83ec8c8bb3a5be5d6ebd8d5"
+      }
+    },
+    {
+      "at_seconds": 18.39,
+      "event": "worker_started",
+      "data": {
+        "input": "fa30fa55a29ab4da0ad18c7efaac245ed36221f0344109015531f2f72c3badfc",
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 198.462,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": false,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 200.788,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe",
+        "success": false,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        },
+        "worker_deadline": true
+      }
+    },
+    {
+      "at_seconds": 203.116,
+      "event": "task_started",
+      "data": {
+        "input": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe",
+        "revision": 15,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        },
+        "task_input": "b18868cd4003373506de0c7641ccfffd0d1d029a0190c0d4475685f9d46c3b58"
+      }
+    },
+    {
+      "at_seconds": 203.373,
+      "event": "worker_started",
+      "data": {
+        "input": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe",
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 281.912,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 284.198,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": false,
+        "input": "9c139bb87ad895522d41acfb0d69a7748e3f1393079e9028259332f72b2c2420",
+        "success": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::adler32_slice::Function"
+          ],
+          "work": null
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 286.427,
+      "event": "task_started",
+      "data": {
+        "input": "9c139bb87ad895522d41acfb0d69a7748e3f1393079e9028259332f72b2c2420",
+        "revision": 21,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": null
+        },
+        "task_input": "cefbbf0c9c63a57e597e62cd8706442c17d4c05e6e73f659edce0024e6f5540c"
+      }
+    },
+    {
+      "at_seconds": 286.428,
+      "event": "worker_started",
+      "data": {
+        "input": "9c139bb87ad895522d41acfb0d69a7748e3f1393079e9028259332f72b2c2420",
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 416.168,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 418.338,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+        "success": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": null
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 438.294,
+      "event": "verification_finished",
+      "data": {
+        "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+        "requested": [
+          "adler2::adler32_slice::Function",
+          "adler2::impl[ff6e69000b04949b]::checksum::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 15598,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::adler32_slice::Function"
+          },
+          {
+            "elapsed_ms": 15598,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 440.387,
+      "event": "task_started",
+      "data": {
+        "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+        "revision": 30,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::new::Method"
+          ],
+          "work": null
+        },
+        "task_input": "8c36261d0c311fff42375087487ddff583e452978b1aadb236565487fb44e233"
+      }
+    },
+    {
+      "at_seconds": 440.387,
+      "event": "worker_started",
+      "data": {
+        "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::new::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 506.84,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::new::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 509.055,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+        "success": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::new::Method"
+          ],
+          "work": null
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 530.907,
+      "event": "verification_finished",
+      "data": {
+        "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+        "requested": [
+          "adler2::adler32_slice::Function",
+          "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "adler2::impl[ff6e69000b04949b]::new::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 17741,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::adler32_slice::Function"
+          },
+          {
+            "elapsed_ms": 17741,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          },
+          {
+            "elapsed_ms": 17741,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::new::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 533.217,
+      "event": "task_started",
+      "data": {
+        "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+        "revision": 39,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          ],
+          "work": null
+        },
+        "task_input": "99a4f469f94ec8042e07b5289f9052e52eac11aa2d25ddc12e9cf751747581c8"
+      }
+    },
+    {
+      "at_seconds": 533.217,
+      "event": "worker_started",
+      "data": {
+        "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 689.249,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          ],
+          "work": null
+        }
+      }
+    },
+    {
+      "at_seconds": 691.422,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+        "success": true,
+        "task": {
+          "kind": "plan",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          ],
+          "work": null
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 726.703,
+      "event": "verification_finished",
+      "data": {
+        "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+        "requested": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 31000,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+          },
+          {
+            "elapsed_ms": 31000,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 728.849,
+      "event": "task_started",
+      "data": {
+        "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+        "revision": 48,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        },
+        "task_input": "359270abf34ddbdf7d4dce46baf4ede6f12344d3577b7756dbac1e98023fc9dd"
+      }
+    },
+    {
+      "at_seconds": 761.314,
+      "event": "verification_finished",
+      "data": {
+        "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+        "requested": [
+          "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 30375,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 763.394,
+      "event": "worker_started",
+      "data": {
+        "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        }
+      }
+    },
+    {
+      "at_seconds": 898.745,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        }
+      }
+    },
+    {
+      "at_seconds": 937.177,
+      "event": "verification_finished",
+      "data": {
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "requested": [],
+        "results": [
+          {
+            "elapsed_ms": 34072,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 939.351,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "success": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 978.249,
+      "event": "verification_finished",
+      "data": {
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "requested": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 34257,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+          },
+          {
+            "elapsed_ms": 34257,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 980.432,
+      "event": "task_started",
+      "data": {
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "revision": 62,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        },
+        "task_input": "f116f33e476b1496090feb2126f2225e583406dbd6ab166a3880b0facd2a7705"
+      }
+    },
+    {
+      "at_seconds": 1015.581,
+      "event": "verification_finished",
+      "data": {
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "requested": [
+          "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 32889,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1017.917,
+      "event": "worker_started",
+      "data": {
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        }
+      }
+    },
+    {
+      "at_seconds": 1141.382,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        }
+      }
+    },
+    {
+      "at_seconds": 1180.96,
+      "event": "verification_finished",
+      "data": {
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "requested": [],
+        "results": [
+          {
+            "elapsed_ms": 35200,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          },
+          {
+            "elapsed_ms": 35204,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1183.254,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "success": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 1222.589,
+      "event": "verification_finished",
+      "data": {
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "requested": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 34693,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+          },
+          {
+            "elapsed_ms": 34693,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1224.647,
+      "event": "task_started",
+      "data": {
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "revision": 73,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          ],
+          "work": "lane_add"
+        },
+        "task_input": "41c7c2fb7f7fb1dfa53f7a2c1afa25751d2afe45bb5beea377cc16bf198b9eb5"
+      }
+    },
+    {
+      "at_seconds": 1260.879,
+      "event": "verification_finished",
+      "data": {
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "requested": [
+          "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 34264,
+            "outcome": "unresolved",
+            "scope": "unknown",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1263.029,
+      "event": "worker_started",
+      "data": {
+        "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          ],
+          "work": "lane_add"
+        }
+      }
+    },
+    {
+      "at_seconds": 1509.06,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          ],
+          "work": "lane_add"
+        }
+      }
+    },
+    {
+      "at_seconds": 1557.876,
+      "event": "verification_finished",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "requested": [],
+        "results": [
+          {
+            "elapsed_ms": 44667,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+          },
+          {
+            "elapsed_ms": 44667,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+          },
+          {
+            "elapsed_ms": 44667,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1560.058,
+      "event": "task_finished",
+      "data": {
+        "checker_only": false,
+        "forward_progress": true,
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "success": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          ],
+          "work": "lane_add"
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 1562.266,
+      "event": "task_started",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "revision": 89,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        },
+        "task_input": "b35bc85c268e2f778dfc09f31ffc3d552e8d5eb5a2110c1608306084e8343cc5"
+      }
+    },
+    {
+      "at_seconds": 1608.714,
+      "event": "verification_finished",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "requested": [
+          "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 44426,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1611.003,
+      "event": "worker_finished",
+      "data": {
+        "called": false,
+        "completed": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        }
+      }
+    },
+    {
+      "at_seconds": 1613.25,
+      "event": "task_finished",
+      "data": {
+        "checker_only": true,
+        "forward_progress": false,
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "success": false,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+          ],
+          "work": "decode"
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 1615.453,
+      "event": "task_started",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "revision": 93,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        },
+        "task_input": "4e8653b51f6277f2ff6fce68c20c9b33bcd68ecee55ce470eb97260dd11e1ad5"
+      }
+    },
+    {
+      "at_seconds": 1661.734,
+      "event": "verification_finished",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "requested": [
+          "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+        ],
+        "results": [
+          {
+            "elapsed_ms": 44211,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          }
+        ]
+      }
+    },
+    {
+      "at_seconds": 1663.929,
+      "event": "worker_finished",
+      "data": {
+        "called": false,
+        "completed": true,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        }
+      }
+    },
+    {
+      "at_seconds": 1666.001,
+      "event": "task_finished",
+      "data": {
+        "checker_only": true,
+        "forward_progress": false,
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "success": false,
+        "task": {
+          "kind": "verify",
+          "targets": [
+            "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+          ],
+          "work": "lane_from"
+        },
+        "worker_deadline": false
+      }
+    },
+    {
+      "at_seconds": 1668.106,
+      "event": "task_started",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "revision": 97,
+        "task": {
+          "kind": "integrate",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": "checksum_integrate"
+        },
+        "task_input": "902f469e92de702db094b77af0e4ed8ffcdb094c5e3b6762066b54625196cb3d"
+      }
+    },
+    {
+      "at_seconds": 1668.106,
+      "event": "worker_started",
+      "data": {
+        "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+        "task": {
+          "kind": "integrate",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": "checksum_integrate"
+        }
+      }
+    },
+    {
+      "at_seconds": 1752.151,
+      "event": "worker_finished",
+      "data": {
+        "called": true,
+        "completed": true,
+        "task": {
+          "kind": "integrate",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": "checksum_integrate"
+        }
+      }
+    },
+    {
+      "at_seconds": 1800.732,
+      "event": "verification_finished",
+      "data": {
+        "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+        "requested": [],
+        "results": [
+          {
+            "elapsed_ms": 44195,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method"
+          },
+          {
+            "elapsed_ms": 44195,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method"
+          },
+          {
+            "elapsed_ms": 44195,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method"
+          },
+          {
+            "elapsed_ms": 44195,
+            "outcome": "success",
+            "scope": "full_contract",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          }
+        ]
+      }
+    }
+  ],
+  "input_changes": [
+    {
+      "at_seconds": 38.268,
+      "changed_files": [],
+      "changed_context_keys": [
+        "@installed_tcb",
+        "@verifier_version"
+      ],
+      "previous": "fa30fa55a29ab4da0ad18c7efaac245ed36221f0344109015531f2f72c3badfc",
+      "current": "48b323a76bde3efab7c54a08d738623a6b611e8f7364f490d2fbff3b48251398"
+    },
+    {
+      "at_seconds": 59.392,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "48b323a76bde3efab7c54a08d738623a6b611e8f7364f490d2fbff3b48251398",
+      "current": "57ebaa122bff6ec4bab63e886a1ff7e51160924b36931ef0379a11e612a00742"
+    },
+    {
+      "at_seconds": 73.482,
+      "changed_files": [],
+      "changed_context_keys": [
+        "@installed_tcb"
+      ],
+      "previous": "57ebaa122bff6ec4bab63e886a1ff7e51160924b36931ef0379a11e612a00742",
+      "current": "d260542646b80878adf1bd7ddc4b72ce671d8f26117e0e0567b8f9097a9e24a9"
+    },
+    {
+      "at_seconds": 93.233,
+      "changed_files": [],
+      "changed_context_keys": [
+        "@installed_tcb",
+        "@verifier_version"
+      ],
+      "previous": "d260542646b80878adf1bd7ddc4b72ce671d8f26117e0e0567b8f9097a9e24a9",
+      "current": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe"
+    },
+    {
+      "at_seconds": 132.404,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe",
+      "current": "a74cc7d663158e7334d62c4ce3d38ca8cc9dc596a8ddcc057c93a3c74540ea27"
+    },
+    {
+      "at_seconds": 162.072,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "a74cc7d663158e7334d62c4ce3d38ca8cc9dc596a8ddcc057c93a3c74540ea27",
+      "current": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe"
+    },
+    {
+      "at_seconds": 261.023,
+      "changed_files": [
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "d4e828e998d007b68e2816a3758c8708a0819cee393142827da0ebe51f62bebe",
+      "current": "fadf8306c36b0a9b3fe51159d4507a11ac583915acfdec805717dba5112e6693"
+    },
+    {
+      "at_seconds": 275.135,
+      "changed_files": [
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "fadf8306c36b0a9b3fe51159d4507a11ac583915acfdec805717dba5112e6693",
+      "current": "9c139bb87ad895522d41acfb0d69a7748e3f1393079e9028259332f72b2c2420"
+    },
+    {
+      "at_seconds": 301.647,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "9c139bb87ad895522d41acfb0d69a7748e3f1393079e9028259332f72b2c2420",
+      "current": "dc41ab304ee2f8aa565021d239312d07f5ec92c44e19ce29b0a8ecb5cf45fcf0"
+    },
+    {
+      "at_seconds": 367.726,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "dc41ab304ee2f8aa565021d239312d07f5ec92c44e19ce29b0a8ecb5cf45fcf0",
+      "current": "daa546f1ade526a131769245531b931550b610c7f5b6091abf22d36a412ec38d"
+    },
+    {
+      "at_seconds": 409.857,
+      "changed_files": [
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "daa546f1ade526a131769245531b931550b610c7f5b6091abf22d36a412ec38d",
+      "current": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb"
+    },
+    {
+      "at_seconds": 450.178,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+      "current": "4d2d1c96ae7c95844c56d23a20640368d9632f29d163049ab77a5f49fce8f2f5"
+    },
+    {
+      "at_seconds": 465.341,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "4d2d1c96ae7c95844c56d23a20640368d9632f29d163049ab77a5f49fce8f2f5",
+      "current": "02eee520066a74b3943f440755a534a1141032b0eb5bbf79e042d49bf5786a1c"
+    },
+    {
+      "at_seconds": 500.202,
+      "changed_files": [
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "02eee520066a74b3943f440755a534a1141032b0eb5bbf79e042d49bf5786a1c",
+      "current": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf"
+    },
+    {
+      "at_seconds": 561.088,
+      "changed_files": [
+        "Specs.lean",
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+      "current": "8bf28b2595dc4f6c15d755ff9ce0d8be975ce1e1c3b09b745a85b78e828337df"
+    },
+    {
+      "at_seconds": 653.455,
+      "changed_files": [
+        "Lemmas.lean",
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "8bf28b2595dc4f6c15d755ff9ce0d8be975ce1e1c3b09b745a85b78e828337df",
+      "current": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995"
+    },
+    {
+      "at_seconds": 798.944,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+      "current": "29e9175ba81c5eecd24aff6e1e98282e9a9b3854b36c278b623178c964bb1efb"
+    },
+    {
+      "at_seconds": 828.164,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "29e9175ba81c5eecd24aff6e1e98282e9a9b3854b36c278b623178c964bb1efb",
+      "current": "4caa1619d943c96517ee4477105d068558e222c9384e5b7ca0cae8982e00d996"
+    },
+    {
+      "at_seconds": 848.648,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "4caa1619d943c96517ee4477105d068558e222c9384e5b7ca0cae8982e00d996",
+      "current": "153925eebffcb30820ed257195c3be8f2d2752124417da4d3e2d95389ebafc99"
+    },
+    {
+      "at_seconds": 891.1,
+      "changed_files": [
+        "plan.json"
+      ],
+      "changed_context_keys": [],
+      "previous": "153925eebffcb30820ed257195c3be8f2d2752124417da4d3e2d95389ebafc99",
+      "current": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa"
+    },
+    {
+      "at_seconds": 1098.467,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+      "current": "268058ba9ca52c539af25982e967c16b3f7c1627b7b2117e0205ff228c135a11"
+    },
+    {
+      "at_seconds": 1112.611,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "268058ba9ca52c539af25982e967c16b3f7c1627b7b2117e0205ff228c135a11",
+      "current": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab"
+    },
+    {
+      "at_seconds": 1339.592,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+      "current": "8c6669ffaa529a9e19aaf3fa9074b7e12bda8fac3b12bddfd0b14f65cfad709c"
+    },
+    {
+      "at_seconds": 1367.666,
+      "changed_files": [
+        "contracts.toml"
+      ],
+      "changed_context_keys": [],
+      "previous": "8c6669ffaa529a9e19aaf3fa9074b7e12bda8fac3b12bddfd0b14f65cfad709c",
+      "current": "3457c5d1a695a6fd693b125b97460d7626a8727c9f3e53e32417afc673eadb91"
+    },
+    {
+      "at_seconds": 1390.089,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "3457c5d1a695a6fd693b125b97460d7626a8727c9f3e53e32417afc673eadb91",
+      "current": "7685e94366c034fdd81904d883976ce66becc3ef86236d1f7f6c36d194e479fc"
+    },
+    {
+      "at_seconds": 1406.404,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "7685e94366c034fdd81904d883976ce66becc3ef86236d1f7f6c36d194e479fc",
+      "current": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094"
+    },
+    {
+      "at_seconds": 1697.381,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+      "current": "32d35ef8c7ebbdd5d860ade5869c0cd60fab07d028f8b8fecce2e0d221e652e4"
+    },
+    {
+      "at_seconds": 1719.596,
+      "changed_files": [
+        "Proofs.lean"
+      ],
+      "changed_context_keys": [],
+      "previous": "32d35ef8c7ebbdd5d860ade5869c0cd60fab07d028f8b8fecce2e0d221e652e4",
+      "current": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9"
+    }
+  ],
+  "pipeline_stages": {
+    "charon/processing": {
+      "calls": 19,
+      "elapsed_seconds": 2.784,
+      "failed": 0
+    },
+    "aeneas/processing": {
+      "calls": 19,
+      "elapsed_seconds": 44.86899999999999,
+      "failed": 0
+    },
+    "ElicitGenerated.lean/processing": {
+      "calls": 19,
+      "elapsed_seconds": 39.956999999999994,
+      "failed": 0
+    },
+    "ElicitAdapter.lean/processing": {
+      "calls": 19,
+      "elapsed_seconds": 39.64100000000001,
+      "failed": 0
+    },
+    "ElicitContracts.lean/processing": {
+      "calls": 19,
+      "elapsed_seconds": 42.82900000000001,
+      "failed": 0
+    },
+    "charon/proof": {
+      "calls": 14,
+      "elapsed_seconds": 2.2479999999999998,
+      "failed": 0
+    },
+    "aeneas/proof": {
+      "calls": 14,
+      "elapsed_seconds": 32.599000000000004,
+      "failed": 0
+    },
+    "ElicitGenerated.lean/proof": {
+      "calls": 14,
+      "elapsed_seconds": 29.423,
+      "failed": 0
+    },
+    "ElicitAdapter.lean/proof": {
+      "calls": 14,
+      "elapsed_seconds": 28.926,
+      "failed": 0
+    },
+    "ElicitContracts.lean/proof": {
+      "calls": 14,
+      "elapsed_seconds": 30.901,
+      "failed": 0
+    },
+    "Proofs.lean/proof": {
+      "calls": 14,
+      "elapsed_seconds": 46.167,
+      "failed": 0
+    },
+    "Audit.lean/proof": {
+      "calls": 130,
+      "elapsed_seconds": 243.07300000000006,
+      "failed": 38
+    },
+    "Specs.lean/processing": {
+      "calls": 14,
+      "elapsed_seconds": 26.383999999999997,
+      "failed": 0
+    },
+    "Specs.lean/proof": {
+      "calls": 12,
+      "elapsed_seconds": 22.582,
+      "failed": 0
+    },
+    "Lemmas.lean/proof": {
+      "calls": 12,
+      "elapsed_seconds": 23.740000000000002,
+      "failed": 0
+    }
+  },
+  "notes": [
+    "Stage sums are accumulated call durations, not disjoint end-to-end phases. Metadata collection has a separate Lean invocation not represented by these stage events.",
+    "Historical success records can be stale after a subsequent input change; only the frozen terminal state defines timed current acceptance.",
+    "Plan installation and work names are declared intent; exact checked propositions and caller dependencies determine proof extent."
+  ]
+}

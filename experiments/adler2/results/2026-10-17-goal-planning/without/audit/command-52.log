@@ -1,0 +1,17 @@
+Verification.outer_loop : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : adler2.algo.U32X4),
+  ↑a ≤ 65535 →
+    ↑b ≤ 65535 →
+      Verification.laneBounds 0 av bv →
+        (∀ c ∈ cs, (↑c).length = 22208) →
+          Aeneas.Std.WP.spec
+            (adler2.algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv)
+            (Aeneas.Std.WP.uncurry' fun b' =>
+              Aeneas.Std.WP.uncurry' fun av' bv' =>
+                ↑b' ≤ 65535 ∧
+                  Verification.laneBounds 0 av' bv' ∧
+                    Verification.projection (↑↑a) (↑↑b') (Verification.vectorZ av') (Verification.vectorZ bv') =
+                      Verification.zRun
+                        (Verification.projection (↑↑a) (↑↑b) (Verification.vectorZ av) (Verification.vectorZ bv))
+                        (List.map Aeneas.Std.Slice.val cs).flatten)
+'Verification.outer_loop' depends on axioms: [propext, Classical.choice, Quot.sound]

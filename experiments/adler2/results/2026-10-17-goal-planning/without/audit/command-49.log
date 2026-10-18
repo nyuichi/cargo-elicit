@@ -1,0 +1,3 @@
+Verification.normalize_equal_of_toZ_equal : ∀ (s t : ℕ × ℕ),
+  Verification.toZ s = Verification.toZ t → Verification.normalize s = Verification.normalize t
+'Verification.normalize_equal_of_toZ_equal' depends on axioms: [propext, Quot.sound]

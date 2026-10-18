@@ -1,0 +1,5 @@
+Verification.vector_mul : ∀ (v : adler2.algo.U32X4) (m : Aeneas.Std.U32),
+  (∀ (j : ℕ) (hj : j < 4), ↑(↑v)[j] * ↑m ≤ Aeneas.Std.U32.max) →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign v m) fun r =>
+      Verification.vals r = List.map (fun x => x * ↑m) (Verification.vals v)
+'Verification.vector_mul' depends on axioms: [propext, Classical.choice, Quot.sound]

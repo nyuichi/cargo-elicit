@@ -1,0 +1,345 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 3,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 3,
+    "total": 19,
+    "verified": 1
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {
+      "chunks_length": {
+        "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Xkgie3",
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "outcome": "success",
+        "step_hash": "db060394994b681c9add796c06572a5f3aa3a4eb98f4f60bcb3a03c4873fe46f"
+      },
+      "chunks_reconstruct": {
+        "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Xkgie3",
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "outcome": "success",
+        "step_hash": "ca68dc5607d468c13892889663dea4651a44569c33ed1d7bcf277d2d90ef5449"
+      },
+      "chunks_remainder_lt": {
+        "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Xkgie3",
+        "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+        "outcome": "success",
+        "step_hash": "f1da1fffb509d456021ba85c25dc045b42e344c353a5000ee5dfc3fa71c611f4"
+      }
+    },
+    "inspected": {
+      "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method": "14d34a85dfbb23152cab072576f75776cb07a6addbaeedf886f287a06f066a01",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "b6284ad9d79aee3b944ac1e45ede18c326e91cef3232a4c77c32756a1bce4820",
+      "adler2::impl[ff6e69000b04949b]::new::Method": "b17353120b2b86f38e6ed40f9d84f7ec08274c94382588dbe17dbd8fec22b871",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method": "17f7e637f64ff39d39ed669a59184025e03ab20a793c3506db354251fbf7210a"
+    },
+    "last_checkpoint": "4c5be226c11922ed7bdb080cc31651880767a53afbef4ab474a857e68e0acd3b",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "new",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Translated caller initializes state through original Default.default; prove successful return with a=1,b=0 directly.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "checksum",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Caller encodes final state; prove successful output value 65536*b+a for all u16 halves, including bitwise shift/or arithmetic.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "id": "decode",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Selected API decodes arbitrary u32; prove low/high halves without normalized-state assumptions, then attempt codec roundtrips.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_from",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Inner translated chunk loop indexes four bytes; require slice length at least four and return the corresponding four u32 values.",
+        "statement": null,
+        "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_add",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Both inner chunk loops add byte lanes and cumulative lanes; prove componentwise addition under per-lane u32 sum bounds.",
+        "statement": null,
+        "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_rem",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Chunk boundaries normalize lanes; prove componentwise remainder for a nonzero divisor.",
+        "statement": null,
+        "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_mul",
+        "kind": "contract",
+        "needs": [],
+        "reason": "Final lane recombination multiplies b lanes by four; prove componentwise product under per-lane u32 product bounds.",
+        "statement": null,
+        "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "compute",
+        "kind": "contract",
+        "needs": [
+          "lane_from",
+          "lane_add",
+          "lane_rem",
+          "lane_mul"
+        ],
+        "reason": "Prove total original optimized body equals scalar fold from arbitrary u16 state, normalized even on empty input. Establish iterator progress, four-lane weighted-sum congruences, bounds through 5552 lane iterations, chunk-boundary preservation, recombination and serial tail. No input-length bound.",
+        "statement": null,
+        "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "write",
+        "kind": "contract",
+        "needs": [
+          "compute"
+        ],
+        "reason": "Lift full compute recurrence to original public mutable-state API; attempt split-update and save/restore/resume laws with explicit concatenated-slice representability.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "integrate",
+        "kind": "integrate",
+        "needs": [
+          "new",
+          "write",
+          "checksum"
+        ],
+        "reason": "Compose successful initialization, full arbitrary-input write recurrence, and checksum encoding at original caller.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "id": "checksum_integrate",
+        "kind": "integrate",
+        "needs": [],
+        "reason": "Direct full checksum proof completed in Proofs.lean: original translated body succeeds and equals 65536*b+a for every representable state. No missing helper prerequisites. Export checksum_spec for caller integration.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "id": "new_integrate",
+        "kind": "integrate",
+        "needs": [],
+        "reason": "Full constructor proof completed by reduction of the original new and transitive Default.default bodies; new_spec exported for the caller. No additional prerequisites.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "id": "chunks_length",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+        "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), ∀ c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n",
+        "target": null,
+        "theorem": "AdlerProof.exact_chunks_length"
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "id": "chunks_remainder_lt",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+        "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), (Aeneas.Std.List.toChunksExact n hn xs).2.length < n",
+        "target": null,
+        "theorem": "AdlerProof.exact_chunks_remainder_lt"
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "id": "chunks_reconstruct",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+        "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs",
+        "target": null,
+        "theorem": "AdlerProof.exact_chunks_reconstruct"
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "id": "compute_for_write",
+        "kind": "contract",
+        "needs": [
+          "chunks_length",
+          "chunks_remainder_lt",
+          "chunks_reconstruct"
+        ],
+        "reason": "Full arbitrary-state recurrence of original compute; use exact chunk decomposition plus four-lane and arithmetic invariants from caller plan.",
+        "statement": null,
+        "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "id": "write_integrate",
+        "kind": "integrate",
+        "needs": [
+          "compute_for_write"
+        ],
+        "reason": "Original write_slice is definitionally the original compute; return to the full public recurrence contract after compute proof.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "id": "decode_integrate",
+        "kind": "integrate",
+        "needs": [],
+        "reason": "Full decoder theorem and both codec roundtrips checked locally in Proofs.lean; exact generated contract includes success and low/high-half values for every u32. No helper prerequisite remains.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "theorem": null
+      }
+    ]
+  },
+  "required": true,
+  "revision": 60,
+  "run": {
+    "active": null,
+    "attempts": {
+      "Plan:adler2::adler32_slice::Function": {
+        "failed": false,
+        "last_input": "78c8a5c227d4ae82bf68f4e6b5612a5c9ea52b67afbbecdef5323b5300946a94",
+        "last_result": "completed with accepted work",
+        "no_progress": 1,
+        "total": 2
+      },
+      "Plan:adler2::impl[ff6e69000b04949b]::checksum::Method": {
+        "failed": false,
+        "last_input": "21b1a2b95a7491ebfe7edd9e97ab66f4002243b5ea5c0f6981b4d0d061e4845b",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "total": 1
+      },
+      "Plan:adler2::impl[ff6e69000b04949b]::new::Method": {
+        "failed": false,
+        "last_input": "860b45b1f227f5698238f669039a7ca15057e46da5dfa87b32aff0decb0c5566",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "total": 1
+      },
+      "Plan:adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+        "failed": false,
+        "last_input": "ed4868c58375ff0e1305fd9d47b2a7d3e2e930a365b113ca9ff4b72b521e40bc",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "total": 1
+      },
+      "Verify:adler2::impl[ff6e69000b04949b]::from_checksum::Method@decode": {
+        "failed": false,
+        "last_input": "42dec094872e29af56c5b0270cf9636dbef73ff3a21509716cd9e4f3618fdeda",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 6825088,
+    "elapsed_ms": 923384,
+    "input_tokens": 6946912,
+    "last_result": "completed with accepted work",
+    "output_tokens": 21519,
+    "thread": "01a14c23-7029-7db2-a280-75054c1e474a"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round5-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round5-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round5-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round5-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

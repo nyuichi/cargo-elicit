@@ -1,0 +1,709 @@
+[
+  {
+    "argv": [
+      "charon",
+      "cargo",
+      "--preset=aeneas",
+      "--sysroot=default",
+      "--start-from",
+      "adler2::Adler32::new",
+      "--start-from",
+      "adler2::Adler32::checksum",
+      "--start-from",
+      "adler2::Adler32::from_checksum",
+      "--start-from",
+      "adler2::Adler32::write_slice",
+      "--start-from",
+      "adler2::adler32_slice",
+      "--dest",
+      "/workspace/elicit-comparison/round5-baseline-audit/fresh",
+      "--",
+      "--manifest-path",
+      "Cargo.toml",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--lib"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.14076860299974214,
+    "log": "command-0.log"
+  },
+  {
+    "argv": [
+      "aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/workspace/elicit-comparison/round5-baseline-audit/fresh",
+      "-no-progress-bar",
+      "-use-lean-modules",
+      "false",
+      "/workspace/elicit-comparison/round5-baseline-audit/fresh/adler2.llbc"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.3368042670044815,
+    "log": "command-1.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Adler2.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Adler2.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.695540633998462,
+    "log": "command-2.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Proofs.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Proofs.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 10.51524950399471,
+    "log": "command-3.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Spec.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Spec.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.339927645996795,
+    "log": "command-4.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Chunks.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Chunks.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3754548099968815,
+    "log": "command-5.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Loops.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Loops.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.8497628850018373,
+    "log": "command-6.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Tail.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Tail.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 3.6082979459897615,
+    "log": "command-7.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Algebra.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Algebra.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.7897298030002275,
+    "log": "command-8.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Outer.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Outer.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.4671451169997454,
+    "log": "command-9.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Micro.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Micro.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3834586999873864,
+    "log": "command-10.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/Core.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/Core.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 25.499851711996598,
+    "log": "command-11.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "-o",
+      "/workspace/elicit-comparison/round5-baseline-audit/APIs.olean",
+      "/workspace/elicit-comparison/round5-baseline-audit/APIs.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3999834230053239,
+    "log": "command-12.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_0.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2323962549999123,
+    "log": "command-13.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_1.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.276228340997477,
+    "log": "command-14.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_2.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2348267519992078,
+    "log": "command-15.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_3.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2336421540094307,
+    "log": "command-16.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_4.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2850535709876567,
+    "log": "command-17.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_5.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2823854640009813,
+    "log": "command-18.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_6.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2161298380087828,
+    "log": "command-19.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_7.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2829538829973899,
+    "log": "command-20.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_8.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2273630220006453,
+    "log": "command-21.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_9.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2603481949918205,
+    "log": "command-22.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_10.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3123275710095186,
+    "log": "command-23.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_11.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2357618140085833,
+    "log": "command-24.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_12.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2379738080053357,
+    "log": "command-25.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_13.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2916868309985148,
+    "log": "command-26.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_14.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2418262749997666,
+    "log": "command-27.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_15.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.235265404000529,
+    "log": "command-28.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_16.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2877944579959149,
+    "log": "command-29.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_17.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2479184650001116,
+    "log": "command-30.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_18.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.274264765001135,
+    "log": "command-31.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_19.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2999886600009631,
+    "log": "command-32.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_20.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2353371920034988,
+    "log": "command-33.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_21.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2448306750011398,
+    "log": "command-34.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_22.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2369033720024163,
+    "log": "command-35.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_23.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3340678100066725,
+    "log": "command-36.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_24.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2399290739995195,
+    "log": "command-37.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_25.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2451576780003961,
+    "log": "command-38.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_26.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2038575739861699,
+    "log": "command-39.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_27.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2124274810048519,
+    "log": "command-40.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_28.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2178256939951098,
+    "log": "command-41.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_29.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2113487879978493,
+    "log": "command-42.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_30.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1959517359937308,
+    "log": "command-43.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_31.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2178305699926568,
+    "log": "command-44.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_32.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2431815160089172,
+    "log": "command-45.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_33.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2154194559989264,
+    "log": "command-46.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_34.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1974878329929197,
+    "log": "command-47.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_35.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2042868589924183,
+    "log": "command-48.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_36.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2258438479912002,
+    "log": "command-49.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_37.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.186394709002343,
+    "log": "command-50.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_38.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1989721860009013,
+    "log": "command-51.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_39.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1981934450013796,
+    "log": "command-52.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_40.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.185197019003681,
+    "log": "command-53.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_41.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1877385080006206,
+    "log": "command-54.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_42.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2384491520060692,
+    "log": "command-55.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_43.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2357054320018506,
+    "log": "command-56.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_44.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2087643959966954,
+    "log": "command-57.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_45.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2377057089906884,
+    "log": "command-58.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_46.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.229452528001275,
+    "log": "command-59.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_47.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2290278129949002,
+    "log": "command-60.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_48.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2377357210061746,
+    "log": "command-61.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_49.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.236942222007201,
+    "log": "command-62.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_50.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2145660629903432,
+    "log": "command-63.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/Audit_51.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2465168880007695,
+    "log": "command-64.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-comparison/round5-baseline-audit",
+      "/workspace/elicit-comparison/round5-baseline-audit/InspectDefinitions.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5104635940078879,
+    "log": "command-65.log"
+  }
+]

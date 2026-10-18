@@ -67,3 +67,5 @@ After freezing the final ledger and independently auditing the original artifact
 Formatting, Clippy, Rust 1.86 and 61 regular tests passed. Both real Aeneas fixtures passed together in 801.82 seconds on the core dependency-tracking implementation, covering independent extensions, reachable-model rejection, unsupported-declaration fallback, negative proofs and resume/cache deletion. Final semantic-stamp and fallback refinements passed the 61 tests and a dedicated 102.55-second native documentation regression. The tested source's [CI passed](https://github.com/nyuichi/cargo-elicit/actions/runs/39055140337).
 
 The final evidence supports a narrower conclusion than a performance win: repeated scheduling and avoidable loss of recorded progress were repaired. It does not show that cargo elicit makes full-crate or selected-API verification easier to finish. Achieving the optimized loop proof and reducing specification/scheduling overhead need further work and another controlled experiment.
+
+The subsequent [goal-directed planning comparison](adler2-goal-planning.md) uses a new ordinary control and selected API scope; it preserves this report as historical evidence.

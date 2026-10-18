@@ -1,0 +1,761 @@
+{
+  "elapsed_seconds": 123.05132693400083,
+  "fresh_model_byte_identical": true,
+  "original_source_sha256": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "Adler2": true,
+    "Proofs": true,
+    "Spec": true,
+    "Chunks": true,
+    "Loops": true,
+    "Tail": true,
+    "Algebra": true,
+    "Outer": true,
+    "Micro": true,
+    "Core": true,
+    "APIs": true
+  },
+  "theorem_audits": {
+    "Verification.new_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-13.log"
+    },
+    "Verification.from_checksum_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-14.log"
+    },
+    "Verification.checksum_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-15.log"
+    },
+    "Verification.decode_encode": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-16.log"
+    },
+    "Verification.encode_decode": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-17.log"
+    },
+    "Verification.vector_add": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-18.log"
+    },
+    "Verification.vector_rem": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-19.log"
+    },
+    "Verification.vector_mul": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-20.log"
+    },
+    "Verification.vector_from": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-21.log"
+    },
+    "Verification.normalize_idempotent": {
+      "kernel_checked": true,
+      "axioms": [
+        "propext"
+      ],
+      "log": "command-22.log"
+    },
+    "Verification.scalar_normalized": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-23.log"
+    },
+    "Verification.scalar_split": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-24.log"
+    },
+    "Verification.normalize_rawStep": {
+      "kernel_checked": true,
+      "axioms": [
+        "propext"
+      ],
+      "log": "command-25.log"
+    },
+    "Verification.normalize_raw": {
+      "kernel_checked": true,
+      "axioms": [
+        "propext"
+      ],
+      "log": "command-26.log"
+    },
+    "Verification.chunks_properties": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-27.log"
+    },
+    "Verification.chunks_exact_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-28.log"
+    },
+    "Verification.uniform_flatten_length": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-29.log"
+    },
+    "Verification.chunks_count": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-30.log"
+    },
+    "Verification.vector_add_lane": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-31.log"
+    },
+    "Verification.vector_from_lane": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-32.log"
+    },
+    "Verification.vector_rem_lane": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-33.log"
+    },
+    "Verification.vector_mul_lane": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-34.log"
+    },
+    "Verification.lane_bound_step": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-35.log"
+    },
+    "Verification.vector_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-36.log"
+    },
+    "Verification.vector_inner_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-37.log"
+    },
+    "Verification.sum_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-38.log"
+    },
+    "Verification.sum_loop_b": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-39.log"
+    },
+    "Verification.tail_budget": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-40.log"
+    },
+    "Verification.tail_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-41.log"
+    },
+    "Verification.zRun_raw": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-42.log"
+    },
+    "Verification.zRun_scalar": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-43.log"
+    },
+    "Verification.projection_step": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-44.log"
+    },
+    "Verification.projection_fold": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-45.log"
+    },
+    "Verification.zLanes_laneFold": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-46.log"
+    },
+    "Verification.lanes_projection": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-47.log"
+    },
+    "Verification.vector_loop_projection": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-48.log"
+    },
+    "Verification.normalize_equal_of_toZ_equal": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-49.log"
+    },
+    "Verification.correction_cast": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-50.log"
+    },
+    "Verification.combine_projection": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-51.log"
+    },
+    "Verification.outer_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-52.log"
+    },
+    "Verification.get_set_one_two": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-53.log"
+    },
+    "Verification.get_set_two_three": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-54.log"
+    },
+    "Verification.vals_four": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-55.log"
+    },
+    "Verification.chunk_size": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-56.log"
+    },
+    "Verification.compute_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-57.log"
+    },
+    "Verification.write_slice_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-58.log"
+    },
+    "Verification.adler32_slice_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-59.log"
+    },
+    "Verification.split_updates_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-60.log"
+    },
+    "Verification.save_restore_resume_correct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-61.log"
+    },
+    "Verification.state_eq_of_values": {
+      "kernel_checked": true,
+      "axioms": [
+        "propext"
+      ],
+      "log": "command-62.log"
+    },
+    "Verification.split_equivalence": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-63.log"
+    },
+    "Verification.resume_equivalence": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "log": "command-64.log"
+    }
+  },
+  "review": {
+    "proof_modules": [
+      {
+        "module": "Proofs",
+        "path": "verification/Proofs.lean",
+        "sha256": "7deb82ade68ad92cb33796950b9aab928b56fd4259d136085b78a23cf44ddc93"
+      },
+      {
+        "module": "Spec",
+        "path": "verification/Spec.lean",
+        "sha256": "e9ebcac25a3534ec14cfd611bde475b72cebc26910219c6375f76e909388d85d"
+      },
+      {
+        "module": "Chunks",
+        "path": "verification/Chunks.lean",
+        "sha256": "96f3ffe22d3ac08abcc0dc4451f3c22e4d62a8673e5e6ca0415e2f665f84f84e"
+      },
+      {
+        "module": "Loops",
+        "path": "verification/Loops.lean",
+        "sha256": "1b2e1f6aec2f8099241ec5c3dbd9a7b4f79f79ca0463070ba8648f19b67d4651"
+      },
+      {
+        "module": "Tail",
+        "path": "verification/Tail.lean",
+        "sha256": "95fd06097ab9a0e131d375dcc0bd19918b3e93ed3648900751ef8caf6014a183"
+      },
+      {
+        "module": "Algebra",
+        "path": "verification/Algebra.lean",
+        "sha256": "c6d2a37c3cb022403e66edabe71b701f43013b6b5927ae7767c334eae758f3ee"
+      },
+      {
+        "module": "Outer",
+        "path": "verification/Outer.lean",
+        "sha256": "32c960253f7412679026ef499c02b08a9136155fe95e4910f73439ebb9a668d9"
+      },
+      {
+        "module": "Micro",
+        "path": "verification/Micro.lean",
+        "sha256": "7dbbfaa1d2fa401e54b245e9911abc6a74b6364a6487477e494fffebdf8407dd"
+      },
+      {
+        "module": "Core",
+        "path": "verification/Core.lean",
+        "sha256": "1709ce66e30aca4bfd009d2d66d08609dbb93c3d8bdbd5dce570d2db8864034e"
+      },
+      {
+        "module": "APIs",
+        "path": "verification/APIs.lean",
+        "sha256": "c817fbba056649cdff77d44544429260489f4ad317b29b64bd1bdbc22d133113"
+      }
+    ],
+    "theorem_roots": [
+      {
+        "name": "Verification.new_correct",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.from_checksum_correct",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.checksum_correct",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.decode_encode",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.encode_decode",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.vector_add",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.vector_rem",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.vector_mul",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.vector_from",
+        "module": "Proofs"
+      },
+      {
+        "name": "Verification.normalize_idempotent",
+        "module": "Spec"
+      },
+      {
+        "name": "Verification.scalar_normalized",
+        "module": "Spec"
+      },
+      {
+        "name": "Verification.scalar_split",
+        "module": "Spec"
+      },
+      {
+        "name": "Verification.normalize_rawStep",
+        "module": "Spec"
+      },
+      {
+        "name": "Verification.normalize_raw",
+        "module": "Spec"
+      },
+      {
+        "name": "Verification.chunks_properties",
+        "module": "Chunks"
+      },
+      {
+        "name": "Verification.chunks_exact_correct",
+        "module": "Chunks"
+      },
+      {
+        "name": "Verification.uniform_flatten_length",
+        "module": "Chunks"
+      },
+      {
+        "name": "Verification.chunks_count",
+        "module": "Chunks"
+      },
+      {
+        "name": "Verification.vector_add_lane",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.vector_from_lane",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.vector_rem_lane",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.vector_mul_lane",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.lane_bound_step",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.vector_loop",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.vector_inner_loop",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.sum_loop",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.sum_loop_b",
+        "module": "Loops"
+      },
+      {
+        "name": "Verification.tail_budget",
+        "module": "Tail"
+      },
+      {
+        "name": "Verification.tail_loop",
+        "module": "Tail"
+      },
+      {
+        "name": "Verification.zRun_raw",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.zRun_scalar",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.projection_step",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.projection_fold",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.zLanes_laneFold",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.lanes_projection",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.vector_loop_projection",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.normalize_equal_of_toZ_equal",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.correction_cast",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.combine_projection",
+        "module": "Algebra"
+      },
+      {
+        "name": "Verification.outer_loop",
+        "module": "Outer"
+      },
+      {
+        "name": "Verification.get_set_one_two",
+        "module": "Micro"
+      },
+      {
+        "name": "Verification.get_set_two_three",
+        "module": "Micro"
+      },
+      {
+        "name": "Verification.vals_four",
+        "module": "Core"
+      },
+      {
+        "name": "Verification.chunk_size",
+        "module": "Core"
+      },
+      {
+        "name": "Verification.compute_correct",
+        "module": "Core"
+      },
+      {
+        "name": "Verification.write_slice_correct",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.adler32_slice_correct",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.split_updates_correct",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.save_restore_resume_correct",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.state_eq_of_values",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.split_equivalence",
+        "module": "APIs"
+      },
+      {
+        "name": "Verification.resume_equivalence",
+        "module": "APIs"
+      }
+    ],
+    "generated_model": "verification/generated/Adler2.lean",
+    "generated_module": "Adler2",
+    "generated_sha256": "4bf75c3aea89c32ee9758b139e2e54a048ed28dcc973a2d87a54b2c08352b4d9",
+    "start_from": [
+      "adler2::Adler32::new",
+      "adler2::Adler32::checksum",
+      "adler2::Adler32::from_checksum",
+      "adler2::Adler32::write_slice",
+      "adler2::adler32_slice"
+    ],
+    "use_lean_modules": false,
+    "inspect_constants": [
+      "Verification.scalar",
+      "Verification.scalarStep",
+      "Verification.normalize",
+      "Verification.compute_correct",
+      "Verification.write_slice_correct",
+      "Verification.adler32_slice_correct"
+    ]
+  },
+  "coverage_note": "These checks do not automatically classify conditional mathematics as a complete Rust API proof. Read the exact root types and inspected definitions."
+}

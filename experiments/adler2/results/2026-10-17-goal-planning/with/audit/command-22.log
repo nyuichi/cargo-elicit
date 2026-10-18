@@ -1,0 +1,4 @@
+AdlerProof.lane_add_correct : ElicitContracts.c_20b5198a3591154d
+theorem IndependentAPI_7 : ElicitContracts.c_20b5198a3591154d :=
+AdlerProof.lane_add_correct
+'IndependentAPI_7' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,3 @@
+Verification.from_checksum_correct : ∀ (s : Aeneas.Std.U32),
+  Aeneas.Std.WP.spec (adler2.Adler32.from_checksum s) fun h => ↑h.a = ↑s % 65536 ∧ ↑h.b = ↑s / 65536
+'Verification.from_checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

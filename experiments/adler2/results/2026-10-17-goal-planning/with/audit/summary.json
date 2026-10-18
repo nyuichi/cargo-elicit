@@ -1,0 +1,159 @@
+{
+  "elapsed_seconds": 47.39275891300349,
+  "separate_fresh_extraction": true,
+  "byte_identical_generated_model": true,
+  "original_sources_identical": true,
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "ElicitGenerated": true,
+    "ElicitAdapter": true,
+    "Specs": true,
+    "ElicitContracts": true,
+    "Lemmas": true,
+    "Proofs": true
+  },
+  "api_contract_audits": {
+    "adler2::adler32_slice::Function": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "log": "command-8.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "AdlerProof.checksum_correct",
+      "log": "command-10.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::new::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "AdlerProof.new_correct",
+      "log": "command-12.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_98f3436459f22f5d",
+      "theorem": "AdlerProof.write_slice_correct",
+      "log": "command-14.log"
+    },
+    "adler2::algo::impl[ff6e69000b04949b]::compute::Method": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_a058c96663922dc4",
+      "theorem": "AdlerProof.compute_correct",
+      "log": "command-16.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "theorem": "AdlerProof.from_checksum_correct",
+      "log": "command-18.log"
+    },
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "AdlerProof.lane_from_correct",
+      "log": "command-20.log"
+    },
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_20b5198a3591154d",
+      "theorem": "AdlerProof.lane_add_correct",
+      "log": "command-22.log"
+    },
+    "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_f321f3834d6c15c0",
+      "theorem": "AdlerProof.lane_rem_correct",
+      "log": "command-24.log"
+    },
+    "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_6c7496278e307fe7",
+      "theorem": "AdlerProof.lane_mul_correct",
+      "log": "command-26.log"
+    }
+  },
+  "lemma_audits": {
+    "chunks_length": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), \u2200 c \u2208 (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n",
+      "theorem": "AdlerProof.exact_chunks_length",
+      "log": "command-28.log"
+    },
+    "chunks_remainder_lt": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), (Aeneas.Std.List.toChunksExact n hn xs).2.length < n",
+      "theorem": "AdlerProof.exact_chunks_remainder_lt",
+      "log": "command-29.log"
+    },
+    "chunks_reconstruct": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} {n : Nat} (hn : 0 < n) (xs : List \u03b1), (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs",
+      "theorem": "AdlerProof.exact_chunks_reconstruct",
+      "log": "command-30.log"
+    }
+  },
+  "frozen_authoring_sha256": {
+    "elicit-proofs/aeneas/Specs.lean": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814",
+    "elicit-proofs/aeneas/Lemmas.lean": "22ceecf972a0b0fd68ced1bee9a08c290c92bfdcfce69fac659ac0c97213ed5d",
+    "elicit-proofs/aeneas/Proofs.lean": "f6be9f0275602e9f7b754bf1d74874ccd2015f0360f6ecb45d318095d7b7c02e",
+    "elicit-proofs/aeneas/contracts.toml": "4b0f83a7cffc04fcd64406378598227d3503dc7e0e26f7ca7f2d21774fe8e020",
+    "elicit-proofs/aeneas/plan.json": "287a6ccbb380aaef14676397816fd8d6e9400a266be859cd692943d8ef083673"
+  },
+  "coverage_note": "Kernel acceptance is relative to the exact emitted proposition. Manually review universal API contracts and conditional/helper results before counting selected goals. This audit is outside the authoring clock."
+}

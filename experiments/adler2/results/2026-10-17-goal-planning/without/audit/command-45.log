@@ -1,0 +1,7 @@
+Verification.projection_fold : ∀ (a b : Verification.Z) (av bv : Fin 4 → Verification.Z)
+  (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    Verification.projection a (b + ↑(4 * cs.length) * a) (Verification.zLanes cs av bv).1
+        (Verification.zLanes cs av bv).2 =
+      Verification.zRun (Verification.projection a b av bv) (List.map Aeneas.Std.Slice.val cs).flatten
+'Verification.projection_fold' depends on axioms: [propext, Classical.choice, Quot.sound]

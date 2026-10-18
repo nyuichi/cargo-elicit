@@ -1,0 +1,8 @@
+Verification.split_updates_correct : ∀ (self : adler2.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑xs ++ ↑ys).length ≤ Aeneas.Std.Usize.max →
+    Aeneas.Std.WP.spec
+      (do
+        let mid ← self.write_slice xs
+        mid.write_slice ys)
+      fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) (↑xs ++ ↑ys)
+'Verification.split_updates_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

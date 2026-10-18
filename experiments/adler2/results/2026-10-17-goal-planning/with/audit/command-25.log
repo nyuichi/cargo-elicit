@@ -1,0 +1,6 @@
+def ElicitContracts.c_f321f3834d6c15c0 : Prop :=
+∀ (self : ElicitGenerated.algo.U32X4) (quotient : Aeneas.Std.U32),
+  (fun self quotient => ↑quotient ≠ 0) self quotient →
+    ∃ result,
+      ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self quotient = Aeneas.Std.Result.ok result ∧
+        (fun self quotient out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! % ↑quotient) self quotient result

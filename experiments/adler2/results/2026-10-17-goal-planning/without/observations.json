@@ -1,0 +1,39 @@
+[
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.0850772089907,
+    "commands": [],
+    "lean_files": [
+      "verification/lakefile.lean",
+      "verification/Loops.lean",
+      "verification/Proofs.lean",
+      "verification/Chunks.lean",
+      "verification/Spec.lean",
+      "verification/generated/Adler2.lean"
+    ],
+    "note": "No cargo-elicit ledger in this arm; theorem declarations alone are not verified coverage.",
+    "elapsed_seconds": 0.00045898399548605084
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1704.2239966990019,
+    "commands": [],
+    "lean_files": [
+      "verification/lakefile.lean",
+      "verification/Tail.lean",
+      "verification/Loops.lean",
+      "verification/Micro.lean",
+      "verification/Algebra.lean",
+      "verification/Outer.lean",
+      "verification/Proofs.lean",
+      "verification/Core.lean",
+      "verification/Chunks.lean",
+      "verification/Spec.lean",
+      "verification/APIs.lean",
+      "verification/selected-model/Adler2.lean",
+      "verification/generated/Adler2.lean"
+    ],
+    "note": "No cargo-elicit ledger in this arm; theorem declarations alone are not verified coverage.",
+    "elapsed_seconds": 0.0007812039984855801
+  }
+]

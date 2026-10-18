@@ -1,0 +1,278 @@
+{
+  "status": "partial result; optimized compute and dependent public recurrence APIs remain unproved",
+  "theorem_roots": [
+    {
+      "rust_api": "adler2::adler32_slice::Function",
+      "proposition": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "proof_status": "not implemented",
+      "preconditions": "none",
+      "contract": "successful execution and scalar Adler recurrence modulo 65521 from (1,0) for every representable byte slice",
+      "ledger_successes": [],
+      "current_stale_flags": [
+        "specification changed"
+      ]
+    },
+    {
+      "rust_api": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "proposition": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "AdlerProof.checksum_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "none; every representable state",
+      "contract": "successful execution and output.val = 65536*self.b.val + self.a.val",
+      "ledger_successes": [
+        {
+          "id": "27-adler2::impl[ff6e69000b04949b]::checksum::Method-0",
+          "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_0a059b8c0885cf07"
+          ]
+        },
+        {
+          "id": "36-adler2::impl[ff6e69000b04949b]::checksum::Method-2",
+          "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_0a059b8c0885cf07"
+          ]
+        }
+      ],
+      "current_stale_flags": []
+    },
+    {
+      "rust_api": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "proposition": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "AdlerProof.new_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "none",
+      "contract": "successful return with a=1,b=0",
+      "ledger_successes": [
+        {
+          "id": "36-adler2::impl[ff6e69000b04949b]::new::Method-2",
+          "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_8055bec449b87b3d"
+          ]
+        }
+      ],
+      "current_stale_flags": [
+        "specification changed"
+      ]
+    },
+    {
+      "rust_api": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "proposition": "ElicitContracts.c_98f3436459f22f5d",
+      "theorem": "AdlerProof.write_slice_correct",
+      "proof_status": "specification only; full loop proof remains",
+      "preconditions": "none; arbitrary u16 halves and representable slice",
+      "contract": "successful execution equals scalar recurrence modulo 65521, normalizing even empty input",
+      "ledger_successes": [],
+      "current_stale_flags": [
+        "specification changed",
+        "specification dependency changed: adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+      ]
+    },
+    {
+      "rust_api": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+      "proposition": "ElicitContracts.c_a058c96663922dc4",
+      "theorem": "AdlerProof.compute_correct",
+      "proof_status": "specification only; full loop proof remains",
+      "preconditions": "none; arbitrary u16 halves and representable slice",
+      "contract": "successful execution equals scalar recurrence modulo 65521, normalizing even empty input",
+      "ledger_successes": [],
+      "current_stale_flags": [
+        "new specification dependency requires review",
+        "specification changed"
+      ]
+    },
+    {
+      "rust_api": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "proposition": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "theorem": "AdlerProof.from_checksum_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "none; every u32",
+      "contract": "successful return; a = sum % 65536 and b = sum / 65536",
+      "ledger_successes": [
+        {
+          "id": "57-adler2::impl[ff6e69000b04949b]::from_checksum::Method-8",
+          "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_9a31b7b9cb8492b0"
+          ]
+        },
+        {
+          "id": "68-adler2::impl[ff6e69000b04949b]::from_checksum::Method-12",
+          "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_9a31b7b9cb8492b0"
+          ]
+        },
+        {
+          "id": "89-adler2::impl[ff6e69000b04949b]::from_checksum::Method-20",
+          "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_9a31b7b9cb8492b0"
+          ]
+        }
+      ],
+      "current_stale_flags": [
+        "specification changed"
+      ]
+    },
+    {
+      "rust_api": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "proposition": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "AdlerProof.lane_from_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "4 \u2264 bytes.length",
+      "contract": "successful conversion; output lane values equal first four byte values",
+      "ledger_successes": [
+        {
+          "id": "68-adler2::algo::impl[16f54fa5277eca59]::from::Method-12",
+          "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_0dfc1ce11e75ed00"
+          ]
+        },
+        {
+          "id": "93-adler2::algo::impl[16f54fa5277eca59]::from::Method-21",
+          "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_0dfc1ce11e75ed00"
+          ]
+        }
+      ],
+      "current_stale_flags": [
+        "specification changed"
+      ]
+    },
+    {
+      "rust_api": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "proposition": "ElicitContracts.c_20b5198a3591154d",
+      "theorem": "AdlerProof.lane_add_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "each lane sum < 2^32",
+      "contract": "successful execution and exact componentwise add",
+      "ledger_successes": [
+        {
+          "id": "86-adler2::algo::impl[a6c2352d886692d1]::add_assign::Method-17",
+          "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_20b5198a3591154d"
+          ]
+        }
+      ],
+      "current_stale_flags": []
+    },
+    {
+      "rust_api": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "proposition": "ElicitContracts.c_f321f3834d6c15c0",
+      "theorem": "AdlerProof.lane_rem_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "nonzero divisor",
+      "contract": "successful execution and exact componentwise rem",
+      "ledger_successes": [
+        {
+          "id": "86-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-17",
+          "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_f321f3834d6c15c0"
+          ]
+        }
+      ],
+      "current_stale_flags": []
+    },
+    {
+      "rust_api": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "proposition": "ElicitContracts.c_6c7496278e307fe7",
+      "theorem": "AdlerProof.lane_mul_correct",
+      "proof_status": "prior official full-contract success; consult current stale flags",
+      "preconditions": "each lane product < 2^32",
+      "contract": "successful execution and exact componentwise mul",
+      "ledger_successes": [
+        {
+          "id": "86-adler2::algo::impl[6142b20c00108117]::mul_assign::Method-17",
+          "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+          "scope": "full_contract",
+          "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+          "obligations": [
+            "ElicitContracts.c_6c7496278e307fe7"
+          ]
+        }
+      ],
+      "current_stale_flags": []
+    }
+  ],
+  "proof_modules": [
+    "elicit-proofs/aeneas/Proofs.lean",
+    "elicit-proofs/aeneas/Lemmas.lean"
+  ],
+  "specification": "elicit-proofs/aeneas/contracts.toml",
+  "plan": "elicit-proofs/aeneas/plan.json",
+  "checker_commands": [
+    "PATH=/workspace/toolchain/cargo/bin:/workspace/toolchain/elan/bin:/workspace/toolchain/aeneas-src/bin:/workspace/toolchain/aeneas-src/charon/charon/target/release:$PATH cargo-elicit agent submit TARGET --revision N --note REASON (each target separately; acceptance checks specifications, scheduler records proof evidence)",
+    "cd /workspace/toolchain/aeneas-src/backends/lean && LEAN_PATH=/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-k23FUI /workspace/toolchain/elan/bin/lake env lean /workspace/elicit-comparison/round5-cases/adler2-with/elicit-proofs/aeneas/Proofs.lean (exit 0 after save_restore_resume addition)",
+    "Official scheduler wrapper diagnostics: .elicit/cache/verification-k23FUI; full result records in .elicit/state.toml"
+  ],
+  "remaining_obligations": [
+    "official wrapper audit for submitted constructor/codec proofs",
+    "original optimized compute including every loop and helper",
+    "write_slice full recurrence",
+    "adler32_slice full recurrence",
+    "split-update equivalence with concatenated-slice representability",
+    "save/restore/resume equivalence"
+  ],
+  "trusted_boundaries": [
+    "pinned Rust/Charon/Aeneas models and Lean kernel; no additional axioms introduced"
+  ],
+  "unverified_out_of_scope": [
+    "generic BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "support_theorems": [
+    "AdlerProof.exact_chunks_length",
+    "AdlerProof.exact_chunks_remainder_lt",
+    "AdlerProof.exact_chunks_reconstruct"
+  ],
+  "codec_roundtrips": {
+    "theorems": [
+      "AdlerProof.checksum_after_from_checksum",
+      "AdlerProof.from_checksum_after_checksum"
+    ],
+    "scope": "all u32 checksums and all representable Adler32 states",
+    "status": "locally checked in Proofs.lean; official audit pending"
+  },
+  "save_restore_resume": {
+    "theorem": "AdlerProof.save_restore_resume",
+    "statement": "for every representable state and suffix slice, the restored continuation has exactly the same Result as direct write_slice",
+    "status": "locally checked; does not independently establish write_slice successful execution"
+  },
+  "split_update": {
+    "status": "attempted, unfinished",
+    "precondition": "(xs.val ++ ys.val).length \u2264 Usize.max",
+    "scratch": ".elicit/cache/probe/SplitAttempt.lean",
+    "remaining": "requires full original write_slice/compute recurrence"
+  }
+}

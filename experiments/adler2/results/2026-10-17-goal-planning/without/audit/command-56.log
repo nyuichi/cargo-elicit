@@ -1,0 +1,2 @@
+Verification.chunk_size : adler2.algo.Adler32.compute.CHUNK_SIZE = Aeneas.Std.Result.ok 22208#usize
+'Verification.chunk_size' depends on axioms: [propext, Classical.choice, Quot.sound]

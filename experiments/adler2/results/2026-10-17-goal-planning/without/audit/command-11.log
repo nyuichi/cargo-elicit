@@ -1,0 +1,110 @@
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:49:4: warning: Unused tactic linter: `solve
+| assumption
+| scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:60:28: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:61:23: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:62:46: warning: Unused tactic linter: `simp [algo.Adler32.compute.MOD]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:63:46: warning: Unused tactic linter: `simp [algo.Adler32.compute.MOD]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:64:23: warning: Unused tactic linter: `simp [algo.Adler32.compute.MOD]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:72:4: warning: Unused tactic linter: `intro j` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:73:4: warning: Unused tactic linter: `have := hbvbound j` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:74:4: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:89:25: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:91:27: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:94:25: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:95:27: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:102:25: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:103:27: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:180:4: warning: Unused tactic linter: `simp only [List.drop_zero]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:181:4: warning: Unused tactic linter: `first
+| exact htailA
+| exact htailB` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:227:4: warning: Unused tactic linter: `change zRun (zRun (toZ (self.a.val, self.b.val)) _) _ = _` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:49:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:60:28: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:61:23: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:62:46: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:63:46: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:64:23: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:72:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:73:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:74:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:89:25: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:91:27: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:94:25: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:95:27: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:102:25: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:103:27: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:180:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-audit/Core.lean:181:4: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+'Verification.compute_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

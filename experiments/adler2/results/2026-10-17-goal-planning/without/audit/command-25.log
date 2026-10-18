@@ -1,0 +1,3 @@
+Verification.normalize_rawStep : ∀ (s : ℕ × ℕ) (x : Aeneas.Std.U8),
+  Verification.normalize (Verification.rawStep s x) = Verification.scalarStep (Verification.normalize s) x
+'Verification.normalize_rawStep' depends on axioms: [propext]

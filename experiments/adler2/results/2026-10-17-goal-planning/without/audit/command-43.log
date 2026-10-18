@@ -1,0 +1,3 @@
+Verification.zRun_scalar : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  Verification.toZ (Verification.scalar s xs) = Verification.zRun (Verification.toZ s) xs
+'Verification.zRun_scalar' depends on axioms: [propext, Quot.sound]

@@ -1,0 +1,283 @@
+{
+  "proof_modules": [
+    {
+      "module": "Proofs",
+      "path": "verification/Proofs.lean",
+      "sha256": "7deb82ade68ad92cb33796950b9aab928b56fd4259d136085b78a23cf44ddc93"
+    },
+    {
+      "module": "Spec",
+      "path": "verification/Spec.lean",
+      "sha256": "e9ebcac25a3534ec14cfd611bde475b72cebc26910219c6375f76e909388d85d"
+    },
+    {
+      "module": "Chunks",
+      "path": "verification/Chunks.lean",
+      "sha256": "96f3ffe22d3ac08abcc0dc4451f3c22e4d62a8673e5e6ca0415e2f665f84f84e"
+    },
+    {
+      "module": "Loops",
+      "path": "verification/Loops.lean",
+      "sha256": "1b2e1f6aec2f8099241ec5c3dbd9a7b4f79f79ca0463070ba8648f19b67d4651"
+    },
+    {
+      "module": "Tail",
+      "path": "verification/Tail.lean",
+      "sha256": "95fd06097ab9a0e131d375dcc0bd19918b3e93ed3648900751ef8caf6014a183"
+    },
+    {
+      "module": "Algebra",
+      "path": "verification/Algebra.lean",
+      "sha256": "c6d2a37c3cb022403e66edabe71b701f43013b6b5927ae7767c334eae758f3ee"
+    },
+    {
+      "module": "Outer",
+      "path": "verification/Outer.lean",
+      "sha256": "32c960253f7412679026ef499c02b08a9136155fe95e4910f73439ebb9a668d9"
+    },
+    {
+      "module": "Micro",
+      "path": "verification/Micro.lean",
+      "sha256": "7dbbfaa1d2fa401e54b245e9911abc6a74b6364a6487477e494fffebdf8407dd"
+    },
+    {
+      "module": "Core",
+      "path": "verification/Core.lean",
+      "sha256": "1709ce66e30aca4bfd009d2d66d08609dbb93c3d8bdbd5dce570d2db8864034e"
+    },
+    {
+      "module": "APIs",
+      "path": "verification/APIs.lean",
+      "sha256": "c817fbba056649cdff77d44544429260489f4ad317b29b64bd1bdbc22d133113"
+    }
+  ],
+  "theorem_roots": [
+    {
+      "name": "Verification.new_correct",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.from_checksum_correct",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.checksum_correct",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.decode_encode",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.encode_decode",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.vector_add",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.vector_rem",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.vector_mul",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.vector_from",
+      "module": "Proofs"
+    },
+    {
+      "name": "Verification.normalize_idempotent",
+      "module": "Spec"
+    },
+    {
+      "name": "Verification.scalar_normalized",
+      "module": "Spec"
+    },
+    {
+      "name": "Verification.scalar_split",
+      "module": "Spec"
+    },
+    {
+      "name": "Verification.normalize_rawStep",
+      "module": "Spec"
+    },
+    {
+      "name": "Verification.normalize_raw",
+      "module": "Spec"
+    },
+    {
+      "name": "Verification.chunks_properties",
+      "module": "Chunks"
+    },
+    {
+      "name": "Verification.chunks_exact_correct",
+      "module": "Chunks"
+    },
+    {
+      "name": "Verification.uniform_flatten_length",
+      "module": "Chunks"
+    },
+    {
+      "name": "Verification.chunks_count",
+      "module": "Chunks"
+    },
+    {
+      "name": "Verification.vector_add_lane",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.vector_from_lane",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.vector_rem_lane",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.vector_mul_lane",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.lane_bound_step",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.vector_loop",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.vector_inner_loop",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.sum_loop",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.sum_loop_b",
+      "module": "Loops"
+    },
+    {
+      "name": "Verification.tail_budget",
+      "module": "Tail"
+    },
+    {
+      "name": "Verification.tail_loop",
+      "module": "Tail"
+    },
+    {
+      "name": "Verification.zRun_raw",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.zRun_scalar",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.projection_step",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.projection_fold",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.zLanes_laneFold",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.lanes_projection",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.vector_loop_projection",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.normalize_equal_of_toZ_equal",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.correction_cast",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.combine_projection",
+      "module": "Algebra"
+    },
+    {
+      "name": "Verification.outer_loop",
+      "module": "Outer"
+    },
+    {
+      "name": "Verification.get_set_one_two",
+      "module": "Micro"
+    },
+    {
+      "name": "Verification.get_set_two_three",
+      "module": "Micro"
+    },
+    {
+      "name": "Verification.vals_four",
+      "module": "Core"
+    },
+    {
+      "name": "Verification.chunk_size",
+      "module": "Core"
+    },
+    {
+      "name": "Verification.compute_correct",
+      "module": "Core"
+    },
+    {
+      "name": "Verification.write_slice_correct",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.adler32_slice_correct",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.split_updates_correct",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.save_restore_resume_correct",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.state_eq_of_values",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.split_equivalence",
+      "module": "APIs"
+    },
+    {
+      "name": "Verification.resume_equivalence",
+      "module": "APIs"
+    }
+  ],
+  "generated_model": "verification/generated/Adler2.lean",
+  "generated_module": "Adler2",
+  "generated_sha256": "4bf75c3aea89c32ee9758b139e2e54a048ed28dcc973a2d87a54b2c08352b4d9",
+  "start_from": [
+    "adler2::Adler32::new",
+    "adler2::Adler32::checksum",
+    "adler2::Adler32::from_checksum",
+    "adler2::Adler32::write_slice",
+    "adler2::adler32_slice"
+  ],
+  "use_lean_modules": false,
+  "inspect_constants": [
+    "Verification.scalar",
+    "Verification.scalarStep",
+    "Verification.normalize",
+    "Verification.compute_correct",
+    "Verification.write_slice_correct",
+    "Verification.adler32_slice_correct"
+  ]
+}

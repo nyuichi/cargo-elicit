@@ -1,0 +1,9 @@
+def ElicitContracts.c_98f3436459f22f5d : Prop :=
+∀ (self : ElicitGenerated.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  True →
+    ∃ result,
+      self.write_slice bytes = Aeneas.Std.Result.ok result ∧
+        (fun self bytes out =>
+            let s := AdlerModel.update ↑self.a ↑self.b ↑bytes;
+            ↑out.a = s.1 ∧ ↑out.b = s.2)
+          self bytes result

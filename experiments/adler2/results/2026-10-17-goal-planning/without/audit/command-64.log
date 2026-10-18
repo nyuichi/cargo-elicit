@@ -1,0 +1,10 @@
+Verification.resume_equivalence : ∀ (self : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec
+    (do
+      let direct ← self.write_slice bytes
+      let sum ← self.checksum
+      let restored ← adler2.Adler32.from_checksum sum
+      let resumed ← restored.write_slice bytes
+      Aeneas.Std.Result.ok (direct, resumed))
+    (Aeneas.Std.WP.uncurry' fun direct resumed => direct = resumed)
+'Verification.resume_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]

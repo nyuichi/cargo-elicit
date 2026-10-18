@@ -1,0 +1,20 @@
+{
+  "source_public_commit": "d2f8e1e7a18707d0e2f6f2e4f44706bfadf1b09b",
+  "source_local_commit": "1db088b5548bd5f195db89891a1a9cba43c1c3ea",
+  "tree": "bc6c150129b5d8ca307cb100ace8e106f93aa259",
+  "installed_binary": "/workspace/toolchain/cargo/bin/cargo-elicit",
+  "binary_sha256": "04468e9e9bf3a384d8186ffd8aca7d91e96d5ed9ecdfda56b77083e01a501a84",
+  "protocol": "docs/experiments/adler2-goal-planning.md",
+  "work_budget_seconds": 1800,
+  "selected_apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "trial_order": [
+    "without",
+    "with"
+  ]
+}

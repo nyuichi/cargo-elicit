@@ -1,0 +1,2023 @@
+{
+  "summary": {
+    "analysis_incomplete": [
+      "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+      "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+    ],
+    "blocked": [
+      {
+        "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      },
+      {
+        "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+        "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+      }
+    ],
+    "checked_lemmas": 3,
+    "complete": false,
+    "functions_methods_impls": {
+      "specified": 4,
+      "total": 19,
+      "verified": 4
+    },
+    "goal": {
+      "apis": [
+        "adler2::adler32_slice::Function",
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "kind": "selected_apis"
+    },
+    "proof_plan": {
+      "evidence": {
+        "chunks_length": {
+          "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Zf55vY",
+          "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+          "outcome": "success",
+          "step_hash": "db060394994b681c9add796c06572a5f3aa3a4eb98f4f60bcb3a03c4873fe46f"
+        },
+        "chunks_reconstruct": {
+          "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Zf55vY",
+          "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+          "outcome": "success",
+          "step_hash": "ca68dc5607d468c13892889663dea4651a44569c33ed1d7bcf277d2d90ef5449"
+        },
+        "chunks_remainder_lt": {
+          "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Zf55vY",
+          "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+          "outcome": "success",
+          "step_hash": "f1da1fffb509d456021ba85c25dc045b42e344c353a5000ee5dfc3fa71c611f4"
+        }
+      },
+      "inspected": {
+        "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015",
+        "adler2::impl[ff6e69000b04949b]::checksum::Method": "14d34a85dfbb23152cab072576f75776cb07a6addbaeedf886f287a06f066a01",
+        "adler2::impl[ff6e69000b04949b]::from_checksum::Method": "b6284ad9d79aee3b944ac1e45ede18c326e91cef3232a4c77c32756a1bce4820",
+        "adler2::impl[ff6e69000b04949b]::new::Method": "b17353120b2b86f38e6ed40f9d84f7ec08274c94382588dbe17dbd8fec22b871",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method": "17f7e637f64ff39d39ed669a59184025e03ab20a793c3506db354251fbf7210a"
+      },
+      "last_checkpoint": "7993017536473f3f65dd34cf99b81ac0844898d142b9acda915d97d0382c6fa3",
+      "steps": [
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "new",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Translated caller initializes state through original Default.default; prove successful return with a=1,b=0 directly.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "checksum",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Caller encodes final state; prove successful output value 65536*b+a for all u16 halves, including bitwise shift/or arithmetic.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+          "id": "decode",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Selected API decodes arbitrary u32; prove low/high halves without normalized-state assumptions, then attempt codec roundtrips.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "lane_from",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Inner translated chunk loop indexes four bytes; require slice length at least four and return the corresponding four u32 values.",
+          "statement": null,
+          "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "lane_add",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Both inner chunk loops add byte lanes and cumulative lanes; prove componentwise addition under per-lane u32 sum bounds.",
+          "statement": null,
+          "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "lane_rem",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Chunk boundaries normalize lanes; prove componentwise remainder for a nonzero divisor.",
+          "statement": null,
+          "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "lane_mul",
+          "kind": "contract",
+          "needs": [],
+          "reason": "Final lane recombination multiplies b lanes by four; prove componentwise product under per-lane u32 product bounds.",
+          "statement": null,
+          "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "compute",
+          "kind": "contract",
+          "needs": [
+            "lane_from",
+            "lane_add",
+            "lane_rem",
+            "lane_mul"
+          ],
+          "reason": "Prove total original optimized body equals scalar fold from arbitrary u16 state, normalized even on empty input. Establish iterator progress, four-lane weighted-sum congruences, bounds through 5552 lane iterations, chunk-boundary preservation, recombination and serial tail. No input-length bound.",
+          "statement": null,
+          "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "write",
+          "kind": "contract",
+          "needs": [
+            "compute"
+          ],
+          "reason": "Lift full compute recurrence to original public mutable-state API; attempt split-update and save/restore/resume laws with explicit concatenated-slice representability.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::adler32_slice::Function",
+          "id": "integrate",
+          "kind": "integrate",
+          "needs": [
+            "new",
+            "write",
+            "checksum"
+          ],
+          "reason": "Compose successful initialization, full arbitrary-input write recurrence, and checksum encoding at original caller.",
+          "statement": null,
+          "target": "adler2::adler32_slice::Function",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "id": "checksum_integrate",
+          "kind": "integrate",
+          "needs": [],
+          "reason": "Direct full checksum proof completed in Proofs.lean: original translated body succeeds and equals 65536*b+a for every representable state. No missing helper prerequisites. Export checksum_spec for caller integration.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::new::Method",
+          "id": "new_integrate",
+          "kind": "integrate",
+          "needs": [],
+          "reason": "Full constructor proof completed by reduction of the original new and transitive Default.default bodies; new_spec exported for the caller. No additional prerequisites.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "id": "chunks_length",
+          "kind": "lemma",
+          "needs": [],
+          "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+          "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), ∀ c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n",
+          "target": null,
+          "theorem": "AdlerProof.exact_chunks_length"
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "id": "chunks_remainder_lt",
+          "kind": "lemma",
+          "needs": [],
+          "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+          "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), (Aeneas.Std.List.toChunksExact n hn xs).2.length < n",
+          "target": null,
+          "theorem": "AdlerProof.exact_chunks_remainder_lt"
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "id": "chunks_reconstruct",
+          "kind": "lemma",
+          "needs": [],
+          "reason": "Needed at original compute: exact four-byte/full-chunk indexing, short remainder cast bounds, and preservation of input order for scalar recurrence.",
+          "statement": "∀ {α : Type} {n : Nat} (hn : 0 < n) (xs : List α), (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs",
+          "target": null,
+          "theorem": "AdlerProof.exact_chunks_reconstruct"
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "id": "compute_for_write",
+          "kind": "contract",
+          "needs": [
+            "chunks_length",
+            "chunks_remainder_lt",
+            "chunks_reconstruct"
+          ],
+          "reason": "Full arbitrary-state recurrence of original compute; use exact chunk decomposition plus four-lane and arithmetic invariants from caller plan.",
+          "statement": null,
+          "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "id": "write_integrate",
+          "kind": "integrate",
+          "needs": [
+            "compute_for_write"
+          ],
+          "reason": "Original write_slice is definitionally the original compute; return to the full public recurrence contract after compute proof.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+          "theorem": null
+        },
+        {
+          "goal": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+          "id": "decode_integrate",
+          "kind": "integrate",
+          "needs": [],
+          "reason": "Full decoder theorem and both codec roundtrips checked locally in Proofs.lean; exact generated contract includes success and low/high-half values for every u32. No helper prerequisite remains.",
+          "statement": null,
+          "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+          "theorem": null
+        }
+      ]
+    },
+    "required": true,
+    "revision": 102,
+    "run": {
+      "active": {
+        "input": "902f469e92de702db094b77af0e4ed8ffcdb094c5e3b6762066b54625196cb3d",
+        "started": 1792280403,
+        "task": {
+          "kind": "integrate",
+          "targets": [
+            "adler2::impl[ff6e69000b04949b]::checksum::Method"
+          ],
+          "work": "checksum_integrate"
+        }
+      },
+      "attempts": {
+        "Integrate:adler2::impl[ff6e69000b04949b]::checksum::Method@checksum_integrate": {
+          "failed": true,
+          "last_input": "902f469e92de702db094b77af0e4ed8ffcdb094c5e3b6762066b54625196cb3d",
+          "last_result": "started, not finalized",
+          "no_progress": 0,
+          "total": 1
+        },
+        "Plan:adler2::adler32_slice::Function": {
+          "failed": false,
+          "last_input": "78c8a5c227d4ae82bf68f4e6b5612a5c9ea52b67afbbecdef5323b5300946a94",
+          "last_result": "completed with accepted work",
+          "no_progress": 1,
+          "total": 2
+        },
+        "Plan:adler2::impl[ff6e69000b04949b]::checksum::Method": {
+          "failed": false,
+          "last_input": "21b1a2b95a7491ebfe7edd9e97ab66f4002243b5ea5c0f6981b4d0d061e4845b",
+          "last_result": "completed with accepted work",
+          "no_progress": 0,
+          "total": 1
+        },
+        "Plan:adler2::impl[ff6e69000b04949b]::new::Method": {
+          "failed": false,
+          "last_input": "860b45b1f227f5698238f669039a7ca15057e46da5dfa87b32aff0decb0c5566",
+          "last_result": "completed with accepted work",
+          "no_progress": 0,
+          "total": 1
+        },
+        "Plan:adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+          "failed": false,
+          "last_input": "ed4868c58375ff0e1305fd9d47b2a7d3e2e930a365b113ca9ff4b72b521e40bc",
+          "last_result": "completed with accepted work",
+          "no_progress": 0,
+          "total": 1
+        },
+        "Verify:adler2::algo::impl[16f54fa5277eca59]::from::Method@lane_from": {
+          "failed": true,
+          "last_input": "4e8653b51f6277f2ff6fce68c20c9b33bcd68ecee55ce470eb97260dd11e1ad5",
+          "last_result": "unresolved; same task/input suppressed",
+          "no_progress": 1,
+          "total": 2
+        },
+        "Verify:adler2::algo::impl[a6c2352d886692d1]::add_assign::Method@lane_add": {
+          "failed": false,
+          "last_input": "dfe37fbe9093314e04243855d4b71ddc71255e0f7af120cbd0562ab122cc80c5",
+          "last_result": "completed with accepted work",
+          "no_progress": 0,
+          "total": 1
+        },
+        "Verify:adler2::impl[ff6e69000b04949b]::from_checksum::Method@decode": {
+          "failed": true,
+          "last_input": "b35bc85c268e2f778dfc09f31ffc3d552e8d5eb5a2110c1608306084e8343cc5",
+          "last_result": "unresolved; same task/input suppressed",
+          "no_progress": 1,
+          "total": 2
+        }
+      },
+      "cached_input_tokens": 12340608,
+      "elapsed_ms": 1650034,
+      "input_tokens": 12508110,
+      "last_result": "unresolved; same task/input suppressed",
+      "output_tokens": 32057,
+      "thread": "01a14c23-7029-7db2-a280-75054c1e474a"
+    },
+    "scope": {
+      "all_features": false,
+      "features": [],
+      "local_roots": [
+        "/workspace/elicit-comparison/round5-cases/adler2-with"
+      ],
+      "manifest_path": "/workspace/elicit-comparison/round5-cases/adler2-with/Cargo.toml",
+      "no_default_features": false,
+      "package": "adler2",
+      "requested_target": null,
+      "resolved_features": [
+        "default",
+        "std"
+      ],
+      "target": "x86_64-unknown-linux-gnu",
+      "target_directory": "/workspace/elicit-comparison/round5-cases/adler2-with/target",
+      "workspace_root": "/workspace/elicit-comparison/round5-cases/adler2-with"
+    },
+    "tool": "aeneas",
+    "types_traits": {
+      "specified": 0,
+      "total": 2
+    }
+  },
+  "targets": [
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::Adler32::Struct",
+      "implementation_changed": false,
+      "kind": "struct",
+      "line": 87,
+      "model_base_hash": "4545e9a2319801574ec7fb63b33cb8cb45aaecef671753509d2be89ce9351f20",
+      "model_bindings": [
+        "@rust_model",
+        "@tcb",
+        "decl:AdlerModel.update"
+      ],
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:AdlerModel.update": "4a09097e83e01dae738c8112c002be1f0143b825875350d4c3a100acf3b5cf84"
+      },
+      "name": "Adler32",
+      "notes": [],
+      "original_body": "00fd4b69cd296c558005a4724924de5816bcf8e4067fce8e61903a5269fc7d0b",
+      "removed": false,
+      "required_units": [],
+      "source_hash": "58b0f9283ab6b7be92fc750b5829eb6089081a552d3e472604943a7beeac01c2",
+      "spec_hash": "9d2eaf76a54e6ee6a5102d32117d4ed903cd794ed8facafad373e703bd207ad3",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::adler32::Function",
+      "implementation_changed": false,
+      "kind": "function",
+      "line": 206,
+      "model_base_hash": "04a348822946cfa9a83022e742edffae379f75268d2296ae66ce4e1f66327c15",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "adler32",
+      "notes": [],
+      "original_body": "ebc9aabe7960ddd1db2fc2093f651b8147289232da5a27a24d4c89ea51775982",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "0024fcf38cca85f0b0d1a295b1d20585d5bd21005525df02fcf4c71afc253b3c",
+      "spec_hash": "3d915fa98c5e06db74dc99b93ae572320df3bdffec0b9a9eb2d44b913af5156a",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "adler2::impl[ff6e69000b04949b]::new::Method",
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::adler32_slice::Function",
+      "implementation_changed": false,
+      "kind": "function",
+      "line": 170,
+      "model_base_hash": "0d8a1bc90d4ec260ddbe56e195a082c7403b19f694420ca7d91d6ca966af2b21",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_8484fdd92cfcd3e7": "5e661e6d05970e60acceea6839e889a8a73a2f115568c69cdb95959154ffd67b"
+      },
+      "name": "adler32_slice",
+      "notes": [
+        "Full scalar recurrence contract and original-model inspection",
+        "Probe caller proof to identify missing dependencies",
+        "Preserve original translation for focused proof plan"
+      ],
+      "original_body": "27711f33e6d86cf369360f8e75ac68a4d7e584091bdd42cfd2d1f8fda90b0555",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "97d4504776e2772c6da9e92efd39b035f87ced72c2f6b1c51267fa8786f28c5f",
+      "spec_hash": "4393450d158a707283524da3ff3d10b4335833f944c76cbba91e883e76d6068a",
+      "specified": true,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-bXGSWO",
+              "phase": "audit"
+            },
+            "elapsed_ms": 15598,
+            "id": "27-adler2::adler32_slice::Function-0",
+            "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::adler32_slice::Function",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-ABQ6lw",
+              "phase": "audit"
+            },
+            "elapsed_ms": 17741,
+            "id": "36-adler2::adler32_slice::Function-2",
+            "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::adler32_slice::Function",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::U32X4::Struct",
+      "implementation_changed": false,
+      "kind": "struct",
+      "line": 112,
+      "model_base_hash": "831f24ca5937d30263723eb4342d56596d57c1ffc7f4d3474e9623d35b0bbf17",
+      "model_bindings": [
+        "@rust_model",
+        "@tcb",
+        "decl:AdlerModel.update"
+      ],
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:AdlerModel.update": "4a09097e83e01dae738c8112c002be1f0143b825875350d4c3a100acf3b5cf84"
+      },
+      "name": "U32X4",
+      "notes": [],
+      "original_body": "f4aa7ab345524d0472bb2185aad6efca13408739a0503cf06be54c1853231faf",
+      "removed": false,
+      "required_units": [],
+      "source_hash": "d35cb9265b34caa4947340633fa9980a02e097c51ffb32730ec706445971d5fb",
+      "spec_hash": "4f49b8ae63afe2c03c3d6999a4f644e2f339cdae77f96fdd9e4fbdd2d54b6cb9",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::from"
+      ],
+      "blocker": null,
+      "body_hash": "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea",
+      "calls": [
+        "adler2::algo::U32X4::Struct"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 116,
+      "model_base_hash": "95403d9637eb42ca732fb02238b971aca6b8b06e01b8acd6f05274d8574d50af",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_0dfc1ce11e75ed00": "b0aa912145372e30b200d7f5c53f4beb3fb11d4626b0944cf8578c61a8e33ad0"
+      },
+      "name": "from",
+      "notes": [
+        "Complete original lane conversion proof with all four bounds/conversions; exports lane_from_spec for optimized chunk caller"
+      ],
+      "original_body": "768f0b873a34ba78e9f84c0bb1a8db6ef6ff21fa6fc468dbcac178ef7f8480ea",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "4fb1338e13355312d8a5ba10ccd12839d66100e152cd3f2e6b28d69e5f2358df",
+      "spec_hash": "18c850113fbd8b917825730232e42d47360177e5737067f4b584214046883520",
+      "specified": true,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-fhCaim",
+              "phase": "audit"
+            },
+            "elapsed_ms": 32889,
+            "id": "62-adler2::algo::impl[16f54fa5277eca59]::from::Method-11",
+            "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 35200,
+            "id": "68-adler2::algo::impl[16f54fa5277eca59]::from::Method-12",
+            "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+            "obligations": [
+              "ElicitContracts.c_0dfc1ce11e75ed00"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44211,
+            "id": "93-adler2::algo::impl[16f54fa5277eca59]::from::Method-21",
+            "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+            "obligations": [
+              "ElicitContracts.c_0dfc1ce11e75ed00"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 137,
+      "model_base_hash": "ae5e3c15fb05e3a97b16f0be45fa2a4380cf5de85b6ca77e9ae3723a71c5e811",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "impl[334e2f0b7170a532]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "f639ac78d3dfda9f7b13291c795f9fdc0518fb5d0f68618baa0cf3775cea04ae",
+      "spec_hash": "6a626b84b713362d082f6070f56b058dac4a77a6541cc4bde99e95720a317af9",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::rem_assign"
+      ],
+      "blocker": null,
+      "body_hash": "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 139,
+      "model_base_hash": "a7c0597755f54c4709b11c8695a05fe5ff126c40b1732e6133772b41b385cecc",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_f321f3834d6c15c0": "5a867c23f6fae9160a7b9c892aa07fd7f11b3b40ce9f7d1a2eeabb816261e2c0"
+      },
+      "name": "rem_assign",
+      "notes": [
+        "Full componentwise remainder proof for nonzero divisor; original four indexed updates covered; lane_rem_spec exported"
+      ],
+      "original_body": "719051769a10425a5f2e7468747246b146f45eb663bfe98f91089f151d4e196b",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "66db39952f9f71f02df8e55372adaafe962cfab79ef72d5093873b017a71cbd8",
+      "spec_hash": "a14d0a98fa0fdc9b1e2b106017d697661b2d9be060e91aa0d02ed62df8473dbf",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44667,
+            "id": "86-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-17",
+            "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+            "obligations": [
+              "ElicitContracts.c_f321f3834d6c15c0"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44195,
+            "id": "101-adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method-22",
+            "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+            "obligations": [
+              "ElicitContracts.c_f321f3834d6c15c0"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": true,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 147,
+      "model_base_hash": "e13cfd422449790438b220015b71ed2c3bcffad197302bd9ec7c9cc892fa5a29",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "impl[6142b20c00108117]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b2eeee3e5d2da95501ada435b5deb639911e17793bddcb7ac15432cdc5bb46c2",
+      "spec_hash": "770a4a3031e3a8733fe2bed36a87ba0436c9396a2014379ac9a1724d8a847aba",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::mul_assign"
+      ],
+      "blocker": null,
+      "body_hash": "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 149,
+      "model_base_hash": "11f391e5a6f3337ed49f971ebaa8fe0d95d61039c62bb8b827a4c305af14c7b7",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_6c7496278e307fe7": "140433ace4e3a44088bdf9def9770c2c6a303dcd04ba4d6df0a719bc0284f63e"
+      },
+      "name": "mul_assign",
+      "notes": [
+        "Full bounded componentwise multiplication proof covers original four index/product/update steps; lane_mul_spec exported"
+      ],
+      "original_body": "914e7935bb4fdeea9e2ae6f00055bda3b1d643801b5f7cfc797e3ad20412b154",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "e8e926372320ab99a0b7769523ebf530467a0cce58d99ef4a556ba1dc29345f0",
+      "spec_hash": "ee60863202cb6fb8a04d4c2e8194b50f1ddd70d99bfaf33e3b56c9fa467bc6ab",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44667,
+            "id": "86-adler2::algo::impl[6142b20c00108117]::mul_assign::Method-17",
+            "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+            "obligations": [
+              "ElicitContracts.c_6c7496278e307fe7"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44195,
+            "id": "101-adler2::algo::impl[6142b20c00108117]::mul_assign::Method-22",
+            "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+            "obligations": [
+              "ElicitContracts.c_6c7496278e307fe7"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[6142b20c00108117]::mul_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": true,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 126,
+      "model_base_hash": "da93794253f4fd76f42dfa3bd4b7801dcc6cd638d778bf3e3fa2362a4d6e1b0a",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "impl[a6c2352d886692d1]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b967d2cd18f50044f492de85c8b56fe1fe158369080a8ad734ceddb0de347d0a",
+      "spec_hash": "4a3bc42e55d9f4e8a138858487a31d7cbade985e995997a22bf9755429e6adb9",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "U32X4::add_assign"
+      ],
+      "blocker": null,
+      "body_hash": "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 128,
+      "model_base_hash": "275d614553a4955abab0e5197998efa7eaefcce794a5a47e6a2832cfbb06abd8",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_20b5198a3591154d": "600b9b779dd5c2dcbb4cda5559421bec8e404cf10f1c0beacd2399a4671429d5"
+      },
+      "name": "add_assign",
+      "notes": [
+        "Full bounded componentwise addition proof covers original four index/add/update steps; lane_add_spec exported"
+      ],
+      "original_body": "1bf55755a149481d22a31d4298437eb152ef708e458a38205549b2b4b42ca8e0",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "b97cc042f57de2ad09112f844e27619c0efc689108b4dbc9e75b348812aa8f65",
+      "spec_hash": "a0a47afceab3c02c7dc9641678f2c11fc4ab9bde4cd06514d1d7c2e6328dab10",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-Cbs9KH",
+              "phase": "audit"
+            },
+            "elapsed_ms": 34264,
+            "id": "73-adler2::algo::impl[a6c2352d886692d1]::add_assign::Method-16",
+            "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44667,
+            "id": "86-adler2::algo::impl[a6c2352d886692d1]::add_assign::Method-17",
+            "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+            "obligations": [
+              "ElicitContracts.c_20b5198a3591154d"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44195,
+            "id": "101-adler2::algo::impl[a6c2352d886692d1]::add_assign::Method-22",
+            "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+            "obligations": [
+              "ElicitContracts.c_20b5198a3591154d"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": true,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::compute"
+      ],
+      "blocker": null,
+      "body_hash": "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7",
+      "calls": [
+        "adler2::algo::U32X4::Struct",
+        "adler2::algo::impl[16f54fa5277eca59]::from::Method"
+      ],
+      "closed_primitive": false,
+      "column": 18,
+      "dependencies": {
+        "adler2::algo::impl[334e2f0b7170a532]::rem_assign::Method": "a14d0a98fa0fdc9b1e2b106017d697661b2d9be060e91aa0d02ed62df8473dbf",
+        "adler2::algo::impl[6142b20c00108117]::mul_assign::Method": "ee60863202cb6fb8a04d4c2e8194b50f1ddd70d99bfaf33e3b56c9fa467bc6ab",
+        "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": "a0a47afceab3c02c7dc9641678f2c11fc4ab9bde4cd06514d1d7c2e6328dab10"
+      },
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/algo.rs",
+      "id": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 5,
+      "model_base_hash": "f730b45ff9b4099662a2e3168e27771ad29365366232287d3732a14c1493ba47",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:AdlerModel.update": "4a09097e83e01dae738c8112c002be1f0143b825875350d4c3a100acf3b5cf84",
+        "decl:ElicitContracts.c_a058c96663922dc4": "4dc6ec2869cff64ec722bee08efca0e09afd36710d83553e1abfad05977d12d6"
+      },
+      "name": "compute",
+      "notes": [
+        "Full arbitrary-state recurrence contract retained; exact chunk support lemmas checkpointed; optimized loop proof outstanding"
+      ],
+      "original_body": "e536728a113d043e89852476457e44c5be2a1721f163c701ebde3679bfe2edf7",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "606f4c14f15bae2bfe2f969661aa94e0a5a5407ae42814400964a6c9d4fe9391",
+      "spec_hash": "fa00a9b17ff839ce87fffe3269d007df2d0ba4b69820de8608917882a442fbd8",
+      "specified": true,
+      "stale": [
+        "new specification dependency requires review",
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-uYzYuN",
+              "phase": "audit"
+            },
+            "elapsed_ms": 31000,
+            "id": "45-adler2::algo::impl[ff6e69000b04949b]::compute::Method-5",
+            "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-aW5zaR",
+              "phase": "audit"
+            },
+            "elapsed_ms": 34257,
+            "id": "59-adler2::algo::impl[ff6e69000b04949b]::compute::Method-9",
+            "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-TycjBO",
+              "phase": "audit"
+            },
+            "elapsed_ms": 34693,
+            "id": "70-adler2::algo::impl[ff6e69000b04949b]::compute::Method-14",
+            "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 147,
+      "model_base_hash": "88790936b3dc505ce05656980c29cadb4d1e04209af00ef7a925fcc7886ba4b4",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "impl[6f07fcfab3542315]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "44fff493a12db58fbe145c83b0ac6bf2d2469e3ee2205b012aca95c476ecb538",
+      "spec_hash": "185533fc7d76e9629d793a34a68c1789457d702208bc28e668df9bb4257a7f99",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::default"
+      ],
+      "blocker": null,
+      "body_hash": "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[6f07fcfab3542315]::default::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 149,
+      "model_base_hash": "83b4323ac720bcef37d59e3c780c2e3a7dd3f5562e23b42a3c1bd99dd46ad7dd",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "default",
+      "notes": [],
+      "original_body": "f3716dae358a7b383dc5967a0bc9f1cab9f3986ea230b45453cd870f101b90de",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "400cc3fbd43f61f54249cf655e813cad1afe405c5579f115d2475d84284bbc3e",
+      "spec_hash": "73774913048c4264a719b99ae87e2537d71d9e5e31a4db3a2f67b81d6242b3f1",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [],
+      "blocker": null,
+      "body_hash": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 0,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "implementation_changed": false,
+      "kind": "trait_impl",
+      "line": 154,
+      "model_base_hash": "61a6d248d14c1098198fcf637b164865cceb15f3ee7ebf4a1701ac636c602ee6",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "impl[c15b331ca2ffd1e4]",
+      "notes": [],
+      "original_body": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "a2fe3639f2d37af3db4cceb10328cc43b72d1330910b83c83dbe074f36011f65",
+      "spec_hash": "3a40e8385fa4d385827de687ea7c8716a9dfac0773cae0d59589b69b5e85c560",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations",
+      "verification_results": [],
+      "verified": false,
+      "visibility": "internal"
+    },
+    {
+      "aliases": [
+        "Adler32::finish"
+      ],
+      "blocker": null,
+      "body_hash": "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::checksum::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::finish::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 156,
+      "model_base_hash": "27686e03bddb80afe948452c161254df75893d627b6538ecd666e95dc9476419",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "finish",
+      "notes": [],
+      "original_body": "4f15cf621db7881f6fdfa25e01677c52d896455c5fdea05d1245b550f3507e8f",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "1505a87e2f073c6988c54eb4df9ad54d253f2346c37ca26fe21755b67f63c8db",
+      "spec_hash": "a241f09a2118fa700914e3af3649024ba621c4e4ce9cff89ca578c8f782596ef",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::write"
+      ],
+      "blocker": null,
+      "body_hash": "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9",
+      "calls": [
+        "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+      ],
+      "closed_primitive": false,
+      "column": 7,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[c15b331ca2ffd1e4]::write::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 160,
+      "model_base_hash": "0c84ea97c193a09ad45bf5ff34d320acdff3100b7a7fe01901e6ce0ae41b6ba8",
+      "model_bindings": null,
+      "model_inputs": {
+        "@source": "f850a35f793126d42af74abd6307213261621f2aef409fdd79578afa667a9814"
+      },
+      "name": "write",
+      "notes": [],
+      "original_body": "9d243dbe62e57f67ba18376fa7c674e900c69c455d704b416e3bd86cb88c3bc9",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "27a4bf64e91abdf2c3baa4582bb5805612b644b7578df5a188ed67a9b5694ecf",
+      "spec_hash": "ad3d44cf4dc3ac4e20783f9d2ab1d1315cbebfd765d2f67e05bad7385583b2a2",
+      "specified": false,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::checksum"
+      ],
+      "blocker": null,
+      "body_hash": "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 134,
+      "model_base_hash": "82c88df97b0f61963f7f059b69f61c059e50ce1ac1616cd970c86c9f4c665424",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_0a059b8c0885cf07": "c80824977f937857d96665a2ec7ff625f98dc460b4a27335263d7bd763025b3e"
+      },
+      "name": "checksum",
+      "notes": [
+        "Full arbitrary-state checksum execution theorem; checked local body proof; ready for official kernel and axiom audit",
+        "Reintegrate unchanged complete arbitrary-state checksum theorem; full Proofs.lean also checks codec roundtrips and exact save/restore continuation equality"
+      ],
+      "original_body": "e9e3f4fc8165ca70aac3e2a4aad3037edb3aa8a366b6d43669150ca98db69e2d",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "9b63a8ddf10b9bc46cd81b8c1f64807166e8889bb8ea02f88e1012a843af9563",
+      "spec_hash": "786828d0f8b1a75b4d37dc97d09b05bb1f8b9ce1589a711dd3e3c78c3061406f",
+      "specified": true,
+      "stale": [],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 15598,
+            "id": "27-adler2::impl[ff6e69000b04949b]::checksum::Method-0",
+            "input": "5e2085c0e121a1d4388d255dcf94e02baad12e74895d960a405584b585cd86eb",
+            "obligations": [
+              "ElicitContracts.c_0a059b8c0885cf07"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 17741,
+            "id": "36-adler2::impl[ff6e69000b04949b]::checksum::Method-2",
+            "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+            "obligations": [
+              "ElicitContracts.c_0a059b8c0885cf07"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44195,
+            "id": "101-adler2::impl[ff6e69000b04949b]::checksum::Method-22",
+            "input": "cad5086935fc06b0ba76ecaeee6dfe9463286e701efcae12e124c9abaa663db9",
+            "obligations": [
+              "ElicitContracts.c_0a059b8c0885cf07"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": false
+        }
+      ],
+      "verified": true,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::from_checksum"
+      ],
+      "blocker": null,
+      "body_hash": "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a",
+      "calls": [],
+      "closed_primitive": false,
+      "column": 17,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 125,
+      "model_base_hash": "275997402f4c8ecb6610d618bcc28eed8ecfab7d5a8a2ca12b7d35c3539839df",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_9a31b7b9cb8492b0": "66374d014ee5184455923ace3af20c2c72d664639ea980dec293559bbfdccde3"
+      },
+      "name": "from_checksum",
+      "notes": [
+        "Full u32 decoder contract proved from original cast/shift body; both codec roundtrips proved without normalized-state assumptions"
+      ],
+      "original_body": "a8b720e5bdb5cd0e6edb951b3fa00f43a31d70cf7c407f2dbed5cf9e124dda1a",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "9b482623374061248426ababc357fcb2462d89278a7a8658efb415d3e808bc19",
+      "spec_hash": "8d63021085250d577dd96336e2c46722a480517138cbed6c6ab33b70e5c8c85a",
+      "specified": true,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-jc6aks",
+              "phase": "audit"
+            },
+            "elapsed_ms": 30375,
+            "id": "48-adler2::impl[ff6e69000b04949b]::from_checksum::Method-7",
+            "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 34072,
+            "id": "57-adler2::impl[ff6e69000b04949b]::from_checksum::Method-8",
+            "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+            "obligations": [
+              "ElicitContracts.c_9a31b7b9cb8492b0"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 35204,
+            "id": "68-adler2::impl[ff6e69000b04949b]::from_checksum::Method-12",
+            "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+            "obligations": [
+              "ElicitContracts.c_9a31b7b9cb8492b0"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 44426,
+            "id": "89-adler2::impl[ff6e69000b04949b]::from_checksum::Method-20",
+            "input": "e4b1353608a73683dc1b49ced91b294cc444cd8ea08873a3ff77b6ddc987b094",
+            "obligations": [
+              "ElicitContracts.c_9a31b7b9cb8492b0"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::new"
+      ],
+      "blocker": null,
+      "body_hash": "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2",
+      "calls": [
+        "adler2::impl[6f07fcfab3542315]::default::Method"
+      ],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {},
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 95,
+      "model_base_hash": "d8b97b6fd2601317430476e3a403a5d80be3328318612133fa613c4243d3a469",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:ElicitContracts.c_8055bec449b87b3d": "2c09e6e6f3eabc6ef15d1b1ca484b3bfaac2efb776e97b3d076f70a8391e22a6"
+      },
+      "name": "new",
+      "notes": [
+        "Full new contract proved by reduction of original new and Default.default bodies; caller-facing new_spec exported"
+      ],
+      "original_body": "d33f9ff6c3d099b99dc6ebce44a5abd76bb9c2a8fc686a27ce71e255d94688e2",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "49ea3906b29d132d531be9932d6f18e45c6d5142908277cc78d56d45b68c6094",
+      "spec_hash": "b9df347d673213cb5045c263038f3535ddf9165f95ddf6fdaa0a60f20a036ec1",
+      "specified": true,
+      "stale": [
+        "specification changed"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": null,
+            "elapsed_ms": 17741,
+            "id": "36-adler2::impl[ff6e69000b04949b]::new::Method-2",
+            "input": "0e65ac10fb251c4a93c292b1452f914c8b14c432a9612423448f170a12d72adf",
+            "obligations": [
+              "ElicitContracts.c_8055bec449b87b3d"
+            ],
+            "outcome": "success",
+            "restrictions": [],
+            "reusable": true,
+            "scope": "full_contract",
+            "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+            "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    },
+    {
+      "aliases": [
+        "Adler32::write_slice"
+      ],
+      "blocker": null,
+      "body_hash": "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a",
+      "calls": [
+        "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+      ],
+      "closed_primitive": false,
+      "column": 11,
+      "dependencies": {
+        "adler2::algo::impl[ff6e69000b04949b]::compute::Method": "fa00a9b17ff839ce87fffe3269d007df2d0ba4b69820de8608917882a442fbd8"
+      },
+      "file": "/workspace/elicit-comparison/round5-cases/adler2-with/src/lib.rs",
+      "id": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "implementation_changed": false,
+      "kind": "method",
+      "line": 142,
+      "model_base_hash": "a5d91760c25405a4f228ca64c730a11ec44808b86970a38f83ef66697202429a",
+      "model_bindings": null,
+      "model_inputs": {
+        "@rust_model": "aca815ddae0dbd152a350eb56c3d1d52b252c21b639befdc5d0151b83fec6bc8",
+        "@tcb": "a27c7bf8b5f1b834210bdfce3626d05df48adc6a690e28a330433c9f5b9b822e",
+        "decl:AdlerModel.update": "4a09097e83e01dae738c8112c002be1f0143b825875350d4c3a100acf3b5cf84",
+        "decl:ElicitContracts.c_98f3436459f22f5d": "6d6300675e373719639e139c8958aa1ab730cf0e7449688ba3df6e558c11c9eb"
+      },
+      "name": "write_slice",
+      "notes": [
+        "Full arbitrary-state recurrence contract, including empty normalization; translated body reaches compute chunk-loop obligations"
+      ],
+      "original_body": "394fa1a6a5f273dfb8681062f27c28a7f8df047c68f323bd44306834d1619a0a",
+      "removed": false,
+      "required_units": [
+        "contract"
+      ],
+      "source_hash": "252e2ca113cca57fd2be28243932d08843c232df559340ca3132d8f75075e0b6",
+      "spec_hash": "3e187ae638d5d450a119eea9e0b7197bda47cfb589af3e2e049e8aefe32dca97",
+      "specified": true,
+      "stale": [
+        "specification changed",
+        "specification dependency changed: adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+      ],
+      "trusted": false,
+      "unresolved_calls": [],
+      "unsupported": null,
+      "verification_results": [
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-uYzYuN",
+              "phase": "audit"
+            },
+            "elapsed_ms": 31000,
+            "id": "45-adler2::impl[ff6e69000b04949b]::write_slice::Method-5",
+            "input": "39ca33954cd28cd1b1ac35cdcb14c2535059708eb690011166ed82ccbe6ba995",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-aW5zaR",
+              "phase": "audit"
+            },
+            "elapsed_ms": 34257,
+            "id": "59-adler2::impl[ff6e69000b04949b]::write_slice::Method-9",
+            "input": "60a568f568819b0d03194f1268f7149e8383e018fd885cce326cfef74e3a14fa",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        },
+        {
+          "result": {
+            "assumptions": [],
+            "diagnostic": {
+              "cache": "/workspace/elicit-comparison/round5-cases/adler2-with/.elicit/cache/verification-TycjBO",
+              "phase": "audit"
+            },
+            "elapsed_ms": 34693,
+            "id": "70-adler2::impl[ff6e69000b04949b]::write_slice::Method-14",
+            "input": "cb457789055bffa5296456276f72b254ae0eae56e5af40f3aac5883c73e7a4ab",
+            "obligations": [],
+            "outcome": "unresolved",
+            "restrictions": [],
+            "reusable": false,
+            "scope": "unknown",
+            "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+            "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+            "tool": "aeneas",
+            "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+            "trusted_base": [
+              "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+              "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+            ],
+            "units": [
+              "contract"
+            ]
+          },
+          "stale": true
+        }
+      ],
+      "verified": false,
+      "visibility": "public"
+    }
+  ]
+}

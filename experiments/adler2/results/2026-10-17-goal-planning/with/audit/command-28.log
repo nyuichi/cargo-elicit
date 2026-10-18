@@ -1,0 +1,6 @@
+@AdlerProof.exact_chunks_length : ∀ {α : Type} {n : ℕ} (hn : 0 < n) (xs c : List α),
+  c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1 → c.length = n
+theorem IndependentLemma_12 : ∀ {α : Type} {n : ℕ} (hn : 0 < n) (xs c : List α),
+  c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1 → c.length = n :=
+fun {α} {n} => AdlerProof.exact_chunks_length
+'IndependentLemma_12' depends on axioms: [propext, Classical.choice, Quot.sound]

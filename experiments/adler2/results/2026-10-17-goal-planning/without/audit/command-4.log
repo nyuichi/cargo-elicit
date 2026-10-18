@@ -1,0 +1,9 @@
+/workspace/elicit-comparison/round5-baseline-audit/Spec.lean:46:53: warning: This simp argument is unused:
+  Nat.mod_mod
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [normalize, rawStep, scalarStep, Nat.add_mod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Verification.scalar_split' depends on axioms: [propext, Quot.sound]
+'Verification.normalize_raw' depends on axioms: [propext]

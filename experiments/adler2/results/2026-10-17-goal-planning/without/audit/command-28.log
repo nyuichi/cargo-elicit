@@ -1,0 +1,6 @@
+Verification.chunks_exact_correct : ∀ (xs : Aeneas.Std.Slice Aeneas.Std.U8) (n : Aeneas.Std.Usize),
+  ↑n > 0 →
+    Aeneas.Std.WP.spec (Aeneas.Std.core.slice.Slice.chunks_exact xs n) fun it =>
+      (∀ c ∈ it.chunks, (↑c).length = ↑n) ∧
+        (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = ↑xs ∧ (↑it.remainder).length < ↑n
+'Verification.chunks_exact_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

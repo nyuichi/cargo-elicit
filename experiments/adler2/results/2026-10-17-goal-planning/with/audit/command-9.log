@@ -1,0 +1,14 @@
+def ElicitContracts.c_8484fdd92cfcd3e7 : Prop :=
+∀ (data : Aeneas.Std.Slice Aeneas.Std.U8),
+  True →
+    ∃ result,
+      ElicitGenerated.adler32_slice data = Aeneas.Std.Result.ok result ∧
+        (fun data out =>
+            let s :=
+              List.foldl
+                (fun s x =>
+                  let a := (s.1 + ↑x) % 65521;
+                  (a, (s.2 + a) % 65521))
+                (1, 0) ↑data;
+            ↑out = 65536 * s.2 + s.1)
+          data result

@@ -1,0 +1,13 @@
+Verification.vector_loop_projection : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem : Aeneas.Std.Slice Aeneas.Std.U8) (av bv : adler2.algo.U32X4) (a b : Verification.Z),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    cs.length ≤ 5552 →
+      Verification.laneBounds 0 av bv →
+        Aeneas.Std.WP.spec (adler2.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } av bv)
+          (Aeneas.Std.WP.uncurry' fun av' bv' =>
+            Verification.laneBounds cs.length av' bv' ∧
+              Verification.projection a (b + ↑(4 * cs.length) * a) (Verification.vectorZ av')
+                  (Verification.vectorZ bv') =
+                Verification.zRun (Verification.projection a b (Verification.vectorZ av) (Verification.vectorZ bv))
+                  (List.map Aeneas.Std.Slice.val cs).flatten)
+'Verification.vector_loop_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
