@@ -1,0 +1,30 @@
+{
+  "source_public_commit": "5aae2883ca5290cfabddd7fbc1cd05c9cbe87633",
+  "source_local_commit": "1f940b06e7e70308360dc69715d5efb3bae6aabb",
+  "tree": "c66c1228caefcb58a6de5a77dde30aa9ba3cf9cb",
+  "installed_binary": "/workspace/toolchain/cargo/bin/cargo-elicit",
+  "binary_sha256": "4121c24b8808f3ccf96c64b37bfa7149b6e4125ab5d993b6bcefa8fc799a667d",
+  "protocol": "docs/experiments/adler2-iteration-7.md",
+  "work_budget_seconds": 1800,
+  "selected_apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "trial_order": [
+    "with"
+  ],
+  "reference": "Retained round5 independently audited ordinary arm, not a fresh matched pair",
+  "validation": {
+    "regular_cases": 80,
+    "native_checkpoint_seconds": 323.89,
+    "native_mixed_seconds": 94.6,
+    "fmt": "passed",
+    "clippy": "passed",
+    "msrv_1_86": "passed",
+    "original_upstream_unit_tests": 6,
+    "original_upstream_doc_tests": 4
+  }
+}

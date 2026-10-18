@@ -1,0 +1,46 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.65s
+     Running tests/ledger.rs (target/debug/deps/ledger-d97cf7028e30378a)
+
+running 38 tests
+test assumptions_and_restrictions_are_not_infrastructure ... ok
+test additional_diagnostics_and_regressions_are_not_forward_progress ... ok
+test approved_specification_recovers_after_transient_metadata_fallback ... ok
+test approval_recovery_does_not_accept_changed_contract_or_erase_runtime_flags ... ok
+test cannot_shrink_denominator_by_reclassifying ... ok
+test atomic_ledger_revision_and_lock_conflicts ... ok
+test callee_first_and_scc_order ... ok
+test deleted_definitions_retain_history ... ok
+test cycles_cannot_discharge_each_other ... ok
+test checked_lemma_is_progress_but_never_api_completion_and_edits_invalidate_it ... ok
+test dependency_recovery_requires_exact_approved_identity ... ok
+test every_required_unit_needed ... ok
+test direct_dependency_propagation_stops_at_unchanged_spec ... ok
+test equal_rank_components_use_id_order ... ok
+test failed_prerequisite_returns_to_bounded_replanning ... ok
+test full_coverage_only ... ok
+test fallback_model_stamps_continue_tracking_changes_after_a_bound_name_disappears ... ok
+test finite_attempts_survive_changing_helpers ... ok
+test legacy_stale_state_does_not_invent_an_approval ... ok
+test issue_blocks_until_semantic_context_changes ... ok
+test notes_do_not_invalidate_proof ... ok
+test plan_edits_cannot_reuse_a_different_lemma_and_selectors_reject_ambiguity ... ok
+test plan_retry_keys_ignore_checker_cache_paths_and_explanatory_text ... ok
+test plans_reject_cycles_unknown_dependencies_and_foreign_goals ... ok
+test planner_attempts_goal_before_helpers_and_returns_to_caller ... ok
+test recheck_failure_is_not_reopened_by_other_proof_edits ... ok
+test productive_checked_work_preserves_attempt_budget_without_recrediting_aliases ... ok
+test selected_goals_do_not_require_unrelated_apis_but_never_hide_package_inventory ... ok
+test root_dependency_uses_its_own_prerequisites_and_rejects_delegation_cycles ... ok
+test saved_lemma_is_checked_before_reauthoring_and_new_input_reopens_checkpoint ... ok
+test type_model_review_survives_extension_but_not_changed_definitions ... ok
+test types_have_no_independent_verified ... ok
+test unsupported_traits_remain_visible_without_scheduling_retries ... ok
+test undeclared_inputs_invalidate_proof_but_not_regenerate_specs ... ok
+test unvisited_roots_do_not_preempt_current_callers_proof_work ... ok
+test worker_body_changes_cannot_complete ... ok
+test verification_not_starved_by_unspecified_targets ... ok
+test state_transaction_waits_for_concurrent_status_reconciliation ... ok
+
+test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+

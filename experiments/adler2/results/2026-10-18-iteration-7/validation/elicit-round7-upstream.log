@@ -1,0 +1,24 @@
+   Compiling adler2 v2.0.1 (/workspace/elicit-comparison/round7-cases/upstream/adler2-2.0.1)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (/workspace/elicit-comparison/round7-cases/upstream/adler2-2.0.1/target/debug/deps/adler2-6221059c03f29df9)
+
+running 6 tests
+test tests::ones ... ok
+test tests::wiki ... ok
+test tests::mixed ... ok
+test tests::bufread ... ok
+test tests::resume ... ok
+test tests::zeroes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+   Doc-tests adler2
+
+running 4 tests
+test src/lib.rs - adler32 (line 190) - compile ... ok
+test src/lib.rs - Adler32 (line 44) ... ok
+test src/lib.rs - Adler32::from_checksum (line 106) ... ok
+test src/lib.rs - Adler32 (line 57) ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+

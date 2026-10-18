@@ -1,0 +1,2 @@
+info: syncing channel updates for 1.86.0-x86_64-unknown-linux-gnu
+error: could not download file from 'https://static.rust-lang.org/dist/channel-rust-1.86.0.toml.sha256' to '/workspace/toolchain/rustup/tmp/5fhppuqnja1wjr_r_file': error downloading file: error sending request for url (https://static.rust-lang.org/dist/channel-rust-1.86.0.toml.sha256): client error (Connect): tunnel error: failed to create underlying connection: tcp open error: Operation not permitted (os error 1)

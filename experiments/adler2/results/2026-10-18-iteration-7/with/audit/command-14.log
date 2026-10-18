@@ -1,0 +1,4 @@
+new_correct : ElicitContracts.c_8055bec449b87b3d
+theorem IndependentAPI_3 : ElicitContracts.c_8055bec449b87b3d :=
+new_correct
+'IndependentAPI_3' depends on axioms: [propext, Classical.choice, Quot.sound]

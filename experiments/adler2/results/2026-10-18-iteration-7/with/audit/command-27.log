@@ -1,0 +1,16 @@
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_8.lean:5:5: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerSpec.sum_loop : ∀ (s : Aeneas.Std.Slice Aeneas.Std.U32) (i : ℕ) (a : Aeneas.Std.U32),
+  ↑a + (List.map (fun x => ↑x) (List.drop i ↑s)).sum ≤ Aeneas.Std.U32.max →
+    ElicitGenerated.algo.Adler32.compute_loop2 { slice := s, i := i } a ⦃ out =>
+      ↑out = ↑a + (List.map (fun x => ↑x) (List.drop i ↑s)).sum ⦄
+theorem IndependentLemma_8 : ∀ (s : Aeneas.Std.Slice Aeneas.Std.U32) (i : ℕ) (a : Aeneas.Std.U32),
+  ↑a + (List.map (fun x => ↑x) (List.drop i ↑s)).sum ≤ Aeneas.Std.U32.max →
+    ElicitGenerated.algo.Adler32.compute_loop2 { slice := s, i := i } a ⦃ out =>
+      ↑out = ↑a + (List.map (fun x => ↑x) (List.drop i ↑s)).sum ⦄ :=
+AdlerSpec.sum_loop
+'IndependentLemma_8' depends on axioms: [propext, Classical.choice, Quot.sound]

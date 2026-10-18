@@ -1,0 +1,183 @@
+{
+  "elapsed_seconds": 39.680273449004744,
+  "separate_fresh_extraction": true,
+  "byte_identical_generated_model": true,
+  "original_sources_identical": true,
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "ElicitGenerated": true,
+    "ElicitAdapter": true,
+    "Specs": true,
+    "ElicitContracts": true,
+    "Lemmas": true,
+    "Proofs": true
+  },
+  "api_contract_audits": {
+    "adler2::adler32_slice::Function": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "theorem": "adler32_slice_correct",
+      "log": "command-8.log"
+    },
+    "adler2::algo::impl[ff6e69000b04949b]::compute::Method": {
+      "kernel_checked": false,
+      "axioms": null,
+      "statement": "ElicitContracts.c_a058c96663922dc4",
+      "theorem": "compute_correct",
+      "log": "command-10.log"
+    },
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "lane_from_correct",
+      "log": "command-12.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::new::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "new_correct",
+      "log": "command-14.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "checksum_correct",
+      "log": "command-16.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "theorem": "from_checksum_correct",
+      "log": "command-18.log"
+    }
+  },
+  "lemma_audits": {
+    "recurrence_append": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (a b : Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update a b (xs ++ ys) = AdlerSpec.update (AdlerSpec.update a b xs).1 (AdlerSpec.update a b xs).2 ys",
+      "theorem": "AdlerSpec.update_append",
+      "log": "command-20.log"
+    },
+    "chunks_exact_execution": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} (s : Aeneas.Std.Slice \u03b1) (n : Aeneas.Std.Usize), 0 < n.val \u2192 Aeneas.Std.core.slice.Slice.chunks_exact s n \u2983 it => (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = s.val \u2227 (\u2200 c \u2208 it.chunks, c.val.length = n.val) \u2227 it.remainder.val.length < n.val \u2984",
+      "theorem": "AdlerSpec.chunks_exact_spec",
+      "log": "command-21.log"
+    },
+    "lane_add_execution": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (a b : ElicitGenerated.algo.U32X4), (\u2200 i : Fin 4, (a.val[i.val]'(by simpa using i.isLt)).val + (b.val[i.val]'(by simpa using i.isLt)).val \u2264 Aeneas.Std.U32.max) \u2192 ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b \u2983 out => out.val.map (fun x => x.val) = List.zipWith (fun x y : Aeneas.Std.U32 => x.val + y.val) a.val b.val \u2984",
+      "theorem": "AdlerSpec.lane_add_spec",
+      "log": "command-22.log"
+    },
+    "inner_lane_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)\n    (a b : ElicitGenerated.algo.U32X4) (t : Nat)\n    (hlen : \u2200 c \u2208 cs, c.val.length = 4)\n    (ha : \u2200 i, AdlerSpec.laneVal a i \u2264 AdlerSpec.aBound t)\n    (hb : \u2200 i, AdlerSpec.laneVal b i \u2264 AdlerSpec.bBound t)\n    (ht : t + cs.length \u2264 5552),\n    ElicitGenerated.algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b \u2983 out =>\n      (AdlerSpec.vals out.1, AdlerSpec.vals out.2) = AdlerSpec.laneModel (AdlerSpec.vals a, AdlerSpec.vals b) cs \u2227\n      (\u2200 i, AdlerSpec.laneVal out.1 i \u2264 AdlerSpec.aBound (t + cs.length)) \u2227\n      (\u2200 i, AdlerSpec.laneVal out.2 i \u2264 AdlerSpec.bBound (t + cs.length)) \u2984",
+      "theorem": "AdlerSpec.inner_loop",
+      "log": "command-23.log"
+    },
+    "outer_chunk_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)\n    (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4)\n    (hlen : \u2200 c \u2208 cs, c.val.length = 22208) (ha : a.val \u2264 65535) (hb : b.val \u2264 65535)\n    (hav : \u2200 i, AdlerSpec.laneVal av i \u2264 65520) (hbv : \u2200 i, AdlerSpec.laneVal bv i \u2264 65520),\n    ElicitGenerated.algo.Adler32.compute_loop0 22208#usize {chunks := cs, remainder := rem} a b av bv \u2983 out =>\n      \u2203 groups : List (List (Aeneas.Std.Slice Aeneas.Std.U8)),\n        List.Forall\u2082 AdlerSpec.blockRep groups cs \u2227\n        (out.1.val, AdlerSpec.vals out.2.1, AdlerSpec.vals out.2.2) = groups.foldl (AdlerSpec.outerStep a.val) (b.val, AdlerSpec.vals av, AdlerSpec.vals bv) \u2227\n        out.1.val \u2264 65535 \u2227\n        (\u2200 i, AdlerSpec.laneVal out.2.1 i \u2264 65520) \u2227 (\u2200 i, AdlerSpec.laneVal out.2.2 i \u2264 65520) \u2984",
+      "theorem": "AdlerSpec.outer_loop",
+      "log": "command-24.log"
+    },
+    "final_lane_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)\n    (a b : ElicitGenerated.algo.U32X4) (t : Nat)\n    (hlen : \u2200 c \u2208 cs, c.val.length = 4)\n    (ha : \u2200 i, AdlerSpec.laneVal a i \u2264 AdlerSpec.aBound t)\n    (hb : \u2200 i, AdlerSpec.laneVal b i \u2264 AdlerSpec.bBound t)\n    (ht : t + cs.length \u2264 5552),\n    ElicitGenerated.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b \u2983 out =>\n      (AdlerSpec.vals out.1, AdlerSpec.vals out.2) = AdlerSpec.laneModel (AdlerSpec.vals a, AdlerSpec.vals b) cs \u2227\n      (\u2200 i, AdlerSpec.laneVal out.1 i \u2264 AdlerSpec.aBound (t + cs.length)) \u2227\n      (\u2200 i, AdlerSpec.laneVal out.2 i \u2264 AdlerSpec.bBound (t + cs.length)) \u2984",
+      "theorem": "AdlerSpec.final_lane_loop",
+      "log": "command-25.log"
+    },
+    "lane_mul_spec": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32)\n    (h : \u2200 i, AdlerSpec.laneVal a i * q.val \u2264 Aeneas.Std.U32.max),\n    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign a q \u2983 out =>\n      AdlerSpec.vals out = (AdlerSpec.vals a).map (fun x => x*q.val) \u2984",
+      "theorem": "AdlerSpec.lane_mul_spec",
+      "log": "command-26.log"
+    },
+    "sum_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (s : Aeneas.Std.Slice Aeneas.Std.U32) (i : Nat) (a : Aeneas.Std.U32)\n    (h : a.val + ((s.val.drop i).map (fun x => x.val)).sum \u2264 Aeneas.Std.U32.max),\n    ElicitGenerated.algo.Adler32.compute_loop2 {slice := s, i := i} a \u2983 out =>\n      out.val = a.val + ((s.val.drop i).map (fun x => x.val)).sum \u2984",
+      "theorem": "AdlerSpec.sum_loop",
+      "log": "command-27.log"
+    },
+    "codec_resume_law": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (s : ElicitGenerated.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),\n    (do let s1 \u2190 ElicitGenerated.Adler32.write_slice s xs\n        let restored \u2190 (do let c \u2190 ElicitGenerated.Adler32.checksum s1; ElicitGenerated.Adler32.from_checksum c)\n        ElicitGenerated.Adler32.write_slice restored ys) =\n    (do let s1 \u2190 ElicitGenerated.Adler32.write_slice s xs; ElicitGenerated.Adler32.write_slice s1 ys)",
+      "theorem": "checksum_resume_equiv",
+      "log": "command-28.log"
+    }
+  },
+  "frozen_authoring_sha256": {
+    "elicit-proofs/aeneas/Specs.lean": "224861a9acd0d75f4e4afed7196faa67d390eb6823670598d3adb01399411487",
+    "elicit-proofs/aeneas/Lemmas.lean": "dd4924c844f99c165b2478d3ba46b73c03fdbef15366e4f03b1a38cd279afb8f",
+    "elicit-proofs/aeneas/Proofs.lean": "b6d3f6b413b616163da2372d78d9ed766ec5f396d825f04d9e967772b3c20e2b",
+    "elicit-proofs/aeneas/contracts.toml": "7af2dbf3842b36b5298164a7e53f8bf36cd207789be67b7d2e3d2ae028e005ae"
+  },
+  "coverage_note": "Kernel acceptance is relative to the exact emitted proposition. Manually review universal API contracts and conditional/helper results before counting selected goals. This audit is outside the authoring clock."
+}

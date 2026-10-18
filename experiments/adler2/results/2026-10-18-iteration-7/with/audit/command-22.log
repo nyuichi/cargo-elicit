@@ -1,0 +1,22 @@
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_3.lean:4:99: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_3.lean:4:144: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+AdlerSpec.lane_add_spec : ∀ (a b : ElicitGenerated.algo.U32X4),
+  (∀ (i : Fin 4), ↑(↑a)[↑i] + ↑(↑b)[↑i] ≤ Aeneas.Std.U32.max) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b ⦃ out =>
+      List.map (fun x => ↑x) ↑out = List.zipWith (fun x y => ↑x + ↑y) ↑a ↑b ⦄
+theorem IndependentLemma_3 : ∀ (a b : ElicitGenerated.algo.U32X4),
+  (∀ (i : Fin 4), ↑(↑a)[↑i] + ↑(↑b)[↑i] ≤ Aeneas.Std.U32.max) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b ⦃ out =>
+      List.map (fun x => ↑x) ↑out = List.zipWith (fun x y => ↑x + ↑y) ↑a ↑b ⦄ :=
+AdlerSpec.lane_add_spec
+'IndependentLemma_3' depends on axioms: [propext, Classical.choice, Quot.sound]

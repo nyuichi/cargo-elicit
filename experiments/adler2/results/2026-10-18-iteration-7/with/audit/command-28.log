@@ -1,0 +1,24 @@
+checksum_resume_equiv : ∀ (s : ElicitGenerated.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (do
+      let s1 ← s.write_slice xs
+      let restored ←
+        do
+          let c ← s1.checksum
+          ElicitGenerated.Adler32.from_checksum c
+      restored.write_slice ys) =
+    do
+    let s1 ← s.write_slice xs
+    s1.write_slice ys
+theorem IndependentLemma_14 : ∀ (s : ElicitGenerated.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (do
+      let s1 ← s.write_slice xs
+      let restored ←
+        do
+          let c ← s1.checksum
+          ElicitGenerated.Adler32.from_checksum c
+      restored.write_slice ys) =
+    do
+    let s1 ← s.write_slice xs
+    s1.write_slice ys :=
+checksum_resume_equiv
+'IndependentLemma_14' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,2 @@
+def ElicitContracts.c_8055bec449b87b3d : Prop :=
+True → ∃ result, ElicitGenerated.Adler32.new = Aeneas.Std.Result.ok result ∧ (fun out => ↑out.a = 1 ∧ ↑out.b = 0) result

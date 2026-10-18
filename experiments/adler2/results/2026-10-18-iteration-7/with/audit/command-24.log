@@ -1,0 +1,62 @@
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_5.lean:6:5: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_5.lean:6:45: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_5.lean:6:66: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_5.lean:7:5: warning: Variable name `hav` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hav
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_5.lean:7:49: warning: Variable name `hbv` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hbv
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerSpec.outer_loop : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, (↑c).length = 22208) →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ (i : Fin 4), AdlerSpec.laneVal av i ≤ 65520) →
+          (∀ (i : Fin 4), AdlerSpec.laneVal bv i ≤ 65520) →
+            ElicitGenerated.algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ out =>
+              ∃ groups,
+                List.Forall₂ AdlerSpec.blockRep groups cs ∧
+                  (↑out.1, AdlerSpec.vals out.2.1, AdlerSpec.vals out.2.2) =
+                      List.foldl (AdlerSpec.outerStep ↑a) (↑b, AdlerSpec.vals av, AdlerSpec.vals bv) groups ∧
+                    ↑out.1 ≤ 65535 ∧
+                      (∀ (i : Fin 4), AdlerSpec.laneVal out.2.1 i ≤ 65520) ∧
+                        ∀ (i : Fin 4), AdlerSpec.laneVal out.2.2 i ≤ 65520 ⦄
+theorem IndependentLemma_5 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, (↑c).length = 22208) →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ (i : Fin 4), AdlerSpec.laneVal av i ≤ 65520) →
+          (∀ (i : Fin 4), AdlerSpec.laneVal bv i ≤ 65520) →
+            ElicitGenerated.algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ out =>
+              ∃ groups,
+                List.Forall₂ AdlerSpec.blockRep groups cs ∧
+                  (↑out.1, AdlerSpec.vals out.2.1, AdlerSpec.vals out.2.2) =
+                      List.foldl (AdlerSpec.outerStep ↑a) (↑b, AdlerSpec.vals av, AdlerSpec.vals bv) groups ∧
+                    ↑out.1 ≤ 65535 ∧
+                      (∀ (i : Fin 4), AdlerSpec.laneVal out.2.1 i ≤ 65520) ∧
+                        ∀ (i : Fin 4), AdlerSpec.laneVal out.2.2 i ≤ 65520 ⦄ :=
+AdlerSpec.outer_loop
+'IndependentLemma_5' depends on axioms: [propext, Classical.choice, Quot.sound]

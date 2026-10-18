@@ -1,0 +1,20 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 1 test
+test aeneas_planned_lemma_checkpoints_and_caller_registration has been running for over 60 seconds
+
+thread 'aeneas_planned_lemma_checkpoints_and_caller_registration' (1504343) panicked at tests/native.rs:572:83:
+called `Result::unwrap()` on an `Err` value: source or verifier inputs changed; reconcile with status before verifying
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test aeneas_planned_lemma_checkpoints_and_caller_registration ... FAILED
+
+failures:
+
+failures:
+    aeneas_planned_lemma_checkpoints_and_caller_registration
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 162.96s
+
+error: test failed, to rerun pass `--test native`

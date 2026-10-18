@@ -1,0 +1,49 @@
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:86:40: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:86:85: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:148:24: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:149:24: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:150:24: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:154:20: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:177:48: warning: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [algo.Adler32.compute_loop0_loop0.body, core.slice.iter.IteratorChunksExact.next]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round7-product-audit/Lemmas.lean:269:45: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`

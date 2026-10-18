@@ -1,0 +1,16 @@
+import Lemmas
+set_option pp.fullNames true
+open Aeneas Aeneas.Std Result ElicitGenerated
+theorem IndependentLemma_6 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+    (a b : ElicitGenerated.algo.U32X4) (t : Nat)
+    (hlen : ∀ c ∈ cs, c.val.length = 4)
+    (ha : ∀ i, AdlerSpec.laneVal a i ≤ AdlerSpec.aBound t)
+    (hb : ∀ i, AdlerSpec.laneVal b i ≤ AdlerSpec.bBound t)
+    (ht : t + cs.length ≤ 5552),
+    ElicitGenerated.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ out =>
+      (AdlerSpec.vals out.1, AdlerSpec.vals out.2) = AdlerSpec.laneModel (AdlerSpec.vals a, AdlerSpec.vals b) cs ∧
+      (∀ i, AdlerSpec.laneVal out.1 i ≤ AdlerSpec.aBound (t + cs.length)) ∧
+      (∀ i, AdlerSpec.laneVal out.2 i ≤ AdlerSpec.bBound (t + cs.length)) ⦄ := AdlerSpec.final_lane_loop
+#check @AdlerSpec.final_lane_loop
+#print IndependentLemma_6
+#print axioms IndependentLemma_6

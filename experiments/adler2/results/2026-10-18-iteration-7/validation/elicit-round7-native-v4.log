@@ -1,0 +1,10 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.45s
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 1 test
+test aeneas_planned_lemma_checkpoints_and_caller_registration has been running for over 60 seconds
+test aeneas_planned_lemma_checkpoints_and_caller_registration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 323.89s
+

@@ -1,0 +1,12 @@
+@AdlerSpec.chunks_exact_spec : ∀ {α : Type} (s : Aeneas.Std.Slice α) (n : Aeneas.Std.Usize),
+  0 < ↑n →
+    Aeneas.Std.core.slice.Slice.chunks_exact s n ⦃ it =>
+      (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = ↑s ∧
+        (∀ c ∈ it.chunks, (↑c).length = ↑n) ∧ (↑it.remainder).length < ↑n ⦄
+theorem IndependentLemma_1 : ∀ {α : Type} (s : Aeneas.Std.Slice α) (n : Aeneas.Std.Usize),
+  0 < ↑n →
+    Aeneas.Std.core.slice.Slice.chunks_exact s n ⦃ it =>
+      (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = ↑s ∧
+        (∀ c ∈ it.chunks, (↑c).length = ↑n) ∧ (↑it.remainder).length < ↑n ⦄ :=
+fun {α} => AdlerSpec.chunks_exact_spec
+'IndependentLemma_1' depends on axioms: [propext, Classical.choice, Quot.sound]

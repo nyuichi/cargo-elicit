@@ -1,0 +1,254 @@
+{
+  "status": "partial_checkpoint_no_api_proof",
+  "preserved": [
+    "src/",
+    "Cargo.toml"
+  ],
+  "proof_modules": [
+    "elicit-proofs/aeneas/Specs.lean",
+    "elicit-proofs/aeneas/Lemmas.lean",
+    "elicit-proofs/aeneas/Proofs.lean"
+  ],
+  "theorem_roots": [
+    {
+      "name": "AdlerSpec.fold_normalized",
+      "mapped_rust_api": null,
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.update_normalized",
+      "mapped_rust_api": null,
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.update_append",
+      "mapped_rust_api": "support for Adler32::compute",
+      "contract": "scalar recurrence composes over list append, arbitrary natural seeds",
+      "preconditions": [],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.chunks_partition",
+      "mapped_rust_api": "support for original Adler32::compute chunk processing",
+      "contract": "exact chunk lengths, input reconstruction, strict remainder bound and successful chunk construction",
+      "preconditions": [
+        "positive chunk size"
+      ],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.chunks_exact_spec",
+      "mapped_rust_api": "support for original Adler32::compute chunk processing",
+      "contract": "exact chunk lengths, input reconstruction, strict remainder bound and successful chunk construction",
+      "preconditions": [
+        "positive chunk size"
+      ],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.get_remainder_spec",
+      "mapped_rust_api": "support for original Adler32::compute chunk processing",
+      "contract": "exact chunk lengths, input reconstruction, strict remainder bound and successful chunk construction",
+      "preconditions": [
+        "positive chunk size"
+      ],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "lane_from_correct",
+      "mapped_rust_api": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+      "contract": "successful execution and exact first-four-byte lane values",
+      "preconditions": [
+        "at least four bytes"
+      ],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "AdlerSpec.lane_add_spec",
+      "mapped_rust_api": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+      "contract": "successful execution of all four original indexing/update/add operations; pairwise lane sums",
+      "preconditions": [
+        "every pairwise lane sum fits u32"
+      ],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.inner_loop",
+      "mapped_rust_api": "original Adler32::compute nested loop at src/algo.rs:66",
+      "contract": "successful execution, exact logical lane fold, termination and final lane bounds",
+      "preconditions": [
+        "each internal chunk has four bytes",
+        "initial lane bounds aBound(t), bBound(t)",
+        "t plus number of internal chunks at most 5552; derived from fixed outer chunk size, not a public API input bound"
+      ],
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.bounds_step",
+      "mapped_rust_api": "support for original nested-loop overflow obligations",
+      "contract": "successive lane bounds fit u32 for internal steps through 5552",
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.lane_rem_spec",
+      "mapped_rust_api": "original Adler32::compute outer chunk loop and original remainder helper",
+      "contract": "successful execution, exact reduced lane/scalar fold and full-chunk input reconstruction; arbitrary number of full chunks",
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.four_chunks_spec",
+      "mapped_rust_api": "original Adler32::compute outer chunk loop and original remainder helper",
+      "contract": "successful execution, exact reduced lane/scalar fold and full-chunk input reconstruction; arbitrary number of full chunks",
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.outer_body",
+      "mapped_rust_api": "original Adler32::compute outer chunk loop and original remainder helper",
+      "contract": "successful execution, exact reduced lane/scalar fold and full-chunk input reconstruction; arbitrary number of full chunks",
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "AdlerSpec.outer_loop",
+      "mapped_rust_api": "original Adler32::compute outer chunk loop and original remainder helper",
+      "contract": "successful execution, exact reduced lane/scalar fold and full-chunk input reconstruction; arbitrary number of full chunks",
+      "status": "scheduler_checkpoint_success"
+    },
+    {
+      "name": "new_correct",
+      "mapped_rust_api": "Adler32::new",
+      "contract": "successful execution; returns (1,0)",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "checksum_correct",
+      "mapped_rust_api": "Adler32::checksum",
+      "contract": "successful execution; returns 65536*b+a for every representable state",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "from_checksum_correct",
+      "mapped_rust_api": "Adler32::from_checksum",
+      "contract": "successful execution; decodes every u32 into low and high halves",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "checksum_restore_roundtrip",
+      "mapped_rust_api": "codec law",
+      "contract": "from_checksum followed by checksum returns every u32",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "checksum_state_roundtrip",
+      "mapped_rust_api": "codec law",
+      "contract": "checksum followed by from_checksum returns every representable state",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "checksum_resume_equiv",
+      "mapped_rust_api": "resume law",
+      "contract": "save/restore/resume equals direct resume as Results; update success is not established",
+      "preconditions": [],
+      "status": "scratch_lean_checked_official_audit_pending"
+    },
+    {
+      "name": "AdlerSpec.final_lane_loop",
+      "mapped_rust_api": "original compute final lane, multiplication and sum loops",
+      "status": "scratch_lean_checked_scheduler_audit_pending"
+    },
+    {
+      "name": "AdlerSpec.lane_mul_spec",
+      "mapped_rust_api": "original compute final lane, multiplication and sum loops",
+      "status": "scratch_lean_checked_scheduler_audit_pending"
+    },
+    {
+      "name": "AdlerSpec.sum_loop",
+      "mapped_rust_api": "original compute final lane, multiplication and sum loops",
+      "status": "scratch_lean_checked_scheduler_audit_pending"
+    },
+    {
+      "name": "AdlerSpec.sum_loop_b",
+      "mapped_rust_api": "original compute final lane, multiplication and sum loops",
+      "status": "scratch_lean_checked_scheduler_audit_pending"
+    }
+  ],
+  "api_contracts": [
+    {
+      "api": "adler32_slice",
+      "constant": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "contract": "successful execution; packed scalar recurrence from (1,0)",
+      "preconditions": [],
+      "status": "specification_accepted_no_proof"
+    },
+    {
+      "api": "Adler32::compute",
+      "constant": "ElicitContracts.c_a058c96663922dc4",
+      "contract": "successful execution; scalar recurrence with both seed halves normalized, including empty input",
+      "preconditions": [],
+      "status": "specification_accepted_no_proof"
+    },
+    {
+      "api": "U32X4::from",
+      "constant": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "contract": "all four indexing operations succeed and preserve the first four widened byte values",
+      "preconditions": [
+        "input length at least four"
+      ],
+      "status": "contract_and_proof_submitted_official_audit_pending"
+    },
+    {
+      "api": "Adler32::new",
+      "constant": "ElicitContracts.c_8055bec449b87b3d",
+      "preconditions": [],
+      "status": "full_contract_and_proof_submitted_audit_pending"
+    },
+    {
+      "api": "Adler32::checksum",
+      "constant": "ElicitContracts.c_0a059b8c0885cf07",
+      "preconditions": [],
+      "status": "full_contract_and_proof_submitted_audit_pending"
+    },
+    {
+      "api": "Adler32::from_checksum",
+      "constant": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "preconditions": [],
+      "status": "full_contract_and_proof_submitted_audit_pending"
+    }
+  ],
+  "remaining_obligations": [
+    "full compute contract: integrate final lane, multiplication and sum rules; prove lane recombination equals scalar recurrence; prove scalar tail and all remaining arithmetic/indexing",
+    "write_slice and adler32_slice full contracts",
+    "split-update equivalence, with concatenated slice representability"
+  ],
+  "unverified_out_of_scope": [
+    "BufRead",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets"
+  ],
+  "actual_checker_commands": [
+    "charon cargo --preset=aeneas --sysroot=default --dest-file .elicit/cache/crate.llbc -- --target x86_64-unknown-linux-gnu",
+    "aeneas -backend lean -namespace ElicitGenerated -dest .elicit/cache .elicit/cache/crate.llbc",
+    "/workspace/toolchain/elan/bin/lean -o .elicit/cache/Lemmas.olean .elicit/cache/Lemmas.lean",
+    "python3 .elicit/cache/runlean.py elicit-proofs/aeneas/Lemmas.lean",
+    "python3 .elicit/cache/runlean.py .elicit/cache/PersistentLemmas.lean",
+    "python3 .elicit/cache/runlean.py .elicit/cache/CodecLaws.lean"
+  ],
+  "trusted_boundaries": [
+    "installed Charon and Aeneas",
+    "standard Rust models",
+    "Lean 4.35.0 kernel",
+    "permitted standard logical axioms only"
+  ],
+  "official_api_evidence": [],
+  "law_attempts": {
+    "codec_roundtrips": "both original directions scratch Lean checked",
+    "save_restore_resume": "Result equality scratch Lean checked; successful writes remain unproved",
+    "split_update": "attempted with explicit concatenated slice representability; stuck at compute composition; see .elicit/cache/law-attempts.log"
+  }
+}

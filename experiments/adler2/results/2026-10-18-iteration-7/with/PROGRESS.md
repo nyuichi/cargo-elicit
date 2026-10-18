@@ -1,0 +1,15 @@
+Verification progress
+
+Original src/ and Cargo.toml are unchanged. No selected public API is claimed verified yet. The ledger accepted full contracts and saved proofs for new, checksum and from_checksum; their official final audit is pending. They quantify every representable input, with no normalized-state assumption. Both codec roundtrips and checksum save/restore/resume equality of Results passed scratch Lean checking. This equality does not establish successful execution of write_slice.
+
+The scheduler checked the scalar recurrence composition, chunk construction, lane addition, complete inner loop and complete outer loop checkpoints. The outer theorem handles arbitrarily many full chunks and preserves exact lane/scalar fold semantics and byte reconstruction. The internal 5552-step arithmetic bound follows from the fixed chunk size; it is not a restriction on API input length.
+
+New saved checkpoints cover the final lane loop, original lane multiplication, and both original accumulation loops. The combined persistent proof module passed scratch Lean checking. These checkpoints await scheduler kernel/axiom auditing. The original compute body has been attempted repeatedly; the full scalar recurrence contract remains unproved. Missing work includes final-rule integration, lane recombination against the scalar recurrence, scalar-tail execution and remaining arithmetic/indexing. write_slice and adler32_slice therefore remain unproved.
+
+Split-update was separately attempted with explicit concatenated-slice representability and stops at compute composition. See .elicit/cache/law-attempts.log. An unfinished scalar-tail experiment is confined to .elicit/cache and is not proof evidence.
+
+Persistent sources: elicit-proofs/aeneas/contracts.toml, Specs.lean, Lemmas.lean and Proofs.lean. Lemmas.lean contains independently compilable checkpoints, full codec/loader contract theorems and generated caller-facing WP rules. Proofs.lean imports it. No sorry, admit, project axioms or native_decide appear in persistent proofs.
+
+Actual checks: official cargo elicit agent submit and agent plan commands, followed by scheduler verification caches KLqqvG, Md4ay1, sRKWey, yAzcl7 and QkbQlY. Scratch checking used python3 .elicit/cache/runlean.py MODULE, which invokes the pinned Lean compiler with the diagnostic cache and installed Aeneas/mathlib build paths. Final combined-module scratch check: .elicit/cache/PersistentLemmas.lean. Original extraction used charon cargo --preset=aeneas --sysroot=default with the original manifest and x86_64-unknown-linux-gnu. Generated files were unedited. Preservation check: git diff --exit-code -- src Cargo.toml.
+
+Trusted boundaries are the installed Charon/Aeneas pipeline, standard Rust models, Lean 4.35.0 kernel and permitted standard logical axioms. Official API evidence is separate from scratch checking and support-lemma evidence. BufRead, Hasher laws, derived traits, no_std and alternative targets are unverified and outside the common goal. This is not whole-crate completion.

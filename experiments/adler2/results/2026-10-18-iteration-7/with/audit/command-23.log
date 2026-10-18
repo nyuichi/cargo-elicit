@@ -1,0 +1,46 @@
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_4.lean:6:5: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_4.lean:7:5: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_4.lean:8:5: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round7-product-audit/IndependentLemma_4.lean:9:5: warning: Variable name `ht` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerSpec.inner_loop : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : ElicitGenerated.algo.U32X4) (t : ℕ),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    (∀ (i : Fin 4), AdlerSpec.laneVal a i ≤ AdlerSpec.aBound t) →
+      (∀ (i : Fin 4), AdlerSpec.laneVal b i ≤ AdlerSpec.bBound t) →
+        t + cs.length ≤ 5552 →
+          ElicitGenerated.algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b ⦃ out =>
+            (AdlerSpec.vals out.1, AdlerSpec.vals out.2) = AdlerSpec.laneModel (AdlerSpec.vals a, AdlerSpec.vals b) cs ∧
+              (∀ (i : Fin 4), AdlerSpec.laneVal out.1 i ≤ AdlerSpec.aBound (t + cs.length)) ∧
+                ∀ (i : Fin 4), AdlerSpec.laneVal out.2 i ≤ AdlerSpec.bBound (t + cs.length) ⦄
+theorem IndependentLemma_4 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : ElicitGenerated.algo.U32X4) (t : ℕ),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    (∀ (i : Fin 4), AdlerSpec.laneVal a i ≤ AdlerSpec.aBound t) →
+      (∀ (i : Fin 4), AdlerSpec.laneVal b i ≤ AdlerSpec.bBound t) →
+        t + cs.length ≤ 5552 →
+          ElicitGenerated.algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b ⦃ out =>
+            (AdlerSpec.vals out.1, AdlerSpec.vals out.2) = AdlerSpec.laneModel (AdlerSpec.vals a, AdlerSpec.vals b) cs ∧
+              (∀ (i : Fin 4), AdlerSpec.laneVal out.1 i ≤ AdlerSpec.aBound (t + cs.length)) ∧
+                ∀ (i : Fin 4), AdlerSpec.laneVal out.2 i ≤ AdlerSpec.bBound (t + cs.length) ⦄ :=
+AdlerSpec.inner_loop
+'IndependentLemma_4' depends on axioms: [propext, Classical.choice, Quot.sound]

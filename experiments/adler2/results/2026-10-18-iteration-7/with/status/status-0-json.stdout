@@ -1,0 +1,163 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 1,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 2,
+    "total": 19,
+    "verified": 0
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {
+      "recurrence_append": {
+        "cache": "/workspace/elicit-comparison/round7-cases/adler2-with/.elicit/cache/verification-KLqqvG",
+        "input": "e180eb521e071d71a96cf5f78226881e7ac84b2d2122aa0beb5f799b296bb888",
+        "outcome": "success",
+        "step_hash": "22b079bc75fea4dedb919e7b69282e5a34ee4923eafa8a4a983df8c21efc106d"
+      }
+    },
+    "inspected": {
+      "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015"
+    },
+    "last_checkpoint": "7daaf61044d4ce3ad32d06769e9bae965b64c77cebd2ffd7ac23d8f32815c9e6",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "recurrence_append",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Combine scalar recurrence summaries across the complete chunks, final partial chunk, and final byte remainder in compute.",
+        "statement": "∀ (a b : Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update a b (xs ++ ys) = AdlerSpec.update (AdlerSpec.update a b xs).1 (AdlerSpec.update a b xs).2 ys",
+        "target": null,
+        "theorem": "AdlerSpec.update_append"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "compute_recurrence",
+        "kind": "contract",
+        "needs": [
+          "recurrence_append"
+        ],
+        "reason": "Unfolding the original caller reaches compute at seed (1,0). Prove successful execution for all states and slices, with lane prefix-sum invariants, chunk overflow bounds, and the lane recombination identity.",
+        "statement": null,
+        "target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice_integrate",
+        "kind": "integrate",
+        "needs": [
+          "compute_recurrence"
+        ],
+        "reason": "Use the compute execution contract in the original new/write_slice/checksum body, discharge checksum packing arithmetic, and prove the exact generated arbitrary-input proposition.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      }
+    ]
+  },
+  "required": true,
+  "revision": 15,
+  "run": {
+    "active": {
+      "input": "4b89037aad2118ebfd116b5950e1c82c9073790dd1919953bbe7571a3c36e428",
+      "started": 1792288076,
+      "task": {
+        "kind": "verify",
+        "targets": [
+          "adler2::algo::impl[ff6e69000b04949b]::compute::Method"
+        ],
+        "work": "compute_recurrence"
+      }
+    },
+    "attempts": {
+      "Integrate:adler2::adler32_slice::Function": {
+        "checked_work": [
+          "lemma:∀ (a b : Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update a b (xs ++ ys) = AdlerSpec.update (AdlerSpec.update a b xs).1 (AdlerSpec.update a b xs).2 ys"
+        ],
+        "failed": false,
+        "last_input": "8c18d60ec9d497d3c4e334dd5f5573c676fcdf892d5a9e00135a5790d590818b",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "progress_credits": 1,
+        "total": 1
+      },
+      "Verify:adler2::algo::impl[ff6e69000b04949b]::compute::Method@compute_recurrence": {
+        "checked_work": [
+          "lemma:∀ (a b : Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update a b (xs ++ ys) = AdlerSpec.update (AdlerSpec.update a b xs).1 (AdlerSpec.update a b xs).2 ys"
+        ],
+        "failed": true,
+        "last_input": "4b89037aad2118ebfd116b5950e1c82c9073790dd1919953bbe7571a3c36e428",
+        "last_result": "started, not finalized",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 2094592,
+    "elapsed_ms": 271155,
+    "input_tokens": 2183393,
+    "last_result": "unresolved; same task/input suppressed",
+    "output_tokens": 8699,
+    "thread": "01a14cad-8eaa-7000-b8ee-0c282025c08b"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round7-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round7-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round7-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round7-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}
