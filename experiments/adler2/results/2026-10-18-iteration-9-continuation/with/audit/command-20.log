@@ -1,0 +1,4 @@
+AdlerProof.from_checksum_correct : ElicitContracts.c_9a31b7b9cb8492b0
+theorem IndependentAPI_6 : ElicitContracts.c_9a31b7b9cb8492b0 :=
+AdlerProof.from_checksum_correct
+'IndependentAPI_6' depends on axioms: [propext, Classical.choice, Quot.sound]

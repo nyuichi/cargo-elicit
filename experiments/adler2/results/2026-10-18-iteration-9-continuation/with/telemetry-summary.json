@@ -1,0 +1,35 @@
+{
+  "resolved_settings": [
+    {
+      "model": "gpt-6.1-sol",
+      "modelProvider": "openai",
+      "reasoningEffort": null,
+      "serviceTier": null,
+      "approvalPolicy": "on-request",
+      "sandbox": {
+        "type": "workspaceWrite",
+        "writableRoots": [
+          "/workspace/toolchain"
+        ],
+        "networkAccess": true,
+        "excludeTmpdirEnvVar": false,
+        "excludeSlashTmp": false
+      }
+    }
+  ],
+  "thread_count_with_usage": 1,
+  "tokens": {
+    "inputTokens": 66515350,
+    "cachedInputTokens": 65408384,
+    "outputTokens": 166626
+  },
+  "started_items": {
+    "userMessage": 8,
+    "reasoning": 242,
+    "agentMessage": 42,
+    "commandExecution": 193,
+    "contextCompaction": 1
+  },
+  "accepted_api_coverage": null,
+  "note": "Cached input is a subset of input, not an extra token category. Coverage requires independent source, theorem and axiom checks."
+}

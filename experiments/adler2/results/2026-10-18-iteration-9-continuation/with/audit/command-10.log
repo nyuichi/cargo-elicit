@@ -1,0 +1,4 @@
+AdlerProof.new_correct : ElicitContracts.c_8055bec449b87b3d
+theorem IndependentAPI_1 : ElicitContracts.c_8055bec449b87b3d :=
+AdlerProof.new_correct
+'IndependentAPI_1' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,57 @@
+{
+  "elapsed_seconds": 5.1763842290092725,
+  "laws": {
+    "checksum_from_checksum_roundtrip": {
+      "statement": "\u2200 (sum : U32), \u2203 (s : Adler32) (out : U32), Adler32.from_checksum sum = .ok s \u2227 Adler32.checksum s = .ok out \u2227 out = sum",
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "elapsed_seconds": 1.2459453420015052,
+      "exit": 0,
+      "log": "IndependentLaw_0.log"
+    },
+    "from_checksum_checksum_roundtrip": {
+      "statement": "\u2200 (s : Adler32), \u2203 (sum : U32) (restored : Adler32), Adler32.checksum s = .ok sum \u2227 Adler32.from_checksum sum = .ok restored \u2227 restored = s",
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "elapsed_seconds": 1.270940303002135,
+      "exit": 0,
+      "log": "IndependentLaw_1.log"
+    },
+    "split_update": {
+      "statement": "\u2200 (s : Adler32) (x y xy : Slice U8), x.val.length + y.val.length \u2264 Usize.max \u2192 xy.val = x.val ++ y.val \u2192 \u2203 (sx sxy whole : Adler32), Adler32.write_slice s x = .ok sx \u2227 Adler32.write_slice sx y = .ok sxy \u2227 Adler32.write_slice s xy = .ok whole \u2227 sxy = whole",
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "elapsed_seconds": 1.326092344999779,
+      "exit": 0,
+      "log": "IndependentLaw_2.log"
+    },
+    "save_restore_resume": {
+      "statement": "\u2200 (s : Adler32) (x y xy : Slice U8), x.val.length + y.val.length \u2264 Usize.max \u2192 xy.val = x.val ++ y.val \u2192 \u2203 (sx : Adler32) (saved : U32) (restored resumed whole : Adler32), Adler32.write_slice s x = .ok sx \u2227 Adler32.checksum sx = .ok saved \u2227 Adler32.from_checksum saved = .ok restored \u2227 Adler32.write_slice restored y = .ok resumed \u2227 Adler32.write_slice s xy = .ok whole \u2227 resumed = whole",
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "elapsed_seconds": 1.3329850729933241,
+      "exit": 0,
+      "log": "IndependentLaw_3.log"
+    }
+  },
+  "notes": [
+    "Independent exact theorem assignments on freshly rebuilt modules; no new proof authoring.",
+    "Split/update and save/restore/resume require representable concatenation and an explicitly matching concatenated slice."
+  ]
+}

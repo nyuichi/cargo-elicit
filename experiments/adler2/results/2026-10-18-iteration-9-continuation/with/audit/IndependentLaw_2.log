@@ -1,0 +1,8 @@
+theorem IndependentLaw_2 : ∀ (s : ElicitGenerated.Adler32) (x y xy : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑x).length + (↑y).length ≤ Aeneas.Std.Usize.max →
+    ↑xy = ↑x ++ ↑y →
+      ∃ sx sxy whole,
+        s.write_slice x = Aeneas.Std.Result.ok sx ∧
+          sx.write_slice y = Aeneas.Std.Result.ok sxy ∧ s.write_slice xy = Aeneas.Std.Result.ok whole ∧ sxy = whole :=
+AdlerProof.split_update
+'IndependentLaw_2' depends on axioms: [propext, Classical.choice, Quot.sound]

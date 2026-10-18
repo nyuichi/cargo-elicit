@@ -1,0 +1,11 @@
+theorem IndependentLaw_3 : ∀ (s : ElicitGenerated.Adler32) (x y xy : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑x).length + (↑y).length ≤ Aeneas.Std.Usize.max →
+    ↑xy = ↑x ++ ↑y →
+      ∃ sx saved restored resumed whole,
+        s.write_slice x = Aeneas.Std.Result.ok sx ∧
+          sx.checksum = Aeneas.Std.Result.ok saved ∧
+            ElicitGenerated.Adler32.from_checksum saved = Aeneas.Std.Result.ok restored ∧
+              restored.write_slice y = Aeneas.Std.Result.ok resumed ∧
+                s.write_slice xy = Aeneas.Std.Result.ok whole ∧ resumed = whole :=
+AdlerProof.save_restore_resume
+'IndependentLaw_3' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,806 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 28,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 6,
+    "total": 19,
+    "verified": 6
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {
+      "chunk_count_bound": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "8614080c99103e707f63d00f4eebea39f81dc27a7a901c0c2e8e69743099eb0d"
+      },
+      "chunks_exact": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "3f88fa4e55845329b63af8601f380c88f849c762b0b2a9ebda5aea73709859b1"
+      },
+      "chunks_partition": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "9b8069c955d0b2c45a6e2b585f6c8384808483b986109debb5e258f86b0d173d"
+      },
+      "combine_lane_residues": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "2f8adcc4820aef132281bdcb626428f9b6e2685080f7dea31146bd790ead1d79"
+      },
+      "final_inner_iter_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "ae0d007b8b245a2ddebc4c67bd0a636b2ad26bf04135a5b433ea006620bc160c"
+      },
+      "inner_loop_bounded": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "f908106046adad0398d6093626c62b0d82227d3540e24dd102ca193d6deb18f3"
+      },
+      "inner_step": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "3e4fc39625a9777cfb09c1c536eb6f173d00c1801f662fa78b65cc7f18840d9f"
+      },
+      "laneRun_append": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "41e7e99d2c919099493e22ec185c97890b2cb4590a7a7aeb8136b9531de34984"
+      },
+      "laneRun_congr": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "78eb0f513acc593e7fbdbb2674dfe313d865e877a147521530f3c45fadf0cb02"
+      },
+      "lane_budget": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "632e37cc428919e716db6ec4ffeb51694941f62971ff4352b2e64aeeaa0c5f53"
+      },
+      "lane_normalize": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "892cbfc2c60f536872ab1fb1819ba97b8995c1bf938bf447db70d699d8109d3d"
+      },
+      "lane_rem": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "609c34b6df3c9c15576154b6eecf36b3b84ddd7002cff51a8949f2f1c720d3be"
+      },
+      "mul_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "ccd511e74094788c790b9afe736be14bc961de7a0a8df421e9023630bcced4d9"
+      },
+      "outer_iter_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "f8d9e9f2928b936d1c4c372765baf049e9a77f3e968e3708059172eefd925a09"
+      },
+      "outer_loop": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "83ff3da3308f5b4b917c3032911bb7bc1e2e36591541d55d65911a5decd2adca"
+      },
+      "outer_step": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "b7d0f37ae365f60d86f9f84ca0e766b1e9d0861abe1216aea8aab86f0d77e34b"
+      },
+      "quartet_mod_recombine": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "f6eb988d30a81d5dd60d663a632ba09e6a07419320a8d2aa53a5f404db4ca59c"
+      },
+      "quartet_recombine": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "ffb75bc06a4a0b2cca89ef27ef9c755b03bc89c44218176681ab671c24a8c57c"
+      },
+      "rawRun_mod": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "ce49a0d4624b36442cc348a43f4ef0c137dc9ce60df2aef3f822c25038d1c51f"
+      },
+      "remainder_inner_loop_bounded": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "6286abb554e9200e6aa046bbd343c10f034db307afca8ef0d01d84f723d97ffa"
+      },
+      "run_append": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "0f762c0d761950e5edbef62126850878279155f4ce87259582b28015882816ef"
+      },
+      "run_congr": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "a7c0c8e0254ffbe9ec7c212310de9eec3a8346f4c48584382b9417a41358af90"
+      },
+      "sum_loop3_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "02dada8a5229956ed35ec2b7487b3935dee8b1dda08331e20272ccf12ff86f1e"
+      },
+      "sum_loop_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "b7debb014bc434d5ca337475eddaecbe20d667e8b8b7dec78c0529486211c41c"
+      },
+      "tail_bounded_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "4de2469d19515695cbfd45350e787e0cf4333ceecaadbf4cef4aa6a042b91a6e"
+      },
+      "tail_loop_wp": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "f586d94c0fc497dda456c94aebb320ae3d9f1b549ae6d30ad3e3f3422cf042ea"
+      },
+      "vector_iter_sum": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "d874b6512fbe099f0dbb2273d92635304008b4ebe6a11e2e37162f11ce983892"
+      },
+      "vector_sum_le": {
+        "cache": "/workspace/elicit-comparison/round9-cases/adler2-with/.elicit/cache/verification-Sjhb3D",
+        "input": "f4d5f7fe97d428a57a3dbbbf3162274585eb1d11320e13b441dda5368d70a70d",
+        "outcome": "success",
+        "step_hash": "6fab0118ff37b0fe395955cbe7bdfd776d0ab61046e4c012985ec7fbdf6d3f4c"
+      }
+    },
+    "inspected": {
+      "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015"
+    },
+    "last_checkpoint": "94347e31db5754a762aa58ca309a3d6d42941a9adbe9ac92fcc124b7d519a1d2",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice_new",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The original caller constructs its seed with new; direct reduction proves exactly (1,0).",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_budget",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original write_slice/compute body adds the growing lane sum into the lane weighted sum up to 5552 times before reduction; this bounds that concrete u32 overflow obligation.",
+        "statement": "∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+        "target": null,
+        "theorem": "AdlerProof.lane_budget"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice_update",
+        "kind": "contract",
+        "needs": [
+          "lane_budget",
+          "chunks_exact",
+          "inner_step",
+          "inner_loop_bounded",
+          "remainder_inner_loop_bounded",
+          "chunk_count_bound",
+          "lane_normalize",
+          "outer_step",
+          "outer_iter_wp",
+          "mul_wp",
+          "final_inner_iter_wp",
+          "sum_loop_wp",
+          "sum_loop3_wp",
+          "vector_sum_le",
+          "tail_bounded_wp",
+          "rawRun_mod",
+          "quartet_mod_recombine",
+          "vector_iter_sum",
+          "run_append",
+          "combine_lane_residues"
+        ],
+        "reason": "The full arbitrary-state arbitrary-slice original write_slice contract now has a locally kernel-checked theorem, including all loops, arithmetic, partition reconstruction, lane recombination and scalar tail; mapped as AdlerProof.write_slice_correct.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice_pack",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The full arbitrary-state checksum contract has a locally checked proof of successful shift and nonoverlapping high/low packing; its caller-facing WP rule and original slice composition are saved for official checking.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slice_integrate",
+        "kind": "integrate",
+        "needs": [
+          "slice_new",
+          "slice_update",
+          "slice_pack"
+        ],
+        "reason": "The complete original adler32_slice contract is now instantiated from the proved full update theorem and exact new/checksum contracts; locally checked as AdlerProof.adler32_slice_correct.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_partition",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The actual pinned chunks_exact model recursively uses List.toChunksExact. The caller needs exact full-chunk lengths, byte conservation, and a remainder smaller than the chunk size.",
+        "statement": "∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+        "target": null,
+        "theorem": "AdlerProof.chunks_partition"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_exact",
+        "kind": "lemma",
+        "needs": [
+          "chunks_partition"
+        ],
+        "reason": "The original write_slice/compute attempt stopped at core.slice.Slice.chunks_exact. This checked WP rule advances that actual call and supplies its loop and remainder bounds.",
+        "statement": "∀ {α : Type} (s : Slice α) (n : Usize), 0 < n.val → core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄",
+        "target": null,
+        "theorem": "AdlerProof.chunks_exact_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_from",
+        "kind": "contract",
+        "needs": [
+          "chunks_exact"
+        ],
+        "reason": "The original inner loop body calls U32X4.from on each four-byte chunk. Its exact lane-value contract discharges the four indexing obligations and byte widening.",
+        "statement": null,
+        "target": "adler2::algo::impl[16f54fa5277eca59]::from::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_add",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The original inner body calls add_assign twice. Its full elementwise no-overflow contract supplies the two lane recurrences and checks all original indexing and scalar additions.",
+        "statement": null,
+        "target": "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "inner_step",
+        "kind": "lemma",
+        "needs": [
+          "lane_from",
+          "lane_add"
+        ],
+        "reason": "The original compute_loop0_loop0.body has now been proved for a nonempty iterator, including consumption of the first chunk, exact a and b lane updates, and explicit overflow preconditions. This is the concrete body obligation for the missing inner loop invariant.",
+        "statement": "∀ (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 ≤ bytes.val.length) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val + bytes.val[i]!.val ≤ U32.max) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) ≤ U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ fun r => ∃ av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) ∧ (∀ i : Nat, i < 4 → av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) ∧ (∀ i : Nat, i < 4 → bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) ⦄",
+        "target": null,
+        "theorem": "AdlerProof.inner_step"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "inner_loop_bounded",
+        "kind": "lemma",
+        "needs": [
+          "inner_step",
+          "lane_budget"
+        ],
+        "reason": "The original full-chunk inner loop now has a complete all-iteration execution and exact lane-fold theorem. Prefix overflow safety is derived, not assumed, from actual residues <=65520 and at most 5552 chunks.",
+        "statement": "∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+        "target": null,
+        "theorem": "AdlerProof.inner_loop_bounded"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "remainder_inner_loop_bounded",
+        "kind": "lemma",
+        "needs": [
+          "inner_loop_bounded"
+        ],
+        "reason": "The original final-chunk inner loop is definitionally equal to the checked full-chunk inner loop; this theorem checks that equality and covers its complete execution with exact lane results.",
+        "statement": "∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+        "target": null,
+        "theorem": "AdlerProof.remainder_inner_loop_bounded"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunk_count_bound",
+        "kind": "lemma",
+        "needs": [
+          "chunks_exact"
+        ],
+        "reason": "The original chunks_exact partition and full four-byte chunk lengths imply at most 5552 lane iterations for each source chunk of at most 22208 bytes. This discharges the local iteration-count precondition without bounding the full user slice.",
+        "statement": "∀ (cs : List (Slice U8)) (rem source : Slice U8) (hpartition : (cs.map Slice.val).flatten ++ rem.val = source.val) (hfull : ∀ c ∈ cs, c.val.length = 4) (hlen : source.val.length ≤ 22208), cs.length ≤ 5552",
+        "target": null,
+        "theorem": "AdlerProof.chunk_count_bound"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_rem",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original outer body reduces both lane accumulators using this exact original-method WP contract; all indexing, updates and nonzero-divisor checks are proved.",
+        "statement": "∀ (self : algo.U32X4) (q : U32), 0 < q.val → algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % q.val ⦄",
+        "target": null,
+        "theorem": "AdlerProof.rem_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_normalize",
+        "kind": "lemma",
+        "needs": [
+          "lane_rem"
+        ],
+        "reason": "Specializes the original remainder helper to the actual compute.MOD and derives the <=65520 lane seed bounds needed for the next complete inner loop, without assumptions on original Adler32 seeds.",
+        "statement": "∀ (self : algo.U32X4), algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self algo.Adler32.compute.MOD ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % 65521 ∧ out.val[i]!.val ≤ 65520 ⦄",
+        "target": null,
+        "theorem": "AdlerProof.rem_mod_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "outer_step",
+        "kind": "lemma",
+        "needs": [
+          "inner_loop_bounded",
+          "chunk_count_bound",
+          "lane_normalize"
+        ],
+        "reason": "The actual original compute_loop0.body is proved for each full 22208-byte chunk: exact quartet partition with no ignored remainder, complete inner execution, scalar update, exact vector residues, and bounds preserved for the next iteration. It is the body obligation for the remaining outer invariant.",
+        "statement": "∀ (chunk : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hlen : chunk.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0.body 22208#usize a { chunks := chunk :: cs, remainder := rem } b av bv ⦃ fun r => ∃ (qs : List (Slice U8)) (b' : U32) (av' bv' : algo.U32X4), r = .cont ({ chunks := cs, remainder := rem }, b', av', bv') ∧ (qs.map Slice.val).flatten = chunk.val ∧ (∀ q ∈ qs, q.val.length = 4) ∧ b'.val = (b.val + 22208 * a.val) % 65521 ∧ b'.val ≤ 65520 ∧ (∀ i : Nat, i < 4 → av'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ bv'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ av'.val[i]!.val ≤ 65520 ∧ bv'.val[i]!.val ≤ 65520) ⦄",
+        "target": null,
+        "theorem": "AdlerProof.outer_step"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "laneRun_congr",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Modular equality of both lane seeds is preserved by every mathematical lane fold. This is the actual congruence obligation between successive original outer-loop reductions.",
+        "statement": "∀ (cs : List (Slice U8)) (a b c d i : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), (AdlerProof.laneRun cs a b i).1 % 65521 = (AdlerProof.laneRun cs c d i).1 % 65521 ∧ (AdlerProof.laneRun cs a b i).2 % 65521 = (AdlerProof.laneRun cs c d i).2 % 65521",
+        "target": null,
+        "theorem": "AdlerProof.laneRun_congr"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "laneRun_append",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Concatenating the quartet partitions composes the exact mathematical lane folds, discharging the concatenation obligation in the original outer-loop induction.",
+        "statement": "∀ (xs ys : List (Slice U8)) (a b i : Nat), AdlerProof.laneRun (xs ++ ys) a b i = AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i",
+        "target": null,
+        "theorem": "AdlerProof.laneRun_append"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "outer_loop",
+        "kind": "lemma",
+        "needs": [
+          "outer_step",
+          "laneRun_congr",
+          "laneRun_append"
+        ],
+        "reason": "The complete original outer loop is proved by induction on remaining chunks, including termination, full byte reconstruction, exact scalar congruence, exact normalized lane folds, and preserved bounds for arbitrarily many full chunks.",
+        "statement": "∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hchunks : ∀ c ∈ cs, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (cs.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * cs.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+        "target": null,
+        "theorem": "AdlerProof.outer_loop"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "outer_iter_wp",
+        "kind": "lemma",
+        "needs": [
+          "outer_loop"
+        ],
+        "reason": "Caller-facing checked WP rule matches the actual chunk-size argument and iterator in original write_slice; it advances that original body through the complete outer loop.",
+        "statement": "∀ (size : Usize) (it : core.slice.iter.ChunksExact U8) (a b : U32) (av bv : algo.U32X4) (hsize : size.val = 22208) (hchunks : ∀ c ∈ it.chunks, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 size it a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (it.chunks.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * it.chunks.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+        "target": null,
+        "theorem": "AdlerProof.outer_iter_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "mul_wp",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The actual original lane recombination multiplies the four reduced b lanes by four. This full original-method WP proves every indexing/update/product and exact lane products under the necessary product bounds.",
+        "statement": "∀ (self : algo.U32X4) (rhs : U32) (h : ∀ i : Nat, i < 4 → self.val[i]!.val * rhs.val ≤ U32.max), algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val * rhs.val ⦄",
+        "target": null,
+        "theorem": "AdlerProof.mul_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "final_inner_iter_wp",
+        "kind": "lemma",
+        "needs": [
+          "remainder_inner_loop_bounded"
+        ],
+        "reason": "Caller-facing WP connects the already checked final-chunk inner loop to the actual iterator argument used in write_slice.",
+        "statement": "∀ (it : core.slice.iter.ChunksExact U8) (a b : algo.U32X4) (hc : ∀ c ∈ it.chunks, 4 ≤ c.val.length) (hn : it.chunks.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun it.chunks a.val[i]!.val b.val[i]!.val i ⦄",
+        "target": null,
+        "theorem": "AdlerProof.final_inner_iter_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "sum_loop_wp",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original compute_loop2 sums all a lanes. This complete iterator loop proof checks termination, every original addition and exact remaining-list sum under the necessary total bound.",
+        "statement": "∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop2 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+        "target": null,
+        "theorem": "AdlerProof.sum_loop_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "sum_loop3_wp",
+        "kind": "lemma",
+        "needs": [
+          "sum_loop_wp"
+        ],
+        "reason": "The original compute_loop3 sums corrected b lanes and is definitionally equal to the checked first summation loop. The complete execution and exact sum are checked through that equality.",
+        "statement": "∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop3 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+        "target": null,
+        "theorem": "AdlerProof.sum_loop3_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_sum_le",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original caller leaves total-sum overflow obligations at both summation calls. This four-lane sum bound derives them from explicit per-lane bounds.",
+        "statement": "∀ (v : algo.U32X4) (n : Nat) (h : ∀ i : Nat, i < 4 → v.val[i]!.val ≤ n), (v.val.map (fun x => x.val)).sum ≤ 4 * n",
+        "target": null,
+        "theorem": "AdlerProof.vector_sum_le"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "tail_loop_wp",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original final scalar-tail loop must terminate and execute the exact unreduced scalar fold while checking every addition.",
+        "statement": "∀ (it : core.slice.iter.Iter U8) (a b : U32) (ha : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).1 ≤ U32.max) (hb : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).2 ≤ U32.max), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+        "target": null,
+        "theorem": "AdlerProof.tail_loop_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "rawRun_mod",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Final reduction of the original scalar-tail result must equal the normalized scalar recurrence.",
+        "statement": "∀ (bytes : List U8) (a b : Nat), ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes",
+        "target": null,
+        "theorem": "AdlerProof.rawRun_mod"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "tail_bounded_wp",
+        "kind": "lemma",
+        "needs": [
+          "tail_loop_wp"
+        ],
+        "reason": "The original caller has at most three remaining bytes; derive all tail overflow checks from the caller accumulator bounds.",
+        "statement": "∀ (it : core.slice.iter.Iter U8) (a b : U32) (hn : (it.slice.val.drop it.i).length ≤ 3) (ha : a.val ≤ 400000) (hb : b.val ≤ 2000000), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+        "target": null,
+        "theorem": "AdlerProof.tail_bounded_wp"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "quartet_recombine",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original final vector recombination needs the exact relationship between four lane folds and the unreduced scalar recurrence, including position weights.",
+        "statement": "∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let s := AdlerProof.rawRun (cs.map Slice.val).flatten a b; let l := fun i => AdlerProof.laneRun cs 0 0 i; s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 ∧ s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 = b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2)",
+        "target": null,
+        "theorem": "AdlerProof.quartet_recombine"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "quartet_mod_recombine",
+        "kind": "lemma",
+        "needs": [
+          "quartet_recombine",
+          "rawRun_mod"
+        ],
+        "reason": "The original lane corrections add MOD minus each a-lane, with weights 1,2,3; this theorem proves their complete modular recombination equals the scalar recurrence.",
+        "statement": "∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let l := fun i => AdlerProof.laneRun cs 0 0 i; let av := fun i => (l i).1 % 65521; let bv := fun i => (l i).2 % 65521; ((a + av 0 + av 1 + av 2 + av 3) % 65521, ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) + 3 * (65521 - av 3)) % 65521) = AdlerSpec.run a b (cs.map Slice.val).flatten",
+        "target": null,
+        "theorem": "AdlerProof.quartet_mod_recombine"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_iter_sum",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The original summation results and preconditions must be expanded into their four exact lane values, including all corrected b lanes.",
+        "statement": "∀ (v : algo.U32X4), AdlerProof.iterSum { slice := Array.to_slice v, i := 0 } = v.val[0]!.val + v.val[1]!.val + v.val[2]!.val + v.val[3]!.val",
+        "target": null,
+        "theorem": "AdlerProof.vector_iter_sum"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "run_congr",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "The caller scalar-tail initial sums are congruent to the normalized prefix recurrence. This theorem permits replacing both scalar seeds without restricting representable API states.",
+        "statement": "∀ (bytes : List U8) (a b c d : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), AdlerSpec.run a b bytes = AdlerSpec.run c d bytes",
+        "target": null,
+        "theorem": "AdlerProof.run_congr"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "run_append",
+        "kind": "lemma",
+        "needs": [
+          "run_congr",
+          "rawRun_mod"
+        ],
+        "reason": "The final scalar tail must be composed with the recombined prefix to recover the original arbitrary input slice.",
+        "statement": "∀ (xs ys : List U8) (a b : Nat), AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys",
+        "target": null,
+        "theorem": "AdlerProof.run_append"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "combine_lane_residues",
+        "kind": "lemma",
+        "needs": [
+          "laneRun_congr",
+          "laneRun_append"
+        ],
+        "reason": "The original outer loop reduces lane seeds before the final inner loop. This checked bridge relates its actual two vector results to the complete concatenated quartet fold.",
+        "statement": "∀ (xs ys : List (Slice U8)) (av bv av' bv' : algo.U32X4) (hseed : ∀ i : Nat, i < 4 → av.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).1 % 65521 ∧ bv.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).2 % 65521) (hfinal : ∀ i : Nat, i < 4 → (av'.val[i]!.val, bv'.val[i]!.val) = AdlerProof.laneRun ys av.val[i]!.val bv.val[i]!.val i), ∀ i : Nat, i < 4 → av'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 ∧ bv'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521",
+        "target": null,
+        "theorem": "AdlerProof.combine_lane_residues"
+      }
+    ]
+  },
+  "required": true,
+  "revision": 116,
+  "run": {
+    "active": {
+      "input": "70a4b4a180bb7ec51ff17ae3ffb81d180c4b762bd314ab1fbd3135cdd5f9274a",
+      "started": 1792298661,
+      "task": {
+        "kind": "integrate",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::from_checksum::Method"
+        ],
+        "work": null
+      }
+    },
+    "attempts": {
+      "Integrate:adler2::adler32_slice::Function": {
+        "checked_work": [
+          "lemma:∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296"
+        ],
+        "failed": false,
+        "last_input": "0973710be143eeed6db25265e20744ef8af19e6cf1100194db4d410c7c7c8c24",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "progress_credits": 1,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::checksum::Method": {
+        "checked_work": [
+          "api:adler2::impl[ff6e69000b04949b]::checksum::Method:f27c164915bbfea5266ac9d56d9d79338d0e71c92f79bdcb1d9fff5e5faba497",
+          "api:adler2::impl[ff6e69000b04949b]::new::Method:b9df347d673213cb5045c263038f3535ddf9165f95ddf6fdaa0a60f20a036ec1",
+          "lemma:∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+          "lemma:∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+          "lemma:∀ {α : Type} (s : Slice α) (n : Usize), 0 < n.val → core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄"
+        ],
+        "failed": false,
+        "last_input": "8b0a2c8c10a48fa11a54291f263b4a12b16e7a209c4347243a2f01832120a63f",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "progress_credits": 1,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::from_checksum::Method": {
+        "checked_work": [
+          "api:adler2::adler32_slice::Function:164fbe4d546e3df9132e85d7b119d4d640151dd9708d846ce09ede333c839ec6",
+          "api:adler2::algo::impl[16f54fa5277eca59]::from::Method:1f145f27c3bd58cdb4146d17e8c751076a6a6ed3ba9501901208184ef45275e2",
+          "api:adler2::algo::impl[a6c2352d886692d1]::add_assign::Method:24451c87ec060e7b931c3ecd01fec7c26c743bd1a482d989ac7e23cc767895c7",
+          "api:adler2::impl[ff6e69000b04949b]::checksum::Method:f27c164915bbfea5266ac9d56d9d79338d0e71c92f79bdcb1d9fff5e5faba497",
+          "api:adler2::impl[ff6e69000b04949b]::new::Method:b9df347d673213cb5045c263038f3535ddf9165f95ddf6fdaa0a60f20a036ec1",
+          "api:adler2::impl[ff6e69000b04949b]::write_slice::Method:e6ae7b04eb381334c31af929782ed563dac2474b9d83616039022fb2debe83fc",
+          "lemma:∀ (bytes : List U8) (a b : Nat), ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes",
+          "lemma:∀ (bytes : List U8) (a b c d : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), AdlerSpec.run a b bytes = AdlerSpec.run c d bytes",
+          "lemma:∀ (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 ≤ bytes.val.length) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val + bytes.val[i]!.val ≤ U32.max) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) ≤ U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ fun r => ∃ av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) ∧ (∀ i : Nat, i < 4 → av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) ∧ (∀ i : Nat, i < 4 → bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) ⦄",
+          "lemma:∀ (chunk : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hlen : chunk.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0.body 22208#usize a { chunks := chunk :: cs, remainder := rem } b av bv ⦃ fun r => ∃ (qs : List (Slice U8)) (b' : U32) (av' bv' : algo.U32X4), r = .cont ({ chunks := cs, remainder := rem }, b', av', bv') ∧ (qs.map Slice.val).flatten = chunk.val ∧ (∀ q ∈ qs, q.val.length = 4) ∧ b'.val = (b.val + 22208 * a.val) % 65521 ∧ b'.val ≤ 65520 ∧ (∀ i : Nat, i < 4 → av'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ bv'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ av'.val[i]!.val ≤ 65520 ∧ bv'.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (a b c d i : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), (AdlerProof.laneRun cs a b i).1 % 65521 = (AdlerProof.laneRun cs c d i).1 % 65521 ∧ (AdlerProof.laneRun cs a b i).2 % 65521 = (AdlerProof.laneRun cs c d i).2 % 65521",
+          "lemma:∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let l := fun i => AdlerProof.laneRun cs 0 0 i; let av := fun i => (l i).1 % 65521; let bv := fun i => (l i).2 % 65521; ((a + av 0 + av 1 + av 2 + av 3) % 65521, ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) + 3 * (65521 - av 3)) % 65521) = AdlerSpec.run a b (cs.map Slice.val).flatten",
+          "lemma:∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let s := AdlerProof.rawRun (cs.map Slice.val).flatten a b; let l := fun i => AdlerProof.laneRun cs 0 0 i; s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 ∧ s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 = b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2)",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hchunks : ∀ c ∈ cs, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (cs.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * cs.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem source : Slice U8) (hpartition : (cs.map Slice.val).flatten ++ rem.val = source.val) (hfull : ∀ c ∈ cs, c.val.length = 4) (hlen : source.val.length ≤ 22208), cs.length ≤ 5552",
+          "lemma:∀ (it : core.slice.iter.ChunksExact U8) (a b : algo.U32X4) (hc : ∀ c ∈ it.chunks, 4 ≤ c.val.length) (hn : it.chunks.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun it.chunks a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop2 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop3 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U8) (a b : U32) (ha : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).1 ≤ U32.max) (hb : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).2 ≤ U32.max), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U8) (a b : U32) (hn : (it.slice.val.drop it.i).length ≤ 3) (ha : a.val ≤ 400000) (hb : b.val ≤ 2000000), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+          "lemma:∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+          "lemma:∀ (self : algo.U32X4) (q : U32), 0 < q.val → algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % q.val ⦄",
+          "lemma:∀ (self : algo.U32X4) (rhs : U32) (h : ∀ i : Nat, i < 4 → self.val[i]!.val * rhs.val ≤ U32.max), algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val * rhs.val ⦄",
+          "lemma:∀ (self : algo.U32X4), algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self algo.Adler32.compute.MOD ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % 65521 ∧ out.val[i]!.val ≤ 65520 ⦄",
+          "lemma:∀ (size : Usize) (it : core.slice.iter.ChunksExact U8) (a b : U32) (av bv : algo.U32X4) (hsize : size.val = 22208) (hchunks : ∀ c ∈ it.chunks, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 size it a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (it.chunks.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * it.chunks.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (v : algo.U32X4) (n : Nat) (h : ∀ i : Nat, i < 4 → v.val[i]!.val ≤ n), (v.val.map (fun x => x.val)).sum ≤ 4 * n",
+          "lemma:∀ (v : algo.U32X4), AdlerProof.iterSum { slice := Array.to_slice v, i := 0 } = v.val[0]!.val + v.val[1]!.val + v.val[2]!.val + v.val[3]!.val",
+          "lemma:∀ (xs ys : List (Slice U8)) (a b i : Nat), AdlerProof.laneRun (xs ++ ys) a b i = AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i",
+          "lemma:∀ (xs ys : List (Slice U8)) (av bv av' bv' : algo.U32X4) (hseed : ∀ i : Nat, i < 4 → av.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).1 % 65521 ∧ bv.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).2 % 65521) (hfinal : ∀ i : Nat, i < 4 → (av'.val[i]!.val, bv'.val[i]!.val) = AdlerProof.laneRun ys av.val[i]!.val bv.val[i]!.val i), ∀ i : Nat, i < 4 → av'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 ∧ bv'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521",
+          "lemma:∀ (xs ys : List U8) (a b : Nat), AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys",
+          "lemma:∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+          "lemma:∀ {α : Type} (s : Slice α) (n : Usize), 0 < n.val → core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄"
+        ],
+        "failed": true,
+        "last_input": "70a4b4a180bb7ec51ff17ae3ffb81d180c4b762bd314ab1fbd3135cdd5f9274a",
+        "last_result": "started, not finalized",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+        "checked_work": [
+          "api:adler2::algo::impl[16f54fa5277eca59]::from::Method:1f145f27c3bd58cdb4146d17e8c751076a6a6ed3ba9501901208184ef45275e2",
+          "api:adler2::algo::impl[a6c2352d886692d1]::add_assign::Method:24451c87ec060e7b931c3ecd01fec7c26c743bd1a482d989ac7e23cc767895c7",
+          "api:adler2::impl[ff6e69000b04949b]::checksum::Method:f27c164915bbfea5266ac9d56d9d79338d0e71c92f79bdcb1d9fff5e5faba497",
+          "api:adler2::impl[ff6e69000b04949b]::new::Method:b9df347d673213cb5045c263038f3535ddf9165f95ddf6fdaa0a60f20a036ec1",
+          "api:adler2::impl[ff6e69000b04949b]::write_slice::Method:e6ae7b04eb381334c31af929782ed563dac2474b9d83616039022fb2debe83fc",
+          "lemma:∀ (bytes : List U8) (a b : Nat), ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes",
+          "lemma:∀ (bytes : List U8) (a b c d : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), AdlerSpec.run a b bytes = AdlerSpec.run c d bytes",
+          "lemma:∀ (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 ≤ bytes.val.length) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val + bytes.val[i]!.val ≤ U32.max) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) ≤ U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ fun r => ∃ av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) ∧ (∀ i : Nat, i < 4 → av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) ∧ (∀ i : Nat, i < 4 → bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) ⦄",
+          "lemma:∀ (chunk : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hlen : chunk.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0.body 22208#usize a { chunks := chunk :: cs, remainder := rem } b av bv ⦃ fun r => ∃ (qs : List (Slice U8)) (b' : U32) (av' bv' : algo.U32X4), r = .cont ({ chunks := cs, remainder := rem }, b', av', bv') ∧ (qs.map Slice.val).flatten = chunk.val ∧ (∀ q ∈ qs, q.val.length = 4) ∧ b'.val = (b.val + 22208 * a.val) % 65521 ∧ b'.val ≤ 65520 ∧ (∀ i : Nat, i < 4 → av'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ bv'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ av'.val[i]!.val ≤ 65520 ∧ bv'.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (a b c d i : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), (AdlerProof.laneRun cs a b i).1 % 65521 = (AdlerProof.laneRun cs c d i).1 % 65521 ∧ (AdlerProof.laneRun cs a b i).2 % 65521 = (AdlerProof.laneRun cs c d i).2 % 65521",
+          "lemma:∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let l := fun i => AdlerProof.laneRun cs 0 0 i; let av := fun i => (l i).1 % 65521; let bv := fun i => (l i).2 % 65521; ((a + av 0 + av 1 + av 2 + av 3) % 65521, ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) + 3 * (65521 - av 3)) % 65521) = AdlerSpec.run a b (cs.map Slice.val).flatten",
+          "lemma:∀ (cs : List (Slice U8)) (hfull : ∀ c ∈ cs, c.val.length = 4) (a b : Nat), let s := AdlerProof.rawRun (cs.map Slice.val).flatten a b; let l := fun i => AdlerProof.laneRun cs 0 0 i; s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 ∧ s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 = b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2)",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hchunks : ∀ c ∈ cs, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (cs.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * cs.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : ∀ c ∈ cs, 4 ≤ c.val.length) (hlen : cs.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (cs : List (Slice U8)) (rem source : Slice U8) (hpartition : (cs.map Slice.val).flatten ++ rem.val = source.val) (hfull : ∀ c ∈ cs, c.val.length = 4) (hlen : source.val.length ≤ 22208), cs.length ≤ 5552",
+          "lemma:∀ (it : core.slice.iter.ChunksExact U8) (a b : algo.U32X4) (hc : ∀ c ∈ it.chunks, 4 ≤ c.val.length) (hn : it.chunks.length ≤ 5552) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520), algo.Adler32.compute_loop1 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun it.chunks a.val[i]!.val b.val[i]!.val i ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop2 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it ≤ U32.max), algo.Adler32.compute_loop3 it a ⦃ fun out => out.val = a.val + AdlerProof.iterSum it ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U8) (a b : U32) (ha : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).1 ≤ U32.max) (hb : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).2 ≤ U32.max), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+          "lemma:∀ (it : core.slice.iter.Iter U8) (a b : U32) (hn : (it.slice.val.drop it.i).length ≤ 3) (ha : a.val ≤ 400000) (hb : b.val ≤ 2000000), algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val ⦄",
+          "lemma:∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+          "lemma:∀ (self : algo.U32X4) (q : U32), 0 < q.val → algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % q.val ⦄",
+          "lemma:∀ (self : algo.U32X4) (rhs : U32) (h : ∀ i : Nat, i < 4 → self.val[i]!.val * rhs.val ≤ U32.max), algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val * rhs.val ⦄",
+          "lemma:∀ (self : algo.U32X4), algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self algo.Adler32.compute.MOD ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = self.val[i]!.val % 65521 ∧ out.val[i]!.val ≤ 65520 ⦄",
+          "lemma:∀ (size : Usize) (it : core.slice.iter.ChunksExact U8) (a b : U32) (av bv : algo.U32X4) (hsize : size.val = 22208) (hchunks : ∀ c ∈ it.chunks, c.val.length = 22208) (ha : a.val ≤ 65535) (hb : b.val ≤ 65535) (hav : ∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) (hbv : ∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520), algo.Adler32.compute_loop0 size it a b av bv ⦃ fun out => ∃ qs : List (Slice U8), (qs.map Slice.val).flatten = (it.chunks.map Slice.val).flatten ∧ (∀ q ∈ qs, q.val.length = 4) ∧ out.1.val % 65521 = (b.val + 22208 * it.chunks.length * a.val) % 65521 ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 ∧ out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 ∧ out.2.1.val[i]!.val ≤ 65520 ∧ out.2.2.val[i]!.val ≤ 65520) ⦄",
+          "lemma:∀ (v : algo.U32X4) (n : Nat) (h : ∀ i : Nat, i < 4 → v.val[i]!.val ≤ n), (v.val.map (fun x => x.val)).sum ≤ 4 * n",
+          "lemma:∀ (v : algo.U32X4), AdlerProof.iterSum { slice := Array.to_slice v, i := 0 } = v.val[0]!.val + v.val[1]!.val + v.val[2]!.val + v.val[3]!.val",
+          "lemma:∀ (xs ys : List (Slice U8)) (a b i : Nat), AdlerProof.laneRun (xs ++ ys) a b i = AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i",
+          "lemma:∀ (xs ys : List (Slice U8)) (av bv av' bv' : algo.U32X4) (hseed : ∀ i : Nat, i < 4 → av.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).1 % 65521 ∧ bv.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).2 % 65521) (hfinal : ∀ i : Nat, i < 4 → (av'.val[i]!.val, bv'.val[i]!.val) = AdlerProof.laneRun ys av.val[i]!.val bv.val[i]!.val i), ∀ i : Nat, i < 4 → av'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 ∧ bv'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521",
+          "lemma:∀ (xs ys : List U8) (a b : Nat), AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys",
+          "lemma:∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+          "lemma:∀ {α : Type} (s : Slice α) (n : Usize), 0 < n.val → core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄"
+        ],
+        "failed": false,
+        "last_input": "363a6612182fc9c4f902cdfe365340029ebfb705220392bf05fab9fc521bb606",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "progress_credits": 9,
+        "total": 11
+      },
+      "ProveLemma:adler2::adler32_slice::Function@inner_step": {
+        "checked_work": [
+          "api:adler2::algo::impl[16f54fa5277eca59]::from::Method:1f145f27c3bd58cdb4146d17e8c751076a6a6ed3ba9501901208184ef45275e2",
+          "api:adler2::algo::impl[a6c2352d886692d1]::add_assign::Method:24451c87ec060e7b931c3ecd01fec7c26c743bd1a482d989ac7e23cc767895c7",
+          "api:adler2::impl[ff6e69000b04949b]::checksum::Method:f27c164915bbfea5266ac9d56d9d79338d0e71c92f79bdcb1d9fff5e5faba497",
+          "api:adler2::impl[ff6e69000b04949b]::new::Method:b9df347d673213cb5045c263038f3535ddf9165f95ddf6fdaa0a60f20a036ec1",
+          "lemma:∀ (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 ≤ bytes.val.length) (ha : ∀ i : Nat, i < 4 → a.val[i]!.val + bytes.val[i]!.val ≤ U32.max) (hb : ∀ i : Nat, i < 4 → b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) ≤ U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b ⦃ fun r => ∃ av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) ∧ (∀ i : Nat, i < 4 → av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) ∧ (∀ i : Nat, i < 4 → bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) ⦄",
+          "lemma:∀ (k : Nat), k ≤ 5552 → 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+          "lemma:∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+          "lemma:∀ {α : Type} (s : Slice α) (n : Usize), 0 < n.val → core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄"
+        ],
+        "failed": false,
+        "last_input": "c29c73aeb4862802c4d05e7f7d275ee5c48a9113f70ac92b9d4cb96782081220",
+        "last_result": "completed with accepted work",
+        "no_progress": 0,
+        "progress_credits": 1,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 57692160,
+    "elapsed_ms": 2902272,
+    "input_tokens": 58510508,
+    "last_result": "completed with accepted work",
+    "output_tokens": 147509,
+    "thread": "01a14d09-937d-7a83-9d6f-dec8b5da75af"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round9-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round9-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round9-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round9-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

@@ -1,0 +1,74 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:119: warning: Variable name `hsize` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hsize
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:146: warning: Variable name `hchunks` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hchunks
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:196: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:217: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:238: warning: Variable name `hav` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hav
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_19.lean:4:288: warning: Variable name `hbv` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hbv
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.outer_iter_wp : ∀ (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  ↑size = 22208 →
+    (∀ c ∈ it.chunks, (↑c).length = 22208) →
+      ↑a ≤ 65535 →
+        ↑b ≤ 65535 →
+          (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+            (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+              ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv ⦃ out =>
+                ∃ qs,
+                  (List.map Aeneas.Std.Slice.val qs).flatten = (List.map Aeneas.Std.Slice.val it.chunks).flatten ∧
+                    (∀ q ∈ qs, (↑q).length = 4) ∧
+                      ↑out.1 % 65521 = (↑b + 22208 * it.chunks.length * ↑a) % 65521 ∧
+                        ↑out.1 ≤ 65535 ∧
+                          ∀ i < 4,
+                            ↑(↑out.2.1)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).1 % 65521 ∧
+                              ↑(↑out.2.2)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).2 % 65521 ∧
+                                ↑(↑out.2.1)[i]! ≤ 65520 ∧ ↑(↑out.2.2)[i]! ≤ 65520 ⦄
+theorem IndependentLemma_19 : ∀ (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  ↑size = 22208 →
+    (∀ c ∈ it.chunks, (↑c).length = 22208) →
+      ↑a ≤ 65535 →
+        ↑b ≤ 65535 →
+          (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+            (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+              ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv ⦃ out =>
+                ∃ qs,
+                  (List.map Aeneas.Std.Slice.val qs).flatten = (List.map Aeneas.Std.Slice.val it.chunks).flatten ∧
+                    (∀ q ∈ qs, (↑q).length = 4) ∧
+                      ↑out.1 % 65521 = (↑b + 22208 * it.chunks.length * ↑a) % 65521 ∧
+                        ↑out.1 ≤ 65535 ∧
+                          ∀ i < 4,
+                            ↑(↑out.2.1)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).1 % 65521 ∧
+                              ↑(↑out.2.2)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).2 % 65521 ∧
+                                ↑(↑out.2.1)[i]! ≤ 65520 ∧ ↑(↑out.2.2)[i]! ≤ 65520 ⦄ :=
+AdlerProof.outer_iter_wp
+'IndependentLemma_19' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,36 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:27:6: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [List.flatten_cons, List.append_assoc, ih.1]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:313:15: warning: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Prod.snd] at ha1 hb1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:313:25: warning: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Prod.fst] at ha1 hb1
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:501:83: warning: This simp argument is unused:
+  hiLen
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [algo.Adler32.compute_loop2.body, core.slice.iter.IteratorSliceIter.next, hi, hsum]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:676:8: warning: Unused tactic linter: `simp only [List.getElem!_cons_zero, List.getElem!_cons_succ]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round9-continuation-product-audit/Lemmas.lean:734:34: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`

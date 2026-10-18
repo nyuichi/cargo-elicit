@@ -1,0 +1,6 @@
+AdlerProof.run_append : ∀ (xs ys : List Aeneas.Std.U8) (a b : ℕ),
+  AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys
+theorem IndependentLemma_32 : ∀ (xs ys : List Aeneas.Std.U8) (a b : ℕ),
+  AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys :=
+AdlerProof.run_append
+'IndependentLemma_32' depends on axioms: [propext, Quot.sound]

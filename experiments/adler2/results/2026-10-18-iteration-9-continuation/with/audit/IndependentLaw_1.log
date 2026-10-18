@@ -1,0 +1,6 @@
+theorem IndependentLaw_1 : ∀ (s : ElicitGenerated.Adler32),
+  ∃ sum restored,
+    s.checksum = Aeneas.Std.Result.ok sum ∧
+      ElicitGenerated.Adler32.from_checksum sum = Aeneas.Std.Result.ok restored ∧ restored = s :=
+AdlerProof.from_checksum_checksum_roundtrip
+'IndependentLaw_1' depends on axioms: [propext, Classical.choice, Quot.sound]

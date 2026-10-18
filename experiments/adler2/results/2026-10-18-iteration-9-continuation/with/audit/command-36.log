@@ -1,0 +1,16 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_20.lean:4:65: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.mul_wp : ∀ (self : ElicitGenerated.algo.U32X4) (rhs : Aeneas.Std.U32),
+  (∀ i < 4, ↑(↑self)[i]! * ↑rhs ≤ Aeneas.Std.U32.max) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! * ↑rhs ⦄
+theorem IndependentLemma_20 : ∀ (self : ElicitGenerated.algo.U32X4) (rhs : Aeneas.Std.U32),
+  (∀ i < 4, ↑(↑self)[i]! * ↑rhs ≤ Aeneas.Std.U32.max) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑self)[i]! * ↑rhs ⦄ :=
+AdlerProof.mul_wp
+'IndependentLemma_20' depends on axioms: [propext, Classical.choice, Quot.sound]

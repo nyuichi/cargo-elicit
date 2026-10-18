@@ -1,0 +1,12 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_24.lean:4:60: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.vector_sum_le : ∀ (v : ElicitGenerated.algo.U32X4) (n : ℕ),
+  (∀ i < 4, ↑(↑v)[i]! ≤ n) → (List.map (fun x => ↑x) ↑v).sum ≤ 4 * n
+theorem IndependentLemma_24 : ∀ (v : ElicitGenerated.algo.U32X4) (n : ℕ),
+  (∀ i < 4, ↑(↑v)[i]! ≤ n) → (List.map (fun x => ↑x) ↑v).sum ≤ 4 * n :=
+AdlerProof.vector_sum_le
+'IndependentLemma_24' depends on axioms: [propext, Classical.choice, Quot.sound]

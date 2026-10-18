@@ -1,0 +1,66 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_18.lean:4:106: warning: Variable name `hchunks` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hchunks
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_18.lean:4:149: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_18.lean:4:170: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_18.lean:4:191: warning: Variable name `hav` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hav
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_18.lean:4:241: warning: Variable name `hbv` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hbv
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.outer_loop : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, (↑c).length = 22208) →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+          (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+            ElicitGenerated.algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ out =>
+              ∃ qs,
+                (List.map Aeneas.Std.Slice.val qs).flatten = (List.map Aeneas.Std.Slice.val cs).flatten ∧
+                  (∀ q ∈ qs, (↑q).length = 4) ∧
+                    ↑out.1 % 65521 = (↑b + 22208 * cs.length * ↑a) % 65521 ∧
+                      ↑out.1 ≤ 65535 ∧
+                        ∀ i < 4,
+                          ↑(↑out.2.1)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).1 % 65521 ∧
+                            ↑(↑out.2.2)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).2 % 65521 ∧
+                              ↑(↑out.2.1)[i]! ≤ 65520 ∧ ↑(↑out.2.2)[i]! ≤ 65520 ⦄
+theorem IndependentLemma_18 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, (↑c).length = 22208) →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+          (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+            ElicitGenerated.algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv ⦃ out =>
+              ∃ qs,
+                (List.map Aeneas.Std.Slice.val qs).flatten = (List.map Aeneas.Std.Slice.val cs).flatten ∧
+                  (∀ q ∈ qs, (↑q).length = 4) ∧
+                    ↑out.1 % 65521 = (↑b + 22208 * cs.length * ↑a) % 65521 ∧
+                      ↑out.1 ≤ 65535 ∧
+                        ∀ i < 4,
+                          ↑(↑out.2.1)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).1 % 65521 ∧
+                            ↑(↑out.2.2)[i]! = (AdlerProof.laneRun qs (↑(↑av)[i]!) (↑(↑bv)[i]!) i).2 % 65521 ∧
+                              ↑(↑out.2.1)[i]! ≤ 65520 ∧ ↑(↑out.2.2)[i]! ≤ 65520 ⦄ :=
+AdlerProof.outer_loop
+'IndependentLemma_18' depends on axioms: [propext, Classical.choice, Quot.sound]

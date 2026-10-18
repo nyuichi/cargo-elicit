@@ -1,0 +1,23 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_28.lean:4:56: warning: Variable name `hfull` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfull
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.quartet_recombine : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    ∀ (a b : ℕ),
+      have s := AdlerProof.rawRun (List.map Aeneas.Std.Slice.val cs).flatten a b;
+      have l := fun i => AdlerProof.laneRun cs 0 0 i;
+      s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 ∧
+        s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 = b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2)
+theorem IndependentLemma_28 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    ∀ (a b : ℕ),
+      have s := AdlerProof.rawRun (List.map Aeneas.Std.Slice.val cs).flatten a b;
+      have l := fun i => AdlerProof.laneRun cs 0 0 i;
+      s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 ∧
+        s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 =
+          b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2) :=
+AdlerProof.quartet_recombine
+'IndependentLemma_28' depends on axioms: [propext, Classical.choice, Quot.sound]

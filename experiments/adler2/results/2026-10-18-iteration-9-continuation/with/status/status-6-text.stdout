@@ -1,0 +1,13 @@
+Goal: {"kind":"selected_apis","apis":["adler2::adler32_slice::Function","adler2::impl[ff6e69000b04949b]::checksum::Method","adler2::impl[ff6e69000b04949b]::from_checksum::Method","adler2::impl[ff6e69000b04949b]::new::Method","adler2::impl[ff6e69000b04949b]::write_slice::Method"]}
+Proof plan: 34 steps, 28 current checked lemmas
+adler2: aeneas / target x86_64-unknown-linux-gnu, features ["default", "std"]
+Mode: verification required. Revision 116. unresolved
+Types/traits specified: 0/2; functions/methods/impls specified: 6/19, fully verified: 6/19
+Blocked: adler2::algo::impl[334e2f0b7170a532]::TraitImpl: Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations
+Blocked: adler2::algo::impl[6142b20c00108117]::TraitImpl: Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations
+Blocked: adler2::algo::impl[a6c2352d886692d1]::TraitImpl: Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations
+Blocked: adler2::impl[6f07fcfab3542315]::TraitImpl: Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations
+Blocked: adler2::impl[c15b331ca2ffd1e4]::TraitImpl: Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]
+Analysis incomplete: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]
+Last run: completed with accepted work

@@ -1,0 +1,42 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_11.lean:4:92: warning: Variable name `hchunks` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hchunks
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_11.lean:4:131: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_11.lean:4:157: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_11.lean:4:205: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.remainder_inner_loop_bounded : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem : Aeneas.Std.Slice Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, 4 ≤ (↑c).length) →
+    cs.length ≤ 5552 →
+      (∀ i < 4, ↑(↑a)[i]! ≤ 65520) →
+        (∀ i < 4, ↑(↑b)[i]! ≤ 65520) →
+          ElicitGenerated.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ out =>
+            ∀ i < 4, (↑(↑out.1)[i]!, ↑(↑out.2)[i]!) = AdlerProof.laneRun cs (↑(↑a)[i]!) (↑(↑b)[i]!) i ⦄
+theorem IndependentLemma_11 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ cs, 4 ≤ (↑c).length) →
+    cs.length ≤ 5552 →
+      (∀ i < 4, ↑(↑a)[i]! ≤ 65520) →
+        (∀ i < 4, ↑(↑b)[i]! ≤ 65520) →
+          ElicitGenerated.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b ⦃ out =>
+            ∀ i < 4, (↑(↑out.1)[i]!, ↑(↑out.2)[i]!) = AdlerProof.laneRun cs (↑(↑a)[i]!) (↑(↑b)[i]!) i ⦄ :=
+AdlerProof.remainder_inner_loop_bounded
+'IndependentLemma_11' depends on axioms: [propext, Classical.choice, Quot.sound]

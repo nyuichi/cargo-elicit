@@ -1,0 +1,14 @@
+{
+  "mode": "same-case interrupted/resumed practical evaluation; not a fresh uninterrupted trial or matched comparison",
+  "cumulative_limit_seconds": 10800,
+  "initial_end_to_end_seconds": 1762.6067848270031,
+  "preparation_and_previous_wall_seconds": 138.33571434020996,
+  "continuation_work_cap_seconds": 8599,
+  "terminal_observation_reserve_seconds": 300,
+  "retry": false,
+  "prior_metrics": [
+    "/workspace/elicit-comparison/results/round9-elicit-1/metrics.json"
+  ],
+  "math_hints": 0,
+  "binary_unchanged": true
+}

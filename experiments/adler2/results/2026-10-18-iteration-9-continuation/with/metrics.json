@@ -1,0 +1,65 @@
+{
+  "start_unix": 1792295757.2386868,
+  "arm": "with",
+  "command": [
+    "cargo",
+    "elicit",
+    "run",
+    "--max-seconds",
+    "8596",
+    "--max-tasks",
+    "32"
+  ],
+  "exit": 1,
+  "end_to_end_seconds": 3598.925251594992,
+  "timed_work_seconds": 3591.8387928750017,
+  "terminal_observation_seconds": 7.086458719990333,
+  "observation_seconds_total": 80.63796235799964,
+  "observation_seconds_during_run": 73.5520080300048,
+  "historical_api_proof_milestones": [
+    "adler32_slice",
+    "checksum",
+    "from_checksum",
+    "new",
+    "write_slice"
+  ],
+  "tokens": null,
+  "human_proof_hints": 0,
+  "api_selectors": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "continue_control": false,
+  "inner_cli_budget_seconds": 8596,
+  "outer_shutdown_margin_seconds": 2,
+  "original_sources_unchanged": true,
+  "source_hashes_before": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "source_hashes_after": {
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490"
+  },
+  "continuation": {
+    "mode": "same-case interrupted/resumed practical evaluation; not a fresh uninterrupted trial or matched comparison",
+    "cumulative_limit_seconds": 10800,
+    "initial_end_to_end_seconds": 1762.6067848270031,
+    "preparation_and_previous_wall_seconds": 138.33571434020996,
+    "continuation_work_cap_seconds": 8599,
+    "terminal_observation_reserve_seconds": 300,
+    "retry": false,
+    "prior_metrics": [
+      "/workspace/elicit-comparison/results/round9-elicit-1/metrics.json"
+    ],
+    "math_hints": 0,
+    "binary_unchanged": true
+  },
+  "cumulative_end_to_end_seconds": 5499.868421554565,
+  "note": "Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status."
+}

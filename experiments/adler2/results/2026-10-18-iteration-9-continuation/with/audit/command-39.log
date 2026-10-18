@@ -1,0 +1,14 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_23.lean:4:75: warning: Variable name `hmax` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hmax
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.sum_loop3_wp : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32),
+  ↑a + AdlerProof.iterSum it ≤ Aeneas.Std.U32.max →
+    ElicitGenerated.algo.Adler32.compute_loop3 it a ⦃ out => ↑out = ↑a + AdlerProof.iterSum it ⦄
+theorem IndependentLemma_23 : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32),
+  ↑a + AdlerProof.iterSum it ≤ Aeneas.Std.U32.max →
+    ElicitGenerated.algo.Adler32.compute_loop3 it a ⦃ out => ↑out = ↑a + AdlerProof.iterSum it ⦄ :=
+AdlerProof.sum_loop3_wp
+'IndependentLemma_23' depends on axioms: [propext, Classical.choice, Quot.sound]

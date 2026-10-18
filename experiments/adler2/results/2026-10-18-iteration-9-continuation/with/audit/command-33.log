@@ -1,0 +1,8 @@
+AdlerProof.laneRun_append : ∀ (xs ys : List (Aeneas.Std.Slice Aeneas.Std.U8)) (a b i : ℕ),
+  AdlerProof.laneRun (xs ++ ys) a b i =
+    AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i
+theorem IndependentLemma_17 : ∀ (xs ys : List (Aeneas.Std.Slice Aeneas.Std.U8)) (a b i : ℕ),
+  AdlerProof.laneRun (xs ++ ys) a b i =
+    AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i :=
+AdlerProof.laneRun_append
+'IndependentLemma_17' depends on axioms: [propext, Classical.choice, Quot.sound]

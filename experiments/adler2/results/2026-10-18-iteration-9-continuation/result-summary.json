@@ -1,0 +1,22 @@
+{
+  "selected_api_coverage": "5/5, current approved full-contract evidence; independently audited",
+  "checked_planned_lemmas": 28,
+  "additional_exact_laws": 4,
+  "initial_end_to_end_seconds": 1762.6067848270031,
+  "resumed_end_to_end_seconds": 3598.925251594992,
+  "segments_end_to_end_seconds": 5361.532036421995,
+  "including_resumption_preparation_seconds": 5499.868421554565,
+  "separate_final_module_api_lemma_audit_seconds": 219.01155934399867,
+  "separate_additional_laws_audit_seconds": 5.1763842290092725,
+  "retry_used": false,
+  "math_hints": 0,
+  "original_sources_unchanged": true,
+  "same_binary": true,
+  "cli_exit": 1,
+  "cli_complete": false,
+  "cli_limitation": "Global conservative discovery guard on excluded Copy/Clone/Debug derives; selected proofs are current and approved.",
+  "source_ci": "https://github.com/nyuichi/cargo-elicit/actions/runs/39093436726",
+  "initial_evidence_ci": "https://github.com/nyuichi/cargo-elicit/actions/runs/39095316045",
+  "comparison": "User-reported roughly3h reference is not matched. Retained independent ordinary trial5/5 at1704.23s prevents any general speedup claim.",
+  "astra_decision": "Audits reviewed; stop code changes and experiments for this case."
+}

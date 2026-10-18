@@ -1,0 +1,28 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_12.lean:4:80: warning: Variable name `hpartition` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hpartition
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_12.lean:4:146: warning: Variable name `hfull` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfull
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_12.lean:4:183: warning: Variable name `hlen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hlen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.chunk_count_bound : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem source : Aeneas.Std.Slice Aeneas.Std.U8),
+  (List.map Aeneas.Std.Slice.val cs).flatten ++ ↑rem = ↑source →
+    (∀ c ∈ cs, (↑c).length = 4) → (↑source).length ≤ 22208 → cs.length ≤ 5552
+theorem IndependentLemma_12 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (rem source : Aeneas.Std.Slice Aeneas.Std.U8),
+  (List.map Aeneas.Std.Slice.val cs).flatten ++ ↑rem = ↑source →
+    (∀ c ∈ cs, (↑c).length = 4) → (↑source).length ≤ 22208 → cs.length ≤ 5552 :=
+AdlerProof.chunk_count_bound
+'IndependentLemma_12' depends on axioms: [propext, Quot.sound]

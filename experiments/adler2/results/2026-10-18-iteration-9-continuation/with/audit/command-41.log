@@ -1,0 +1,24 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_25.lean:4:76: warning: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_25.lean:4:152: warning: Variable name `hb` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hb
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.tail_loop_wp : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32),
+  (AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b).1 ≤ Aeneas.Std.U32.max →
+    (AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b).2 ≤ Aeneas.Std.U32.max →
+      ElicitGenerated.algo.Adler32.compute_loop4 it a b ⦃ out =>
+        (↑out.1, ↑out.2) = AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b ⦄
+theorem IndependentLemma_25 : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32),
+  (AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b).1 ≤ Aeneas.Std.U32.max →
+    (AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b).2 ≤ Aeneas.Std.U32.max →
+      ElicitGenerated.algo.Adler32.compute_loop4 it a b ⦃ out =>
+        (↑out.1, ↑out.2) = AdlerProof.rawRun (List.drop it.i ↑it.slice) ↑a ↑b ⦄ :=
+AdlerProof.tail_loop_wp
+'IndependentLemma_25' depends on axioms: [propext, Classical.choice, Quot.sound]

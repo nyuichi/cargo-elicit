@@ -1,0 +1,408 @@
+{
+  "elapsed_seconds": 219.01155934399867,
+  "separate_fresh_extraction": true,
+  "byte_identical_generated_model": true,
+  "original_sources_identical": true,
+  "overflow_checks": true,
+  "original_selected_bodies_transparent": true,
+  "module_builds": {
+    "ElicitGenerated": true,
+    "ElicitAdapter": true,
+    "Specs": true,
+    "ElicitContracts": true,
+    "Lemmas": true,
+    "Proofs": true
+  },
+  "api_contract_audits": {
+    "adler2::adler32_slice::Function": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "theorem": "AdlerProof.adler32_slice_correct",
+      "log": "command-8.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::new::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_8055bec449b87b3d",
+      "theorem": "AdlerProof.new_correct",
+      "log": "command-10.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0a059b8c0885cf07",
+      "theorem": "AdlerProof.checksum_correct",
+      "log": "command-12.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_98f3436459f22f5d",
+      "theorem": "AdlerProof.write_slice_correct",
+      "log": "command-14.log"
+    },
+    "adler2::algo::impl[16f54fa5277eca59]::from::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_0dfc1ce11e75ed00",
+      "theorem": "AdlerProof.from_correct",
+      "log": "command-16.log"
+    },
+    "adler2::algo::impl[a6c2352d886692d1]::add_assign::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_20b5198a3591154d",
+      "theorem": "AdlerProof.add_correct",
+      "log": "command-18.log"
+    },
+    "adler2::impl[ff6e69000b04949b]::from_checksum::Method": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "theorem": "AdlerProof.from_checksum_correct",
+      "log": "command-20.log"
+    }
+  },
+  "lemma_audits": {
+    "lane_budget": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (k : Nat), k \u2264 5552 \u2192 65520 + k * 65520 + 255 * k * (k + 1) / 2 < 4294967296",
+      "theorem": "AdlerProof.lane_budget",
+      "log": "command-22.log"
+    },
+    "chunks_partition": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} (n : Nat) (hn : 0 < n) (xs : List \u03b1), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs \u2227 (\u2200 c \u2208 (List.toChunksExact n hn xs).1, c.length = n) \u2227 (List.toChunksExact n hn xs).2.length < n",
+      "theorem": "AdlerProof.chunks_partition",
+      "log": "command-23.log"
+    },
+    "chunks_exact": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 {\u03b1 : Type} (s : Slice \u03b1) (n : Usize), 0 < n.val \u2192 core.slice.Slice.chunks_exact s n \u2983 fun it => (it.chunks.map Slice.val).flatten ++ it.remainder.val = s.val \u2227 (\u2200 c \u2208 it.chunks, c.val.length = n.val) \u2227 it.remainder.val.length < n.val \u2984",
+      "theorem": "AdlerProof.chunks_exact_spec",
+      "log": "command-24.log"
+    },
+    "inner_step": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (bytes : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hlen : 4 \u2264 bytes.val.length) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val + bytes.val[i]!.val \u2264 U32.max) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val) \u2264 U32.max), algo.Adler32.compute_loop0_loop0.body { chunks := bytes :: cs, remainder := rem } a b \u2983 fun r => \u2203 av bv, r = .cont ({ chunks := cs, remainder := rem }, av, bv) \u2227 (\u2200 i : Nat, i < 4 \u2192 av.val[i]!.val = a.val[i]!.val + bytes.val[i]!.val) \u2227 (\u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val = b.val[i]!.val + (a.val[i]!.val + bytes.val[i]!.val)) \u2984",
+      "theorem": "AdlerProof.inner_step",
+      "log": "command-25.log"
+    },
+    "inner_loop_bounded": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : \u2200 c \u2208 cs, 4 \u2264 c.val.length) (hlen : cs.length \u2264 5552) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520), algo.Adler32.compute_loop0_loop0 { chunks := cs, remainder := rem } a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i \u2984",
+      "theorem": "AdlerProof.inner_loop_bounded",
+      "log": "command-26.log"
+    },
+    "remainder_inner_loop_bounded": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem : Slice U8) (a b : algo.U32X4) (hchunks : \u2200 c \u2208 cs, 4 \u2264 c.val.length) (hlen : cs.length \u2264 5552) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520), algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun cs a.val[i]!.val b.val[i]!.val i \u2984",
+      "theorem": "AdlerProof.remainder_inner_loop_bounded",
+      "log": "command-27.log"
+    },
+    "chunk_count_bound": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem source : Slice U8) (hpartition : (cs.map Slice.val).flatten ++ rem.val = source.val) (hfull : \u2200 c \u2208 cs, c.val.length = 4) (hlen : source.val.length \u2264 22208), cs.length \u2264 5552",
+      "theorem": "AdlerProof.chunk_count_bound",
+      "log": "command-28.log"
+    },
+    "lane_rem": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (self : algo.U32X4) (q : U32), 0 < q.val \u2192 algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self q \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = self.val[i]!.val % q.val \u2984",
+      "theorem": "AdlerProof.rem_wp",
+      "log": "command-29.log"
+    },
+    "lane_normalize": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (self : algo.U32X4), algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign self algo.Adler32.compute.MOD \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = self.val[i]!.val % 65521 \u2227 out.val[i]!.val \u2264 65520 \u2984",
+      "theorem": "AdlerProof.rem_mod_wp",
+      "log": "command-30.log"
+    },
+    "outer_step": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (chunk : Slice U8) (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hlen : chunk.val.length = 22208) (ha : a.val \u2264 65535) (hb : b.val \u2264 65535) (hav : \u2200 i : Nat, i < 4 \u2192 av.val[i]!.val \u2264 65520) (hbv : \u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val \u2264 65520), algo.Adler32.compute_loop0.body 22208#usize a { chunks := chunk :: cs, remainder := rem } b av bv \u2983 fun r => \u2203 (qs : List (Slice U8)) (b' : U32) (av' bv' : algo.U32X4), r = .cont ({ chunks := cs, remainder := rem }, b', av', bv') \u2227 (qs.map Slice.val).flatten = chunk.val \u2227 (\u2200 q \u2208 qs, q.val.length = 4) \u2227 b'.val = (b.val + 22208 * a.val) % 65521 \u2227 b'.val \u2264 65520 \u2227 (\u2200 i : Nat, i < 4 \u2192 av'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 \u2227 bv'.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 \u2227 av'.val[i]!.val \u2264 65520 \u2227 bv'.val[i]!.val \u2264 65520) \u2984",
+      "theorem": "AdlerProof.outer_step",
+      "log": "command-31.log"
+    },
+    "laneRun_congr": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (a b c d i : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), (AdlerProof.laneRun cs a b i).1 % 65521 = (AdlerProof.laneRun cs c d i).1 % 65521 \u2227 (AdlerProof.laneRun cs a b i).2 % 65521 = (AdlerProof.laneRun cs c d i).2 % 65521",
+      "theorem": "AdlerProof.laneRun_congr",
+      "log": "command-32.log"
+    },
+    "laneRun_append": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (xs ys : List (Slice U8)) (a b i : Nat), AdlerProof.laneRun (xs ++ ys) a b i = AdlerProof.laneRun ys (AdlerProof.laneRun xs a b i).1 (AdlerProof.laneRun xs a b i).2 i",
+      "theorem": "AdlerProof.laneRun_append",
+      "log": "command-33.log"
+    },
+    "outer_loop": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (rem : Slice U8) (a b : U32) (av bv : algo.U32X4) (hchunks : \u2200 c \u2208 cs, c.val.length = 22208) (ha : a.val \u2264 65535) (hb : b.val \u2264 65535) (hav : \u2200 i : Nat, i < 4 \u2192 av.val[i]!.val \u2264 65520) (hbv : \u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val \u2264 65520), algo.Adler32.compute_loop0 22208#usize { chunks := cs, remainder := rem } a b av bv \u2983 fun out => \u2203 qs : List (Slice U8), (qs.map Slice.val).flatten = (cs.map Slice.val).flatten \u2227 (\u2200 q \u2208 qs, q.val.length = 4) \u2227 out.1.val % 65521 = (b.val + 22208 * cs.length * a.val) % 65521 \u2227 out.1.val \u2264 65535 \u2227 (\u2200 i : Nat, i < 4 \u2192 out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 \u2227 out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 \u2227 out.2.1.val[i]!.val \u2264 65520 \u2227 out.2.2.val[i]!.val \u2264 65520) \u2984",
+      "theorem": "AdlerProof.outer_loop",
+      "log": "command-34.log"
+    },
+    "outer_iter_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (size : Usize) (it : core.slice.iter.ChunksExact U8) (a b : U32) (av bv : algo.U32X4) (hsize : size.val = 22208) (hchunks : \u2200 c \u2208 it.chunks, c.val.length = 22208) (ha : a.val \u2264 65535) (hb : b.val \u2264 65535) (hav : \u2200 i : Nat, i < 4 \u2192 av.val[i]!.val \u2264 65520) (hbv : \u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val \u2264 65520), algo.Adler32.compute_loop0 size it a b av bv \u2983 fun out => \u2203 qs : List (Slice U8), (qs.map Slice.val).flatten = (it.chunks.map Slice.val).flatten \u2227 (\u2200 q \u2208 qs, q.val.length = 4) \u2227 out.1.val % 65521 = (b.val + 22208 * it.chunks.length * a.val) % 65521 \u2227 out.1.val \u2264 65535 \u2227 (\u2200 i : Nat, i < 4 \u2192 out.2.1.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).1 % 65521 \u2227 out.2.2.val[i]!.val = (AdlerProof.laneRun qs av.val[i]!.val bv.val[i]!.val i).2 % 65521 \u2227 out.2.1.val[i]!.val \u2264 65520 \u2227 out.2.2.val[i]!.val \u2264 65520) \u2984",
+      "theorem": "AdlerProof.outer_iter_wp",
+      "log": "command-35.log"
+    },
+    "mul_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (self : algo.U32X4) (rhs : U32) (h : \u2200 i : Nat, i < 4 \u2192 self.val[i]!.val * rhs.val \u2264 U32.max), algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign self rhs \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = self.val[i]!.val * rhs.val \u2984",
+      "theorem": "AdlerProof.mul_wp",
+      "log": "command-36.log"
+    },
+    "final_inner_iter_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (it : core.slice.iter.ChunksExact U8) (a b : algo.U32X4) (hc : \u2200 c \u2208 it.chunks, 4 \u2264 c.val.length) (hn : it.chunks.length \u2264 5552) (ha : \u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) (hb : \u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520), algo.Adler32.compute_loop1 it a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerProof.laneRun it.chunks a.val[i]!.val b.val[i]!.val i \u2984",
+      "theorem": "AdlerProof.final_inner_iter_wp",
+      "log": "command-37.log"
+    },
+    "sum_loop_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it \u2264 U32.max), algo.Adler32.compute_loop2 it a \u2983 fun out => out.val = a.val + AdlerProof.iterSum it \u2984",
+      "theorem": "AdlerProof.sum_loop_wp",
+      "log": "command-38.log"
+    },
+    "sum_loop3_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (it : core.slice.iter.Iter U32) (a : U32) (hmax : a.val + AdlerProof.iterSum it \u2264 U32.max), algo.Adler32.compute_loop3 it a \u2983 fun out => out.val = a.val + AdlerProof.iterSum it \u2984",
+      "theorem": "AdlerProof.sum_loop3_wp",
+      "log": "command-39.log"
+    },
+    "vector_sum_le": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (v : algo.U32X4) (n : Nat) (h : \u2200 i : Nat, i < 4 \u2192 v.val[i]!.val \u2264 n), (v.val.map (fun x => x.val)).sum \u2264 4 * n",
+      "theorem": "AdlerProof.vector_sum_le",
+      "log": "command-40.log"
+    },
+    "tail_loop_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (it : core.slice.iter.Iter U8) (a b : U32) (ha : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).1 \u2264 U32.max) (hb : (AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val).2 \u2264 U32.max), algo.Adler32.compute_loop4 it a b \u2983 fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val \u2984",
+      "theorem": "AdlerProof.tail_loop_wp",
+      "log": "command-41.log"
+    },
+    "rawRun_mod": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (bytes : List U8) (a b : Nat), ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes",
+      "theorem": "AdlerProof.rawRun_mod",
+      "log": "command-42.log"
+    },
+    "tail_bounded_wp": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (it : core.slice.iter.Iter U8) (a b : U32) (hn : (it.slice.val.drop it.i).length \u2264 3) (ha : a.val \u2264 400000) (hb : b.val \u2264 2000000), algo.Adler32.compute_loop4 it a b \u2983 fun out => (out.1.val, out.2.val) = AdlerProof.rawRun (it.slice.val.drop it.i) a.val b.val \u2984",
+      "theorem": "AdlerProof.tail_bounded_wp",
+      "log": "command-43.log"
+    },
+    "quartet_recombine": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (hfull : \u2200 c \u2208 cs, c.val.length = 4) (a b : Nat), let s := AdlerProof.rawRun (cs.map Slice.val).flatten a b; let l := fun i => AdlerProof.laneRun cs 0 0 i; s.1 = a + (l 0).1 + (l 1).1 + (l 2).1 + (l 3).1 \u2227 s.2 + (l 1).1 + 2 * (l 2).1 + 3 * (l 3).1 = b + 4 * cs.length * a + 4 * ((l 0).2 + (l 1).2 + (l 2).2 + (l 3).2)",
+      "theorem": "AdlerProof.quartet_recombine",
+      "log": "command-44.log"
+    },
+    "quartet_mod_recombine": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (cs : List (Slice U8)) (hfull : \u2200 c \u2208 cs, c.val.length = 4) (a b : Nat), let l := fun i => AdlerProof.laneRun cs 0 0 i; let av := fun i => (l i).1 % 65521; let bv := fun i => (l i).2 % 65521; ((a + av 0 + av 1 + av 2 + av 3) % 65521, ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) + 3 * (65521 - av 3)) % 65521) = AdlerSpec.run a b (cs.map Slice.val).flatten",
+      "theorem": "AdlerProof.quartet_mod_recombine",
+      "log": "command-45.log"
+    },
+    "vector_iter_sum": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (v : algo.U32X4), AdlerProof.iterSum { slice := Array.to_slice v, i := 0 } = v.val[0]!.val + v.val[1]!.val + v.val[2]!.val + v.val[3]!.val",
+      "theorem": "AdlerProof.vector_iter_sum",
+      "log": "command-46.log"
+    },
+    "run_congr": {
+      "kernel_checked": true,
+      "axioms": [
+        "propext"
+      ],
+      "statement": "\u2200 (bytes : List U8) (a b c d : Nat) (ha : a % 65521 = c % 65521) (hb : b % 65521 = d % 65521), AdlerSpec.run a b bytes = AdlerSpec.run c d bytes",
+      "theorem": "AdlerProof.run_congr",
+      "log": "command-47.log"
+    },
+    "run_append": {
+      "kernel_checked": true,
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (xs ys : List U8) (a b : Nat), AdlerSpec.run a b (xs ++ ys) = AdlerSpec.run (AdlerSpec.run a b xs).1 (AdlerSpec.run a b xs).2 ys",
+      "theorem": "AdlerProof.run_append",
+      "log": "command-48.log"
+    },
+    "combine_lane_residues": {
+      "kernel_checked": true,
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "statement": "\u2200 (xs ys : List (Slice U8)) (av bv av' bv' : algo.U32X4) (hseed : \u2200 i : Nat, i < 4 \u2192 av.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).1 % 65521 \u2227 bv.val[i]!.val = (AdlerProof.laneRun xs 0 0 i).2 % 65521) (hfinal : \u2200 i : Nat, i < 4 \u2192 (av'.val[i]!.val, bv'.val[i]!.val) = AdlerProof.laneRun ys av.val[i]!.val bv.val[i]!.val i), \u2200 i : Nat, i < 4 \u2192 av'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 \u2227 bv'.val[i]!.val % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521",
+      "theorem": "AdlerProof.combine_lane_residues",
+      "log": "command-49.log"
+    }
+  },
+  "frozen_authoring_sha256": {
+    "elicit-proofs/aeneas/Specs.lean": "a94da0aed41aae485cc8f5bec21c7f2d90b97512f7d0487fddb53dda31714b52",
+    "elicit-proofs/aeneas/Lemmas.lean": "9bd26c270e76e62bcf5bd4dc48222b6161b654986b3cd0db935cb6b6f1d7512b",
+    "elicit-proofs/aeneas/Proofs.lean": "ea42c957f3f324a64a29a5bc2634f626de57761022c71fa0dd4ec045222322a3",
+    "elicit-proofs/aeneas/CHECKPOINTS.md": "0b0295e5aea811d9e6f392ea0aaf4d91d904e2b2052d0ad112d438c6cd39956c",
+    "elicit-proofs/aeneas/contracts.toml": "100596b2ec6d24e64cca0d540c3d5f3fffde84d30d1630536d60ddbbf7fc3f09"
+  },
+  "coverage_note": "Kernel acceptance is relative to the exact emitted proposition. Manually review universal API contracts and conditional/helper results before counting selected goals. This audit is outside the authoring clock."
+}

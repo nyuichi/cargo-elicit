@@ -1,0 +1,6 @@
+AdlerProof.rawRun_mod : ∀ (bytes : List Aeneas.Std.U8) (a b : ℕ),
+  ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes
+theorem IndependentLemma_26 : ∀ (bytes : List Aeneas.Std.U8) (a b : ℕ),
+  ((AdlerProof.rawRun bytes a b).1 % 65521, (AdlerProof.rawRun bytes a b).2 % 65521) = AdlerSpec.run a b bytes :=
+AdlerProof.rawRun_mod
+'IndependentLemma_26' depends on axioms: [propext, Quot.sound]

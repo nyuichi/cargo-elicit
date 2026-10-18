@@ -1,0 +1,6 @@
+def ElicitContracts.c_9a31b7b9cb8492b0 : Prop :=
+∀ (sum : Aeneas.Std.U32),
+  True →
+    ∃ result,
+      ElicitGenerated.Adler32.from_checksum sum = Aeneas.Std.Result.ok result ∧
+        (fun sum out => ↑out.a = ↑sum % 65536 ∧ ↑out.b = ↑sum / 65536) sum result

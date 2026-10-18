@@ -1,0 +1,6 @@
+AdlerProof.vector_iter_sum : ∀ (v : ElicitGenerated.algo.U32X4),
+  AdlerProof.iterSum { slice := Aeneas.Std.Array.to_slice v, i := 0 } = ↑(↑v)[0]! + ↑(↑v)[1]! + ↑(↑v)[2]! + ↑(↑v)[3]!
+theorem IndependentLemma_30 : ∀ (v : ElicitGenerated.algo.U32X4),
+  AdlerProof.iterSum { slice := Aeneas.Std.Array.to_slice v, i := 0 } = ↑(↑v)[0]! + ↑(↑v)[1]! + ↑(↑v)[2]! + ↑(↑v)[3]! :=
+AdlerProof.vector_iter_sum
+'IndependentLemma_30' depends on axioms: [propext, Classical.choice, Quot.sound]

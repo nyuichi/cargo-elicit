@@ -1,0 +1,30 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_29.lean:4:56: warning: Variable name `hfull` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfull
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.quartet_mod_recombine : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    ∀ (a b : ℕ),
+      have l := fun i => AdlerProof.laneRun cs 0 0 i;
+      have av := fun i => (l i).1 % 65521;
+      have bv := fun i => (l i).2 % 65521;
+      ((a + av 0 + av 1 + av 2 + av 3) % 65521,
+          ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) +
+              3 * (65521 - av 3)) %
+            65521) =
+        AdlerSpec.run a b (List.map Aeneas.Std.Slice.val cs).flatten
+theorem IndependentLemma_29 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    ∀ (a b : ℕ),
+      have l := fun i => AdlerProof.laneRun cs 0 0 i;
+      have av := fun i => (l i).1 % 65521;
+      have bv := fun i => (l i).2 % 65521;
+      ((a + av 0 + av 1 + av 2 + av 3) % 65521,
+          ((b + 4 * cs.length * a) % 65521 + 4 * (bv 0 + bv 1 + bv 2 + bv 3) + (65521 - av 1) + 2 * (65521 - av 2) +
+              3 * (65521 - av 3)) %
+            65521) =
+        AdlerSpec.run a b (List.map Aeneas.Std.Slice.val cs).flatten :=
+AdlerProof.quartet_mod_recombine
+'IndependentLemma_29' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,30 @@
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_33.lean:4:88: warning: Variable name `hseed` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hseed
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/elicit-comparison/round9-continuation-product-audit/IndependentLemma_33.lean:4:233: warning: Variable name `hfinal` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfinal
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+AdlerProof.combine_lane_residues : ∀ (xs ys : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (av bv av' bv' : ElicitGenerated.algo.U32X4),
+  (∀ i < 4,
+      ↑(↑av)[i]! = (AdlerProof.laneRun xs 0 0 i).1 % 65521 ∧ ↑(↑bv)[i]! = (AdlerProof.laneRun xs 0 0 i).2 % 65521) →
+    (∀ i < 4, (↑(↑av')[i]!, ↑(↑bv')[i]!) = AdlerProof.laneRun ys (↑(↑av)[i]!) (↑(↑bv)[i]!) i) →
+      ∀ i < 4,
+        ↑(↑av')[i]! % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 ∧
+          ↑(↑bv')[i]! % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521
+theorem IndependentLemma_33 : ∀ (xs ys : List (Aeneas.Std.Slice Aeneas.Std.U8))
+  (av bv av' bv' : ElicitGenerated.algo.U32X4),
+  (∀ i < 4,
+      ↑(↑av)[i]! = (AdlerProof.laneRun xs 0 0 i).1 % 65521 ∧ ↑(↑bv)[i]! = (AdlerProof.laneRun xs 0 0 i).2 % 65521) →
+    (∀ i < 4, (↑(↑av')[i]!, ↑(↑bv')[i]!) = AdlerProof.laneRun ys (↑(↑av)[i]!) (↑(↑bv)[i]!) i) →
+      ∀ i < 4,
+        ↑(↑av')[i]! % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).1 % 65521 ∧
+          ↑(↑bv')[i]! % 65521 = (AdlerProof.laneRun (xs ++ ys) 0 0 i).2 % 65521 :=
+AdlerProof.combine_lane_residues
+'IndependentLemma_33' depends on axioms: [propext, Classical.choice, Quot.sound]
