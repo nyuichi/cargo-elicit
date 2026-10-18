@@ -1,0 +1,2 @@
+Verification.state_eq_of_values : ∀ (s t : adler2.Adler32), (↑s.a, ↑s.b) = (↑t.a, ↑t.b) → s = t
+'Verification.state_eq_of_values' depends on axioms: [propext]

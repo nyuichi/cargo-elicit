@@ -1,0 +1,7 @@
+# Saved ordinary proof re-audit and change review
+
+This is a re-audit of saved round5 ordinary artifacts, not a new authoring trial or a rerun of its historical elapsed time. The historical recorded time is 1,704.225159 seconds. Fresh original extraction/model-byte comparison and rebuilding eleven modules succeeded; all 52 theorem roots passed transitive standard-axiom checks again in 123.20 seconds. Exact API types and definitions remain in the original evidence and are reviewed in docs/experiments/adler2-change-audit.md.
+
+summary.json and commands.json are the successful new independent audit. command-*.log records each actual extraction/compiler/root audit. The earlier setup failures are preserved separately: the previous temporary environment script did not survive the session change, and a subsequent attempt refused to overwrite the first partial output directory. The successful audit restored the already-installed tool selectors and used a new output directory. None is a failed or repeated timed authoring trial.
+
+measurement-recheck.json records metric/event consistency and validation of the original 262-file evidence hash manifest. Original proof bytes are pinned by the review metadata in summary.json. No production code, prompts, defaults, saved proofs or measured results changed. Raw model conversations, command telemetry and credentials are not included. SHA256SUMS covers every file except itself.

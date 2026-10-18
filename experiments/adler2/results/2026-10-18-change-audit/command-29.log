@@ -1,0 +1,3 @@
+Verification.uniform_flatten_length : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (n : ℕ),
+  (∀ c ∈ cs, (↑c).length = n) → (List.map Aeneas.Std.Slice.val cs).flatten.length = cs.length * n
+'Verification.uniform_flatten_length' depends on axioms: [propext, Quot.sound]

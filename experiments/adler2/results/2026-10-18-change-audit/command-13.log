@@ -1,0 +1,2 @@
+Verification.new_correct : adler2.Adler32.new = Aeneas.Std.Result.ok { a := 1#u16, b := 0#u16 }
+'Verification.new_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

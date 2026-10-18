@@ -1,0 +1,3 @@
+Verification.zRun_raw : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  Verification.toZ (Verification.raw s xs) = Verification.zRun (Verification.toZ s) xs
+'Verification.zRun_raw' depends on axioms: [propext, Quot.sound]

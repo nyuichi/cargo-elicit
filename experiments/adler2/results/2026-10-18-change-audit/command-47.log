@@ -1,0 +1,10 @@
+Verification.lanes_projection : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (av bv av' bv' : adler2.algo.U32X4)
+  (a b : Verification.Z),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    (∀ (j : Fin 4),
+        (Verification.lane av' j, Verification.lane bv' j) =
+          Verification.laneFold j (Verification.lane av j, Verification.lane bv j) cs) →
+      Verification.projection a (b + ↑(4 * cs.length) * a) (Verification.vectorZ av') (Verification.vectorZ bv') =
+        Verification.zRun (Verification.projection a b (Verification.vectorZ av) (Verification.vectorZ bv))
+          (List.map Aeneas.Std.Slice.val cs).flatten
+'Verification.lanes_projection' depends on axioms: [propext, Classical.choice, Quot.sound]

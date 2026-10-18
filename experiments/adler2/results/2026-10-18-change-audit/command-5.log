@@ -1,0 +1,8 @@
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Chunks.lean:43:4: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp only [List.attach_map_subtype_val, hh.2.1, and_true]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+'Verification.chunks_exact_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.chunks_count' depends on axioms: [propext, Quot.sound]

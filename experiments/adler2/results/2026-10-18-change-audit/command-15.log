@@ -1,0 +1,2 @@
+Verification.checksum_correct : ∀ (h : adler2.Adler32), Aeneas.Std.WP.spec h.checksum fun s => ↑s = 65536 * ↑h.b + ↑h.a
+'Verification.checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

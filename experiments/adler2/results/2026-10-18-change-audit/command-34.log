@@ -1,0 +1,5 @@
+Verification.vector_mul_lane : ∀ (v : adler2.algo.U32X4) (m : Aeneas.Std.U32),
+  (∀ (j : Fin 4), Verification.lane v j * ↑m ≤ Aeneas.Std.U32.max) →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign v m) fun r =>
+      ∀ (j : Fin 4), Verification.lane r j = Verification.lane v j * ↑m
+'Verification.vector_mul_lane' depends on axioms: [propext, Classical.choice, Quot.sound]

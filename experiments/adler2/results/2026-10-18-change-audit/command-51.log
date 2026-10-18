@@ -1,0 +1,10 @@
+Verification.combine_projection : ∀ (a b aa bb : ℕ) (av bv : Fin 4 → ℕ),
+  av 1 ≤ 65521 →
+    av 2 ≤ 65521 →
+      av 3 ≤ 65521 →
+        aa = a + av 0 + av 1 + av 2 + av 3 →
+          bb =
+              b + 4 * bv 0 + (4 * bv 1 + (65521 - av 1)) + (4 * bv 2 + (65521 - av 2) * 2) +
+                (4 * bv 3 + (65521 - av 3) * 3) →
+            Verification.toZ (aa, bb) = Verification.projection (↑a) (↑b) (fun j => ↑(av j)) fun j => ↑(bv j)
+'Verification.combine_projection' depends on axioms: [propext, Quot.sound]

@@ -1,0 +1,3 @@
+Verification.vals_four : ∀ (v : adler2.algo.U32X4),
+  Verification.vals v = [Verification.lane v 0, Verification.lane v 1, Verification.lane v 2, Verification.lane v 3]
+'Verification.vals_four' depends on axioms: [propext, Classical.choice, Quot.sound]

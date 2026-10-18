@@ -1,0 +1,16 @@
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Tail.lean:35:56: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Tail.lean:63:56: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Tail.lean:63:60: warning: Unused tactic linter: `rfl` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Tail.lean:63:60: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Tail.lean:35:56: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+'Verification.tail_loop' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,4 @@
+Verification.zLanes_laneFold : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (av bv : Fin 4 → ℕ),
+  (Verification.zLanes cs (fun j => ↑(av j)) fun j => ↑(bv j)) =
+    (fun j => ↑(Verification.laneFold j (av j, bv j) cs).1, fun j => ↑(Verification.laneFold j (av j, bv j) cs).2)
+'Verification.zLanes_laneFold' depends on axioms: [propext, Classical.choice, Quot.sound]

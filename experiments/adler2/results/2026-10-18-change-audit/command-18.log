@@ -1,0 +1,5 @@
+Verification.vector_add : ∀ (v w : adler2.algo.U32X4),
+  (∀ (j : ℕ) (hj : j < 4), ↑(↑v)[j] + ↑(↑w)[j] ≤ Aeneas.Std.U32.max) →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign v w) fun r =>
+      Verification.vals r = List.zipWith (fun x1 x2 => x1 + x2) (Verification.vals v) (Verification.vals w)
+'Verification.vector_add' depends on axioms: [propext, Classical.choice, Quot.sound]

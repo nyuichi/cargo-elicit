@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/workspace/cargo-elicit/experiments/adler2/audit-goal-planning-baseline.py", line 25, in <module>
+    env=os.environ.copy();env['CARGO_TARGET_DIR']=str(fresh/'target');assert run(args,root,env)[0]==0
+                                                                             ^^^^^^^^^^^^^^^^^^
+  File "/workspace/cargo-elicit/experiments/adler2/audit-goal-planning-baseline.py", line 13, in run
+    with log.open('w') as f:r=subprocess.run(list(map(str,argv)),cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'charon'

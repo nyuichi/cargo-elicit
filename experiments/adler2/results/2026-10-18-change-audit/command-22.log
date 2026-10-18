@@ -1,0 +1,3 @@
+Verification.normalize_idempotent : ∀ (s : ℕ × ℕ),
+  Verification.normalize (Verification.normalize s) = Verification.normalize s
+'Verification.normalize_idempotent' depends on axioms: [propext]

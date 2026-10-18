@@ -1,0 +1,6 @@
+Verification.projection_step : ∀ (a b : Verification.Z) (av bv : Fin 4 → Verification.Z)
+  (c : Aeneas.Std.Slice Aeneas.Std.U8),
+  (↑c).length = 4 →
+    (Verification.projection a (b + 4 * a) (fun j => av j + ↑↑(↑c)[↑j]!) fun j => bv j + (av j + ↑↑(↑c)[↑j]!)) =
+      Verification.zRun (Verification.projection a b av bv) ↑c
+'Verification.projection_step' depends on axioms: [propext, Classical.choice, Quot.sound]

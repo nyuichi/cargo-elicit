@@ -1,0 +1,8 @@
+'Verification.vector_loop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.vector_inner_loop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.lane_bound_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Loops.lean:188:60: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+'Verification.sum_loop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Verification.sum_loop_b' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,5 @@
+Verification.chunks_count : ∀ (xs : Aeneas.Std.Slice Aeneas.Std.U8)
+  (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (n : ℕ),
+  (∀ c ∈ it.chunks, (↑c).length = n) ∧ (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = ↑xs →
+    it.chunks.length * n + (↑it.remainder).length = (↑xs).length
+'Verification.chunks_count' depends on axioms: [propext, Quot.sound]

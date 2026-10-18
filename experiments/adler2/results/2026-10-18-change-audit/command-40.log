@@ -1,0 +1,8 @@
+Verification.tail_budget : ∀ (a b x m : ℕ),
+  x ≤ 255 →
+    a + 255 * (m + 1) ≤ Aeneas.Std.U32.max →
+      b + (m + 1) * (a + 255 * (m + 1)) ≤ Aeneas.Std.U32.max →
+        a + x ≤ Aeneas.Std.U32.max ∧
+          b + (a + x) ≤ Aeneas.Std.U32.max ∧
+            a + x + 255 * m ≤ Aeneas.Std.U32.max ∧ b + (a + x) + m * (a + x + 255 * m) ≤ Aeneas.Std.U32.max
+'Verification.tail_budget' depends on axioms: [propext, Classical.choice, Quot.sound]

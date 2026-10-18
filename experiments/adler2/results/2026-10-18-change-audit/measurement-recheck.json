@@ -1,0 +1,16 @@
+{
+  "recorded_authoring_end_to_end_seconds": 1704.2251594209956,
+  "telemetry_first_offset_seconds": 0.1192777156829834,
+  "telemetry_last_offset_seconds": 1702.4683525562286,
+  "telemetry_span_seconds": 1702.3490748405457,
+  "completed_authoring_turns": 1,
+  "old_evidence_hashed_files": 262,
+  "old_evidence_hash_mismatches": [],
+  "saved_artifact_fresh_reaudit_seconds": 123.19997751099982,
+  "reaudit_proof_modules": 10,
+  "reaudit_generated_modules": 1,
+  "reaudit_theorem_roots_checked": 52,
+  "reaudit_theorem_roots_passed": 52,
+  "selected_api_count": 5,
+  "note": "Reauditing the saved proof checks correctness and correspondence, not reproducibility of the historical authoring time. Initial tool/build preparation and independent audits are excluded from the recorded 28-minute measurement."
+}

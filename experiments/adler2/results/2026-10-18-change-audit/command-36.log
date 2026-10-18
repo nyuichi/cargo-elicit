@@ -1,0 +1,12 @@
+Verification.vector_loop : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (rem : Aeneas.Std.Slice Aeneas.Std.U8)
+  (a b : adler2.algo.U32X4) (k : ℕ),
+  (∀ c ∈ cs, (↑c).length = 4) →
+    k + cs.length ≤ 5552 →
+      Verification.laneBounds k a b →
+        Aeneas.Std.WP.spec (adler2.algo.Adler32.compute_loop1 { chunks := cs, remainder := rem } a b)
+          (Aeneas.Std.WP.uncurry' fun a' b' =>
+            Verification.laneBounds (k + cs.length) a' b' ∧
+              ∀ (j : Fin 4),
+                (Verification.lane a' j, Verification.lane b' j) =
+                  Verification.laneFold j (Verification.lane a j, Verification.lane b j) cs)
+'Verification.vector_loop' depends on axioms: [propext, Classical.choice, Quot.sound]

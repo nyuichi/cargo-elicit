@@ -1,0 +1,4 @@
+Verification.scalar_split : ∀ (s : ℕ × ℕ) (xs ys : List Aeneas.Std.U8),
+  (xs ++ ys).length ≤ Aeneas.Std.Usize.max →
+    Verification.scalar s (xs ++ ys) = Verification.scalar (Verification.scalar s xs) ys
+'Verification.scalar_split' depends on axioms: [propext, Quot.sound]

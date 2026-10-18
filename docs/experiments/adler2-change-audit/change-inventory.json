@@ -1,0 +1,5288 @@
+{
+  "reviewed_local_commit": "d9ee7f23ed22d8516c5357b656b681c34a509396",
+  "reviewed_public_commit": "61c5a2ec6a5c765a35d8c9a8d7a15c65ccfbb940",
+  "post_initial_aeneas_baseline_local": "8c52919",
+  "classification": "Paths classify roles; this is not a claim that benchmark-informed heuristics are generalizable.",
+  "tracked_file_counts": {
+    "validation": 27,
+    "other": 3,
+    "production": 18,
+    "documentation": 13,
+    "benchmark_harness": 13,
+    "benchmark_evidence": 1037
+  },
+  "commits": [
+    {
+      "local_sha": "3e40393215a9ff0170caaa56f66d52af33263fbd",
+      "subject": "Rebuild Rust CLI, persistent ledger, scheduler and single-worker adapters",
+      "files": [
+        {
+          "status": "A",
+          "path": ".gitignore"
+        },
+        {
+          "status": "A",
+          "path": "Cargo.lock"
+        },
+        {
+          "status": "A",
+          "path": "Cargo.toml"
+        },
+        {
+          "status": "A",
+          "path": "LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/spec-v0.6.md"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/creusot/Cargo.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/creusot/src/lib.rs"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/creusot/why3find.json"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/kani/Cargo.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/kani/src/lib.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/lib.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/main.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/process.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/store.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/verifier.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "7d4bd3667779b953dd8b65f4a408c68124acd26e",
+      "subject": "Validate native evidence conservatively and add regression suites and CI",
+      "files": [
+        {
+          "status": "A",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "status": "M",
+          "path": "README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/implementation.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/testing.md"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/creusot/Cargo.lock"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/kani/Cargo.lock"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/lib.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/main.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/process.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/store.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/data/kani-0.68-success.json"
+        },
+        {
+          "status": "A",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/process.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/support/cargo.py"
+        },
+        {
+          "status": "A",
+          "path": "tests/support/codex.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "5b29c85f8d8c89ec346c6123f05c99f3b20d32ce",
+      "subject": "Keep proof inputs current and finalize bounded recovery and scope checks",
+      "files": [
+        {
+          "status": "M",
+          "path": "Cargo.toml"
+        },
+        {
+          "status": "M",
+          "path": "docs/implementation.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/testing.md"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/process.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/cargo.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "36ce111dc3eb506a5c3a3079f4fdee4db8d228ef",
+      "subject": "Translate all project documentation into English",
+      "files": [
+        {
+          "status": "M",
+          "path": "README.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/implementation.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/spec-v0.6.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/testing.md"
+        }
+      ]
+    },
+    {
+      "local_sha": "8c529199871ef31c5d40dfc8aae29412f81a3b58",
+      "subject": "Add Aeneas verification with a pinned Lean 4 backend",
+      "files": [
+        {
+          "status": "M",
+          "path": "README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/implementation.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/spec-v0.6.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/testing.md"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/Cargo.lock"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/Cargo.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/src/lib.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/lib.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/store.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "A",
+          "path": "tests/support/aeneas.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "aa0e813bdd578ec50be673d42296750bad4d6a4c",
+      "subject": "Support rich Aeneas contracts and prepare the Adler-32 comparison",
+      "files": [
+        {
+          "status": "M",
+          "path": "README.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/aeneas.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-comparison.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/implementation.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/testing.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/TASK.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/baseline.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/codex-proxy.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/prepare.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/run-arm.py"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas-rich/Cargo.lock"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas-rich/Cargo.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas-rich/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas-rich/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas-rich/src/lib.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/lean/ElicitAdapter.lean"
+        },
+        {
+          "status": "M",
+          "path": "src/store.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/aeneas.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "d19982d44a49bef856092b384a3ef7edadc94d2e",
+      "subject": "Include terminal status observations in experiment elapsed time",
+      "files": [
+        {
+          "status": "M",
+          "path": "experiments/adler2/run-arm.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "6f23cb01aa44fba171edfa75583c0097352eec10",
+      "subject": "Preserve per-thread token telemetry for comparison summaries",
+      "files": [
+        {
+          "status": "M",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/codex-proxy.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/summarize.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "e4def34d4b1879835b226273b369539860693adf",
+      "subject": "Measure observation overhead in both experiment arms",
+      "files": [
+        {
+          "status": "M",
+          "path": "experiments/adler2/run-arm.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "a9c91b3ae94375870f5198dbd8fd25044a6ce95d",
+      "subject": "Record live Adler-32 comparison and audited partial results",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-comparison.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/audit-baseline.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/audit/with-roots.txt"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/audit/without-roots.txt"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/measurements.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/status/helper-checkpoint.txt"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/status/ten-minutes.txt"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/status/terminal.txt"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/unsupported-trait-laws.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/with/worker-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/without/Adler2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/without/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17/without/worker-inventory.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "ae71807d03feb12b3d364eb0e228467495404980",
+      "subject": "Fix blocked work, proof refresh and shared audit recording",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/aeneas.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/testing.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/run-arm.py"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/store.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "c6b2eab447c01981ae2f15748ad02e4502166bf6",
+      "subject": "Canonicalize effective verification environment and expose context changes",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "675466bb22cc4dbf2d2a704b74d75463152ca581",
+      "subject": "Checkpoint prepared proofs before unrelated work and retain clean interruption records",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/aeneas.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "8a550b27a832120708f7a4e1bef2e783ee01bd98",
+      "subject": "Track elaborated model dependencies without reopening independent specifications",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "A",
+          "path": "fixtures/aeneas/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "M",
+          "path": "fixtures/aeneas/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "M",
+          "path": "fixtures/aeneas/src/lib.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/lean/ElicitModelInputs.lean"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "2629dbdf1cd65770f62c58a24e1b7e07e66c2624",
+      "subject": "Publish repaired workflow benchmark, intermediate costs and independent audits",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-comparison.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/audit-follow-up-baseline.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/audit-follow-up-product.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/excluded-environment-candidate/aborted-candidate.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/excluded-environment-candidate/analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/excluded-environment-candidate/fixed-probe-results.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/excluded-environment-candidate/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/excluded-environment-candidate/probe-results.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/IndependentAudit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/additional-observation.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/audit-commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/audit-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/status/additional-progress-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/types-and-axioms.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-checkpoint-pending/workflow-analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/IndependentAudit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/audit-commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/audit-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/status/status-4-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/types-and-axioms.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/intermediate-model-dependencies-pending/workflow-analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/measurements.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/post-trial-extension-replay/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/post-trial-extension-replay/events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/post-trial-extension-replay/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/source-freezes/round2-final-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/source-freezes/round2-fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/source-freezes/round3-fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/source-freezes/round4-fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/AliasObservation.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/IndependentAudit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/SupportAudit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/alias-observation.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/alias-observation.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/audit-commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/audit-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/frozen-proof-hashes.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/support-types-and-axioms.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/types-and-axioms.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/workflow-analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/with/wrapper-command.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/Adler2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/CoreLemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/Empty.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/LaneAlgebra.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/audit-commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/audit-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/types-and-axioms.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-follow-up/without/verification-inventory.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "1db088b5548bd5f195db89891a1a9cba43c1c3ea",
+      "subject": "Plan Aeneas proofs from selected APIs and preserve checked lemma progress",
+      "files": [
+        {
+          "status": "M",
+          "path": "README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-goal-planning.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/goal-directed-aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/README.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/baseline.py"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/run-arm.py"
+        },
+        {
+          "status": "M",
+          "path": "fixtures/aeneas-rich/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/lean/ElicitAdapter.lean"
+        },
+        {
+          "status": "M",
+          "path": "src/lib.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/plan.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/codex.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "bd1b7392f4830d169f366bb726d3870f8789ebbc",
+      "subject": "Report fresh goal-directed planning comparison and independent proof audits",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-follow-up.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-goal-planning.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/audit-goal-planning-baseline.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/audit-goal-planning-product.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/measurements.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/source-freezes/fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/validation/checkpoint-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/validation/rich-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_7.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Contract_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_7.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentAPI_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentLemma_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentLemma_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-29.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-30.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/cache/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/elicit-proofs/aeneas/plan.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-3-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-3-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-4-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-4-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/status/status-4-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/with/workflow-analysis.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/BENCHMARK_COMPLETE.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/APIs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Adler2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Algebra.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_10.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_11.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_15.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_16.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_17.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_18.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_19.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_20.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_21.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_22.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_23.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_24.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_25.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_26.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_27.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_28.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_29.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_30.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_31.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_32.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_33.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_34.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_35.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_36.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_37.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_38.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_39.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_40.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_41.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_42.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_43.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_44.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_45.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_46.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_47.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_48.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_49.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_50.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_51.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_7.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Audit_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Chunks.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Core.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/InspectDefinitions.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Loops.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Micro.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Outer.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Spec.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/Tail.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-29.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-30.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-31.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-32.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-33.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-34.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-35.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-36.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-37.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-38.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-39.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-40.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-41.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-42.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-43.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-44.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-45.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-46.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-47.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-48.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-49.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-50.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-51.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-52.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-53.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-54.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-55.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-56.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-57.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-58.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-59.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-60.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-61.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-62.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-63.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-64.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-65.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/review.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/APIs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Algebra.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Chunks.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Core.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Loops.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Micro.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Outer.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Spec.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/Tail.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/check.sh"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/extract.sh"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/generated/Adler2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/lakefile.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-17-goal-planning/without/verification/run-proof.sh"
+        }
+      ]
+    },
+    {
+      "local_sha": "e546143222b0c0b49171b20f35b355da1422df3b",
+      "subject": "Recover approved specifications and keep caller proof work moving with batched kernel audits",
+      "files": [
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-iteration-6.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/goal-directed-aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "src/aeneas.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/agent.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/analysis.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "A",
+          "path": "src/lean/ElicitAudit.lean"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/plan.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/aeneas.py"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/codex.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "b922ea9d7b63479f4dd5efa27027be3b5760468f",
+      "subject": "Record iteration 6 original-loop checkpoints and observed control regressions",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-iteration-6.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/SHA256SUMS"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/source-freezes/fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-batch-native-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-batch-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-checkpoint-native-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-checkpoint-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-install.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-ledger-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-ledger.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-prepare.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-refresh-cli.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-rich-native-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-tests.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/validation/elicit-round6-upstream-tests.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Contract_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentAPI_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_10.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_11.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_15.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_16.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/IndependentLemma_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/UnmappedConstructor.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-29.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-30.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-31.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-32.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-33.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-34.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-35.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-36.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/unmapped-constructor.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/audit/unmapped-constructor.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-6/with/workflow-analysis.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "1f940b06e7e70308360dc69715d5efb3bae6aabb",
+      "subject": "Preserve local lemma checkpoints and bound retries by checked progress",
+      "files": [
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-iteration-7.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/goal-directed-aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/fingerprint.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/model.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/verifier.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "ef6f068a9c0eab489387ec02b5b41265e298546d",
+      "subject": "Record iteration 7 productive continuation and uncollected final proofs",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-iteration-7.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/SHA256SUMS"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/audit-input/provenance.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/last-checked/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/source-freezes/fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-audit.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-clippy.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-fmt-final.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-fmt.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-install-offline.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-install.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-ledger-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-ledger.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-mixed-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-msrv-final.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-msrv.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-native-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-native-v3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-native-v4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-prepare.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-tests.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/validation/elicit-round7-upstream.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Contract_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentAPI_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_7.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/IndependentLemma_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-3-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-3-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-7/with/workflow-analysis.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "cbe44d988ceb2cd4c81513dbfa9d580797ce0e9d",
+      "subject": "Reserve formal finalization time and align experiment budgets",
+      "files": [
+        {
+          "status": "M",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-iteration-8.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/goal-directed-aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "experiments/adler2/run-arm.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/test-run-arm.py"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/native.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/support/codex.py"
+        }
+      ]
+    },
+    {
+      "local_sha": "7dc254f0c93099eacdf42b4986148534280eba6f",
+      "subject": "Record retained final checkpoints and delegated-goal retry omission",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-iteration-8.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/SHA256SUMS"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/last-checked/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/source-freezes/fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-audit.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-clippy-final.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-clippy.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-fmt-final.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-fmt.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-harness.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-install.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-ledger-v2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-ledger.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-msrv-final.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-msrv.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-native-timing.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-native.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-prepare.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-tests.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/validation/elicit-round8-upstream.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_10.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_11.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_15.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_16.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_17.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_18.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_19.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_20.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_21.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_22.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_23.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_24.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_25.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_26.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_27.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_7.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_8.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/IndependentLemma_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-29.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-30.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-31.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-32.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-33.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-34.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-35.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-36.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-37.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-38.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-39.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/elicit-proofs/aeneas/plan.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-3-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-3-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-8/with/workflow-analysis.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "2abbcca4ef2998f5d5aac86ed40ae3f6d9e7cb4e",
+      "subject": "Credit new caller lemmas during selected-child proof work",
+      "files": [
+        {
+          "status": "A",
+          "path": "docs/experiments/adler2-iteration-9.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/goal-directed-aeneas.md"
+        },
+        {
+          "status": "M",
+          "path": "src/cli.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/plan.rs"
+        },
+        {
+          "status": "M",
+          "path": "src/scheduler.rs"
+        },
+        {
+          "status": "M",
+          "path": "tests/ledger.rs"
+        }
+      ]
+    },
+    {
+      "local_sha": "6b1fe4ab03246ae1d65ee37d1c8b7d9cc6b25079",
+      "subject": "Record delegated progress result and bounded practical continuation",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-iteration-9.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/SHA256SUMS"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/last-checked/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/source-freezes/fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-audit.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-clippy.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-harness.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-install.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-ledger.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-msrv.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-prepare.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-tests.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/validation/elicit-round9-upstream.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Contract_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentAPI_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_10.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_11.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/IndependentLemma_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-3-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-3-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9/with/workflow-analysis.json"
+        }
+      ]
+    },
+    {
+      "local_sha": "d9ee7f23ed22d8516c5357b656b681c34a509396",
+      "subject": "Record audited five-API completion and stop case tuning",
+      "files": [
+        {
+          "status": "M",
+          "path": "docs/experiments/adler2-iteration-9.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/README.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/SHA256SUMS"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/Audit.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/last-checked/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/protocol/analyze-continuation9.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/protocol/audit-continuation9-laws.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/protocol/run-continuation9.py"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/result-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/source-freezes/round9-continuation-cache-provenance.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/source-freezes/round9-continuation-harness-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/source-freezes/round9-fixed-binary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/subject-licenses/LICENSE-0BSD"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/subject-licenses/LICENSE-APACHE"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/subject-licenses/LICENSE-MIT"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/PROGRESS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Contract_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/ElicitAdapter.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/ElicitContracts.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/ElicitGenerated.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_4.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentAPI_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_0.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_2.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_3.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLaw_3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_1.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_10.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_11.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_12.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_13.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_14.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_15.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_16.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_17.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_18.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_19.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_20.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_21.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_22.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_23.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_24.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_25.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_26.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_27.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_28.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_29.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_30.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_31.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_32.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_33.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_5.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_6.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/IndependentLemma_9.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/additional-laws-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-0.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-1.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-10.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-11.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-12.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-13.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-14.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-15.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-16.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-17.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-18.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-19.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-2.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-20.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-21.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-22.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-23.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-24.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-25.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-26.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-27.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-28.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-29.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-3.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-30.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-31.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-32.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-33.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-34.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-35.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-36.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-37.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-38.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-39.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-4.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-40.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-41.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-42.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-43.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-44.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-45.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-46.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-47.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-48.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-49.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-5.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-6.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-7.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-8.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/command-9.log"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/commands.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/audit/summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/continuation-budget.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/elicit-proofs/aeneas/CHECKPOINTS.md"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/elicit-proofs/aeneas/Lemmas.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/elicit-proofs/aeneas/Proofs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/elicit-proofs/aeneas/Specs.lean"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/elicit-proofs/aeneas/contracts.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/frozen-authoring-sha256.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/initialization.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/metrics.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/observations.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-0-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-0-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-0-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-1-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-1-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-1-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-2-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-2-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-2-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-3-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-3-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-3-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-4-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-4-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-4-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-5-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-5-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-5-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-6-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-6-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-6-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-7-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-7-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-7-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-8-json.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-8-targets.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/status/status-8-text.stdout"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/telemetry-summary.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/terminal-events.jsonl"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/terminal-state.toml"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/verification-inventory.json"
+        },
+        {
+          "status": "A",
+          "path": "experiments/adler2/results/2026-10-18-iteration-9-continuation/with/workflow-analysis.json"
+        }
+      ]
+    }
+  ],
+  "post_aeneas_production_diff": [
+    "516\t170\tsrc/aeneas.rs",
+    "27\t12\tsrc/agent.rs",
+    "12\t0\tsrc/analysis.rs",
+    "332\t29\tsrc/cli.rs",
+    "418\t28\tsrc/fingerprint.rs",
+    "69\t0\tsrc/lean/ElicitAdapter.lean",
+    "42\t0\tsrc/lean/ElicitAudit.lean",
+    "71\t0\tsrc/lean/ElicitModelInputs.lean",
+    "1\t0\tsrc/lib.rs",
+    "174\t9\tsrc/model.rs",
+    "455\t0\tsrc/plan.rs",
+    "142\t24\tsrc/scheduler.rs",
+    "43\t4\tsrc/store.rs",
+    "170\t6\tsrc/verifier.rs"
+  ]
+}

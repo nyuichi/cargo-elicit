@@ -1,0 +1,11 @@
+Verification.split_equivalence : ∀ (self : adler2.Adler32) (xs ys whole : Aeneas.Std.Slice Aeneas.Std.U8),
+  ↑whole = ↑xs ++ ↑ys →
+    (↑xs ++ ↑ys).length ≤ Aeneas.Std.Usize.max →
+      Aeneas.Std.WP.spec
+        (do
+          let one ← self.write_slice whole
+          let mid ← self.write_slice xs
+          let two ← mid.write_slice ys
+          Aeneas.Std.Result.ok (one, two))
+        (Aeneas.Std.WP.uncurry' fun one two => one = two)
+'Verification.split_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]

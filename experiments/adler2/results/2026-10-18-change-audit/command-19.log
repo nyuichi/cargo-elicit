@@ -1,0 +1,5 @@
+Verification.vector_rem : ∀ (v : adler2.algo.U32X4) (m : Aeneas.Std.U32),
+  ↑m ≠ 0 →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign v m) fun r =>
+      Verification.vals r = List.map (fun x => x % ↑m) (Verification.vals v)
+'Verification.vector_rem' depends on axioms: [propext, Classical.choice, Quot.sound]

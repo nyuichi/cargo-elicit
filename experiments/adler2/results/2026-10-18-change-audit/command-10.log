@@ -1,0 +1,28 @@
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Micro.lean:8:8: warning: This simp argument is unused:
+  Array.set
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [List.getElem_set, lane]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Micro.lean:8:19: warning: This simp argument is unused:
+  List.getElem_set
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Array.set, lane]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Micro.lean:12:8: warning: This simp argument is unused:
+  Array.set
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [List.getElem_set, lane]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-comparison/round5-baseline-reaudit-2026-10-18-v2/Micro.lean:12:19: warning: This simp argument is unused:
+  List.getElem_set
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Array.set, lane]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

@@ -1,0 +1,3 @@
+Verification.write_slice_correct : ∀ (self : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  Aeneas.Std.WP.spec (self.write_slice bytes) fun r => (↑r.a, ↑r.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes
+'Verification.write_slice_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

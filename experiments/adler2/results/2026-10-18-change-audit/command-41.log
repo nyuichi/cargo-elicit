@@ -1,0 +1,6 @@
+Verification.tail_loop : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32),
+  ↑a + 255 * (List.drop it.i ↑it.slice).length ≤ Aeneas.Std.U32.max →
+    ↑b + (List.drop it.i ↑it.slice).length * (↑a + 255 * (List.drop it.i ↑it.slice).length) ≤ Aeneas.Std.U32.max →
+      Aeneas.Std.WP.spec (adler2.algo.Adler32.compute_loop4 it a b)
+        (Aeneas.Std.WP.uncurry' fun a' b' => (↑a', ↑b') = Verification.raw (↑a, ↑b) (List.drop it.i ↑it.slice))
+'Verification.tail_loop' depends on axioms: [propext, Classical.choice, Quot.sound]

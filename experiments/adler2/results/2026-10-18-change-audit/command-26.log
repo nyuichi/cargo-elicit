@@ -1,0 +1,3 @@
+Verification.normalize_raw : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  Verification.normalize (Verification.raw s xs) = Verification.scalar s xs
+'Verification.normalize_raw' depends on axioms: [propext]

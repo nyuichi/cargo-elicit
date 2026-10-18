@@ -1,0 +1,5 @@
+Verification.vector_rem_lane : ∀ (v : adler2.algo.U32X4) (m : Aeneas.Std.U32),
+  ↑m ≠ 0 →
+    Aeneas.Std.WP.spec (adler2.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign v m) fun r =>
+      ∀ (j : Fin 4), Verification.lane r j = Verification.lane v j % ↑m
+'Verification.vector_rem_lane' depends on axioms: [propext, Classical.choice, Quot.sound]
