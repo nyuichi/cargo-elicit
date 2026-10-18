@@ -597,6 +597,7 @@ fn agent(store: &Store, engine: &mut Analyzer, command: AgentCommand) -> Result<
     Ok(0)
 }
 fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Result<i32> {
+    let start = Instant::now();
     if limits.max_tasks == 0
         || limits.max_seconds == 0
         || limits.task_seconds == 0
@@ -628,10 +629,11 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         }
         Ok(())
     })?;
-    let start = Instant::now();
+    let authoring_seconds = scheduler::authoring_seconds(limits, config.verification.required);
+    store.event("run_budget", json!({"max_seconds":limits.max_seconds,"authoring_seconds":authoring_seconds,"finalization_reserved_seconds":limits.max_seconds-authoring_seconds}))?;
     let mut codex: Option<Codex> = None;
     for _ in 0..limits.max_tasks {
-        if process::interrupted() || start.elapsed().as_secs() >= limits.max_seconds {
+        if process::interrupted() || start.elapsed().as_secs() >= authoring_seconds {
             break;
         }
         s = sync(store, engine)?;
@@ -691,7 +693,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 }
             }
         }
-        if start.elapsed().as_secs() >= limits.max_seconds {
+        if start.elapsed().as_secs() >= authoring_seconds {
             break;
         }
         let Some(task) = scheduler::next(&s, config.verification.required, limits) else {
@@ -773,11 +775,15 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             store.event("budget_exhausted", json!({"task":task,"input":s.input}))?;
             break;
         }
+        let mut worker_called = false;
         let result = (|| -> Result<String> {
             if refreshed {
                 return Ok("checked existing proof artifacts without an AI turn".into());
             }
             let _worker = store.lock("worker")?;
+            if start.elapsed().as_secs() >= authoring_seconds {
+                return Err(crate::agent::WorkerDeadline.into());
+            }
             if codex.is_none() {
                 codex = Some(Codex::connect(store, &s, config.verification.required)?);
                 let c = codex.as_ref().unwrap();
@@ -787,7 +793,11 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
                 })?;
                 s = store.load()?;
             }
-            let remaining = limits.max_seconds.saturating_sub(start.elapsed().as_secs());
+            let remaining = authoring_seconds.saturating_sub(start.elapsed().as_secs());
+            if remaining == 0 {
+                return Err(crate::agent::WorkerDeadline.into());
+            }
+            worker_called = true;
             store.event("worker_started", json!({"task":task,"input":s.input}))?;
             codex.as_mut().unwrap().run(
                 &s,
@@ -804,7 +814,7 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
         })();
         store.event(
             "worker_finished",
-            json!({"task":task,"called":!refreshed,"completed":result.is_ok()}),
+            json!({"task":task,"called":worker_called,"completed":result.is_ok()}),
         )?;
         let worker_deadline = result
             .as_ref()
@@ -959,7 +969,8 @@ fn run(store: &Store, engine: &mut Analyzer, retry: bool, limits: &Limits) -> Re
             })
             .map(|t| t.id.clone())
             .collect::<Vec<_>>();
-        if !ids.is_empty() && start.elapsed().as_secs() < limits.max_seconds {
+        let lemmas_pending = s.tool == Tool::Aeneas && crate::plan::checkpoint_needed(&s);
+        if (!ids.is_empty() || lemmas_pending) && start.elapsed().as_secs() < limits.max_seconds {
             let result = verifier::verify(
                 store,
                 &ids,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Time one arm and preserve actual status observations; never invent metrics."""
-import argparse,hashlib,json,os,pathlib,shutil,signal,subprocess,time,tomllib
+import argparse,hashlib,json,math,os,pathlib,shutil,signal,subprocess,time,tomllib
 p=argparse.ArgumentParser();p.add_argument('arm',choices=['with','without']);p.add_argument('--root',required=True);p.add_argument('--results',required=True);p.add_argument('--seconds',type=int,default=1800);p.add_argument("--api",action="append",default=[]);p.add_argument("--continue-control",action="store_true");args=p.parse_args()
 if args.seconds<=0:p.error('--seconds must be positive')
 root=pathlib.Path(args.root).resolve();out=pathlib.Path(args.results).resolve()
@@ -52,10 +52,13 @@ def snapshot(reason):
 if args.arm=='with':
  tick=time.monotonic()
  with (out/'init.stdout').open('wb') as stdout,(out/'init.stderr').open('wb') as stderr:
-  init=subprocess.run(['cargo','elicit','init','--tool','aeneas']+sum((['--api',a] for a in args.api),[]),cwd=root,stdout=stdout,stderr=stderr,timeout=180)
+  init=subprocess.run(['cargo','elicit','init','--tool','aeneas']+sum((['--api',a] for a in args.api),[]),cwd=root,stdout=stdout,stderr=stderr,timeout=min(180,max(0.1,args.seconds-(time.monotonic()-start))))
  (out/'initialization.json').write_text(json.dumps({'elapsed_seconds':time.monotonic()-tick,'exit':init.returncode})+'\n')
  if init.returncode:raise SystemExit('initialization failed; inspect captured output')
-cmd=['cargo','elicit','run','--max-seconds',str(args.seconds),'--max-tasks','32'] if args.arm=='with' else ['python3',str(pathlib.Path(__file__).with_name('baseline.py')),str(root)]+([str(args.seconds)] if args.continue_control else [])
+# Keep a small predeclared process-shutdown margin within the same outer cap.
+remaining_cli_seconds=max(0,math.floor(args.seconds-(time.monotonic()-start))-2)
+if args.arm=='with' and remaining_cli_seconds<1:raise SystemExit('Initialization exhausted the work budget; no authoring worker started')
+cmd=['cargo','elicit','run','--max-seconds',str(remaining_cli_seconds),'--max-tasks','32'] if args.arm=='with'  else ['python3',str(pathlib.Path(__file__).with_name('baseline.py')),str(root)]+([str(args.seconds)] if args.continue_control else [])
 with (out/'run.stdout').open('wb') as stdout,(out/'run.stderr').open('wb') as stderr:
  proc=subprocess.Popen(cmd,cwd=root,stdout=stdout,stderr=stderr,start_new_session=True)
  try:
@@ -90,5 +93,5 @@ if args.arm=='with':
  for name in ['events.jsonl','state.toml']:
   source=root/'.elicit'/name
   if source.exists():shutil.copyfile(source,out/('terminal-'+name))
-metrics={'start_unix':start_unix,'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'api_selectors':args.api,'continue_control':args.continue_control,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
+metrics={'start_unix':start_unix,'arm':args.arm,'command':cmd,'exit':proc.returncode,'end_to_end_seconds':finished-start,'timed_work_seconds':stop-start,'terminal_observation_seconds':finished-stop,'observation_seconds_total':sum(o['elapsed_seconds'] for o in observations),'observation_seconds_during_run':sum(o['elapsed_seconds'] for o in observations if o['reason']!='termination'),'historical_api_proof_milestones':sorted(milestones),'tokens':None,'human_proof_hints':0,'api_selectors':args.api,'continue_control':args.continue_control,'inner_cli_budget_seconds':remaining_cli_seconds if args.arm=='with' else None,'outer_shutdown_margin_seconds':2 if args.arm=='with' else 0,'original_sources_unchanged':source_hashes()==before,'source_hashes_before':before,'source_hashes_after':source_hashes(),'note':'Token usage and final independently audited coverage must be populated from actual telemetry/artifacts, not inferred from exit status.'}
 (out/'metrics.json').write_text(json.dumps(metrics,indent=2)+'\n')

@@ -758,3 +758,197 @@ fn aeneas_requested_success_is_not_poisoned_by_independent_missing_root() {
     );
     fs::remove_dir_all(root).unwrap();
 }
+
+#[test]
+#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
+fn aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt() {
+    use cargo_elicit::{model::Outcome, plan, store::Store};
+    for case in [
+        "deadline_api",
+        "deadline_lemma",
+        "deadline_invalid",
+        "external_interrupt",
+    ] {
+        if std::env::var("ELICIT_FINALIZATION_CASE").is_ok_and(|selected| selected != case) {
+            continue;
+        }
+        let root = prepare_fixture("aeneas", "aeneas");
+        let proofs = root.join("elicit-proofs/aeneas/Proofs.lean");
+        let valid = fs::read_to_string(&proofs).unwrap();
+        fs::remove_file(&proofs).unwrap();
+        fs::write(
+            root.join("elicit.toml"),
+            "[agent]\nprovider=\"codex\"\n[verification]\ntool=\"aeneas\"\nrequired=true\n",
+        )
+        .unwrap();
+        ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
+        let id = "elicit-aeneas-fixture::identity::Function";
+        if case != "deadline_lemma" {
+            let revision = state(&root).revision.to_string();
+            ok(
+                &root,
+                &[
+                    "agent",
+                    "submit",
+                    id,
+                    "--revision",
+                    &revision,
+                    "--note",
+                    "Reviewed original identity contract",
+                ],
+            );
+        } else {
+            // A prior inspection with no completed plan leads to a repair Plan
+            // turn. Its lemma edit must be collected by finalization, not the
+            // ordinary post-Integrate/Verify checkpoint path.
+            let store = Store { root: root.clone() };
+            store
+                .transaction(None, |s| {
+                    s.proof_plan
+                        .inspected
+                        .insert(id.into(), plan::inspection_input(s, id));
+                    Ok(())
+                })
+                .unwrap();
+        }
+        let candidate = match case {
+            "deadline_lemma" => "import ElicitContracts\nnamespace FinalCheckpoint\ntheorem saved : True := trivial\nend FinalCheckpoint\n".to_owned(),
+            "deadline_invalid" => "import ElicitContracts\ntheorem invalid : False := by exact True.intro\n".to_owned(),
+            _ => valid,
+        };
+        fs::create_dir_all(root.join(".elicit/cache")).unwrap();
+        fs::write(root.join(".elicit/cache/deadline-edit.txt"), &candidate).unwrap();
+        let wall_start_ms = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
+        let tick = Instant::now();
+        let run = cmd(&root)
+            .env(
+                "MOCK_CASE",
+                if case == "external_interrupt" {
+                    "deadline_api"
+                } else {
+                    case
+                },
+            )
+            .args([
+                "run",
+                "--max-tasks",
+                "1",
+                "--max-seconds",
+                "120",
+                "--task-seconds",
+                "600",
+                "--finalize-seconds",
+                "60",
+            ])
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        if case == "external_interrupt" {
+            let deadline = Instant::now() + Duration::from_secs(60);
+            while !root.join(".elicit/runtime/deadline-edit-saved").exists() {
+                assert!(
+                    Instant::now() < deadline,
+                    "worker did not save its test edit"
+                );
+                thread::sleep(Duration::from_millis(50));
+            }
+            unsafe {
+                libc::kill(run.id() as i32, libc::SIGINT);
+            }
+        }
+        let output = run.wait_with_output().unwrap();
+        let elapsed = tick.elapsed();
+        let s = state(&root);
+        assert!(
+            elapsed < Duration::from_secs(135),
+            "{case}: exceeded overall budget: {elapsed:?}"
+        );
+        match case {
+            "deadline_api" => {
+                assert_eq!(
+                    output.status.code(),
+                    Some(0),
+                    "{}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+                assert!(s.complete(true));
+            }
+            "deadline_lemma" => {
+                assert_eq!(
+                    output.status.code(),
+                    Some(1),
+                    "{}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+                let step = s
+                    .proof_plan
+                    .steps
+                    .iter()
+                    .find(|p| p.id == "final_lemma")
+                    .unwrap();
+                assert!(plan::checked(&s, step));
+                assert!(!s.verified(id));
+            }
+            "deadline_invalid" => {
+                assert_ne!(output.status.code(), Some(0));
+                assert!(!s.verified(id));
+                assert!(s.results.iter().all(|r| r.outcome != Outcome::Success));
+                assert_eq!(fs::read_to_string(&proofs).unwrap(), candidate);
+            }
+            _ => {
+                assert_eq!(output.status.code(), Some(130));
+                assert!(
+                    s.results.is_empty(),
+                    "external interrupt accepted new evidence"
+                );
+                assert_eq!(fs::read_to_string(&proofs).unwrap(), candidate);
+            }
+        }
+        if case != "external_interrupt" {
+            let events = fs::read_to_string(root.join(".elicit/events.jsonl")).unwrap();
+            assert!(
+                events
+                    .lines()
+                    .filter_map(|l| serde_json::from_str::<serde_json::Value>(l).ok())
+                    .any(|v| v["event"] == "task_finished" && v["data"]["worker_deadline"] == true)
+            );
+        }
+        if matches!(case, "deadline_api" | "deadline_lemma") {
+            let events = fs::read_to_string(root.join(".elicit/events.jsonl")).unwrap();
+            let accepted = events
+                .lines()
+                .filter_map(|l| serde_json::from_str::<serde_json::Value>(l).ok())
+                .filter(|e| {
+                    (e["event"] == "verification_finished"
+                        && e["data"]["results"]
+                            .as_array()
+                            .is_some_and(|rs| rs.iter().any(|r| r["outcome"] == "success")))
+                        || (e["event"] == "lemma_checks_finished"
+                            && e["data"]["results"]
+                                .as_object()
+                                .is_some_and(|rs| rs.values().any(|r| r["outcome"] == "success")))
+                })
+                .map(|e| {
+                    e["timestamp_ms"]
+                        .as_u64()
+                        .unwrap()
+                        .saturating_sub(wall_start_ms)
+                })
+                .collect::<Vec<_>>();
+            assert!(!accepted.is_empty());
+            for at_ms in accepted {
+                println!("{case}: evidence recorded at {:.3}s", at_ms as f64 / 1000.0);
+                assert!(
+                    at_ms <= 120_000,
+                    "{case}: evidence accepted after the overall 120s budget"
+                );
+            }
+        }
+        println!("{case}: passed in {:.2}s", elapsed.as_secs_f64());
+        fs::remove_dir_all(root).unwrap();
+    }
+}

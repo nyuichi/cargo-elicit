@@ -932,3 +932,19 @@ fn productive_checked_work_preserves_attempt_budget_without_recrediting_aliases(
     s.run.attempts.insert(task.key(), attempt);
     assert!(!scheduler::eligible(&s, &task, &Limits::default()));
 }
+
+#[test]
+fn finalization_reserve_is_bounded_and_only_reduces_proof_authoring() {
+    let mut limits = Limits {
+        max_seconds: 1800,
+        ..Limits::default()
+    };
+    assert_eq!(scheduler::authoring_seconds(&limits, true), 1740);
+    assert_eq!(scheduler::authoring_seconds(&limits, false), 1800);
+    limits.max_seconds = 40;
+    assert_eq!(scheduler::authoring_seconds(&limits, true), 30);
+    limits.finalize_seconds = 3;
+    assert_eq!(scheduler::authoring_seconds(&limits, true), 37);
+    limits.finalize_seconds = 0;
+    assert_eq!(scheduler::authoring_seconds(&limits, true), 40);
+}

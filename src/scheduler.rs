@@ -13,6 +13,9 @@ pub struct Limits {
     pub plan_seconds: u64,
     #[arg(long, default_value_t = 600)]
     pub verify_seconds: u64,
+    /// Reserve time inside the overall budget for final reconciliation and checks.
+    #[arg(long, default_value_t = 60)]
+    pub finalize_seconds: u64,
     #[arg(long, default_value_t = 3)]
     pub max_attempts: u32,
     #[arg(long, default_value_t = 2)]
@@ -26,10 +29,19 @@ impl Default for Limits {
             task_seconds: 600,
             plan_seconds: 180,
             verify_seconds: 600,
+            finalize_seconds: 60,
             max_attempts: 3,
             max_no_progress: 2,
         }
     }
+}
+pub fn authoring_seconds(limits: &Limits, required: bool) -> u64 {
+    let reserved = if required {
+        limits.finalize_seconds.min(limits.max_seconds / 4)
+    } else {
+        0
+    };
+    limits.max_seconds - reserved
 }
 pub fn task_input(s: &State, t: &Task) -> String {
     if t.work.is_some()

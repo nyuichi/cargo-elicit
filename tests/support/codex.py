@@ -14,6 +14,16 @@ for line in sys.stdin:
   task=json.loads(p['input'][0]['text']);send({'id':id,'result':{'turn':{'id':turn,'status':'inProgress'}}})
   pathlib.Path('.elicit/runtime/mock-started').write_text('started')
   case=os.getenv('MOCK_CASE','submit')
+  if case.startswith('deadline_'):
+   name='Lemmas.lean' if case=='deadline_lemma' else 'Proofs.lean'
+   pathlib.Path('elicit-proofs/aeneas',name).write_text(pathlib.Path('.elicit/cache/deadline-edit.txt').read_text())
+   if case=='deadline_lemma':
+    exe=os.environ['ELICIT_BIN'];data=json.loads(subprocess.check_output([exe,'agent','show']))
+    step={'id':'final_lemma','goal':task['targets'][0]['id'],'kind':'lemma','target':None,'reason':'Retain a checked checkpoint at the worker deadline','needs':[],'statement':'True','theorem':'FinalCheckpoint.saved'}
+    plan=pathlib.Path('.elicit/cache/deadline-plan.json');plan.write_text(json.dumps({'steps':[step]}))
+    subprocess.run([exe,'agent','plan','--file',str(plan),'--revision',str(data['revision'])],check=True,stdout=subprocess.DEVNULL)
+   pathlib.Path('.elicit/runtime/deadline-edit-saved').write_text('saved')
+   continue
   if case=='interrupt':continue
   if case=='approval':send({'id':777,'method':'item/commandExecution/requestApproval','params':{'threadId':thread,'turnId':turn,'command':'needs-human','cwd':os.getcwd()}});continue
   if case=='body':
