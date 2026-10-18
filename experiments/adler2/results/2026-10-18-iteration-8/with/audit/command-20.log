@@ -1,0 +1,8 @@
+AdlerSpec.raw_fold_bounds : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  (List.foldl AdlerSpec.rawStep s xs).1 ≤ s.1 + 255 * xs.length ∧
+    2 * (List.foldl AdlerSpec.rawStep s xs).2 ≤ 2 * s.2 + 2 * xs.length * s.1 + 255 * xs.length * (xs.length + 1)
+theorem IndependentLemma_8 : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  (List.foldl AdlerSpec.rawStep s xs).1 ≤ s.1 + 255 * xs.length ∧
+    2 * (List.foldl AdlerSpec.rawStep s xs).2 ≤ 2 * s.2 + 2 * xs.length * s.1 + 255 * xs.length * (xs.length + 1) :=
+AdlerSpec.raw_fold_bounds
+'IndependentLemma_8' depends on axioms: [propext, Classical.choice, Quot.sound]

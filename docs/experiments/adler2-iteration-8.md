@@ -1,6 +1,6 @@
 # Adler-32 development iteration 8
 
-Status: implementation validation passed; authoring has not started.
+Status: actual trial and independent audit completed; Astra approves one bounded bookkeeping follow-up.
 
 Astra recommends this bounded follow-up to [iteration 7](adler2-iteration-7.md): align the harness's inner CLI budget with the actual outer time remaining after initialization, and reserve time for official final reconciliation and checks. The preceding final files independently prove three selected APIs and nine planned lemmas, but their late input was uncollected at the deadline. No mathematical hints, case-specific proof strategy or previous proof solutions are supplied.
 
@@ -19,3 +19,19 @@ All 81 regular Rust tests passed, as did formatting, Clippy and Rust 1.86 checks
 The real pinned Lean/Aeneas finalization fixture passed four scenarios: a valid API edit at a normal worker deadline; a lemma-only repair Plan edit with no ready API; an invalid final edit that remains unaccepted and preserved; and an explicit external interrupt that accepts no new evidence. The four-case validation took 531.47 seconds including setup. A targeted timing rerun confirmed that valid API evidence was recorded at 116.124 seconds inside a 120-second total budget (authoring budget 90 seconds, reserved finalization 30 seconds). The command exited at 121.47 seconds after its final reconciliation/display; this later exit is not the evidence acceptance time. The lemma-only command, including cleanup, completed in 115.88 seconds inside that same total budget. Actual worker interruption is joined before checking; explicit user interruption remains distinct.
 
 The first Clippy pass flagged a test initializer style and passed after the initializer was corrected. These validation logs and the earlier timing limitation remain separate from authoring measurements. Astra's final review found no remaining freeze blocker after the strict acceptance-time regression passed.
+
+## Actual result
+
+The product run finished normally with exit 1 in 1,775.93 seconds including terminal observation (1,769.26 seconds of work, including 12.36 seconds of initialization). The inner CLI budget was 1,785 seconds; 60 seconds were reserved for finalization. Its last worker reached a normal deadline at 1,738.05 seconds. The official checkpoint completed at 1,764.65 seconds, inside the outer budget, and retained **one approved selected API (new) and 23 checked lemmas**. The final observation cost 6.67 seconds; all four observations cost 33.85 seconds. Original Rust and Cargo hashes are unchanged. Source CI passed.
+
+Independent fresh extraction and auditing took 54.11 seconds. All six modules compile and generated model bytes match fresh original extraction with transparent selected bodies and overflow checks. Exact saved contracts for new and checksum pass with permitted standard axioms only (**2/5 saved selected APIs**). Checksum had not completed specification approval, so it is not counted in the timed current ledger. Twenty-three of 24 planned propositions pass; tail_loop_spec remains unproved. The checked lemmas include conditional exact execution for the extracted inner/remainder lane loops and both summation loops. The outer-loop theorem establishes successful execution, a scalar accumulator equation and lane bounds, but not exact output-lane values. Full compute, write_slice, adler32_slice and from_checksum completion remain absent.
+
+Actual usage was 16,876,344 input tokens, including the 16,663,680 cached subset, and 57,191 output tokens, with the same resolved model/settings as earlier development trials. Processing stages accumulated 122.39 seconds; proof stages accumulated 114.81 seconds, including 11 batch audits taking 23.19 seconds. These durations overlap worker time. No report-only invalidation or repeated identical-input official check occurred. The finalization defect is resolved in this trial; this does not establish a five-API completion or speed advantage. The retained ordinary reference is still 5/5 in 1,704.23 seconds, not a new matched control.
+
+## New observed bookkeeping omission
+
+A caller-owned Contract delegates from selected root adler32_slice to selected root write_slice. During three child Integrate turns, checked lemmas increased from 8 to 16 to 19, all under their actual caller goal adler32_slice. The child task has work=None. The current credit filter matches only its own target goal in this case, so lifetime total reached three with **zero credits, zero no-progress count and failed=false**. It then selected Plan repair. That repair also produced four lemmas, so its entire duration is not described as wasted and this omission is not claimed as the sole cause of incomplete verification.
+
+Astra recommends continuing only with a directed ancestor-goal lemma scope and global pre-turn seen proposition identities. Sibling and unrelated roots must remain excluded; existing theorems must not earn credit merely by changing plan associations. API candidate scope, mathematical proof instructions and acceptance checks do not change. The subsequent fresh development trial must still be audited and reviewed before another continuation decision.
+
+[Evidence and hashes](../../experiments/adler2/results/2026-10-18-iteration-8/README.md) retain timed state, observations, frozen modules, actual last-check cache, exact audits and development validation failures as separate records.

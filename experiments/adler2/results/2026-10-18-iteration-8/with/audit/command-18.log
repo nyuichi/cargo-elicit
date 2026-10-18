@@ -1,0 +1,6 @@
+AdlerSpec.normalize_rawStep : ∀ (s : ℕ × ℕ) (x : Aeneas.Std.U8),
+  AdlerSpec.normalize (AdlerSpec.rawStep (AdlerSpec.normalize s) x) = AdlerSpec.normalize (AdlerSpec.rawStep s x)
+theorem IndependentLemma_6 : ∀ (s : ℕ × ℕ) (x : Aeneas.Std.U8),
+  AdlerSpec.normalize (AdlerSpec.rawStep (AdlerSpec.normalize s) x) = AdlerSpec.normalize (AdlerSpec.rawStep s x) :=
+AdlerSpec.normalize_rawStep
+'IndependentLemma_6' depends on axioms: [propext]

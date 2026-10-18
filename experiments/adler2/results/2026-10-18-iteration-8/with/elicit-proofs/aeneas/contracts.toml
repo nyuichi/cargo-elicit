@@ -1,0 +1,17 @@
+schema_version = 1
+
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun data out => out.val = ((data.val.foldl (fun s x => let a := (s.1 + x.val) % 65521; (a, (s.2 + a) % 65521)) (1, 0)).2 * 65536 + (data.val.foldl (fun s x => let a := (s.1 + x.val) % 65521; (a, (s.2 + a) % 65521)) (1, 0)).1)"
+theorem = "adler32_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun out => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "adler32_new_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes out => (out.a.val, out.b.val) = AdlerSpec.update (self.a.val, self.b.val) bytes.val"
+theorem = "adler32_write_slice_correct"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self out => out.val = 65536 * self.b.val + self.a.val"
+theorem = "adler32_checksum_correct"

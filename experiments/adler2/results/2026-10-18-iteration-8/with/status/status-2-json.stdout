@@ -1,0 +1,254 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 0,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 0,
+    "total": 19,
+    "verified": 0
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {},
+    "inspected": {
+      "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015"
+    },
+    "last_checkpoint": "5c1b4b28412a4c844aa60be580cb2160bcf8e65b16e189ea8179440900d01fad",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "new_seed",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The original caller first binds Adler32.new; its result must be exactly the recurrence seed (1,0).",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "write_recurrence",
+        "kind": "contract",
+        "needs": [
+          "chunks_exact_spec",
+          "update_eq_raw",
+          "lane_chunk_fits_u32",
+          "raw_four"
+        ],
+        "reason": "The second bind needs successful execution and the scalar recurrence for arbitrary state and bytes, including normalized empty updates; the generated body delegates to optimized compute with five loops.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "encode_state",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The final call must encode the recurrence pair as 65536*b+a for every representable state.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "integrate_slice",
+        "kind": "integrate",
+        "needs": [
+          "new_seed",
+          "write_recurrence",
+          "encode_state"
+        ],
+        "reason": "Compose checked seed, update, and encoding rules at the original translated caller.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_partition",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Exact chunk lengths justify four indexed byte reads and the 5552 lane-iteration bound; flattening preserves original byte order.",
+        "statement": "∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+        "target": null,
+        "theorem": "AdlerSpec.chunks_partition"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "step_eq_normalize_raw",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Relates the declared scalar recurrence to the unbounded arithmetic used for deferred reductions.",
+        "statement": "∀ (s : Nat × Nat) (x : Aeneas.Std.U8), AdlerSpec.step s x = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+        "target": null,
+        "theorem": "AdlerSpec.step_eq_normalize_raw"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "normalize_rawStep",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Shows normalization commutes with the next scalar byte update, including arbitrary initial halves.",
+        "statement": "∀ (s : Nat × Nat) (x : Aeneas.Std.U8), AdlerSpec.normalize (AdlerSpec.rawStep (AdlerSpec.normalize s) x) = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+        "target": null,
+        "theorem": "AdlerSpec.normalize_rawStep"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "update_eq_raw",
+        "kind": "lemma",
+        "needs": [
+          "step_eq_normalize_raw",
+          "normalize_rawStep"
+        ],
+        "reason": "Discharges modular deferral in the functional postcondition after proving the optimized loop computes unreduced sums modulo 65521.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), AdlerSpec.update s xs = AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep s)",
+        "target": null,
+        "theorem": "AdlerSpec.update_eq_raw"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "raw_fold_bounds",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Bounds a lane and its prefix-sum accumulator for every byte prefix; required for checked u32 additions in inner loops.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), (xs.foldl AdlerSpec.rawStep s).1 ≤ s.1 + 255 * xs.length ∧ 2 * (xs.foldl AdlerSpec.rawStep s).2 ≤ 2 * s.2 + 2 * xs.length * s.1 + 255 * xs.length * (xs.length + 1)",
+        "target": null,
+        "theorem": "AdlerSpec.raw_fold_bounds"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_chunk_fits_u32",
+        "kind": "lemma",
+        "needs": [
+          "raw_fold_bounds"
+        ],
+        "reason": "Discharges inner-loop u32 overflow inequalities for at most 5552 lane updates between reductions.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), s.1 ≤ 65520 → s.2 ≤ 65520 → xs.length ≤ 5552 → (xs.foldl AdlerSpec.rawStep s).1 < 4294967296 ∧ (xs.foldl AdlerSpec.rawStep s).2 < 4294967296",
+        "target": null,
+        "theorem": "AdlerSpec.lane_chunk_fits_u32"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "raw_four",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Supplies the four-byte weighted scalar identity needed to reconnect parallel lanes to the original byte recurrence.",
+        "statement": "∀ (s : Nat × Nat) (x0 x1 x2 x3 : Aeneas.Std.U8), [x0,x1,x2,x3].foldl AdlerSpec.rawStep s = (s.1 + x0.val + x1.val + x2.val + x3.val, s.2 + 4 * s.1 + 4 * x0.val + 3 * x1.val + 2 * x2.val + x3.val)",
+        "target": null,
+        "theorem": "AdlerSpec.raw_four"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_exact_spec",
+        "kind": "lemma",
+        "needs": [
+          "chunks_partition"
+        ],
+        "reason": "Caller-facing rule advances the original optimized body past chunk construction and exposes exact lengths and byte decomposition.",
+        "statement": "∀ (s : Aeneas.Std.Slice Aeneas.Std.U8) (n : Aeneas.Std.Usize), 0 < n.val → Aeneas.Std.core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.chunks_exact_spec"
+      }
+    ]
+  },
+  "required": true,
+  "revision": 22,
+  "run": {
+    "active": {
+      "input": "aebb6c346d1ef8690e2451ab899224d4a35d4c5db0011f1891fc1a5a053429a1",
+      "started": 1792291262,
+      "task": {
+        "kind": "integrate",
+        "targets": [
+          "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+        ],
+        "work": null
+      }
+    },
+    "attempts": {
+      "Integrate:adler2::adler32_slice::Function": {
+        "checked_work": [],
+        "failed": false,
+        "last_input": "027e3e832502e14c46ed32896693dd22b8228879aa19cb4ab498a7897bce6ffd",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+        "checked_work": [],
+        "failed": true,
+        "last_input": "aebb6c346d1ef8690e2451ab899224d4a35d4c5db0011f1891fc1a5a053429a1",
+        "last_result": "started, not finalized",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 1740032,
+    "elapsed_ms": 308217,
+    "input_tokens": 1817261,
+    "last_result": "unresolved; same task/input suppressed",
+    "output_tokens": 8306,
+    "thread": "01a14cdd-a012-7660-bde0-648630cf20cb"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round8-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round8-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round8-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round8-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

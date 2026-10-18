@@ -1,0 +1,10 @@
+AdlerSpec.vector_mul_spec : ∀ (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32),
+  (∀ i < 4, ↑(↑a)[i]! * ↑q ≤ 4294967295) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign a q ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑a)[i]! * ↑q ⦄
+theorem IndependentLemma_21 : ∀ (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32),
+  (∀ i < 4, ↑(↑a)[i]! * ↑q ≤ 4294967295) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign a q ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑a)[i]! * ↑q ⦄ :=
+AdlerSpec.vector_mul_spec
+'IndependentLemma_21' depends on axioms: [propext, Classical.choice, Quot.sound]

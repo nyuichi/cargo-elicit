@@ -1,0 +1,15 @@
+AdlerSpec.inner_spec : ∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ it.chunks, (↑c).length = 4) →
+    (∀ i < 4,
+        (AdlerSpec.laneResult a b it.chunks i).1 < 4294967296 ∧ (AdlerSpec.laneResult a b it.chunks i).2 < 4294967296) →
+      ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b ⦃ out =>
+        ∀ i < 4, (↑(↑out.1)[i]!, ↑(↑out.2)[i]!) = AdlerSpec.laneResult a b it.chunks i ⦄
+theorem IndependentLemma_15 : ∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8)
+  (a b : ElicitGenerated.algo.U32X4),
+  (∀ c ∈ it.chunks, (↑c).length = 4) →
+    (∀ i < 4,
+        (AdlerSpec.laneResult a b it.chunks i).1 < 4294967296 ∧ (AdlerSpec.laneResult a b it.chunks i).2 < 4294967296) →
+      ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b ⦃ out =>
+        ∀ i < 4, (↑(↑out.1)[i]!, ↑(↑out.2)[i]!) = AdlerSpec.laneResult a b it.chunks i ⦄ :=
+AdlerSpec.inner_spec
+'IndependentLemma_15' depends on axioms: [propext, Classical.choice, Quot.sound]

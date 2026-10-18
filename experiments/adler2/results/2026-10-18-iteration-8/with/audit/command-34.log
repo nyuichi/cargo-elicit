@@ -1,0 +1,24 @@
+AdlerSpec.outer_execution_spec : ∀ (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  ↑size = 22208 →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ c ∈ it.chunks, (↑c).length = 22208) →
+          (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+            (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+              ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv ⦃ out =>
+                ↑out.1 = List.foldl (fun z x => (z + 22208 * ↑a) % 65521) (↑b) it.chunks ∧
+                  ↑out.1 ≤ 65535 ∧ (∀ i < 4, ↑(↑out.2.1)[i]! ≤ 65520) ∧ ∀ i < 4, ↑(↑out.2.2)[i]! ≤ 65520 ⦄
+theorem IndependentLemma_22 : ∀ (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8)
+  (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4),
+  ↑size = 22208 →
+    ↑a ≤ 65535 →
+      ↑b ≤ 65535 →
+        (∀ c ∈ it.chunks, (↑c).length = 22208) →
+          (∀ i < 4, ↑(↑av)[i]! ≤ 65520) →
+            (∀ i < 4, ↑(↑bv)[i]! ≤ 65520) →
+              ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv ⦃ out =>
+                ↑out.1 = List.foldl (fun z x => (z + 22208 * ↑a) % 65521) (↑b) it.chunks ∧
+                  ↑out.1 ≤ 65535 ∧ (∀ i < 4, ↑(↑out.2.1)[i]! ≤ 65520) ∧ ∀ i < 4, ↑(↑out.2.2)[i]! ≤ 65520 ⦄ :=
+AdlerSpec.outer_execution_spec
+'IndependentLemma_22' depends on axioms: [propext, Classical.choice, Quot.sound]

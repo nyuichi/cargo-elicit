@@ -1,0 +1,191 @@
+{
+  "status": "partial selected-API result; checksum API checkpoint pending official checking; update and slice APIs unresolved",
+  "verifier": "Aeneas and Lean 4",
+  "source_preserved": true,
+  "theorem_roots": [
+    {
+      "theorem": "adler32_new_correct",
+      "api": "Adler32::new",
+      "contract": "Successful execution; a=1 and b=0",
+      "preconditions": [],
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "local Lean compilation passed; scheduler evidence pending"
+    },
+    {
+      "theorem": "adler32_slice_correct",
+      "api": "adler32_slice",
+      "contract": "Successful execution and scalar Adler recurrence from (1,0) on every representable byte slice",
+      "preconditions": [],
+      "proof_module": null,
+      "status": "contract accepted; proof incomplete"
+    },
+    {
+      "theorem": "adler32_write_slice_correct",
+      "api": "Adler32::write_slice",
+      "contract": "Successful execution and normalized scalar recurrence from every representable initial state on every byte slice, including empty update",
+      "preconditions": [],
+      "proof_module": null,
+      "status": "full contract accepted; complete theorem remains open; inner loops now have local checked support proofs"
+    },
+    {
+      "theorem": "AdlerSpec.chunks_exact_spec",
+      "api": "support for write_slice chunk iteration",
+      "contract": "Exact chunk lengths, byte-preserving partition, short remainder",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input c0f440ddd741b448d26ee0faa05b661b69a6fb63eb87569126e5f39ff2321d70; API theorem remains open"
+    },
+    {
+      "theorem": "AdlerSpec.update_eq_raw",
+      "api": "support for write_slice deferred modulo",
+      "contract": "Scalar modular fold equals normalization of unbounded scalar fold",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input c0f440ddd741b448d26ee0faa05b661b69a6fb63eb87569126e5f39ff2321d70; API theorem remains open"
+    },
+    {
+      "theorem": "AdlerSpec.lane_chunk_fits_u32",
+      "api": "support for write_slice internal lane arithmetic",
+      "contract": "At most 5552 updates from reduced internal lanes fit u32; not an API precondition",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input c0f440ddd741b448d26ee0faa05b661b69a6fb63eb87569126e5f39ff2321d70; API theorem remains open"
+    },
+    {
+      "theorem": "AdlerSpec.raw_four",
+      "api": "support for write_slice lane recombination",
+      "contract": "Four scalar byte updates equal weighted four-byte sum",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input c0f440ddd741b448d26ee0faa05b661b69a6fb63eb87569126e5f39ff2321d70; API theorem remains open"
+    },
+    {
+      "theorem": "AdlerSpec.vector_from_spec",
+      "api": "original U32X4::from",
+      "contract": "Four byte indexing/widening operations; input slice has at least four bytes",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.vector_add_spec",
+      "api": "original U32X4::add_assign method",
+      "contract": "Coordinatewise checked addition and updates under per-lane u32 overflow bounds",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.inner_spec",
+      "api": "original compute_loop0_loop0",
+      "contract": "Total execution and exact raw scalar fold per lane under exact four-byte chunk sizes and final lane u32 bounds",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.inner_bounded_spec",
+      "api": "original compute_loop0_loop0",
+      "contract": "Same total lane-fold property from reduced internal lanes and at most 5552 lane iterations",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.remainder_inner_spec",
+      "api": "original compute_loop1",
+      "contract": "Same property by definitional equality of the two original inner-loop bodies",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.chunks_count_eq",
+      "api": "support for original compute chunk iteration",
+      "contract": "Chunk count times exact size plus remainder length equals source length",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 169dab419a44cc6c8fe45731a901c1cfab181a9108eb9b9c4a89f93be4d7cd59; full API remains unresolved"
+    },
+    {
+      "theorem": "AdlerSpec.vector_rem_spec",
+      "api": "original U32X4::rem_assign method",
+      "contract": "All original remainder operations and array indexing/updates; positive divisor",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 8bda774d38bcdb52b8cf7e6d755786cf08cb8c5b87a21235c09b97c804ae95db; full API open"
+    },
+    {
+      "theorem": "AdlerSpec.vector_mul_spec",
+      "api": "original U32X4::mul_assign method",
+      "contract": "All original multiplication operations and array indexing/updates under per-lane product bounds",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 8bda774d38bcdb52b8cf7e6d755786cf08cb8c5b87a21235c09b97c804ae95db; full API open"
+    },
+    {
+      "theorem": "AdlerSpec.outer_execution_spec",
+      "api": "original compute_loop0",
+      "contract": "Total original outer-loop execution with exact scalar seed contribution to b and reduced output lanes; full functional lane invariant remains open",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 8bda774d38bcdb52b8cf7e6d755786cf08cb8c5b87a21235c09b97c804ae95db; full API open"
+    },
+    {
+      "theorem": "AdlerSpec.sum_loop_spec",
+      "api": "original compute_loop2",
+      "contract": "Exact sum, checked additions and termination under final sum bound",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 94cbb8c5d9a81fb30a51a83600f9fee8057ee7057a2136cc1c2f7e2846f57a24; API composition remains open"
+    },
+    {
+      "theorem": "AdlerSpec.sum_loop3_spec",
+      "api": "original compute_loop3",
+      "contract": "Exact sum by equality of original summing-loop bodies",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 94cbb8c5d9a81fb30a51a83600f9fee8057ee7057a2136cc1c2f7e2846f57a24; API composition remains open"
+    },
+    {
+      "theorem": "AdlerSpec.normalize_raw_fold",
+      "api": "scalar lane model",
+      "contract": "Normalization commutes with raw scalar fold",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 94cbb8c5d9a81fb30a51a83600f9fee8057ee7057a2136cc1c2f7e2846f57a24; API composition remains open"
+    },
+    {
+      "theorem": "AdlerSpec.update_append",
+      "api": "scalar list model only",
+      "contract": "Composition of scalar list updates; no original API split law claimed",
+      "proof_module": "elicit-proofs/aeneas/Lemmas.lean",
+      "status": "scheduler checked support lemma at input 94cbb8c5d9a81fb30a51a83600f9fee8057ee7057a2136cc1c2f7e2846f57a24; API composition remains open"
+    },
+    {
+      "theorem": "adler32_checksum_correct",
+      "api": "Adler32::checksum",
+      "contract": "Successful execution and output 65536*b+a for every representable state",
+      "preconditions": [],
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "local Lean compilation passed; submitted for official checking"
+    }
+  ],
+  "checker_commands": [
+    "cargo-elicit agent submit TARGET --revision CURRENT --note REASON",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean -R .elicit/cache/inspect -o .elicit/cache/inspect/ElicitContracts.olean .elicit/cache/inspect/ElicitContracts.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean elicit-proofs/aeneas/Proofs.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean -R elicit-proofs/aeneas -o .elicit/cache/inspect/Specs.olean elicit-proofs/aeneas/Specs.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean -R elicit-proofs/aeneas -o .elicit/cache/inspect/Lemmas.olean elicit-proofs/aeneas/Lemmas.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean .elicit/cache/inspect/Audit.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean .elicit/cache/inspect/MachineAudit.lean",
+    "LEAN_PATH=$PWD/.elicit/cache/inspect lake -d /workspace/toolchain/aeneas-src/backends/lean env lean .elicit/cache/inspect/OuterAudit.lean"
+  ],
+  "remaining_obligations": [
+    "write_slice: tail-loop theorem, arithmetic side conditions, cross-chunk functional lane invariant, final scalar recombination and normalization; complete arbitrary-state API theorem",
+    "from_checksum decoding",
+    "adler32_slice caller integration",
+    "codec roundtrips",
+    "split law with concatenated slice representability",
+    "save/restore/resume law"
+  ],
+  "unverified_out_of_scope": [
+    "generic BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "alternative targets",
+    "trait implementation laws"
+  ],
+  "trusted_boundaries": [
+    "Pinned Charon and Aeneas translation",
+    "Pinned standard models",
+    "Lean kernel; permitted logical axioms only"
+  ],
+  "unsupported_assumptions": [],
+  "proof_plan": "elicit-proofs/aeneas/plan.json"
+}

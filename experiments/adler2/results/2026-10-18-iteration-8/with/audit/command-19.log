@@ -1,0 +1,6 @@
+AdlerSpec.update_eq_raw : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  AdlerSpec.update s xs = AdlerSpec.normalize (List.foldl AdlerSpec.rawStep s xs)
+theorem IndependentLemma_7 : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  AdlerSpec.update s xs = AdlerSpec.normalize (List.foldl AdlerSpec.rawStep s xs) :=
+AdlerSpec.update_eq_raw
+'IndependentLemma_7' depends on axioms: [propext, Quot.sound]

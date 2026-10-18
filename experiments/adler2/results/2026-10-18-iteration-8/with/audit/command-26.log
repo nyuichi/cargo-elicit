@@ -1,0 +1,6 @@
+AdlerSpec.raw_fold_mono : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  s.1 ≤ (List.foldl AdlerSpec.rawStep s xs).1 ∧ s.2 ≤ (List.foldl AdlerSpec.rawStep s xs).2
+theorem IndependentLemma_14 : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  s.1 ≤ (List.foldl AdlerSpec.rawStep s xs).1 ∧ s.2 ≤ (List.foldl AdlerSpec.rawStep s xs).2 :=
+AdlerSpec.raw_fold_mono
+'IndependentLemma_14' depends on axioms: [propext, Quot.sound]

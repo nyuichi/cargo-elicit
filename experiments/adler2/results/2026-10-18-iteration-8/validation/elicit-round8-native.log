@@ -1,0 +1,25 @@
+   Compiling cargo-elicit v0.1.0 (/workspace/cargo-elicit)
+warning: variable does not need to be mutable
+   --> tests/native.rs:819:13
+    |
+819 |         let mut run = cmd(&root)
+    |             ----^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `cargo-elicit` (test "native") generated 1 warning (run `cargo fix --test "native" -p cargo-elicit` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running tests/native.rs (target/debug/deps/native-9ecefdd1281e27a9)
+
+running 1 test
+test aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt has been running for over 60 seconds
+deadline_api: passed in 124.68s
+deadline_lemma: passed in 115.88s
+deadline_invalid: passed in 120.35s
+external_interrupt: passed in 6.63s
+test aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 531.47s
+

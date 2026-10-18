@@ -1,0 +1,10 @@
+@AdlerSpec.chunks_partition : ∀ {α : Type} (n : ℕ) (hn : 0 < n) (xs : List α),
+  (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs ∧
+    (∀ c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n) ∧
+      (Aeneas.Std.List.toChunksExact n hn xs).2.length < n
+theorem IndependentLemma_4 : ∀ {α : Type} (n : ℕ) (hn : 0 < n) (xs : List α),
+  (Aeneas.Std.List.toChunksExact n hn xs).1.flatten ++ (Aeneas.Std.List.toChunksExact n hn xs).2 = xs ∧
+    (∀ c ∈ (Aeneas.Std.List.toChunksExact n hn xs).1, c.length = n) ∧
+      (Aeneas.Std.List.toChunksExact n hn xs).2.length < n :=
+fun {α} => AdlerSpec.chunks_partition
+'IndependentLemma_4' depends on axioms: [propext, Classical.choice, Quot.sound]

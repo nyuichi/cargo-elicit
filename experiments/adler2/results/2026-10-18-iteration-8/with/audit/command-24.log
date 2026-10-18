@@ -1,0 +1,10 @@
+AdlerSpec.vector_add_spec : ∀ (a b : ElicitGenerated.algo.U32X4),
+  (∀ i < 4, ↑(↑a)[i]! + ↑(↑b)[i]! ≤ 4294967295) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑a)[i]! + ↑(↑b)[i]! ⦄
+theorem IndependentLemma_12 : ∀ (a b : ElicitGenerated.algo.U32X4),
+  (∀ i < 4, ↑(↑a)[i]! + ↑(↑b)[i]! ≤ 4294967295) →
+    ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b ⦃ out =>
+      ∀ i < 4, ↑(↑out)[i]! = ↑(↑a)[i]! + ↑(↑b)[i]! ⦄ :=
+AdlerSpec.vector_add_spec
+'IndependentLemma_12' depends on axioms: [propext, Classical.choice, Quot.sound]

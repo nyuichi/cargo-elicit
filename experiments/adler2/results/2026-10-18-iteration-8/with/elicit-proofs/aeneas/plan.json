@@ -1,0 +1,332 @@
+{
+  "steps": [
+    {
+      "id": "new_seed",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "reason": "The original caller first binds Adler32.new; its result must be exactly the recurrence seed (1,0).",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "write_recurrence",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "reason": "The second bind needs successful execution and the scalar recurrence for arbitrary state and bytes, including normalized empty updates; the generated body delegates to optimized compute with five loops.",
+      "needs": [
+        "chunks_exact_spec",
+        "update_eq_raw",
+        "lane_chunk_fits_u32",
+        "raw_four",
+        "inner_bounded_spec",
+        "remainder_inner_spec",
+        "chunks_count_eq",
+        "outer_execution_spec",
+        "vector_mul_spec",
+        "sum_loop_spec",
+        "sum_loop3_spec",
+        "normalize_raw_fold",
+        "tail_loop_spec"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "encode_state",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "contract",
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "reason": "The final call must encode the recurrence pair as 65536*b+a for every representable state.",
+      "needs": [],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "integrate_slice",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "integrate",
+      "target": "adler2::adler32_slice::Function",
+      "reason": "Compose checked seed, update, and encoding rules at the original translated caller.",
+      "needs": [
+        "new_seed",
+        "write_recurrence",
+        "encode_state"
+      ],
+      "statement": null,
+      "theorem": null
+    },
+    {
+      "id": "chunks_partition",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Exact chunk lengths justify four indexed byte reads and the 5552 lane-iteration bound; flattening preserves original byte order.",
+      "needs": [],
+      "statement": "\u2200 {\u03b1 : Type} (n : Nat) (hn : 0 < n) (xs : List \u03b1), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs \u2227 (\u2200 c \u2208 (List.toChunksExact n hn xs).1, c.length = n) \u2227 (List.toChunksExact n hn xs).2.length < n",
+      "theorem": "AdlerSpec.chunks_partition"
+    },
+    {
+      "id": "step_eq_normalize_raw",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Relates the declared scalar recurrence to the unbounded arithmetic used for deferred reductions.",
+      "needs": [],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (x : Aeneas.Std.U8), AdlerSpec.step s x = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+      "theorem": "AdlerSpec.step_eq_normalize_raw"
+    },
+    {
+      "id": "normalize_rawStep",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Shows normalization commutes with the next scalar byte update, including arbitrary initial halves.",
+      "needs": [],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (x : Aeneas.Std.U8), AdlerSpec.normalize (AdlerSpec.rawStep (AdlerSpec.normalize s) x) = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+      "theorem": "AdlerSpec.normalize_rawStep"
+    },
+    {
+      "id": "update_eq_raw",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges modular deferral in the functional postcondition after proving the optimized loop computes unreduced sums modulo 65521.",
+      "needs": [
+        "step_eq_normalize_raw",
+        "normalize_rawStep"
+      ],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs : List Aeneas.Std.U8), AdlerSpec.update s xs = AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep s)",
+      "theorem": "AdlerSpec.update_eq_raw"
+    },
+    {
+      "id": "raw_fold_bounds",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Bounds a lane and its prefix-sum accumulator for every byte prefix; required for checked u32 additions in inner loops.",
+      "needs": [],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs : List Aeneas.Std.U8), (xs.foldl AdlerSpec.rawStep s).1 \u2264 s.1 + 255 * xs.length \u2227 2 * (xs.foldl AdlerSpec.rawStep s).2 \u2264 2 * s.2 + 2 * xs.length * s.1 + 255 * xs.length * (xs.length + 1)",
+      "theorem": "AdlerSpec.raw_fold_bounds"
+    },
+    {
+      "id": "lane_chunk_fits_u32",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges inner-loop u32 overflow inequalities for at most 5552 lane updates between reductions.",
+      "needs": [
+        "raw_fold_bounds"
+      ],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs : List Aeneas.Std.U8), s.1 \u2264 65520 \u2192 s.2 \u2264 65520 \u2192 xs.length \u2264 5552 \u2192 (xs.foldl AdlerSpec.rawStep s).1 < 4294967296 \u2227 (xs.foldl AdlerSpec.rawStep s).2 < 4294967296",
+      "theorem": "AdlerSpec.lane_chunk_fits_u32"
+    },
+    {
+      "id": "raw_four",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Supplies the four-byte weighted scalar identity needed to reconnect parallel lanes to the original byte recurrence.",
+      "needs": [],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (x0 x1 x2 x3 : Aeneas.Std.U8), [x0,x1,x2,x3].foldl AdlerSpec.rawStep s = (s.1 + x0.val + x1.val + x2.val + x3.val, s.2 + 4 * s.1 + 4 * x0.val + 3 * x1.val + 2 * x2.val + x3.val)",
+      "theorem": "AdlerSpec.raw_four"
+    },
+    {
+      "id": "chunks_exact_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Caller-facing rule advances the original optimized body past chunk construction and exposes exact lengths and byte decomposition.",
+      "needs": [
+        "chunks_partition"
+      ],
+      "statement": "\u2200 (s : Aeneas.Std.Slice Aeneas.Std.U8) (n : Aeneas.Std.Usize), 0 < n.val \u2192 Aeneas.Std.core.slice.Slice.chunks_exact s n \u2983 fun it => (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = s.val \u2227 (\u2200 c \u2208 it.chunks, c.val.length = n.val) \u2227 it.remainder.val.length < n.val \u2984",
+      "theorem": "AdlerSpec.chunks_exact_spec"
+    },
+    {
+      "id": "vector_add_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Checks the original vector add method including every index, update and u32 addition used twice by each inner loop iteration.",
+      "needs": [],
+      "statement": "\u2200 (a b : ElicitGenerated.algo.U32X4), (\u2200 i : Nat, i < 4 \u2192 a.val[i]!.val + b.val[i]!.val \u2264 4294967295) \u2192 ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = a.val[i]!.val + b.val[i]!.val \u2984",
+      "theorem": "AdlerSpec.vector_add_spec"
+    },
+    {
+      "id": "vector_from_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Checks all four original byte reads and widening conversions required by the inner body.",
+      "needs": [],
+      "statement": "\u2200 (bytes : Aeneas.Std.Slice Aeneas.Std.U8), 4 \u2264 bytes.val.length \u2192 ElicitGenerated.algo.U32X4.from bytes \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = bytes.val[i]!.val \u2984",
+      "theorem": "AdlerSpec.vector_from_spec"
+    },
+    {
+      "id": "raw_fold_mono",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Derives the safety of each checked prefix addition from the final nonnegative lane fold bound.",
+      "needs": [],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs : List Aeneas.Std.U8), s.1 \u2264 (xs.foldl AdlerSpec.rawStep s).1 \u2227 s.2 \u2264 (xs.foldl AdlerSpec.rawStep s).2",
+      "theorem": "AdlerSpec.raw_fold_mono"
+    },
+    {
+      "id": "inner_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Proves the complete original inner loop against the per-lane scalar fold, with induction on remaining iterator chunks proving termination and all helper calls.",
+      "needs": [
+        "vector_add_spec",
+        "vector_from_spec",
+        "raw_fold_mono"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (\u2200 c \u2208 it.chunks, c.val.length = 4) \u2192 (\u2200 i : Nat, i < 4 \u2192 (AdlerSpec.laneResult a b it.chunks i).1 < 4294967296 \u2227 (AdlerSpec.laneResult a b it.chunks i).2 < 4294967296) \u2192 ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i \u2984",
+      "theorem": "AdlerSpec.inner_spec"
+    },
+    {
+      "id": "inner_bounded_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Provides the outer caller with an original-loop WP rule from reduced lane inputs and at most 5552 four-byte chunks.",
+      "needs": [
+        "inner_spec",
+        "lane_chunk_fits_u32"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (\u2200 c \u2208 it.chunks, c.val.length = 4) \u2192 it.chunks.length \u2264 5552 \u2192 (\u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) \u2192 (\u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520) \u2192 ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i \u2984",
+      "theorem": "AdlerSpec.inner_bounded_spec"
+    },
+    {
+      "id": "remainder_inner_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Checks that the original final-chunk loop has the identical translated body and exports its full lane-fold postcondition.",
+      "needs": [
+        "inner_bounded_spec"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (\u2200 c \u2208 it.chunks, c.val.length = 4) \u2192 it.chunks.length \u2264 5552 \u2192 (\u2200 i : Nat, i < 4 \u2192 a.val[i]!.val \u2264 65520) \u2192 (\u2200 i : Nat, i < 4 \u2192 b.val[i]!.val \u2264 65520) \u2192 ElicitGenerated.algo.Adler32.compute_loop1 it a b \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i \u2984",
+      "theorem": "AdlerSpec.remainder_inner_spec"
+    },
+    {
+      "id": "slices_flatten_length",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Converts exact chunk-size facts into a quantitative number of lane iterations.",
+      "needs": [],
+      "statement": "\u2200 (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (n : Nat), (\u2200 c \u2208 cs, c.val.length = n) \u2192 (cs.map Aeneas.Std.Slice.val).flatten.length = cs.length * n",
+      "theorem": "AdlerSpec.slices_flatten_length"
+    },
+    {
+      "id": "chunks_count_eq",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges the observed caller side condition that splitting a 22208-byte chunk into four-byte vectors creates at most 5552 iterations.",
+      "needs": [
+        "slices_flatten_length"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (xs : List Aeneas.Std.U8) (n : Nat), (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = xs \u2192 (\u2200 c \u2208 it.chunks, c.val.length = n) \u2192 it.chunks.length * n + it.remainder.val.length = xs.length",
+      "theorem": "AdlerSpec.chunks_count_eq"
+    },
+    {
+      "id": "vector_rem_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Proves every original vector remainder operation, index and update used to reestablish reduced lane bounds after each full chunk.",
+      "needs": [],
+      "statement": "\u2200 (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32), 0 < q.val \u2192 ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a q \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = a.val[i]!.val % q.val \u2984",
+      "theorem": "AdlerSpec.vector_rem_spec"
+    },
+    {
+      "id": "vector_mul_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Proves the original vector multiplication used in final lane recombination, including checked products and all indexing/updates.",
+      "needs": [],
+      "statement": "\u2200 (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32), (\u2200 i : Nat, i < 4 \u2192 a.val[i]!.val * q.val \u2264 4294967295) \u2192 ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign a q \u2983 fun out => \u2200 i : Nat, i < 4 \u2192 out.val[i]!.val = a.val[i]!.val * q.val \u2984",
+      "theorem": "AdlerSpec.vector_mul_spec"
+    },
+    {
+      "id": "outer_execution_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges successful execution and termination of the original outer loop and exact scalar seed contribution while preserving reduced lanes. The full cross-chunk functional lane invariant is explicitly still required for the API recurrence.",
+      "needs": [
+        "inner_bounded_spec",
+        "vector_rem_spec",
+        "chunks_count_eq"
+      ],
+      "statement": "\u2200 (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4), size.val = 22208 \u2192 a.val \u2264 65535 \u2192 b.val \u2264 65535 \u2192 (\u2200 c \u2208 it.chunks, c.val.length = 22208) \u2192 (\u2200 i : Nat, i < 4 \u2192 av.val[i]!.val \u2264 65520) \u2192 (\u2200 i : Nat, i < 4 \u2192 bv.val[i]!.val \u2264 65520) \u2192 ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv \u2983 fun out => out.1.val = it.chunks.foldl (fun z _ => (z + 22208 * a.val) % 65521) b.val \u2227 out.1.val \u2264 65535 \u2227 (\u2200 i : Nat, i < 4 \u2192 out.2.1.val[i]!.val \u2264 65520) \u2227 (\u2200 i : Nat, i < 4 \u2192 out.2.2.val[i]!.val \u2264 65520) \u2984",
+      "theorem": "AdlerSpec.outer_execution_spec"
+    },
+    {
+      "id": "sum_loop_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges the observed final summing-loop call with an exact sum, checked addition bounds, indexing and termination.",
+      "needs": [],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32), a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum \u2264 4294967295 \u2192 ElicitGenerated.algo.Adler32.compute_loop2 it a \u2983 fun out => out.val = a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum \u2984",
+      "theorem": "AdlerSpec.sum_loop_spec"
+    },
+    {
+      "id": "sum_loop3_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Discharges the observed final summing-loop call with an exact sum, checked addition bounds, indexing and termination.",
+      "needs": [
+        "sum_loop_spec"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32), a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum \u2264 4294967295 \u2192 ElicitGenerated.algo.Adler32.compute_loop3 it a \u2983 fun out => out.val = a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum \u2984",
+      "theorem": "AdlerSpec.sum_loop3_spec"
+    },
+    {
+      "id": "normalize_raw_fold",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "Required to preserve scalar lane meaning when the original outer loop reduces lanes between chunks.",
+      "needs": [
+        "update_eq_raw"
+      ],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs : List Aeneas.Std.U8), AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep (AdlerSpec.normalize s)) = AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep s)",
+      "theorem": "AdlerSpec.normalize_raw_fold"
+    },
+    {
+      "id": "update_append",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "List-model composition supports the required split-update law; the original API proof and concatenated slice representability remain separate obligations.",
+      "needs": [
+        "normalize_raw_fold"
+      ],
+      "statement": "\u2200 (s : Nat \u00d7 Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update s (xs ++ ys) = AdlerSpec.update (AdlerSpec.update s xs) ys",
+      "theorem": "AdlerSpec.update_append"
+    },
+    {
+      "id": "tail_loop_spec",
+      "goal": "adler2::adler32_slice::Function",
+      "kind": "lemma",
+      "target": null,
+      "reason": "After applying both checked summing-loop rules, the actual remaining original continuation begins with compute_loop4; it needs exact raw scalar-tail recurrence, success and termination.",
+      "needs": [
+        "raw_fold_mono"
+      ],
+      "statement": "\u2200 (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32), (let s := (it.slice.val.drop it.i).foldl AdlerSpec.rawStep (a.val, b.val); s.1 < 4294967296 \u2227 s.2 < 4294967296) \u2192 ElicitGenerated.algo.Adler32.compute_loop4 it a b \u2983 fun out => (out.1.val, out.2.val) = (it.slice.val.drop it.i).foldl AdlerSpec.rawStep (a.val, b.val) \u2984",
+      "theorem": "AdlerSpec.tail_loop_spec"
+    }
+  ]
+}

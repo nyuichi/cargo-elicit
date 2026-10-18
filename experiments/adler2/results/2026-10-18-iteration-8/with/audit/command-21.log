@@ -1,0 +1,12 @@
+AdlerSpec.lane_chunk_fits_u32 : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  s.1 ≤ 65520 →
+    s.2 ≤ 65520 →
+      xs.length ≤ 5552 →
+        (List.foldl AdlerSpec.rawStep s xs).1 < 4294967296 ∧ (List.foldl AdlerSpec.rawStep s xs).2 < 4294967296
+theorem IndependentLemma_9 : ∀ (s : ℕ × ℕ) (xs : List Aeneas.Std.U8),
+  s.1 ≤ 65520 →
+    s.2 ≤ 65520 →
+      xs.length ≤ 5552 →
+        (List.foldl AdlerSpec.rawStep s xs).1 < 4294967296 ∧ (List.foldl AdlerSpec.rawStep s xs).2 < 4294967296 :=
+AdlerSpec.lane_chunk_fits_u32
+'IndependentLemma_9' depends on axioms: [propext, Classical.choice, Quot.sound]

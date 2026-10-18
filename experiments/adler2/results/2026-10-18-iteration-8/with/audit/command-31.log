@@ -1,0 +1,10 @@
+AdlerSpec.chunks_count_eq : ∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (xs : List Aeneas.Std.U8)
+  (n : ℕ),
+  (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = xs →
+    (∀ c ∈ it.chunks, (↑c).length = n) → it.chunks.length * n + (↑it.remainder).length = xs.length
+theorem IndependentLemma_19 : ∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (xs : List Aeneas.Std.U8)
+  (n : ℕ),
+  (List.map Aeneas.Std.Slice.val it.chunks).flatten ++ ↑it.remainder = xs →
+    (∀ c ∈ it.chunks, (↑c).length = n) → it.chunks.length * n + (↑it.remainder).length = xs.length :=
+AdlerSpec.chunks_count_eq
+'IndependentLemma_19' depends on axioms: [propext]

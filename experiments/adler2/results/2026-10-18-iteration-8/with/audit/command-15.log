@@ -1,0 +1,5 @@
+def ElicitContracts.c_0a059b8c0885cf07 : Prop :=
+∀ (self : ElicitGenerated.Adler32),
+  True →
+    ∃ result,
+      self.checksum = Aeneas.Std.Result.ok result ∧ (fun self out => ↑out = 65536 * ↑self.b + ↑self.a) self result

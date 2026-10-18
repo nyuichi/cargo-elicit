@@ -1,0 +1,599 @@
+{
+  "analysis_incomplete": [
+    "attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]",
+    "attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]"
+  ],
+  "blocked": [
+    {
+      "id": "adler2::algo::impl[334e2f0b7170a532]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[6142b20c00108117]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::algo::impl[a6c2352d886692d1]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[6f07fcfab3542315]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    },
+    {
+      "id": "adler2::impl[c15b331ca2ffd1e4]::TraitImpl",
+      "reason": "Aeneas trait implementation mapping is unsupported; explicit methods remain separate obligations"
+    }
+  ],
+  "checked_lemmas": 23,
+  "complete": false,
+  "functions_methods_impls": {
+    "specified": 2,
+    "total": 19,
+    "verified": 1
+  },
+  "goal": {
+    "apis": [
+      "adler2::adler32_slice::Function",
+      "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "adler2::impl[ff6e69000b04949b]::new::Method",
+      "adler2::impl[ff6e69000b04949b]::write_slice::Method"
+    ],
+    "kind": "selected_apis"
+  },
+  "proof_plan": {
+    "evidence": {
+      "chunks_count_eq": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "1df144bfd55e7bca8594c7693b2a1649e86e0c6804b0898234d8789852a44c17"
+      },
+      "chunks_exact_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "0ae42810e17de0ad5b33b8468c19b1366a31ec398354523a89f044b70aabf641"
+      },
+      "chunks_partition": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "ec49907d94f9ee235136c2bd061c19a9d0bd6fae62337a1e92a3a580e832d8eb"
+      },
+      "inner_bounded_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "93d58104bf000a78265d7aebfbc2c056fd20cc9ccf080089fecd653891ace2f0"
+      },
+      "inner_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "5244c9d47ba56612e695dc33be484b0c40a1f80ead043889d7bac950223a6633"
+      },
+      "lane_chunk_fits_u32": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "f8a3f9a90c123fe67ce0fec7adc396580f50b68ceccbee4f52141db8786222f9"
+      },
+      "normalize_rawStep": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "8037898fad97ab7379325313aa544a57c10c60de65a886f1286dada0c9424c18"
+      },
+      "normalize_raw_fold": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "5aae07a57811c478fbe4837a9c41235d6d0bb6ed018508e18fc0be08ee936b65"
+      },
+      "outer_execution_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "9aaade9f04a099cbc6f2025a1f40601a7e45234dfa411aab049cc8c25ee3674e"
+      },
+      "raw_fold_bounds": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "5eb4554854d2b2dcd2c6afcb74828d687ee475800fef9594b9f700a8afb67849"
+      },
+      "raw_fold_mono": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "33b6d6c5b7bec43d5b41374a58a3e5fbc50205dd5bcd4dabbd8b549a96857349"
+      },
+      "raw_four": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "60a73712bff0291e82d958917a6a006197762956ef43aaf26ac93bb26a397ef8"
+      },
+      "remainder_inner_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "494d5dbf90bad3634d1246d71785de9d39282a410fb530d35667c7d333d978ac"
+      },
+      "slices_flatten_length": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "3e1a5e6a334d1c2a93b7cb77effbcc19b3e8419cf9db863b41e4c0d012b1e308"
+      },
+      "step_eq_normalize_raw": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "a2a668b247958e235738b22a4ce9c2acd86800b0f91b3db6e44dc5baa4f014cc"
+      },
+      "sum_loop3_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "47776676b5487dc1a055f8d6ff3e5398ec83b3866932761f79536487505dbbb1"
+      },
+      "sum_loop_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "efbe34e59bcbe3f46ff42493f76cca63e09e9c23c6c50349d5a91047853da90b"
+      },
+      "tail_loop_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "unresolved",
+        "step_hash": "aaa4ec7f4c8ecf49769c7e46034450621a54a1024f8139800d439f9554b09a83"
+      },
+      "update_append": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "e055f60a8c4352bfe082fd9ce70fec64c17fab27347add694e3ac70ac39b46c7"
+      },
+      "update_eq_raw": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "6a1187e3da1f533a60b909f04824f3f46f089a46ea3eec3a8387ae5b79e59f8c"
+      },
+      "vector_add_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "9fb4fd42723a1d4a379087987b429ed35dbef38c8f6017fd033ea5f265ff1b81"
+      },
+      "vector_from_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "c48c5c86a0822d096ee81f20020f055a653a736c5d402fdba74b9b56c5f02529"
+      },
+      "vector_mul_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "6a5f9aa15e62c23933e202ae691a952e6013d40f43ffda4a36785c165d7f96d5"
+      },
+      "vector_rem_spec": {
+        "cache": "/workspace/elicit-comparison/round8-cases/adler2-with/.elicit/cache/verification-BOddo3",
+        "input": "5c0c1254d9d9acc9a85d1cbdf59d5bacb9e562594e95e72043a84bfb510827db",
+        "outcome": "success",
+        "step_hash": "f5397aff5aa9fe4bb15cc56d7eb370b77bfd635b8ad0b1d5fd92b05c47f41a9f"
+      }
+    },
+    "inspected": {
+      "adler2::adler32_slice::Function": "66d13cf695a17e217fbfb15a79c08c0ef4629b9181f5ebd5ab0975fce15c9015"
+    },
+    "last_checkpoint": "b9e3ffe05be870d117dd9614bde7bcf594e9c6c03ebb4f2a684616c35b2b3028",
+    "steps": [
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "new_seed",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The original caller first binds Adler32.new; its result must be exactly the recurrence seed (1,0).",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "write_recurrence",
+        "kind": "contract",
+        "needs": [
+          "chunks_exact_spec",
+          "update_eq_raw",
+          "lane_chunk_fits_u32",
+          "raw_four",
+          "inner_bounded_spec",
+          "remainder_inner_spec",
+          "chunks_count_eq",
+          "outer_execution_spec",
+          "vector_mul_spec",
+          "sum_loop_spec",
+          "sum_loop3_spec",
+          "normalize_raw_fold",
+          "tail_loop_spec"
+        ],
+        "reason": "The second bind needs successful execution and the scalar recurrence for arbitrary state and bytes, including normalized empty updates; the generated body delegates to optimized compute with five loops.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "encode_state",
+        "kind": "contract",
+        "needs": [],
+        "reason": "The final call must encode the recurrence pair as 65536*b+a for every representable state.",
+        "statement": null,
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "integrate_slice",
+        "kind": "integrate",
+        "needs": [
+          "new_seed",
+          "write_recurrence",
+          "encode_state"
+        ],
+        "reason": "Compose checked seed, update, and encoding rules at the original translated caller.",
+        "statement": null,
+        "target": "adler2::adler32_slice::Function",
+        "theorem": null
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_partition",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Exact chunk lengths justify four indexed byte reads and the 5552 lane-iteration bound; flattening preserves original byte order.",
+        "statement": "∀ {α : Type} (n : Nat) (hn : 0 < n) (xs : List α), (List.toChunksExact n hn xs).1.flatten ++ (List.toChunksExact n hn xs).2 = xs ∧ (∀ c ∈ (List.toChunksExact n hn xs).1, c.length = n) ∧ (List.toChunksExact n hn xs).2.length < n",
+        "target": null,
+        "theorem": "AdlerSpec.chunks_partition"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "step_eq_normalize_raw",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Relates the declared scalar recurrence to the unbounded arithmetic used for deferred reductions.",
+        "statement": "∀ (s : Nat × Nat) (x : Aeneas.Std.U8), AdlerSpec.step s x = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+        "target": null,
+        "theorem": "AdlerSpec.step_eq_normalize_raw"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "normalize_rawStep",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Shows normalization commutes with the next scalar byte update, including arbitrary initial halves.",
+        "statement": "∀ (s : Nat × Nat) (x : Aeneas.Std.U8), AdlerSpec.normalize (AdlerSpec.rawStep (AdlerSpec.normalize s) x) = AdlerSpec.normalize (AdlerSpec.rawStep s x)",
+        "target": null,
+        "theorem": "AdlerSpec.normalize_rawStep"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "update_eq_raw",
+        "kind": "lemma",
+        "needs": [
+          "step_eq_normalize_raw",
+          "normalize_rawStep"
+        ],
+        "reason": "Discharges modular deferral in the functional postcondition after proving the optimized loop computes unreduced sums modulo 65521.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), AdlerSpec.update s xs = AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep s)",
+        "target": null,
+        "theorem": "AdlerSpec.update_eq_raw"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "raw_fold_bounds",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Bounds a lane and its prefix-sum accumulator for every byte prefix; required for checked u32 additions in inner loops.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), (xs.foldl AdlerSpec.rawStep s).1 ≤ s.1 + 255 * xs.length ∧ 2 * (xs.foldl AdlerSpec.rawStep s).2 ≤ 2 * s.2 + 2 * xs.length * s.1 + 255 * xs.length * (xs.length + 1)",
+        "target": null,
+        "theorem": "AdlerSpec.raw_fold_bounds"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "lane_chunk_fits_u32",
+        "kind": "lemma",
+        "needs": [
+          "raw_fold_bounds"
+        ],
+        "reason": "Discharges inner-loop u32 overflow inequalities for at most 5552 lane updates between reductions.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), s.1 ≤ 65520 → s.2 ≤ 65520 → xs.length ≤ 5552 → (xs.foldl AdlerSpec.rawStep s).1 < 4294967296 ∧ (xs.foldl AdlerSpec.rawStep s).2 < 4294967296",
+        "target": null,
+        "theorem": "AdlerSpec.lane_chunk_fits_u32"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "raw_four",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Supplies the four-byte weighted scalar identity needed to reconnect parallel lanes to the original byte recurrence.",
+        "statement": "∀ (s : Nat × Nat) (x0 x1 x2 x3 : Aeneas.Std.U8), [x0,x1,x2,x3].foldl AdlerSpec.rawStep s = (s.1 + x0.val + x1.val + x2.val + x3.val, s.2 + 4 * s.1 + 4 * x0.val + 3 * x1.val + 2 * x2.val + x3.val)",
+        "target": null,
+        "theorem": "AdlerSpec.raw_four"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_exact_spec",
+        "kind": "lemma",
+        "needs": [
+          "chunks_partition"
+        ],
+        "reason": "Caller-facing rule advances the original optimized body past chunk construction and exposes exact lengths and byte decomposition.",
+        "statement": "∀ (s : Aeneas.Std.Slice Aeneas.Std.U8) (n : Aeneas.Std.Usize), 0 < n.val → Aeneas.Std.core.slice.Slice.chunks_exact s n ⦃ fun it => (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = s.val ∧ (∀ c ∈ it.chunks, c.val.length = n.val) ∧ it.remainder.val.length < n.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.chunks_exact_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_add_spec",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Checks the original vector add method including every index, update and u32 addition used twice by each inner loop iteration.",
+        "statement": "∀ (a b : ElicitGenerated.algo.U32X4), (∀ i : Nat, i < 4 → a.val[i]!.val + b.val[i]!.val ≤ 4294967295) → ElicitGenerated.algo.U32X4.Insts.CoreOpsArithAddAssignU32X4.add_assign a b ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = a.val[i]!.val + b.val[i]!.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.vector_add_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_from_spec",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Checks all four original byte reads and widening conversions required by the inner body.",
+        "statement": "∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8), 4 ≤ bytes.val.length → ElicitGenerated.algo.U32X4.from bytes ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = bytes.val[i]!.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.vector_from_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "raw_fold_mono",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Derives the safety of each checked prefix addition from the final nonnegative lane fold bound.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), s.1 ≤ (xs.foldl AdlerSpec.rawStep s).1 ∧ s.2 ≤ (xs.foldl AdlerSpec.rawStep s).2",
+        "target": null,
+        "theorem": "AdlerSpec.raw_fold_mono"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "inner_spec",
+        "kind": "lemma",
+        "needs": [
+          "vector_add_spec",
+          "vector_from_spec",
+          "raw_fold_mono"
+        ],
+        "reason": "Proves the complete original inner loop against the per-lane scalar fold, with induction on remaining iterator chunks proving termination and all helper calls.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (∀ c ∈ it.chunks, c.val.length = 4) → (∀ i : Nat, i < 4 → (AdlerSpec.laneResult a b it.chunks i).1 < 4294967296 ∧ (AdlerSpec.laneResult a b it.chunks i).2 < 4294967296) → ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.inner_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "inner_bounded_spec",
+        "kind": "lemma",
+        "needs": [
+          "inner_spec",
+          "lane_chunk_fits_u32"
+        ],
+        "reason": "Provides the outer caller with an original-loop WP rule from reduced lane inputs and at most 5552 four-byte chunks.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (∀ c ∈ it.chunks, c.val.length = 4) → it.chunks.length ≤ 5552 → (∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) → (∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520) → ElicitGenerated.algo.Adler32.compute_loop0_loop0 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.inner_bounded_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "remainder_inner_spec",
+        "kind": "lemma",
+        "needs": [
+          "inner_bounded_spec"
+        ],
+        "reason": "Checks that the original final-chunk loop has the identical translated body and exports its full lane-fold postcondition.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : ElicitGenerated.algo.U32X4), (∀ c ∈ it.chunks, c.val.length = 4) → it.chunks.length ≤ 5552 → (∀ i : Nat, i < 4 → a.val[i]!.val ≤ 65520) → (∀ i : Nat, i < 4 → b.val[i]!.val ≤ 65520) → ElicitGenerated.algo.Adler32.compute_loop1 it a b ⦃ fun out => ∀ i : Nat, i < 4 → (out.1.val[i]!.val, out.2.val[i]!.val) = AdlerSpec.laneResult a b it.chunks i ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.remainder_inner_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "slices_flatten_length",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Converts exact chunk-size facts into a quantitative number of lane iterations.",
+        "statement": "∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (n : Nat), (∀ c ∈ cs, c.val.length = n) → (cs.map Aeneas.Std.Slice.val).flatten.length = cs.length * n",
+        "target": null,
+        "theorem": "AdlerSpec.slices_flatten_length"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "chunks_count_eq",
+        "kind": "lemma",
+        "needs": [
+          "slices_flatten_length"
+        ],
+        "reason": "Discharges the observed caller side condition that splitting a 22208-byte chunk into four-byte vectors creates at most 5552 iterations.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (xs : List Aeneas.Std.U8) (n : Nat), (it.chunks.map Aeneas.Std.Slice.val).flatten ++ it.remainder.val = xs → (∀ c ∈ it.chunks, c.val.length = n) → it.chunks.length * n + it.remainder.val.length = xs.length",
+        "target": null,
+        "theorem": "AdlerSpec.chunks_count_eq"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_rem_spec",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Proves every original vector remainder operation, index and update used to reestablish reduced lane bounds after each full chunk.",
+        "statement": "∀ (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32), 0 < q.val → ElicitGenerated.algo.U32X4.Insts.CoreOpsArithRemAssignU32.rem_assign a q ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = a.val[i]!.val % q.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.vector_rem_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "vector_mul_spec",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Proves the original vector multiplication used in final lane recombination, including checked products and all indexing/updates.",
+        "statement": "∀ (a : ElicitGenerated.algo.U32X4) (q : Aeneas.Std.U32), (∀ i : Nat, i < 4 → a.val[i]!.val * q.val ≤ 4294967295) → ElicitGenerated.algo.U32X4.Insts.CoreOpsArithMulAssignU32.mul_assign a q ⦃ fun out => ∀ i : Nat, i < 4 → out.val[i]!.val = a.val[i]!.val * q.val ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.vector_mul_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "outer_execution_spec",
+        "kind": "lemma",
+        "needs": [
+          "inner_bounded_spec",
+          "vector_rem_spec",
+          "chunks_count_eq"
+        ],
+        "reason": "Discharges successful execution and termination of the original outer loop and exact scalar seed contribution while preserving reduced lanes. The full cross-chunk functional lane invariant is explicitly still required for the API recurrence.",
+        "statement": "∀ (size : Aeneas.Std.Usize) (it : Aeneas.Std.core.slice.iter.ChunksExact Aeneas.Std.U8) (a b : Aeneas.Std.U32) (av bv : ElicitGenerated.algo.U32X4), size.val = 22208 → a.val ≤ 65535 → b.val ≤ 65535 → (∀ c ∈ it.chunks, c.val.length = 22208) → (∀ i : Nat, i < 4 → av.val[i]!.val ≤ 65520) → (∀ i : Nat, i < 4 → bv.val[i]!.val ≤ 65520) → ElicitGenerated.algo.Adler32.compute_loop0 size it a b av bv ⦃ fun out => out.1.val = it.chunks.foldl (fun z _ => (z + 22208 * a.val) % 65521) b.val ∧ out.1.val ≤ 65535 ∧ (∀ i : Nat, i < 4 → out.2.1.val[i]!.val ≤ 65520) ∧ (∀ i : Nat, i < 4 → out.2.2.val[i]!.val ≤ 65520) ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.outer_execution_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "sum_loop_spec",
+        "kind": "lemma",
+        "needs": [],
+        "reason": "Discharges the observed final summing-loop call with an exact sum, checked addition bounds, indexing and termination.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32), a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum ≤ 4294967295 → ElicitGenerated.algo.Adler32.compute_loop2 it a ⦃ fun out => out.val = a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.sum_loop_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "sum_loop3_spec",
+        "kind": "lemma",
+        "needs": [
+          "sum_loop_spec"
+        ],
+        "reason": "Discharges the observed final summing-loop call with an exact sum, checked addition bounds, indexing and termination.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32), a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum ≤ 4294967295 → ElicitGenerated.algo.Adler32.compute_loop3 it a ⦃ fun out => out.val = a.val + ((it.slice.val.drop it.i).map (fun x => x.val)).sum ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.sum_loop3_spec"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "normalize_raw_fold",
+        "kind": "lemma",
+        "needs": [
+          "update_eq_raw"
+        ],
+        "reason": "Required to preserve scalar lane meaning when the original outer loop reduces lanes between chunks.",
+        "statement": "∀ (s : Nat × Nat) (xs : List Aeneas.Std.U8), AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep (AdlerSpec.normalize s)) = AdlerSpec.normalize (xs.foldl AdlerSpec.rawStep s)",
+        "target": null,
+        "theorem": "AdlerSpec.normalize_raw_fold"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "update_append",
+        "kind": "lemma",
+        "needs": [
+          "normalize_raw_fold"
+        ],
+        "reason": "List-model composition supports the required split-update law; the original API proof and concatenated slice representability remain separate obligations.",
+        "statement": "∀ (s : Nat × Nat) (xs ys : List Aeneas.Std.U8), AdlerSpec.update s (xs ++ ys) = AdlerSpec.update (AdlerSpec.update s xs) ys",
+        "target": null,
+        "theorem": "AdlerSpec.update_append"
+      },
+      {
+        "goal": "adler2::adler32_slice::Function",
+        "id": "tail_loop_spec",
+        "kind": "lemma",
+        "needs": [
+          "raw_fold_mono"
+        ],
+        "reason": "After applying both checked summing-loop rules, the actual remaining original continuation begins with compute_loop4; it needs exact raw scalar-tail recurrence, success and termination.",
+        "statement": "∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32), (let s := (it.slice.val.drop it.i).foldl AdlerSpec.rawStep (a.val, b.val); s.1 < 4294967296 ∧ s.2 < 4294967296) → ElicitGenerated.algo.Adler32.compute_loop4 it a b ⦃ fun out => (out.1.val, out.2.val) = (it.slice.val.drop it.i).foldl AdlerSpec.rawStep (a.val, b.val) ⦄",
+        "target": null,
+        "theorem": "AdlerSpec.tail_loop_spec"
+      }
+    ]
+  },
+  "required": true,
+  "revision": 55,
+  "run": {
+    "active": null,
+    "attempts": {
+      "Integrate:adler2::adler32_slice::Function": {
+        "checked_work": [],
+        "failed": false,
+        "last_input": "027e3e832502e14c46ed32896693dd22b8228879aa19cb4ab498a7897bce6ffd",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::checksum::Method": {
+        "checked_work": [],
+        "failed": true,
+        "last_input": "5be7782238b1e0aa9b3aa7bca04766ffe965d0aceff2d767f0ec21af808174d8",
+        "last_result": "worker task deadline reached; saved checkpoints retained",
+        "no_progress": 1,
+        "progress_credits": 0,
+        "total": 1
+      },
+      "Integrate:adler2::impl[ff6e69000b04949b]::write_slice::Method": {
+        "checked_work": [],
+        "failed": false,
+        "last_input": "39cdffe255fdc2d8162277921b9d907dbe2c700ec4d3975d20eb13d95f87d7dc",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 0,
+        "progress_credits": 0,
+        "total": 3
+      },
+      "Plan:adler2::impl[ff6e69000b04949b]::write_slice::Method@repair": {
+        "checked_work": [],
+        "failed": true,
+        "last_input": "68e7132c22eb62f0cbc60fa249448ecaa6a67229fc6e8c05f11b4e3af33de3c6",
+        "last_result": "unresolved; same task/input suppressed",
+        "no_progress": 1,
+        "progress_credits": 0,
+        "total": 1
+      }
+    },
+    "cached_input_tokens": 14579072,
+    "elapsed_ms": 1754416,
+    "input_tokens": 14776853,
+    "last_result": "worker task deadline reached; saved checkpoints retained",
+    "output_tokens": 54088,
+    "thread": "01a14cdd-a012-7660-bde0-648630cf20cb"
+  },
+  "scope": {
+    "all_features": false,
+    "features": [],
+    "local_roots": [
+      "/workspace/elicit-comparison/round8-cases/adler2-with"
+    ],
+    "manifest_path": "/workspace/elicit-comparison/round8-cases/adler2-with/Cargo.toml",
+    "no_default_features": false,
+    "package": "adler2",
+    "requested_target": null,
+    "resolved_features": [
+      "default",
+      "std"
+    ],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/workspace/elicit-comparison/round8-cases/adler2-with/target",
+    "workspace_root": "/workspace/elicit-comparison/round8-cases/adler2-with"
+  },
+  "tool": "aeneas",
+  "types_traits": {
+    "specified": 0,
+    "total": 2
+  }
+}

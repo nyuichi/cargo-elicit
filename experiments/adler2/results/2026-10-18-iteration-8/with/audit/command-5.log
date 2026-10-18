@@ -1,0 +1,3 @@
+/workspace/elicit-comparison/round8-product-audit/ElicitContracts.lean:7:96: warning: Unused tactic linter: `intros` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

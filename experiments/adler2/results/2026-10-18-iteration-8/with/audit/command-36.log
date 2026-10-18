@@ -1,0 +1,10 @@
+AdlerSpec.sum_loop3_spec : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32),
+  ↑a + (List.map (fun x => ↑x) (List.drop it.i ↑it.slice)).sum ≤ 4294967295 →
+    ElicitGenerated.algo.Adler32.compute_loop3 it a ⦃ out =>
+      ↑out = ↑a + (List.map (fun x => ↑x) (List.drop it.i ↑it.slice)).sum ⦄
+theorem IndependentLemma_24 : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U32) (a : Aeneas.Std.U32),
+  ↑a + (List.map (fun x => ↑x) (List.drop it.i ↑it.slice)).sum ≤ 4294967295 →
+    ElicitGenerated.algo.Adler32.compute_loop3 it a ⦃ out =>
+      ↑out = ↑a + (List.map (fun x => ↑x) (List.drop it.i ↑it.slice)).sum ⦄ :=
+AdlerSpec.sum_loop3_spec
+'IndependentLemma_24' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,6 @@
+AdlerSpec.slices_flatten_length : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (n : ℕ),
+  (∀ c ∈ cs, (↑c).length = n) → (List.map Aeneas.Std.Slice.val cs).flatten.length = cs.length * n
+theorem IndependentLemma_18 : ∀ (cs : List (Aeneas.Std.Slice Aeneas.Std.U8)) (n : ℕ),
+  (∀ c ∈ cs, (↑c).length = n) → (List.map Aeneas.Std.Slice.val cs).flatten.length = cs.length * n :=
+AdlerSpec.slices_flatten_length
+'IndependentLemma_18' depends on axioms: [propext]

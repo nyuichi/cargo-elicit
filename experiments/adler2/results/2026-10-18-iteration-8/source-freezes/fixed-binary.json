@@ -1,0 +1,35 @@
+{
+  "source_public_commit": "2fa5462c5217de0ecfb48b82df140a2edead3e13",
+  "source_local_commit": "cbe44d988ceb2cd4c81513dbfa9d580797ce0e9d",
+  "tree": "0ea7b0c41046a6e35318be7e7e4e9a24fdf068ce",
+  "installed_binary": "/workspace/toolchain/cargo/bin/cargo-elicit",
+  "binary_sha256": "736c07c3a983f8f0cde0b957d45df8524f4fac36ac223bd8d5e13fddb4462cb8",
+  "protocol": "docs/experiments/adler2-iteration-8.md",
+  "outer_work_budget_seconds": 1800,
+  "finalize_seconds": 60,
+  "reserve_cap_fraction": "1/4",
+  "outer_shutdown_margin_seconds": 2,
+  "selected_apis": [
+    "new",
+    "checksum",
+    "from_checksum",
+    "write_slice",
+    "adler32_slice"
+  ],
+  "trial_order": [
+    "with"
+  ],
+  "reference": "Retained round5 ordinary arm, not a new matched pair",
+  "validation": {
+    "regular_cases": 81,
+    "native_four_scenarios_seconds": 531.47,
+    "native_strict_api_seconds": 165.59,
+    "native_api_evidence_recorded_seconds": 116.124,
+    "native_api_budget_seconds": 120,
+    "harness_cases": 2,
+    "harness_seconds": 4.385,
+    "fmt": "passed",
+    "clippy": "passed",
+    "msrv_1_86": "passed"
+  }
+}

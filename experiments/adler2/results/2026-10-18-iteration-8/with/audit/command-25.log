@@ -1,0 +1,6 @@
+AdlerSpec.vector_from_spec : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  4 ≤ (↑bytes).length → ElicitGenerated.algo.U32X4.from bytes ⦃ out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑bytes)[i]! ⦄
+theorem IndependentLemma_13 : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  4 ≤ (↑bytes).length → ElicitGenerated.algo.U32X4.from bytes ⦃ out => ∀ i < 4, ↑(↑out)[i]! = ↑(↑bytes)[i]! ⦄ :=
+AdlerSpec.vector_from_spec
+'IndependentLemma_13' depends on axioms: [propext, Classical.choice, Quot.sound]

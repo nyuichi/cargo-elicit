@@ -1,0 +1,9 @@
+/workspace/elicit-comparison/round8-product-audit/IndependentLemma_27.lean:4:380: error(lean.unknownIdentifier): Unknown identifier `AdlerSpec.tail_loop_spec`
+/workspace/elicit-comparison/round8-product-audit/IndependentLemma_27.lean:5:8: error(lean.unknownIdentifier): Unknown identifier `AdlerSpec.tail_loop_spec`
+theorem IndependentLemma_27 : ∀ (it : Aeneas.Std.core.slice.iter.Iter Aeneas.Std.U8) (a b : Aeneas.Std.U32),
+  (have s := List.foldl AdlerSpec.rawStep (↑a, ↑b) (List.drop it.i ↑it.slice);
+    s.1 < 4294967296 ∧ s.2 < 4294967296) →
+    ElicitGenerated.algo.Adler32.compute_loop4 it a b ⦃ out =>
+      (↑out.1, ↑out.2) = List.foldl AdlerSpec.rawStep (↑a, ↑b) (List.drop it.i ↑it.slice) ⦄ :=
+sorry
+'IndependentLemma_27' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

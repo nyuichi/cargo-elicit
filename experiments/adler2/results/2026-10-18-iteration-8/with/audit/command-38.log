@@ -1,0 +1,6 @@
+AdlerSpec.update_append : ∀ (s : ℕ × ℕ) (xs ys : List Aeneas.Std.U8),
+  AdlerSpec.update s (xs ++ ys) = AdlerSpec.update (AdlerSpec.update s xs) ys
+theorem IndependentLemma_26 : ∀ (s : ℕ × ℕ) (xs ys : List Aeneas.Std.U8),
+  AdlerSpec.update s (xs ++ ys) = AdlerSpec.update (AdlerSpec.update s xs) ys :=
+AdlerSpec.update_append
+'IndependentLemma_26' depends on axioms: [propext, Quot.sound]

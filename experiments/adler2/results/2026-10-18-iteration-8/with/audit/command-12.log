@@ -1,0 +1,5 @@
+/workspace/elicit-comparison/round8-product-audit/IndependentAPI_2.lean:4:65: error(lean.unknownIdentifier): Unknown identifier `adler32_write_slice_correct`
+/workspace/elicit-comparison/round8-product-audit/IndependentAPI_2.lean:5:8: error(lean.unknownIdentifier): Unknown identifier `adler32_write_slice_correct`
+theorem IndependentAPI_2 : ElicitContracts.c_98f3436459f22f5d :=
+sorry
+'IndependentAPI_2' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
