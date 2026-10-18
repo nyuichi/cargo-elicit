@@ -102,3 +102,7 @@ Specification: [v0.6](docs/spec-v0.6.md). License: [MIT](LICENSE-MIT) OR [Apache
 
 For selected API goals, caller-driven proof plans, intermediate Lean checkpoints,
 and reusable Aeneas `step*` rules, see [Goal-directed Aeneas verification](docs/goal-directed-aeneas.md).
+
+Measured comparisons, proof artifacts, failed trials and corrected analyses are indexed in
+[Verification experiment records](docs/experiments/README.md). The current records do not
+establish a general speed advantage over ordinary Codex.
