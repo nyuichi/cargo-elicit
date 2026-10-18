@@ -1,0 +1,119 @@
+{
+  "goals": [
+    {
+      "description": "",
+      "id": "identity",
+      "limitation": null,
+      "review_specification": "c76d2dd373c7c7a633450af9ee5a181eab8c6767f8b602564f8f1ad711541525",
+      "specification": "0f8e3bb6e636c371271b22d826de29bebd6b132a222b60402f0b7429a3afcd56",
+      "statement": null,
+      "target": "elicit-aeneas-fixture::identity::Function",
+      "theorem": null
+    },
+    {
+      "description": "",
+      "id": "fact",
+      "limitation": null,
+      "review_specification": "79220c8a9b96b5ebbf7d4467bd35b22e624d8e9b1591d4c51fdf26b1cfad3b78",
+      "specification": "1fe3b538ce575dd78da33e13fcf801608dca5af3f290686ba3624826893ff671",
+      "statement": "True",
+      "target": null,
+      "theorem": "Proofs.fact"
+    }
+  ],
+  "input_files": {
+    "/tmp/elicit-independent-native-0ENnrq/Cargo.lock": "613b148e2764068c7a60051625ae6f437553e00f106ce897ab74fb0af9e0cabc",
+    "/tmp/elicit-independent-native-0ENnrq/Cargo.toml": "efe1c89c6f2e74346f90328805079bf00a0511a045f1a316fb54ef5bd001c9a3",
+    "/tmp/elicit-independent-native-0ENnrq/elicit-proofs/aeneas/Models/Identity.lean": "890021b18352629825cfe52097dd4dc254784c6dd5af22773b2bccf59abc4fb7",
+    "/tmp/elicit-independent-native-0ENnrq/elicit-proofs/aeneas/Proofs.lean": "9128ade67c6efa32f353ff86c4a64d6417b64d5f8524b1886004b673fb5bcd83",
+    "/tmp/elicit-independent-native-0ENnrq/elicit-proofs/aeneas/Specs.lean": "586c737339788e0d079d84fc158f89aaf3e3f2c1307a32d8d603040f05d45b9b",
+    "/tmp/elicit-independent-native-0ENnrq/elicit-proofs/aeneas/contracts.toml": "7e23f3eb2c64c5b21c124c20132bee58622d24478463cddb09c1b7f065282d0e",
+    "/tmp/elicit-independent-native-0ENnrq/src/lib.rs": "66f39505499859515e6ec358b1ccd03f899eb03a3b9db3cece3f5b4816bd20c0",
+    "@binary": "714a34ae770b5658e17aed41e60aa784a1b7fb71438c9613144e5ecc7c6db30f",
+    "@declarations": "aec201973e600d9cdb23d9e69bb3134944633319111d2e2be3ccc6b219f85791",
+    "@env:AENEAS_HOME": "58a9bdc7a8a8d08de5c2e796aa1215d0846d23ee25adf146e2c81246e853ddf2",
+    "@env:CREUSOT_DATA_HOME": "667e782bca8fcb6ad52b52b0eae83974008de69105e04cca44e932a93269c594",
+    "@env:ELAN_HOME": "c45d160bea2b21e8713e8530fb651155d82fae75afe9f988dd970016b08f0cc5",
+    "@env:RUSTUP_TOOLCHAIN": "6f9f4ff4a32d66a17fca023aa3099fae27b21936d17e0772a3ae7dd7922c0ede",
+    "@installed_tcb": "e2b6f9618563b6472ed6fc5579365f8636897bee7eac3f38b71d6d4b4448eeb2",
+    "@rustc_version": "8d024f010cb129e859e7cd10c88d4dd52656fa49294e77ca0309e7ed72c452b4",
+    "@scope": "c84a015862801f81737ba7396b6fc8b79510e83c0c71c8c53222b7894236b9b0",
+    "@verifier_version": "8ad7219c62718827594880dc37f074b007783e816719c19975ce47ec14b61794"
+  },
+  "kind": "check",
+  "recorded_at": 1792327664351,
+  "report": {
+    "backend_evidence": {
+      "claims": {
+        "fact": {
+          "axioms": "'ElicitAudit' does not depend on any axioms",
+          "checked": true,
+          "full": true
+        }
+      },
+      "phase": "audit",
+      "processed_contracts": [
+        "elicit-aeneas-fixture::identity::Function"
+      ],
+      "targets": {
+        "elicit-aeneas-fixture::identity::Function": {
+          "axioms": "'ElicitAudit' depends on axioms: [propext, Quot.sound]",
+          "checked": true,
+          "full": true
+        }
+      }
+    },
+    "cache": ".elicit/evidence/check-1792327664350",
+    "elapsed_ms": 16681,
+    "environment_error": false,
+    "input": "b368b1f9a7a57fcb73b62b632172cdd73467baf411fcc93be947e75b6301f575",
+    "results": [
+      {
+        "assumptions": [],
+        "diagnostic": {
+          "cache": ".elicit/evidence/check-1792327664350",
+          "phase": "audit"
+        },
+        "elapsed_ms": 16681,
+        "id": "1792327647669-elicit-aeneas-fixture::identity::Function-0",
+        "input": "b368b1f9a7a57fcb73b62b632172cdd73467baf411fcc93be947e75b6301f575",
+        "obligations": [
+          "ElicitContracts.c_a944f8e645077fd5"
+        ],
+        "outcome": "success",
+        "restrictions": [],
+        "reusable": true,
+        "scope": "full_contract",
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "target": "elicit-aeneas-fixture::identity::Function",
+        "tool": "aeneas",
+        "tool_version": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "units": [
+          "contract"
+        ]
+      }
+    ],
+    "stable": true
+  },
+  "schema": 2,
+  "scope": {
+    "all_features": false,
+    "config_path": "/tmp/elicit-independent-native-0ENnrq/elicit.toml",
+    "features": [],
+    "local_roots": [
+      "/tmp/elicit-independent-native-0ENnrq"
+    ],
+    "manifest_path": "/tmp/elicit-independent-native-0ENnrq/Cargo.toml",
+    "no_default_features": false,
+    "package": "elicit-aeneas-fixture",
+    "requested_target": null,
+    "resolved_features": [],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/tmp/elicit-independent-native-0ENnrq/target",
+    "workspace_root": "/tmp/elicit-independent-native-0ENnrq"
+  }
+}

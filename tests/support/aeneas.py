@@ -38,7 +38,7 @@ if name=='aeneas':
   print('aeneas e62dd83d133d9043e7d3628096838b7430f36565');sys.exit(0)
  out=pathlib.Path(args[args.index('-dest')+1])
  (out/'Fixture.lean').write_text("namespace ElicitGenerated\n/-- [fixture::identity]:\n Source: 'src/lib.rs', lines 1:0-3:1\n-/\ndef identity (x : U32) : Result U32 := .ok x\nend ElicitGenerated\n")
- if 'pub fn other' in pathlib.Path('src/lib.rs').read_text():
+ if 'pub fn other' in json.loads(pathlib.Path(args[-1]).read_text())['translated']['files'][0]['contents']:
   with (out/'Fixture.lean').open('a') as f:f.write("namespace ElicitGenerated\n/-- [fixture::other]:\n Source: 'src/lib.rs', lines 2:0-3:1\n-/\ndef other (x : U32) : Result U32 := .ok x\nend ElicitGenerated\n")
  sys.exit(0)
 assert name=='lake' and args[:2]==['env','lean']

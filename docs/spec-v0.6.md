@@ -1,3 +1,5 @@
+> Historical v0.1 document. The incompatible v0.2 product is documented in [README](../README.md) and [architecture](implementation.md). This page does not describe the current CLI.
+
 # cargo-elicit — Specification v0.6
 
 *Agentic specification and verification for Rust crates*

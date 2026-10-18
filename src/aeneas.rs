@@ -102,259 +102,18 @@ fn manifest(scope: &Scope) -> Result<Manifest> {
 pub fn contract_name(id: &str) -> String {
     format!("ElicitContracts.c_{}", &fingerprint::hash(id)[..16])
 }
-pub fn declared_targets(s: &State) -> Result<Vec<String>> {
-    Ok(manifest(&s.scope)?
-        .contracts
-        .keys()
-        .filter(|id| {
-            s.targets
-                .get(*id)
-                .is_some_and(|t| !t.removed && s.unsupported(id).is_none())
-        })
-        .cloned()
-        .collect())
-}
-// Collect existing declared proofs before opening unrelated specification work.
-// Names are only candidates: fresh extraction, kernel checks and axiom audits
-// remain mandatory, including for previously successful roots after proof edits.
-pub fn prepared_targets(s: &State) -> Result<Vec<String>> {
-    if !proof_root(&s.scope).join("Proofs.lean").is_file() {
-        return Ok(vec![]);
-    }
-    let m = manifest(&s.scope)?;
-    Ok(m.contracts
-        .iter()
-        .filter(|(id, c)| {
-            c.theorem
-                .as_ref()
-                .is_some_and(|name| !name.trim().is_empty())
-                && s.targets.contains_key(*id)
-                && s.schedulable(id)
-                && s.dependencies_ready(id)
-                && s.targets[*id].kind.proof()
-                && !s.verified(id)
-                && !s
-                    .results
-                    .iter()
-                    .any(|r| &r.target == *id && r.input == s.input)
-        })
-        .map(|(id, _)| id.clone())
-        .collect())
-}
-pub fn check_submission(scope: &Scope, t: &Target) -> Result<()> {
-    if t.kind.proof() {
-        let m = manifest(scope)?;
-        let c = m
-            .contracts
-            .get(&t.id)
-            .context("Aeneas contract missing from elicit-proofs/aeneas/contracts.toml")?;
-        if !matches!(t.kind, Kind::Function | Kind::Method) {
-            bail!(
-                "unsupported Aeneas trait implementation mapping; this target remains blocked even when explicit method obligations are proved"
-            );
-        }
-        if c.ensures.trim().is_empty() {
-            bail!("missing Aeneas postcondition");
-        }
-    }
-    Ok(())
-}
-#[derive(Clone, Serialize, Deserialize)]
-struct ModelInputs {
-    models: BTreeMap<String, String>,
-    contracts: BTreeMap<String, BTreeMap<String, String>>,
-}
-#[derive(Serialize, Deserialize)]
-struct ModelCache {
-    key: String,
-    inputs: Option<ModelInputs>,
-}
-fn parse_model_inputs(text: &str) -> Option<ModelInputs> {
-    let mut lines = text
-        .lines()
-        .filter_map(|line| line.strip_prefix("ELICIT_MODEL_INPUTS="));
-    let data: Value = serde_json::from_str(lines.next()?).ok()?;
-    if lines.next().is_some() || data["supported"] != true {
-        return None;
-    }
-    fn rows(data: &Value) -> Option<BTreeMap<String, String>> {
-        let mut result = BTreeMap::new();
-        for row in data.as_array()? {
-            let values = row.as_array()?;
-            if values.len() != 6
-                || values[4] != false
-                || values[1].as_str().is_none()
-                || values[3].as_str().is_none()
-                || !(values[2].is_null() || values[2].as_str().is_some())
-                || !matches!(
-                    values[5].as_str(),
-                    Some("definition" | "theorem" | "opaque" | "axiom")
-                )
-            {
-                return None;
-            }
-            let name = format!("decl:{}", values[0].as_str()?);
-            if result
-                .insert(name, fingerprint::hash(serde_json::to_vec(row).ok()?))
-                .is_some()
-            {
-                return None;
-            }
-        }
-        Some(result)
-    }
-    let models = rows(&data["models"])?;
-    let mut contracts = BTreeMap::new();
-    for contract in data["contracts"].as_array()? {
-        let pair = contract.as_array()?;
-        if pair.len() != 2 {
-            return None;
-        }
-        let name = pair[0].as_str()?.to_owned();
-        let dependencies = rows(&pair[1])?;
-        let root = format!("decl:{name}");
-        if !name.starts_with("ElicitContracts.c_")
-            || !dependencies.contains_key(&root)
-            || dependencies
-                .iter()
-                .any(|(key, value)| key != &root && models.get(key) != Some(value))
-            || contracts.insert(name, dependencies).is_some()
-        {
-            return None;
-        }
-    }
-    Some(ModelInputs { models, contracts })
-}
-fn model_inputs(scope: &Scope, targets: &[Target]) -> Result<Option<ModelInputs>> {
-    let source = proof_root(scope).join("Specs.lean");
-    if !source.is_file() {
-        return Ok(None);
-    }
-    // Static source/model inputs only. File-reading, custom compiler hooks,
-    // custom imports and metaprograms retain whole-file invalidation.
-    version()?;
-    let (before, context, files) = fingerprint::inputs(scope, Tool::Aeneas, "model-inputs-v1")?;
-    let paths = files
-        .keys()
-        .filter(|path| !path.starts_with('@'))
-        .map(PathBuf::from)
-        .collect();
-    if !fingerprint::reports_are_independent(scope, &paths)? {
-        return Ok(None);
-    }
-    let m = manifest(scope)?;
-    let contracts: Vec<_> = m
-        .contracts
-        .iter()
-        .map(|(id, c)| (id, &c.requires, &c.ensures))
-        .collect();
-    let key = fingerprint::hash(serde_json::to_vec(&(
-        &context,
-        crate::lean_modules::Modules::load(&proof_root(scope))?.model_digest(),
-        contracts,
-    ))?);
-    let cache = Path::new(&scope.manifest_path)
-        .parent()
-        .unwrap()
-        .join(".elicit/cache");
-    fs::create_dir_all(&cache)?;
-    let cache_file = cache.join("model-inputs.json");
-    if let Ok(bytes) = fs::read(&cache_file) {
-        if let Ok(cached) = serde_json::from_slice::<ModelCache>(&bytes) {
-            if cached.key == key {
-                return Ok(cached.inputs);
-            }
-        }
-    }
-    let dir = tempfile::Builder::new()
-        .prefix("model-inputs-")
-        .tempdir_in(&cache)?;
-    let mut snapshot = State::new(Tool::Aeneas, scope.clone());
-    snapshot.targets = targets.iter().cloned().map(|t| (t.id.clone(), t)).collect();
-    let mut inputs = match execute(&snapshot, dir.path(), false, 600) {
-        Ok((output, _)) if output.code == Some(0) && !output.timeout && !output.interrupted => {
-            fs::write(
-                dir.path().join("ElicitModelInputs.lean"),
-                include_str!("lean/ElicitModelInputs.lean"),
-            )?;
-            let output = process::run(
-                &mut lean_command(dir.path(), "ElicitModelInputs")?,
-                Duration::from_secs(60),
-            )?;
-            if output.code == Some(0) && !output.timeout && !output.interrupted {
-                parse_model_inputs(&output.stdout)
-            } else {
-                None
-            }
-        }
-        _ => None,
-    };
-    if let Some(inputs) = &mut inputs {
-        // Source/tool inputs select the cache, but unrelated documentation is
-        // not part of a model's meaning. Retain the actual freshly translated
-        // Rust model and imported toolchain as conservative semantic inputs.
-        let rust_model = fingerprint::hash(fs::read(dir.path().join("ElicitGenerated.lean"))?);
-        let tcb = fingerprint::hash(serde_json::to_vec(&(
-            files.get("@installed_tcb"),
-            files.get("@rustc_version"),
-        ))?);
-        inputs
-            .models
-            .insert("@rust_model".into(), rust_model.clone());
-        inputs.models.insert("@tcb".into(), tcb.clone());
-        for contract in inputs.contracts.values_mut() {
-            contract.insert("@rust_model".into(), rust_model.clone());
-            contract.insert("@tcb".into(), tcb.clone());
-        }
-    }
-    if process::interrupted()
-        || fingerprint::input(scope, Tool::Aeneas, "model-inputs-v1")? != before
-    {
-        return Ok(None);
-    }
-    crate::store::atomic_write(
-        &cache_file,
-        &serde_json::to_vec(&ModelCache {
-            key,
-            inputs: inputs.clone(),
-        })?,
-    )?;
-    Ok(inputs)
-}
-
 pub fn attach_specs(scope: &Scope, targets: &mut [Target]) -> Result<()> {
     let m = manifest(scope)?;
     let models = crate::lean_modules::Modules::load(&proof_root(scope))
         .map(|p| p.model_digest())
         .unwrap_or_else(|_| "unavailable local Lean graph".into());
-    let project = crate::lean_modules::Modules::load(&proof_root(scope));
-    let semantic = if project.as_ref().is_ok_and(|p| p.standard_layout()) {
-        model_inputs(scope, targets).unwrap_or(None)
-    } else {
-        None
-    };
     for t in targets {
         let c = m.contracts.get(&t.id);
         t.model_base_hash = fingerprint::hash(serde_json::to_vec(&(
             &t.spec_hash,
             c.map(|c| (&c.requires, &c.ensures)),
         ))?);
-        t.model_inputs = match &semantic {
-            Some(inputs) if !t.kind.proof() => inputs.models.clone(),
-            Some(inputs) => inputs
-                .contracts
-                .get(&contract_name(&t.id))
-                .cloned()
-                .unwrap_or_else(|| {
-                    BTreeMap::from([("@source".into(), fingerprint::hash(&models))])
-                }),
-            None => BTreeMap::from([("@source".into(), fingerprint::hash(&models))]),
-        };
-        t.model_bindings = if t.kind.proof() {
-            None
-        } else {
-            Some(t.model_inputs.keys().cloned().collect())
-        };
+        t.model_inputs = BTreeMap::from([("@source".into(), fingerprint::hash(&models))]);
         t.spec_hash = t.model_hash();
     }
     Ok(())
@@ -608,9 +367,10 @@ pub fn execute(
     out: &Path,
     prove: bool,
     seconds: u64,
+    incremental: bool,
 ) -> Result<(process::Output, Option<Value>)> {
     let mut processed = std::collections::BTreeSet::new();
-    let (output, evidence) = execute_inner(s, out, prove, seconds, &mut processed)?;
+    let (output, evidence) = execute_inner(s, out, prove, seconds, &mut processed, incremental)?;
     let evidence = evidence.map(|mut evidence| {
         evidence["processed_contracts"] = json!(processed);
         evidence
@@ -623,9 +383,11 @@ fn execute_inner(
     prove: bool,
     seconds: u64,
     processed: &mut std::collections::BTreeSet<String>,
+    incremental: bool,
 ) -> Result<(process::Output, Option<Value>)> {
     let start = Instant::now();
-    let run = |cmd: &mut Command| {
+    let mut compiler = crate::lean_cache::Compiler::new(s, out, incremental)?;
+    let mut run = |cmd: &mut Command| {
         let tick = Instant::now();
         let stage = cmd
             .get_args()
@@ -636,14 +398,27 @@ fn execute_inner(
             .unwrap_or_default()
             .to_string_lossy()
             .into_owned();
-        let result = process::run(
-            cmd,
-            Duration::from_secs(seconds.saturating_sub(start.elapsed().as_secs())),
-        );
+        let remaining = seconds.saturating_sub(start.elapsed().as_secs());
+        let result = if stage.ends_with(".lean") {
+            compiler.run(cmd, remaining)
+        } else {
+            let result = process::run(cmd, Duration::from_secs(remaining));
+            if let Ok(output) = &result {
+                fs::create_dir_all(out.join("logs"))?;
+                fs::write(
+                    out.join("logs").join(format!("{stage}.log")),
+                    format!("{}\n{}", output.stdout, output.stderr),
+                )?;
+            }
+            result
+        };
         crate::store::Store { root: Path::new(&s.scope.manifest_path).parent().unwrap().to_path_buf() }
-            .event("pipeline_stage_finished", json!({"stage":stage,"prove":prove,"elapsed_ms":tick.elapsed().as_millis(),"success":result.as_ref().is_ok_and(|o| o.code==Some(0) && !o.timeout && !o.interrupted)}))?;
+            .event("pipeline_stage_finished", json!({"stage":stage,"prove":prove,"elapsed_ms":tick.elapsed().as_millis(),"success":result.as_ref().is_ok_and(|o| o.code==Some(0) && !o.timeout && !o.interrupted),"cache_hit":result.as_ref().is_ok_and(|o|o.elapsed_ms==0)}))?;
         result
     };
+    if out.join("crate.llbc").exists() {
+        fs::remove_file(out.join("crate.llbc"))?;
+    }
     let mut cmd = Command::new("charon");
     cmd.args([
         "cargo",
@@ -662,15 +437,20 @@ fn execute_inner(
     if o.code != Some(0) {
         return Ok((o, None));
     }
+    let translation = out.join("translation");
+    if translation.exists() {
+        fs::remove_dir_all(&translation)?;
+    }
+    fs::create_dir_all(&translation)?;
     let mut cmd = Command::new("aeneas");
     cmd.args(["-backend", "lean", "-namespace", "ElicitGenerated", "-dest"])
-        .arg(out)
+        .arg(&translation)
         .arg(out.join("crate.llbc"));
     let o = run(&mut cmd)?;
     if o.code != Some(0) {
         return Ok((o, None));
     }
-    let files = fs::read_dir(out)?
+    let files = fs::read_dir(&translation)?
         .filter_map(|e| e.ok())
         .map(|e| e.path())
         .filter(|p| p.extension().is_some_and(|e| e == "lean"))
@@ -711,7 +491,7 @@ fn execute_inner(
         contracts.insert_str(0, "import Specs\n");
     }
     let mut eligible = BTreeMap::new();
-    for t in s.targets.values().filter(|t| !t.removed) {
+    for t in s.targets.values() {
         if let Some(c) = m.contracts.get(&t.id) {
             if let Some(function) =
                 extracted(s, t, &llbc).and_then(|span| mapped(s, t, &translated, span))
@@ -728,7 +508,7 @@ fn execute_inner(
                 // helper cannot be promoted merely because its caller translated.
                 let full = !t.trusted;
                 eligible.insert(t.id.clone(), (c, full));
-            } else if !prove && t.kind.proof() && s.unsupported(&t.id).is_none() {
+            } else if !prove && t.kind.proof() && matches!(t.kind, Kind::Function | Kind::Method) {
                 bail!(
                     "Aeneas contract has no fresh original-function mapping: {}",
                     t.id
@@ -745,56 +525,7 @@ fn execute_inner(
         return Ok((o, Some(json!({"phase":"contracts"}))));
     }
     built.insert("ElicitContracts".into());
-    let mut lemmas = BTreeMap::new();
-    if project.contains("Lemmas") {
-        for module in project.order(&["Lemmas"], &built)? {
-            project.copy(&module, out)?;
-            o = run(&mut lean_command(out, &module)?)?;
-            if o.code != Some(0) {
-                return Ok((o, Some(json!({"phase":"lemmas"}))));
-            }
-            built.insert(module);
-        }
-        let steps: Vec<_> = s
-            .proof_plan
-            .steps
-            .iter()
-            .filter(|p| p.kind == crate::plan::StepKind::Lemma)
-            .collect();
-        let roots: Vec<_> = steps
-            .iter()
-            .map(|step| {
-                let statement = step
-                    .statement
-                    .as_deref()
-                    .context("missing lemma proposition")?;
-                let theorem = step.theorem.as_deref().context("missing lemma theorem")?;
-                if !crate::plan::lean_name(theorem) {
-                    bail!("invalid lemma theorem name");
-                }
-                Ok((statement, theorem))
-            })
-            .collect::<Result<_>>()?;
-        if !roots.is_empty() {
-            fs::write(
-                out.join("Audit.lean"),
-                batch_audit_source("Lemmas", &roots)?,
-            )?;
-            o = run(&mut lean_command(out, "Audit")?)?;
-            if o.code != Some(0) || o.timeout || o.interrupted {
-                return Ok((o, Some(json!({"phase":"lemma-audit"}))));
-            }
-            for (step, row) in steps
-                .iter()
-                .zip(parse_batch_audits(&o.stdout, roots.len())?)
-            {
-                lemmas.insert(
-                    step.id.clone(),
-                    json!({"checked":row.accepted(),"step_hash":crate::plan::step_hash(step)}),
-                );
-            }
-        }
-    }
+    let lemmas: BTreeMap<String, Value> = BTreeMap::new();
     if !root.join("Proofs.lean").exists() {
         o.code = Some(0);
         return Ok((o, Some(json!({"phase":"lemma-audit","lemmas":lemmas}))));
@@ -811,15 +542,28 @@ fn execute_inner(
     let mut records = vec![];
     for (id, (c, full)) in eligible {
         let Some(theorem) = &c.theorem else { continue };
-        if !crate::plan::lean_name(theorem) {
+        if !crate::lean_modules::lean_name(theorem) {
             bail!("invalid Lean theorem name");
         }
-        records.push((id.clone(), contract_name(&id), theorem, full));
+        records.push((false, id.clone(), contract_name(&id), theorem.clone(), full));
     }
+    for claim in &s.claims {
+        if !crate::lean_modules::lean_name(&claim.theorem) {
+            bail!("invalid proposition theorem name");
+        }
+        records.push((
+            true,
+            claim.id.clone(),
+            claim.statement.clone(),
+            claim.theorem.clone(),
+            true,
+        ));
+    }
+    let mut claims = BTreeMap::new();
     if !records.is_empty() {
         let roots: Vec<_> = records
             .iter()
-            .map(|(_, statement, theorem, _)| (statement.as_str(), theorem.as_str()))
+            .map(|(_, _, statement, theorem, _)| (statement.as_str(), theorem.as_str()))
             .collect();
         fs::write(
             out.join("Audit.lean"),
@@ -830,8 +574,9 @@ fn execute_inner(
             return Ok((o, Some(json!({"phase":"audit","lemmas":lemmas}))));
         }
         let rows = parse_batch_audits(&o.stdout, roots.len())?;
-        for ((id, _, _, full), row) in records.into_iter().zip(rows) {
-            audits.insert(
+        for ((claim, id, _, _, full), row) in records.into_iter().zip(rows) {
+            let destination = if claim { &mut claims } else { &mut audits };
+            destination.insert(
                 id,
                 json!({"checked":row.accepted(),"full":full,"axioms":row.axiom_report()}),
             );
@@ -841,7 +586,7 @@ fn execute_inner(
     o.code = Some(0);
     Ok((
         o,
-        Some(json!({"phase":"audit","targets":audits,"lemmas":lemmas})),
+        Some(json!({"phase":"audit","targets":audits,"claims":claims})),
     ))
 }
 fn standard_axioms(text: &str) -> bool {
@@ -918,39 +663,5 @@ mod tests {
         }
         let unknown = good.replace("\"axioms\":[]", "\"axioms\":null");
         assert!(!parse_batch_audits(&unknown, 1).unwrap()[0].accepted());
-    }
-    #[test]
-    fn malformed_or_unsupported_model_metadata_falls_back_conservatively() {
-        use super::parse_model_inputs;
-        for text in [
-            "",
-            "ELICIT_MODEL_INPUTS={}",
-            "ELICIT_MODEL_INPUTS={\"supported\":false,\"models\":[],\"contracts\":[]}",
-            "ELICIT_MODEL_INPUTS={\"supported\":true,\"models\":[[\"unsafe\",\"type\",null,\"[]\",true,\"definition\"]],\"contracts\":[]}",
-        ] {
-            assert!(parse_model_inputs(text).is_none());
-        }
-        let valid = "ELICIT_MODEL_INPUTS={\"supported\":true,\"models\":[],\"contracts\":[]}";
-        assert!(parse_model_inputs(valid).is_some());
-        assert!(parse_model_inputs(&format!("{valid}\n{valid}")).is_none());
-    }
-
-    use super::*;
-    #[test]
-    fn axiom_audit_excludes_admitted_and_project_proofs() {
-        assert!(standard_axioms(
-            "'ElicitAudit' does not depend on any axioms\n"
-        ));
-        assert!(standard_axioms(
-            "'ElicitAudit' depends on axioms: [propext, Classical.choice, Quot.sound]"
-        ));
-        for s in [
-            "",
-            "'ElicitAudit' depends on axioms: [sorryAx]",
-            "'ElicitAudit' depends on axioms: [projectAssumption]",
-            "'ElicitAudit' depends on axioms: [Lean.ofReduceBool]",
-        ] {
-            assert!(!standard_axioms(s));
-        }
     }
 }

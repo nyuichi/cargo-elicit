@@ -110,6 +110,7 @@ pub fn package(root: &Path, selection: &Selection) -> Result<Package> {
         })
         .collect();
     let scope = Scope {
+        config_path: root.join("elicit.toml").to_string_lossy().into_owned(),
         package: p["name"].as_str().unwrap().into(),
         manifest_path: p["manifest_path"].as_str().unwrap().into(),
         workspace_root: meta["workspace_root"].as_str().unwrap().into(),
@@ -156,31 +157,12 @@ pub fn package(root: &Path, selection: &Selection) -> Result<Package> {
         cfg,
     })
 }
-impl Selection {
-    pub fn from_scope(s: &Scope) -> Self {
-        Self {
-            package: Some(s.package.clone()),
-            features: s.features.clone(),
-            all_features: s.all_features,
-            no_default_features: s.no_default_features,
-            target: s.requested_target.clone(),
-        }
-    }
-}
-
 #[derive(Default)]
 pub struct Analyzer {
     pub ra: Option<Ra>,
-    pub last_key: String,
-    pub cached: Vec<Target>,
-    pub incomplete: Vec<String>,
 }
 impl Analyzer {
     pub fn analyze(&mut self, p: &Package, tool: Tool) -> Result<(Vec<Target>, Vec<String>)> {
-        let key = crate::fingerprint::input(&p.scope, tool, "analysis")?;
-        if key == self.last_key {
-            return Ok((self.cached.clone(), self.incomplete.clone()));
-        }
         // A changed build configuration needs a fresh semantic workspace.
         if self.ra.as_ref().is_some_and(|r| r.scope != p.scope) {
             self.ra = None;
@@ -339,9 +321,6 @@ impl Analyzer {
         ix.targets.sort_by(|a, b| a.id.cmp(&b.id));
         ix.incomplete.sort();
         ix.incomplete.dedup();
-        self.last_key = key;
-        self.cached = ix.targets.clone();
-        self.incomplete = ix.incomplete.clone();
         Ok((ix.targets, ix.incomplete))
     }
 }
@@ -620,17 +599,10 @@ impl Index {
             column: col,
             aliases: vec![],
             spec_hash: spec_hash.clone(),
-            approved_spec_hash: None,
             model_base_hash: String::new(),
             model_inputs: BTreeMap::new(),
-            model_bindings: None,
             body_hash: body_hash.clone(),
-            original_body: body_hash,
             source_hash: hash(format!("{spec_hash}{body}")),
-            specified: false,
-            blocker: None,
-            stale: vec![],
-            dependencies: BTreeMap::new(),
             calls: BTreeSet::new(),
             unresolved_calls: vec![],
             required_units: if kind.proof() {
@@ -638,9 +610,6 @@ impl Index {
             } else {
                 vec![]
             },
-            notes: vec![],
-            removed: false,
-            implementation_changed: false,
             closed_primitive: closed,
             trusted: trusted(attrs),
         });

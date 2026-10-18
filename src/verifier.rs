@@ -1,4 +1,4 @@
-use crate::{fingerprint, model::*, process, store::Store};
+use crate::{fingerprint, model::*, process};
 use anyhow::{Context, Result, bail};
 use quote::ToTokens;
 use serde_json::Value;
@@ -11,36 +11,6 @@ use std::{
 };
 use syn::visit::Visit;
 
-pub fn syntax(store: &Store, s: &State, seconds: u64) -> Result<String> {
-    let version = fingerprint::tool_version(s.tool)?;
-    let before = fingerprint::input(&s.scope, s.tool, &version)?;
-    let cache = store.root.join(".elicit/cache");
-    fs::create_dir_all(&cache)?;
-    let temp = tempfile::tempdir_in(&cache)?;
-    let o = if s.tool == Tool::Aeneas {
-        crate::aeneas::execute(s, temp.path(), false, seconds)?.0
-    } else {
-        let mut cmd = compile_command(s, temp.path(), false, &version)?;
-        cmd.current_dir(&store.root);
-        process::run(&mut cmd, Duration::from_secs(seconds))?
-    };
-    if o.interrupted {
-        bail!("interrupted");
-    }
-    if o.timeout {
-        bail!("syntax/type processing timed out");
-    }
-    if o.code != Some(0) {
-        bail!(
-            "verifier could not process the current source (exit {:?}); diagnostics were not persisted to avoid recording secrets",
-            o.code
-        );
-    }
-    if fingerprint::input(&s.scope, s.tool, &version)? != before {
-        bail!("input changed during syntax/type processing; retry on stable sources");
-    }
-    Ok(before)
-}
 fn compile_command(s: &State, out: &Path, prove: bool, version: &str) -> Result<Command> {
     let mut c = Command::new("cargo");
     match s.tool {
@@ -130,60 +100,50 @@ fn final_input_outcome(after: &Result<String>, before: &str, interrupted: bool) 
         }
     }
 }
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Report {
+    pub results: Vec<Verification>,
+    pub input: String,
+    pub stable: bool,
+    pub cache: String,
+    pub elapsed_ms: u64,
+    pub environment_error: bool,
+    pub backend_evidence: Option<Value>,
+}
 pub fn verify(
-    store: &Store,
+    s: &State,
+    root: &Path,
     ids: &[String],
-    revision: Option<u64>,
     seconds: u64,
-) -> Result<Vec<Verification>> {
-    // A live worker holds this lock until its turn has stopped. Official proof
-    // collection cannot race the next worker turn, including standalone CLI use.
-    let _worker = store.lock("worker")?;
-    let _verify = store.lock("verification")?;
-    let mut s = store.load()?;
-    if revision.is_some_and(|r| r != s.revision) {
-        bail!("revision conflict");
-    }
-    for id in ids {
-        if !s.targets.contains_key(id) {
-            bail!("unknown target {id}");
-        }
-    }
+    incremental: bool,
+) -> Result<Report> {
+    let started = Instant::now();
     let version = fingerprint::tool_version(s.tool)?;
     let before = fingerprint::input(&s.scope, s.tool, &version)?;
     if before != s.input {
-        bail!("source or verifier inputs changed; reconcile with status before verifying");
+        bail!("inputs changed before checking; rerun the command");
     }
-    let mut pending = vec![];
-    for id in ids {
-        pending.push(base(&s, id, &version));
-    }
-    store.transaction(Some(s.revision), |state| {
-        state.results.extend(pending.clone());
-        Ok(())
-    })?;
-    s = store.load()?;
-    let started = Instant::now();
-    store.event(
-        "verification_started",
-        serde_json::json!({"requested":ids,"input":before}),
-    )?;
-    let cache = store.root.join(".elicit/cache");
+    let cache = root.join(".elicit/cache");
     fs::create_dir_all(&cache)?;
-    let dir = tempfile::Builder::new()
-        .prefix("verification-")
-        .tempdir_in(&cache)?
-        .keep();
+    let dir = if incremental && s.tool == Tool::Aeneas {
+        let dir = cache.join("check");
+        fs::create_dir_all(&dir)?;
+        dir
+    } else {
+        tempfile::Builder::new()
+            .prefix("audit-")
+            .tempdir_in(&cache)?
+            .keep()
+    };
     let execute = (|| -> Result<(process::Output, Option<Value>)> {
         if s.tool == Tool::Aeneas {
-            return crate::aeneas::execute(&s, &dir, true, seconds);
+            return crate::aeneas::execute(s, &dir, true, seconds, incremental);
         }
         if s.tool == Tool::Creusot {
-            // Force fresh compiler output in our own build cache, never clean user artifacts.
             let mut clean = Command::new("cargo");
             if let Some(tc) = version
                 .split_whitespace()
-                .find(|s| s.starts_with("nightly-"))
+                .find(|v| v.starts_with("nightly-"))
             {
                 clean.arg(format!("+{}", tc.trim_matches(['(', ')', ','])));
             }
@@ -197,40 +157,34 @@ pub fn verify(
                     "--target",
                     &s.scope.target,
                 ])
-                .env(
-                    "CARGO_TARGET_DIR",
-                    Path::new(&s.scope.manifest_path)
-                        .parent()
-                        .unwrap()
-                        .join(".elicit/cache/creusot-build"),
-                )
-                .current_dir(&store.root);
-            let o = process::run(&mut clean, Duration::from_secs(seconds))?;
-            if o.code != Some(0) {
-                return Ok((o, None));
+                .env("CARGO_TARGET_DIR", root.join(".elicit/cache/creusot-build"))
+                .current_dir(root);
+            let output = process::run(&mut clean, Duration::from_secs(seconds))?;
+            if output.code != Some(0) {
+                return Ok((output, None));
             }
         }
-        let mut cmd = compile_command(&s, dir.as_path(), true, &version)?;
-        cmd.current_dir(&store.root);
-        let mut o = process::run(
-            &mut cmd,
+        let mut command = compile_command(s, &dir, true, &version)?;
+        command.current_dir(root);
+        let mut output = process::run(
+            &mut command,
             Duration::from_secs(seconds.saturating_sub(started.elapsed().as_secs())),
         )?;
         let evidence = match s.tool {
             Tool::Aeneas => unreachable!(),
-            Tool::Kani => fs::read(dir.as_path().join("kani.json"))
+            Tool::Kani => fs::read(dir.join("kani.json"))
                 .ok()
                 .and_then(|b| serde_json::from_slice(&b).ok()),
             Tool::Creusot => {
-                if o.code == Some(0)
-                    && walkdir::WalkDir::new(dir.as_path())
+                if output.code == Some(0)
+                    && walkdir::WalkDir::new(&dir)
                         .into_iter()
                         .filter_map(|e| e.ok())
                         .any(|e| e.path().extension().is_some_and(|v| v == "coma"))
                 {
-                    let mut cmd = why3_command(&store.root, dir.as_path())?;
-                    o = process::run(
-                        &mut cmd,
+                    let mut command = why3_command(root, &dir)?;
+                    output = process::run(
+                        &mut command,
                         Duration::from_secs(seconds.saturating_sub(started.elapsed().as_secs())),
                     )?;
                     Some(serde_json::json!({"phase":"why3find"}))
@@ -239,228 +193,105 @@ pub fn verify(
                 }
             }
         };
-        Ok((o, evidence))
+        fs::write(
+            dir.join("verifier.log"),
+            format!("{}\n{}", output.stdout, output.stderr),
+        )?;
+        Ok((output, evidence))
     })();
     let after = if process::interrupted() {
         Ok(before.clone())
     } else {
         fingerprint::input(&s.scope, s.tool, &version)
     };
+    let stable = after.as_ref().ok() == Some(&before) && !process::interrupted();
     let mut results = vec![];
-    for p in pending {
-        let mut r = p;
+    for id in ids {
+        let mut result = base(s, id, &version);
+        result.elapsed_ms = started.elapsed().as_millis() as u64;
         match &execute {
-            Err(_) => {
-                r.outcome = Outcome::EnvironmentError;
-                r.summary =
-                    "verifier setup or execution failed; run the verifier directly for diagnostics"
-                        .into();
+            Err(error) => {
+                result.outcome = Outcome::EnvironmentError;
+                result.summary = format!("verifier setup/execution failed: {error}");
             }
-            Ok((o, evidence)) => {
-                r.elapsed_ms = started.elapsed().as_millis() as u64;
-                if o.interrupted {
-                    r.outcome = Outcome::Interrupted;
-                    r.summary = "verification interrupted".into();
-                } else if o.timeout {
-                    r.outcome = Outcome::Timeout;
-                    r.summary = "verification deadline exceeded".into();
-                } else if o.code != Some(0) {
-                    r.outcome = if evidence.is_some() {
+            Ok((output, evidence)) => {
+                if output.interrupted {
+                    result.outcome = Outcome::Interrupted;
+                    result.summary = "check interrupted; no evidence accepted".into();
+                } else if output.timeout {
+                    result.outcome = Outcome::Timeout;
+                    result.summary = "check budget exhausted; retry with more time".into();
+                } else if output.code != Some(0) {
+                    result.outcome = if evidence.is_some() {
                         Outcome::Unresolved
                     } else {
                         Outcome::EnvironmentError
                     };
-                    r.summary = format!("verifier exited {:?}; no complete proof accepted", o.code);
+                    result.summary =
+                        format!("verifier exited {:?}; inspect phase logs", output.code);
                 } else {
-                    r.outcome = Outcome::UnknownScope;
-                    r.summary = "tool completed; contract coverage not established".into();
-                    let parsed = if after.as_ref().ok() != Some(&before) {
-                        Ok(())
-                    } else {
-                        match s.tool {
-                            Tool::Aeneas => crate::aeneas::evidence(
-                                &s,
-                                &s.targets[&r.target],
-                                evidence.as_ref(),
-                                &mut r,
-                            ),
-                            Tool::Kani => {
-                                if let Some(e) = evidence {
-                                    kani_evidence(&s, &s.targets[&r.target], e, &mut r)
-                                } else {
-                                    Ok(())
-                                }
+                    result.outcome = Outcome::UnknownScope;
+                    let parsed = match s.tool {
+                        Tool::Aeneas => crate::aeneas::evidence(
+                            s,
+                            &s.targets[id],
+                            evidence.as_ref(),
+                            &mut result,
+                        ),
+                        Tool::Kani => {
+                            if let Some(e) = evidence {
+                                kani_evidence(s, &s.targets[id], e, &mut result)
+                            } else {
+                                Ok(())
                             }
-                            Tool::Creusot => creusot_evidence(
-                                &s,
-                                &s.targets[&r.target],
-                                &store.root,
-                                dir.as_path(),
-                                &mut r,
-                            ),
+                        }
+                        Tool::Creusot => {
+                            creusot_evidence(s, &s.targets[id], root, &dir, &mut result)
                         }
                     };
                     if parsed.is_err() {
-                        r.outcome = Outcome::UnknownScope;
-                        r.scope = Coverage::Unknown;
-                        r.reusable = false;
-                        r.summary =
-                            "tool completed; native evidence could not be mapped to the contract"
-                                .into();
+                        result.outcome = Outcome::UnknownScope;
+                        result.reusable = false;
+                        result.summary = "native output could not be mapped to the contract".into();
                     }
                 }
             }
         }
         if let Some(outcome) = final_input_outcome(&after, &before, process::interrupted()) {
-            r.outcome = outcome;
-            r.reusable = false;
-            r.summary = match outcome {
-                Outcome::Interrupted => "verification interrupted; no new proof accepted",
-                Outcome::EnvironmentError => {
-                    "verification inputs could not be inspected; no new proof accepted"
-                }
-                _ => "verification inputs changed during execution; result is not current",
-            }
-            .into();
+            result.outcome = outcome;
+            result.reusable = false;
+            result.summary =
+                "inputs changed or checking interrupted; no current evidence accepted".into();
         }
-        if r.outcome != Outcome::Success {
-            let phase = execute
-                .as_ref()
-                .ok()
-                .and_then(|(_, e)| e.as_ref())
-                .and_then(|e| e["phase"].as_str())
-                .unwrap_or("extraction-or-build");
-            r.diagnostic = Some(Diagnostic {
-                phase: phase.into(),
-                cache: dir.to_string_lossy().into_owned(),
-            });
-        }
-        results.push(r);
+        let phase = execute
+            .as_ref()
+            .ok()
+            .and_then(|(_, e)| e.as_ref())
+            .and_then(|e| e["phase"].as_str())
+            .unwrap_or("extraction-or-environment");
+        result.diagnostic = Some(Diagnostic {
+            phase: phase.into(),
+            cache: dir.to_string_lossy().into_owned(),
+        });
+        results.push(result);
     }
-    // The Aeneas invocation audits every eligible contract. Preserve all its
-    // completed per-root verdicts, not only the scheduler's requested root.
-    // Missing theorems are real audited outcomes too; retaining them avoids
-    // rerunning the whole pipeline solely to fill an identical-input result.
-    if s.tool == Tool::Aeneas && !process::interrupted() && after.as_ref().ok() == Some(&before) {
-        if let Ok((o, Some(evidence))) = &execute {
-            for t in s.targets.values().filter(|t| {
-                t.ready()
-                    && s.dependencies_ready(&t.id)
-                    && !ids.contains(&t.id)
-                    && !s.verified(&t.id)
-            }) {
-                if o.code != Some(0)
-                    || o.timeout
-                    || o.interrupted
-                    || !evidence["targets"][&t.id]["checked"].is_boolean()
-                {
-                    continue; // No per-root audit completed (build failure, absent mapping, etc.).
-                }
-                let mut r = base(&s, &t.id, &version);
-                r.elapsed_ms = started.elapsed().as_millis() as u64;
-                crate::aeneas::evidence(&s, t, Some(evidence), &mut r)?;
-                if r.outcome != Outcome::Success {
-                    r.diagnostic = Some(Diagnostic {
-                        phase: evidence["phase"].as_str().unwrap_or("audit").into(),
-                        cache: dir.to_string_lossy().into_owned(),
-                    });
-                }
-                results.push(r);
-            }
-        }
-    }
-    let mut lemma_results = std::collections::BTreeMap::new();
-    if s.tool == Tool::Aeneas && !process::interrupted() && after.as_ref().ok() == Some(&before) {
-        if let Ok((o, Some(e))) = &execute {
-            if !o.timeout && !o.interrupted {
-                for step in s
-                    .proof_plan
-                    .steps
-                    .iter()
-                    .filter(|p| p.kind == crate::plan::StepKind::Lemma)
-                {
-                    if e["lemmas"][&step.id]["step_hash"].as_str()
-                        == Some(crate::plan::step_hash(step).as_str())
-                    {
-                        lemma_results.insert(
-                            step.id.clone(),
-                            crate::plan::LemmaEvidence {
-                                input: before.clone(),
-                                step_hash: crate::plan::step_hash(step),
-                                outcome: if e["lemmas"][&step.id]["checked"] == true {
-                                    Outcome::Success
-                                } else {
-                                    Outcome::Unresolved
-                                },
-                                cache: dir.to_string_lossy().into_owned(),
-                            },
-                        );
-                    }
-                }
-            }
-        }
-    }
-    // Keep only a typed, bounded summary in the ledger. Native tool output can
-    // contain source excerpts or environment secrets and is deliberately not logged.
-    store.transaction(None, |state| {
-        state.proof_plan.evidence.extend(lemma_results.clone());
-        if s.tool == Tool::Aeneas
-            && after.as_ref().ok() == Some(&before)
-            && !process::interrupted()
-            && execute
-                .as_ref()
-                .is_ok_and(|(o, _)| !o.timeout && !o.interrupted)
-        {
-            state.proof_plan.last_checkpoint = crate::plan::checkpoint_key(&s);
-        }
-        if s.tool == Tool::Aeneas
-            && after.as_ref().ok() == Some(&before)
-            && !process::interrupted()
-            && execute
-                .as_ref()
-                .is_ok_and(|(o, _)| o.code == Some(0) && !o.timeout && !o.interrupted)
-        {
-            state.processing_input = before.clone();
-            state.processed_contracts = execute
-                .as_ref()
-                .ok()
-                .and_then(|(_, e)| e.as_ref())
-                .and_then(|e| e["processed_contracts"].as_array())
-                .map(|ids| {
-                    ids.iter()
-                        .filter_map(|id| id.as_str().map(str::to_owned))
-                        .collect()
-                })
-                .unwrap_or_default();
-        }
-        for r in &results {
-            if let Some(old) = state.results.iter_mut().find(|p| p.id == r.id) {
-                *old = r.clone();
-            } else {
-                state.results.push(r.clone());
-            }
-        }
-        Ok(())
-    })?;
-    store.event(
-        "lemma_checks_finished",
-        serde_json::json!({"input":before,"results":lemma_results}),
-    )?;
-    store.event("verification_finished", serde_json::json!({"requested":ids,"input":before,"results":results.iter().map(|r| serde_json::json!({"target":r.target,"outcome":r.outcome,"scope":r.scope,"elapsed_ms":r.elapsed_ms})).collect::<Vec<_>>()}))?;
-    if ids.is_empty()
-        && (execute.is_err()
-            || execute.as_ref().is_ok_and(|(o, e)| {
-                o.code != Some(0) && e.is_none() && !o.timeout && !o.interrupted
-            }))
-    {
-        bail!("verification environment failed during lemma checkpoint; inspect the latest cache");
-    }
-    // Observation persistence must not make a requested proof fail merely
-    // because another independently audited root is unresolved.
-    Ok(results
-        .into_iter()
-        .filter(|r| ids.is_empty() || ids.contains(&r.target) || r.outcome == Outcome::Success)
-        .collect())
+    let environment_error = execute.is_err()
+        || execute
+            .as_ref()
+            .is_ok_and(|(o, e)| o.code != Some(0) && e.is_none() && !o.timeout && !o.interrupted)
+        || results
+            .iter()
+            .any(|r| r.outcome == Outcome::EnvironmentError);
+    let backend_evidence = execute.ok().and_then(|(_, e)| e);
+    Ok(Report {
+        results,
+        input: before,
+        stable,
+        cache: dir.to_string_lossy().into_owned(),
+        elapsed_ms: started.elapsed().as_millis() as u64,
+        environment_error,
+        backend_evidence,
+    })
 }
 pub(crate) fn safe_project(s: &State) -> Result<bool> {
     let manifest: toml::Value = toml::from_str(&fs::read_to_string(&s.scope.manifest_path)?)?;
@@ -1138,23 +969,13 @@ mod tests {
             column: 7,
             aliases: vec![],
             spec_hash: "spec".into(),
-            approved_spec_hash: None,
             model_base_hash: String::new(),
             model_inputs: Default::default(),
-            model_bindings: None,
             body_hash: "body".into(),
-            original_body: "body".into(),
             source_hash: "source".into(),
-            specified: true,
-            blocker: None,
-            stale: vec![],
-            dependencies: Default::default(),
             calls: Default::default(),
             unresolved_calls: vec![],
             required_units: vec!["contract".into()],
-            notes: vec![],
-            removed: false,
-            implementation_changed: false,
             closed_primitive: true,
             trusted: false,
         };

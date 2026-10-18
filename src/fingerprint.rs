@@ -98,7 +98,18 @@ pub fn inputs(
             }
         }
     }
-    let reports_are_independent = reports_are_independent(scope, &files)?;
+    let config_path = if scope.config_path.is_empty() {
+        Path::new(&scope.manifest_path)
+            .parent()
+            .unwrap()
+            .join("elicit.toml")
+    } else {
+        PathBuf::from(&scope.config_path)
+    };
+    if config_path.is_file() {
+        files.insert(config_path.clone());
+    }
+    let static_inputs = static_inputs(scope, &files)?;
     let mut input_files = std::collections::BTreeMap::new();
     let mut h = Sha256::new();
     let mut proofs = Sha256::new();
@@ -107,18 +118,20 @@ pub fn inputs(
         .unwrap()
         .join("elicit-proofs");
     for f in files {
-        if f.file_name().is_some_and(|v| v == "elicit.toml") {
-            continue;
-        } // completion policy is not a verifier input
-        if reports_are_independent
-            && scope.local_roots.iter().any(|root| {
-                f.parent() == Some(Path::new(root))
-                    && matches!(
-                        f.file_name().and_then(|n| n.to_str()),
-                        Some("PROGRESS.md" | "verification-inventory.json")
-                    )
-            })
-        {
+        if f == config_path {
+            // Formal declarations and scope are inputs; editorial descriptions
+            // belong to semantic review and must not invalidate machine proofs.
+            let mut config: toml::Value = toml::from_str(&fs::read_to_string(&f)?)?;
+            if let Some(goals) = config.get_mut("obligations").and_then(|v| v.as_array_mut()) {
+                for goal in goals {
+                    if let Some(table) = goal.as_table_mut() {
+                        table.remove("description");
+                    }
+                }
+            }
+            let bytes = serde_json::to_vec(&config)?;
+            input_files.insert("@declarations".into(), hash(&bytes));
+            proofs.update(bytes);
             continue;
         }
         let digest = if tool == Tool::Aeneas && f.starts_with(&proof_root) {
@@ -151,7 +164,7 @@ pub fn inputs(
     let tcb = format!("{:x}", tcb.finalize());
     h.update(&tcb);
     input_files.insert("@installed_tcb".into(), tcb);
-    let environment = environment_inputs(tool, reports_are_independent, std::env::vars());
+    let environment = environment_inputs(tool, static_inputs, std::env::vars());
     for (key, value) in &environment {
         input_files.insert(format!("@env:{key}"), hash(value));
     }
@@ -225,7 +238,7 @@ fn dependency_active(
                     })
         })
 }
-pub(crate) fn reports_are_independent(scope: &Scope, files: &BTreeSet<PathBuf>) -> Result<bool> {
+pub(crate) fn static_inputs(scope: &Scope, files: &BTreeSet<PathBuf>) -> Result<bool> {
     use syn::visit::Visit;
     struct Macros(bool);
     impl<'ast> Visit<'ast> for Macros {

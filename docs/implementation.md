@@ -1,59 +1,41 @@
-# Implementation and current scope
+# Architecture and evidence guarantees
 
-## Architecture
+Version 0.2 separates obligations, machine evidence, semantic review and observation freshness. The CLI is an author-independent tool. It has no AI client, scheduler, token accounting, task limits or approval/submission protocol.
 
-`analysis` manages Cargo metadata and the rust-analyzer stdio LSP connection, using `syn` to structure the original sources. It passes the selected package, features, target, and verifier cfg to rust-analyzer, waits for the workspace to finish loading, and queries definitions, calls, and explicit re-exports. A run reuses the same LSP connection and updates analysis when inputs change.
+## Observation
 
-IDs combine the package, module path, definition kind, name, and a hash of the impl header. They distinguish impl self types and traits; line numbers are used only to locate definitions. Deletions and renames with unclear correspondence preserve earlier work and require review. Reclassifying an existing target as an auxiliary definition to shrink the progress denominator is also rejected.
+`status`, `list` and `show` deserialize the last saved snapshot. They spawn no processes, inspect no tools, acquire no write locks and make no attempt to silently update evidence. Every output identifies its saved-snapshot nature and observation time. A saved accepted audit is not a claim about an unobserved later workspace.
 
-Analysis is not a complete extraction of rustc HIR. Unresolved local calls, macro-generated definitions, glob re-exports, and build.rs output are reported as incomplete analysis and prevent whole-package completion. Explicit selected APIs can complete with exact current proof evidence while unrelated inventory limitations remain visible. Analysis applies the selected target/features and verifier cfg, but does not fully reproduce arbitrary attribute macros or custom cfg from build scripts. Completion state is not inherited when the identity of a public name is ambiguous. Custom compiler flags, Cargo configuration that changes cfg, attribute-macro output, and workspace feature unification that broadens the selected configuration also require review.
+`refresh` explicitly resolves Cargo scope and uses rust-analyzer plus structural source indexing to discover stable IDs and locations. It reads contract/model declarations without compiling them. Input/configuration fingerprints surround discovery, and Cargo scope is resolved again afterward; raced observations are rejected. Missing verifier installations can be recorded as inspection limitations rather than turning progress viewing into a setup workflow.
 
-`model` separates targets from official verification results. `verified` is derived from whether the specification is current, known specification dependencies have been reviewed, and every required unit has a proof without restrictions or unproved assumptions for the same broad input fingerprint. Types and traits have no independent `verified` status. Circular unreviewed specification dependencies cannot justify a proof.
+Discovery is conservative, not complete rustc HIR extraction. Unknown cfg, macros/attributes, unresolved calls, generated definitions and feature mismatches remain visible. Public types and trait laws do not automatically acquire executable function-contract obligations. Complete declared obligations and whole-crate correctness are different claims.
 
-`store` updates a single schema-1 `state.toml` using locks, fsync, and atomic replacement. Writes are checked against a revision. Separate locks protect runs, workers, and official verification. State reconciliation and transactions wait interruptibly for up to 120 seconds under contention, so observing status during a run does not fail or abort the verifier merely because another state update is active. Run, worker and verification exclusion remains fail-fast. Worker turns cannot start during official verification, and before/after input checks also detect external edits. This is not a security boundary against a worker that can rewrite files under the same OS account.
+## Machine evidence
 
-`autonomous` gives the Aeneas author the entire goal set and remaining authoring budget. `collection` accepts explicit staged semantic reviews and fresh proof evidence after the worker stops; `lean_modules` tracks source dependencies for local Lean modules. See [the workflow](autonomous-aeneas.md).
+`check` and `audit` refresh inputs automatically. They require no semantic review. Before/after fingerprints cover original sources, local dependencies, scope, formal declarations, environment, installed tools/models and the CLI executable. An input race, interruption, unsupported mapping, unexecuted obligation, extra assumption or unknown scope cannot become successful API evidence.
 
-For `--workflow planned` (the Kani/Creusot default), `scheduler` prioritizes review, normally starts with type and trait specifications, and processes call-graph SCCs in callee-first, stable-ID order. In verification-required mode, verification of specified groups takes priority over further specification work. Failed tasks are suppressed on identical inputs. Input changes do not reset cumulative attempt and no-progress limits; only an explicit `--retry` resets cumulative limits.
+Formal config includes tool/scope, target bindings, statement and theorem declarations. Editorial descriptions are excluded from machine fingerprints but included in review bindings. User review notes, snapshots and receipts live under `.elicit`, outside compiler inputs. Other project files remain conservatively tracked, including files a build might read.
 
-`agent` implements the Codex 0.159.x stdio app-server protocol, including initialization, thread start/resume, turn start/completed/interrupt, and token usage. It does not override the model, reasoning effort, permissions, or authentication. Long shared instructions are stored as thread developer instructions; each turn receives the task, targets, related specifications, and revision. If a thread is lost, a new thread continues from the ledger. Prompt Cache hits are not guaranteed.
+The trusted acceptance logic is retained from the previous verifier adapters:
 
-## Verifier adapters
+- Aeneas maps fresh Charon bodies and generated definitions to the original source and exact definition span. Generated propositions quantify the actual translated arguments, require successful execution and state the supplied pre/postconditions. Lean checks exact theorem types and transitive axioms. Unrelated rejected audit roots do not discard accepted peers; a shared compilation failure can still prevent their audit.
+- Kani accepts only native unrestricted, explicitly typed arbitrary-input harnesses calling the original independent primitive free function, with actual contract/safety checks executed. Limited/generic/method/helper cases remain partial or unsupported.
+- Creusot requires fresh Coma correspondence and a complete Why3 proof tree for the supported primitive free-function scope, using standard models/drivers. General type-invariant and trait-law generation is not implemented.
 
-| Aspect | Kani 0.68.x | Creusot 0.14.x |
-|---|---|---|
-| Specification processing | `--only-codegen`, function-contracts | `--only coma`, erasure check |
-| Official verification | cargo kani with fresh `--export-json` output | Fresh Coma generation, why3find prove |
-| Results | Schema-1.0 harness metadata, execution counts, individual checks | Coma mapped to original source positions and function names, VCs and proof trees in `proof.json` |
-| Full-contract completion scope | Independent primitive free functions in the same file, explicitly typed `::kani::any()` inputs, one call to the original function | Independent primitive free functions, closed contracts, standard Creusot models and transformations only |
-| Retained as unsupported scope | Methods, generics, custom models, helpers, input restrictions, stubs, loop contracts, external dependencies, etc. | Methods, generics, custom models, helpers, project axioms/assumptions, custom drivers, etc. |
+Proposition obligations check the exact declared Lean proposition and axiom policy. They do not establish a Rust API contract merely by being associated with the same project. Semantic adequacy of any specification still requires judgment.
 
-Full-contract completion requires at least one `ensures` clause and a mapping to actual proof obligations. Empty contracts, mere process success, zero obligations, and body omission through `trusted` do not count as proof success. Even an explicitly typed harness does not prove an entire generic API by verifying one type. The name `stub_verified` in Kani is not sufficient evidence of a proof.
+## Incremental checking versus fresh audit
 
-For Creusot, the adapter cleans only the selected package in cargo-elicit's dedicated build cache, using the Rust toolchain specified by Creusot, before generating Coma. It does not clean the user's target directory. Why3find and Why3 use the standard Creusot installation. The backend, compiler, standard models, and solvers are recorded as the trusted base, and tracked files are included in fingerprints. If the Kani installation cannot be identified, successful results are not marked reusable.
+For Aeneas, `check` has a persistent checker-owned workspace. Rust extraction and translation still run. A Lean module can reuse its own previously produced objects only when source, imported dependency provenance, tracked context/toolchain and object hashes match. A changed supporting module invalidates its dependents; unchanged independent modules can be reused. Missing local sources, unsupported import modifiers, cycles, source symlinks and shadowing generated/toolchain modules are rejected. Stale local products are pruned. Arbitrary objects from the author's proof tree are never copied in.
 
-Automatically expanding arbitrary type invariants and trait laws into obligations for all implementations is not implemented. The worker may add models, laws, preservation harnesses, and similar definitions to original sources, but unsupported properties must remain reported as issues. Syntax and type checking can establish that an expression is processable; this is distinct from proving that the implementation satisfies the property.
+Local metaprogramming/I/O indicators use a more conservative whole-input cache key. This does not claim complete dependency inference for arbitrary external I/O. Keep semantic inputs tracked; unrestricted external metaprogram inputs are outside the reproducibility guarantee. Import names currently use ASCII identifiers and ordinary single-line headers (`import` / `public import`, optionally `all`).
 
-The optional [Aeneas/Lean 4 adapter](aeneas.md) adds a pinned Charon → Aeneas → Lean pipeline. It maps a fresh translation to the original source, generates universally quantified contracts from actual translated Lean function types and project predicates, kernel-checks the corresponding theorems, and audits transitive axioms. Translation, admitted proofs, and project axioms cannot establish full completion. Proof inputs live in the selected package; generated models and proof objects live only in the wrapper cache. See the linked guide for toolchain pins and supported coverage.
+The exact-type/transitive-axiom audit module runs on every check. Check evidence is labeled `check`, not `audit`. `audit` uses a new isolated build directory and recompiles all required modules independently, ignoring incremental project products. Kani/Creusot keep their native conservative checking paths rather than claiming the new Lean module cache applies to them.
 
-## Changes and reuse
+This cache is a correctness mechanism for ordinary development, not a security boundary against a process deliberately rewriting the checker cache, manifest and ledger. An independently fresh audit avoids relying on those incremental products.
 
-A specification hash change returns the target's specification and directly dependent specifications to review. If B references A and C references B, reviewing B after an A change can update only A's referenced hash without regenerating C's specification, provided B's specification contents do not change. While B awaits review, C's proof completion is also withheld. Once dependencies are restored, existing proof results can be reused if the inputs still match.
+## Persistence and diagnostics
 
-To avoid missing undeclared dependency changes, verification fingerprints broadly include source, proofs/models, package and local-dependency files, workspace and ancestor manifests and lockfiles, Cargo configuration, the selected configuration, cargo-elicit's own executable, compiler flags, toolchains, verifiers, standard models, and other inputs. The ledger, runtime files, caches, `.git`, Why3find's cache, and the actual target directory returned by Cargo metadata are excluded. Notes alone do not change the inputs. Symlinks in source inputs produce an error because those inputs cannot be tracked reliably.
+One project lock serializes mutation/check operations. Read commands remain lock-free against atomic snapshot replacement. Original source files are never modified by the CLI. Durable run receipts contain scope, declarations, input-file hashes, result coverage, trusted base and backend decisions. Per-run logs and generated diagnostic sources are copied out of mutable build caches; deleting the cache does not erase them. Evidence is tied to inputs, not to an AI session identity.
 
-Results with insufficiently tracked inputs, such as build scripts or external models, are not reused as full-contract completion. Results do not claim coverage of all features or all targets.
-
-Runtime body and signature changes are detected, and unapproved changes during worker execution block completion. Known outer contract attributes are distinguished from runtime changes. Conservative diff checks may classify ghost code or loop annotations inside a body as implementation changes; human review is required in that case. The mechanism does not decide semantic equivalence of arbitrary Rust code.
-
-## Worker CLI
-
-`agent show [ID]` returns the current revision. Fetch it again after editing sources.
-
-- `agent stage [ID ...] --all --note REASON`: Stage one explicit Aeneas semantic review; choose IDs or `--all`, not both. The stopped-worker collector validates stable artifacts before accepting it.
-- `agent submit ID --revision N --note REASON [--depends ID] [--unit UNIT]`: Submit specification work or review after syntax and type processing. Preserve known dependencies and update referenced hashes. The contract unit cannot be removed to shrink the denominator.
-- `agent depend ID DEPENDENCY --revision N`: Add a known specification dependency and return the target to review.
-- `agent issue ID --revision N --reason REASON`: Mark a specification as requiring review even before it is fixed. Preserve historical results.
-- `agent verify [ID ...] --revision N`: Run the official verification wrapper only while the worker is idle. During a turn, finish preparation and hand control back to the scheduler.
-
-Raw conversations, stdout, and stderr are not recorded in the ledger. Error summaries and typed verification information are saved, avoiding unconditional persistence of logs that might contain credentials. Run the verifier directly for detailed failure diagnosis. Artifacts produced by native verifiers are retained in the cache.
+`show` provides the target location, generated Aeneas proposition name, saved results, phase and receipt. Historical failed results remain inspectable; newer failures are not hidden by an older success for the same operation/input. Review has its own accepted/needs-work/stale state and never erases a kernel result.

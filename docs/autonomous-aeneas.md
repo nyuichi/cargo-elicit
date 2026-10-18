@@ -1,3 +1,5 @@
+> Historical v0.1 document. The incompatible v0.2 product is documented in [README](../README.md) and [architecture](implementation.md). This page does not describe the current CLI.
+
 # Autonomous Aeneas authoring and artifact collection
 
 The default Aeneas workflow gives one Codex author the entire declared goal set. The author chooses proof order, helper lemmas, and local Lean modules. cargo-elicit manages stable artifact acceptance, semantic review identities, current evidence, and recovery. It does not require a plan, a return after each lemma, or a separate submission and syntax pipeline for each API. Kani and Creusot retain the planned workflow.

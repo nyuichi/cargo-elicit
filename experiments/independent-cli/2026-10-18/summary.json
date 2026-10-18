@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "purpose": "Independent CLI mechanism validation; not an AI authoring benchmark",
+  "ai_invocations": 0,
+  "rust_implementation": "Original fixtures/aeneas/src/lib.rs, unchanged",
+  "binary_sha256": "714a34ae770b5658e17aed41e60aa784a1b7fb71438c9613144e5ecc7c6db30f",
+  "commands": [
+    {
+      "args": [
+        "init",
+        "--api",
+        "identity"
+      ],
+      "code": 0,
+      "seconds": 15.091791304
+    },
+    {
+      "args": [
+        "audit",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 22.981286033
+    },
+    {
+      "args": [
+        "status",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 0.002012508
+    },
+    {
+      "args": [
+        "check",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 22.867797048
+    },
+    {
+      "args": [
+        "check",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 12.493431518
+    },
+    {
+      "args": [
+        "check",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 14.125819655
+    },
+    {
+      "args": [
+        "review",
+        "--note",
+        "Identity model and arbitrary-input contract match the requested behavior",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 6.199439031
+    },
+    {
+      "args": [
+        "refresh",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 6.184124377
+    },
+    {
+      "args": [
+        "check",
+        "--json"
+      ],
+      "code": 1,
+      "seconds": 14.353163917
+    },
+    {
+      "args": [
+        "audit",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 22.163602619
+    },
+    {
+      "args": [
+        "status",
+        "--json"
+      ],
+      "code": 0,
+      "seconds": 0.002122601
+    }
+  ],
+  "regular_tests": {
+    "passed": 23,
+    "native_ignored": 3
+  },
+  "aeneas_native_test": "passed",
+  "kani_native_test": "passed with /workspace/toolchain/kani-0.68.0/bin prepended to PATH",
+  "creusot_native_test": "passed with CREUSOT_DATA_HOME=/workspace/toolchain/creusot-data",
+  "toolchain": {
+    "aeneas": "e62dd83d133d9043e7d3628096838b7430f36565",
+    "charon": "de8736f7c995ac54dc490345cef9ea5143c06c62",
+    "lean": "4.35.0"
+  },
+  "limitations": [
+    "Small fixed proofs; no proof authoring measured",
+    "No whole-crate correctness claim",
+    "No matched adler2 speed comparison"
+  ],
+  "native_all_initial_result": "2 passed (Aeneas, Creusot), 1 refused acceptance (Kani installation hidden by wrapper); Kani retry passed"
+}

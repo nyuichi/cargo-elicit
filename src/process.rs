@@ -35,7 +35,7 @@ pub fn group(cmd: &mut Command) {
 pub fn group(_: &mut Command) {}
 #[cfg(unix)]
 pub fn kill_group(id: u32) {
-    // Codex and compiler subprocesses may create their own process groups.
+    // Compiler subprocesses may create their own process groups.
     // Collect descendants while the parent is still alive, then stop all of them.
     #[cfg(target_os = "linux")]
     let descendants = {

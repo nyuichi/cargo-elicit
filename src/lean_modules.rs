@@ -40,7 +40,7 @@ fn external(name: &str) -> bool {
 // Parse the ordinary import header, failing closed on unsupported header forms.
 // Nested comments and quoted strings are preserved/removed without treating
 // an import-looking line inside a comment as an actual dependency.
-fn imports(source: &str) -> Result<Vec<String>> {
+pub(crate) fn imports(source: &str) -> Result<Vec<String>> {
     let bytes = source.as_bytes();
     let mut clean = Vec::new();
     let mut i = 0;
@@ -92,18 +92,33 @@ fn imports(source: &str) -> Result<Vec<String>> {
     let mut result = vec![];
     for line in clean.lines() {
         let line = line.trim();
-        if line.is_empty() || line == "prelude" {
+        if line.is_empty() || line == "prelude" || line == "module" {
             continue;
         }
-        let line = line.strip_prefix("public ").unwrap_or(line);
-        let Some(line) = line.strip_prefix("import ") else {
-            if line == "import" {
-                bail!("put imported module names on the import line");
+        let mut words = line.split_whitespace().peekable();
+        if words.peek() == Some(&"public") {
+            words.next();
+        }
+        if words.next() != Some("import") {
+            let first = line.split_whitespace().next().unwrap();
+            if ["meta", "private", "public"].contains(&first)
+                || (module_name(first)
+                    && first.chars().next().is_some_and(|c| c.is_ascii_uppercase())
+                    && line.split_whitespace().count() == 1)
+            {
+                bail!(
+                    "unsupported Lean import/header continuation; use single-line import or public import"
+                );
             }
             break;
-        };
-        let line = line.strip_prefix("all ").unwrap_or(line);
-        for name in line.split_whitespace() {
+        }
+        if words.peek() == Some(&"all") {
+            words.next();
+        }
+        if words.peek().is_none() {
+            bail!("put imported module names on the import line");
+        }
+        for name in words {
             if !module_name(name) {
                 bail!("unsupported Lean import {name:?}");
             }
@@ -149,17 +164,6 @@ impl Modules {
     }
     pub fn contains(&self, name: &str) -> bool {
         self.sources.contains_key(name)
-    }
-    pub fn len(&self) -> usize {
-        self.sources.len()
-    }
-    pub fn is_empty(&self) -> bool {
-        self.sources.is_empty()
-    }
-    pub fn standard_layout(&self) -> bool {
-        self.sources
-            .keys()
-            .all(|s| ["Specs", "Lemmas", "Proofs"].contains(&s.as_str()))
     }
     pub fn model_digest(&self) -> String {
         if !self.contains("Specs") {
@@ -228,9 +232,28 @@ impl Modules {
         Ok(out)
     }
 }
+pub fn lean_name(name: &str) -> bool {
+    module_name(name)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn imports_handle_whitespace_and_reject_unsupported_headers() {
+        assert_eq!(
+            imports("public\timport\tall\tSupport.Facts\nimport\tPeer\n").unwrap(),
+            vec!["Support.Facts", "Peer"]
+        );
+        for source in [
+            "import\nSupport.Facts",
+            "meta\timport Support.Facts",
+            "public\nimport Support.Facts",
+            "import Aeneas\n  Support.Facts",
+        ] {
+            assert!(imports(source).is_err(), "{source}");
+        }
+    }
     #[test]
     fn graph_orders_nested_imports_and_rejects_cycles_missing_sources_and_reserved_names() {
         let d = tempfile::tempdir().unwrap();

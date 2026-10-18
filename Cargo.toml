@@ -1,10 +1,10 @@
 [package]
 name = "cargo-elicit"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.86"
 license = "MIT OR Apache-2.0"
-description = "Persistent agentic specification and verification for Rust crates"
+description = "Model-independent Rust verification workflow and evidence tracking"
 repository = "https://github.com/nyuichi/cargo-elicit"
 
 [dependencies]
@@ -22,7 +22,6 @@ proc-macro2 = { version = "1", features = ["span-locations"] }
 walkdir = "2"
 ctrlc = "3"
 libc = "0.2"
-petgraph = "0.8"
 url = { version = "2", features = ["serde"] }
 
 

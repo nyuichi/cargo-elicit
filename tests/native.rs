@@ -1,1042 +1,143 @@
-//! Opt-in tests use actual Kani/Creusot/Aeneas and a deterministic Codex protocol peer.
-//! They do not call a live AI model or consume API credits.
-use cargo_elicit::model::State;
+//! Opt-in checks use real native verifiers; no AI client or credentials exist.
+use serde_json::Value;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::{Command, Stdio},
-    thread,
-    time::{Duration, Instant},
+    process::Command,
+    time::Instant,
 };
-fn cmd(root: &Path) -> Command {
-    let mut c = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"));
-    c.current_dir(root)
-        .env(
-            "PATH",
-            format!(
-                "{}:{}",
-                root.join("bin").display(),
-                std::env::var("PATH").unwrap()
-            ),
-        )
-        .env("ELICIT_BIN", env!("CARGO_BIN_EXE_cargo-elicit"));
-    c
+fn command(root: &Path) -> Command {
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"));
+    cmd.current_dir(root);
+    cmd
 }
-fn ok(root: &Path, args: &[&str]) {
-    let o = cmd(root).args(args).output().unwrap();
-    assert!(
-        o.status.success(),
-        "{} {:?}: {}\n{}",
-        root.display(),
-        args,
-        String::from_utf8_lossy(&o.stdout),
-        String::from_utf8_lossy(&o.stderr)
-    );
-}
-fn state(root: &Path) -> State {
-    toml::from_str(&fs::read_to_string(root.join(".elicit/state.toml")).unwrap()).unwrap()
-}
-// Library verification has this test executable's tracked identity. Use normal
-// production reconciliation when crossing between the CLI and this process.
-fn verify_in_process(
-    store: &cargo_elicit::store::Store,
-    ids: &[String],
-) -> Vec<cargo_elicit::model::Verification> {
-    let mut analyzer = cargo_elicit::analysis::Analyzer::default();
-    let s = cargo_elicit::cli::sync(store, &mut analyzer).unwrap();
-    cargo_elicit::verifier::verify(store, ids, Some(s.revision), 120).unwrap()
-}
-fn prepare_fixture(tool: &str, fixture: &str) -> PathBuf {
-    let root = tempfile::Builder::new()
-        .prefix(&format!("elicit-native-{tool}-"))
-        .tempdir()
-        .unwrap()
-        .keep();
-    let from = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(fixture);
-    fs::create_dir_all(root.join("src")).unwrap();
-    fs::create_dir_all(root.join("bin")).unwrap();
-    for name in ["Cargo.toml", "Cargo.lock", "why3find.json", "src/lib.rs"] {
-        if from.join(name).is_file() {
-            fs::copy(from.join(name), root.join(name)).unwrap();
-        }
-    }
-    if from.join("elicit-proofs").is_dir() {
-        for e in walkdir::WalkDir::new(from.join("elicit-proofs")) {
-            let e = e.unwrap();
-            let dest = root.join(e.path().strip_prefix(&from).unwrap());
-            if e.file_type().is_dir() {
-                fs::create_dir_all(dest).unwrap();
-            } else {
-                fs::copy(e.path(), dest).unwrap();
-            }
-        }
-    }
-    let p = root.join("bin/codex");
-    fs::copy(
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/codex.py"),
-        &p,
-    )
-    .unwrap();
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        fs::set_permissions(&p, fs::Permissions::from_mode(0o755)).unwrap();
-    }
-    root
-}
-fn exercise_fixture(tool: &str, fixture: &str) {
-    let root = prepare_fixture(tool, fixture);
-    ok(&root, &["init", "--tool", tool]);
-    #[cfg(unix)]
-    {
-        let mut worker = cmd(&root)
-            .env("MOCK_CASE", "interrupt")
-            .arg("run")
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .spawn()
-            .unwrap();
-        let deadline = Instant::now() + Duration::from_secs(60);
-        while !root.join(".elicit/runtime/mock-started").exists() {
-            assert!(
-                Instant::now() < deadline,
-                "{}: no worker started",
-                root.display()
-            );
-            thread::sleep(Duration::from_millis(100));
-        }
-        unsafe {
-            libc::kill(worker.id() as i32, libc::SIGINT);
-        }
-        assert_eq!(worker.wait().unwrap().code(), Some(130));
-        assert!(state(&root).run.active.is_some());
-    }
-    ok(&root, &["run", "--workflow", "planned", "--retry"]);
-    let s = state(&root);
-    assert!(
-        s.complete(false),
-        "{}: specification mode incomplete",
-        root.display()
-    );
-    assert!(s.results.is_empty());
-    let path = root.join("elicit.toml");
-    fs::write(
-        &path,
-        fs::read_to_string(&path)
-            .unwrap()
-            .replace("required = false", "required = true"),
-    )
-    .unwrap();
-    if fixture == "aeneas-rich" {
-        let mut running = cmd(&root)
-            .args(["run", "--workflow", "planned", "--retry"])
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .unwrap();
-        let mut observed = false;
-        while running.try_wait().unwrap().is_none() {
-            if !observed
-                && state(&root)
-                    .results
-                    .iter()
-                    .any(|r| r.outcome == cargo_elicit::model::Outcome::Success)
-            {
-                let status = cmd(&root).arg("status").output().unwrap();
-                if !status.status.success() {
-                    unsafe {
-                        libc::kill(running.id() as i32, libc::SIGINT);
-                    }
-                    let _ = running.wait();
-                    panic!(
-                        "{}: status failed during verification: {}",
-                        root.display(),
-                        String::from_utf8_lossy(&status.stderr)
-                    );
-                }
-                let text = String::from_utf8(status.stdout).unwrap();
-                assert!(text.contains("fully verified:"));
-                fs::write(root.join(".elicit/runtime/progress-status.txt"), text).unwrap();
-                observed = true;
-            }
-            thread::sleep(Duration::from_millis(100));
-        }
-        let output = running.wait_with_output().unwrap();
-        assert!(
-            output.status.success(),
-            "{}: {}",
-            root.display(),
-            String::from_utf8_lossy(&output.stderr)
-        );
-        assert!(observed, "no mid-verification status observation was made");
-    } else {
-        ok(&root, &["run", "--workflow", "planned", "--retry"]);
-    }
-    let s = state(&root);
-    assert!(
-        s.complete(true),
-        "{}: required mode incomplete: {:?}",
-        root.display(),
-        s.results
-    );
-    assert!(
-        s.targets
-            .values()
-            .filter(
-                |t| t.visibility != cargo_elicit::model::Visibility::Auxiliary && t.kind.proof()
-            )
-            .all(|t| s.verified(&t.id))
-    );
-    if fixture == "aeneas" {
-        let specs = root.join("elicit-proofs/aeneas/Specs.lean");
-        let original = fs::read_to_string(&specs).unwrap();
-        let before = state(&root);
-        let worker_count = || {
-            fs::read_to_string(root.join(".elicit/events.jsonl"))
-                .unwrap()
-                .lines()
-                .filter(|line| line.contains("\"worker_started\""))
-                .count()
-        };
-        let workers = worker_count();
-        fs::write(
-            &specs,
-            format!(
-                "{original}\nnamespace FixtureModel\ndef unrelated : Nat := 7\nend FixtureModel\n"
-            ),
-        )
-        .unwrap();
-        ok(&root, &["status"]);
-        let extended = state(&root);
-        let id = "elicit-aeneas-fixture::identity::Function";
-        assert!(
-            extended.targets[id].ready(),
-            "unrelated model extension reopened accepted specification"
-        );
-        assert_eq!(before.targets[id].spec_hash, extended.targets[id].spec_hash);
-        let marker = "elicit-aeneas-fixture::Marker::Struct";
-        assert!(
-            extended.targets[marker].ready(),
-            "unrelated extension reopened type invariant review"
-        );
-        assert_eq!(
-            before.targets[marker].spec_hash,
-            extended.targets[marker].spec_hash
-        );
-        assert!(
-            !extended.verified(id),
-            "proof input edits still require a fresh kernel check"
-        );
-        ok(&root, &["run", "--workflow", "planned"]);
-        assert!(state(&root).complete(true));
-        assert_eq!(
-            workers,
-            worker_count(),
-            "unrelated model extension invoked an AI worker"
-        );
-        let extended_source = fs::read_to_string(&specs).unwrap();
-        fs::write(
-            &specs,
-            extended_source.replace("(x : U32) : U32 := x", "(x : U32) : U32 := 0#u32"),
-        )
-        .unwrap();
-        ok(&root, &["status"]);
-        assert!(
-            !state(&root).targets[id].ready(),
-            "changed reachable model meaning was not marked stale"
-        );
-        assert!(!state(&root).verified(id));
-        let revision = state(&root).revision.to_string();
-        assert_eq!(
-            cmd(&root)
-                .args(["agent", "verify", id, "--revision", &revision])
-                .output()
-                .unwrap()
-                .status
-                .code(),
-            Some(1),
-            "old identity proof accepted for constant-zero model"
-        );
-        fs::write(&specs, &extended_source).unwrap();
-        ok(&root, &["run", "--workflow", "planned", "--retry"]);
-        assert!(state(&root).complete(true));
-        fs::write(&specs, format!("{extended_source}\nnamespace FixtureModel\ninductive Extra where | first | second\nend FixtureModel\n")).unwrap();
-        ok(&root, &["status"]);
-        assert!(
-            !state(&root).targets[id].ready(),
-            "unsupported inductive metadata must fall back to whole-model review"
-        );
-        let cache: serde_json::Value = serde_json::from_str(
-            &fs::read_to_string(root.join(".elicit/cache/model-inputs.json")).unwrap(),
-        )
-        .unwrap();
-        assert!(
-            cache["inputs"].is_null(),
-            "inductive declaration metadata was approximated"
-        );
-        fs::write(&specs, extended_source).unwrap();
-        ok(&root, &["run", "--workflow", "planned", "--retry"]);
-        assert!(state(&root).complete(true));
-    }
-    if tool == "aeneas" {
-        let events = || {
-            fs::read_to_string(root.join(".elicit/events.jsonl"))
-                .unwrap()
-                .lines()
-                .map(|l| serde_json::from_str::<serde_json::Value>(l).unwrap())
-                .collect::<Vec<_>>()
-        };
-        let original_input = state(&root).input;
-        fs::write(
-            root.join("PROGRESS.md"),
-            "Report-only update after successful proofs.\n",
-        )
-        .unwrap();
-        ok(&root, &["status"]);
-        assert_eq!(original_input, state(&root).input);
-        assert!(state(&root).complete(true));
-        let workers_before = events()
-            .iter()
-            .filter(|e| e["event"] == "worker_started")
-            .count();
-        let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
-        let mut source = fs::read_to_string(&proof).unwrap();
-        source.push_str("\n-- Proof artifact update: recheck without an AI turn.\n");
-        fs::write(&proof, source).unwrap();
-        if fixture == "aeneas-rich" {
-            ok(&root, &["status"]);
-            let current = state(&root);
-            let id = current
-                .targets
-                .values()
-                .find(|t| t.kind.proof())
-                .unwrap()
-                .id
-                .clone();
-            ok(
-                &root,
-                &[
-                    "agent",
-                    "verify",
-                    &id,
-                    "--revision",
-                    &current.revision.to_string(),
-                ],
-            );
-        }
-        ok(&root, &["run", "--workflow", "planned"]);
-        assert!(state(&root).complete(true));
-        assert_eq!(
-            workers_before,
-            events()
-                .iter()
-                .filter(|e| e["event"] == "worker_started")
-                .count()
-        );
-        if fixture == "aeneas-rich" {
-            let last = events()
-                .into_iter()
-                .rev()
-                .find(|e| e["event"] == "verification_finished")
-                .unwrap();
-            assert_eq!(last["data"]["requested"].as_array().unwrap().len(), 1);
-            assert_eq!(
-                last["data"]["results"].as_array().unwrap().len(),
-                5,
-                "all checked ready contracts must be recorded"
-            );
-        }
-    }
-    if fixture == "aeneas" {
-        let proof = root.join("elicit-proofs/aeneas/Proofs.lean");
-        let original = fs::read_to_string(&proof).unwrap();
-        let id = "elicit-aeneas-fixture::identity::Function";
-        let proposition = cargo_elicit::aeneas::contract_name(id);
-        for source in [
-            format!(
-                "import ElicitContracts\n theorem Proofs.identity_spec : {proposition} := by sorry\n"
-            ),
-            format!(
-                "import ElicitContracts\n axiom projectAssumption : {proposition}\n theorem Proofs.identity_spec : {proposition} := projectAssumption\n"
-            ),
-            "import ElicitContracts\n theorem Proofs.identity_spec : True := by trivial\n".into(),
-        ] {
-            fs::write(&proof, source).unwrap();
-            ok(&root, &["status"]);
-            let revision = state(&root).revision.to_string();
-            let o = cmd(&root)
-                .args(["agent", "verify", id, "--revision", &revision])
-                .output()
-                .unwrap();
-            assert_eq!(
-                o.status.code(),
-                Some(1),
-                "{}: {}",
-                root.display(),
-                String::from_utf8_lossy(&o.stderr)
-            );
-            assert!(
-                !state(&root).verified(id),
-                "admitted, assumed or mismatched theorem was accepted"
-            );
-        }
-        fs::write(&proof, original).unwrap();
-        ok(&root, &["run", "--workflow", "planned", "--retry"]);
-        assert!(state(&root).complete(true));
-    }
-    fs::remove_dir_all(root.join(".elicit/cache")).unwrap();
-    ok(&root, &["init"]);
-    assert!(
-        state(&root).complete(true),
-        "{}: lost persisted proof",
-        root.display()
-    );
-    fs::remove_dir_all(&root).unwrap();
-}
-#[test]
-#[ignore = "requires Kani 0.68.x, matching nightly and rust-analyzer"]
-fn kani_both_modes_interruption_resume() {
-    exercise_fixture("kani", "kani");
-}
-#[test]
-#[ignore = "requires Creusot 0.14.x with Why3find/Why3/SMT setup and rust-analyzer"]
-fn creusot_both_modes_interruption_resume() {
-    exercise_fixture("creusot", "creusot");
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
-fn aeneas_both_modes_interruption_resume() {
-    exercise_fixture("aeneas", "aeneas");
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
-fn aeneas_methods_structs_slices_and_helpers() {
-    exercise_fixture("aeneas", "aeneas-rich");
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas, Lean 4.35.0 library and rust-analyzer"]
-fn aeneas_model_dependencies_do_not_turn_documentation_into_specification_changes() {
-    let root = prepare_fixture("aeneas", "aeneas");
-    ok(&root, &["init", "--tool", "aeneas"]);
-    ok(&root, &["run", "--workflow", "planned"]);
-    let before = state(&root);
-    assert!(before.complete(false));
-    let id = "elicit-aeneas-fixture::identity::Function";
-    assert!(
-        before.targets[id].model_inputs.contains_key("@rust_model"),
-        "native model dependency collection was not exercised"
-    );
-    fs::write(
-        root.join("README.md"),
-        "Documentation-only change; the Rust and logical model are unchanged.\n",
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    let after = state(&root);
-    assert_ne!(
-        before.input, after.input,
-        "this test must exercise conservative whole-proof invalidation"
-    );
-    for (id, target) in &before.targets {
-        assert_eq!(
-            target.spec_hash, after.targets[id].spec_hash,
-            "documentation reopened {id}"
-        );
-        assert!(after.targets[id].ready(), "documentation made {id} stale");
-    }
-    fs::remove_dir_all(root).unwrap();
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
-fn aeneas_planned_lemma_checkpoints_and_caller_registration() {
-    use cargo_elicit::{plan::*, store::Store};
-    let root = prepare_fixture("aeneas", "aeneas");
-    ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
-    let store = Store { root: root.clone() };
-    let checkpoint = || {
-        let revision = state(&root).revision.to_string();
-        let out = cmd(&root)
-            .args(["agent", "verify", "--revision", &revision])
-            .output()
-            .unwrap();
-        assert!(
-            matches!(out.status.code(), Some(0 | 1)),
-            "{}",
-            String::from_utf8_lossy(&out.stderr)
-        );
-    };
-    let id = "elicit-aeneas-fixture::identity::Function";
-    let proof_root = root.join("elicit-proofs/aeneas");
-    let source = r#"import ElicitContracts
-open Aeneas Aeneas.Std Result
-namespace Checkpoint
-
-def helper (x : U32) : Result U32 := .ok x
-
-theorem helper_contract (x : U32) : ∃ y, helper x = ok y ∧ y.val = x.val := by
-  exact ⟨x, rfl, rfl⟩
-elicit_spec helper_rule from helper_contract
-attribute [irreducible] helper
-
-def caller (x : U32) : Result U32 := do
-  let y ← helper x
-  pure y
-
-theorem caller_rule (x : U32) : caller x ⦃ y => y.val = x.val ⦄ := by
-  unfold caller
-  step*
-end Checkpoint
-"#;
-    fs::write(proof_root.join("Lemmas.lean"), source).unwrap();
-    fs::remove_file(proof_root.join("Proofs.lean")).unwrap();
-    ok(&root, &["status"]);
-    let step = ProofStep {
-        id: "caller_rule".into(),
-        goal: id.into(),
-        kind: StepKind::Lemma,
-        target: None,
-        reason: "Exercise composition of a checked helper through the Aeneas step database".into(),
-        needs: vec![],
-        statement: Some("∀ x : Aeneas.Std.U32, Checkpoint.caller x ⦃ y => y.val = x.val ⦄".into()),
-        theorem: Some("Checkpoint.caller_rule".into()),
-    };
-    store
-        .transaction(None, |s| install(s, vec![step.clone()]))
-        .unwrap();
-    checkpoint();
-    let s = store.load().unwrap();
-    assert!(checked(&s, &step));
-    assert!(!s.verified(id));
-    // A changed proposition cannot inherit the old checkpoint even when the
-    // theorem name and original Rust stay unchanged.
-    let mut wrong = step.clone();
-    wrong.statement = Some("False".into());
-    store
-        .transaction(None, |s| install(s, vec![wrong.clone()]))
-        .unwrap();
-    checkpoint();
-    assert!(!checked(&store.load().unwrap(), &wrong));
-    // An admitted theorem is never a checked checkpoint.
-    fs::write(
-        proof_root.join("Lemmas.lean"),
-        format!("{source}\ntheorem bad : False := by sorry\n"),
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    wrong.theorem = Some("bad".into());
-    store
-        .transaction(None, |s| install(s, vec![wrong.clone()]))
-        .unwrap();
-    checkpoint();
-    assert!(!checked(&store.load().unwrap(), &wrong));
-    // Selected completion does not require authoring the unrelated Marker type.
-    store
-        .transaction(None, |s| install(s, vec![step.clone()]))
-        .unwrap();
-    fs::write(proof_root.join("Lemmas.lean"), source).unwrap();
-    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures/aeneas/elicit-proofs/aeneas/Proofs.lean");
-    fs::write(
-        proof_root.join("Proofs.lean"),
-        format!("import Lemmas\n{}", fs::read_to_string(fixture).unwrap()),
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    let revision = state(&root).revision.to_string();
-    ok(
-        &root,
-        &[
-            "agent",
-            "submit",
-            id,
-            "--revision",
-            &revision,
-            "--note",
-            "Reviewed selected original API",
-        ],
-    );
-    checkpoint();
-    let s = store.load().unwrap();
-    assert!(s.complete(true));
-    assert!(!s.targets["elicit-aeneas-fixture::Marker::Struct"].ready());
-    // Supported local composition must not make operational reports proof inputs.
-    for report in ["PROGRESS.md", "verification-inventory.json"] {
-        fs::write(root.join(report), "Operational observation only.\n").unwrap();
-    }
-    ok(&root, &["status"]);
-    let after_reports = state(&root);
-    assert_eq!(s.input, after_reports.input);
-    assert!(after_reports.complete(true));
-    assert!(checked(&after_reports, &step));
-    // A completed batch records missing roots as unresolved on this exact input.
-    let proofs = proof_root.join("Proofs.lean");
-    let original_proofs = fs::read_to_string(&proofs).unwrap();
-    fs::write(&proofs, "import Lemmas\n").unwrap();
-    ok(&root, &["status"]);
-    verify_in_process(&store, &[]);
-    let missing = state(&root);
-    assert!(
-        missing
-            .results
-            .iter()
-            .filter(|r| r.target == id && r.input == missing.input)
-            .all(|r| r.diagnostic.as_ref().is_some_and(|d| d.phase == "audit"
-                && Path::new(&d.cache).join("ElicitGenerated.lean").is_file()))
-    );
-    assert!(missing.results.iter().any(|r| r.target == id
-        && r.input == missing.input
-        && r.outcome == cargo_elicit::model::Outcome::Unresolved));
-    assert!(
-        cargo_elicit::aeneas::prepared_targets(&missing)
-            .unwrap()
-            .is_empty()
-    );
-    fs::write(
-        &proofs,
-        format!("{original_proofs}\n-- A new tracked proof input.\n"),
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    assert!(
-        !cargo_elicit::aeneas::prepared_targets(&state(&root))
-            .unwrap()
-            .is_empty()
-    );
-    checkpoint();
-    assert!(state(&root).complete(true));
-
-    // A transient failure in collecting semantic metadata must not permanently
-    // lose an unchanged approval. Recovery still requires fresh proof evidence
-    // when the global proof input changed.
-    let specs = proof_root.join("Specs.lean");
-    let original_specs = fs::read_to_string(&specs).unwrap();
-    fs::write(&specs, "import ElicitGenerated\ndef broken := (\n").unwrap();
-    ok(&root, &["status"]);
-    assert!(!state(&root).targets[id].ready());
-    fs::write(&specs, &original_specs).unwrap();
-    let proofs = proof_root.join("Proofs.lean");
-    fs::write(
-        &proofs,
-        format!(
-            "{}\n-- Require a fresh whole-input kernel check.\n",
-            fs::read_to_string(&proofs).unwrap()
-        ),
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    assert!(state(&root).targets[id].ready());
-    assert!(!state(&root).verified(id));
-    checkpoint();
-    assert!(state(&root).complete(true));
-    // An actually changed referenced model remains unapproved.
-    fs::write(
-        &specs,
-        original_specs.replace(": U32 := x", ": U32 := 0#u32"),
-    )
-    .unwrap();
-    ok(&root, &["status"]);
-    assert!(!state(&root).targets[id].ready());
-    fs::remove_dir_all(root).unwrap();
-}
-
-#[test]
-#[ignore = "requires the pinned real Lean/Aeneas backend"]
-fn aeneas_batch_audits_isolate_invalid_roots_and_diagnostics() {
-    let root = tempfile::tempdir().unwrap();
-    let file = root.path().join("Batch.lean");
-    fs::write(
-        &file,
-        format!(
-            "import Aeneas\n{}\n{}",
-            include_str!("../src/lean/ElicitAudit.lean"),
-            r#"
-theorem good : True := True.intro
-theorem bad : False := by sorry
-axiom project : False
-theorem ElicitBatchAudit.root_5 : False := by sorry
-elicit_audit 0 "True" "good"
-elicit_audit 1 "True" "missing"
-elicit_audit 2 "False" "good"
-elicit_audit 3 "False" "bad"
-elicit_audit 4 "False" "project"
-elicit_audit 5 "True" "good"
-elicit_audit 6 "True" "good"
-elicit_audit 7 "malformed (" "good"
-theorem poly {α : Type u} (x : α) : x = x := rfl
-elicit_audit 8 "∀ {α : Type} (x : α), x = x" "poly"
-unsafe def forged : False := unsafeCast True.intro
-elicit_audit 9 "False" "forged"
-theorem implicitRoot {x : Nat} : x = x := rfl
-elicit_audit 10 "0 = 0" "implicitRoot"
-"#
-        ),
-    )
-    .unwrap();
-    let out = Command::new("lake")
-        .args(["env", "lean"])
-        .arg(&file)
-        .current_dir(Path::new(&std::env::var("AENEAS_HOME").unwrap()).join("backends/lean"))
-        .output()
-        .unwrap();
-    assert!(
-        out.status.success(),
-        "{}\n{}",
-        String::from_utf8_lossy(&out.stdout),
-        String::from_utf8_lossy(&out.stderr)
-    );
-    let rows: Vec<serde_json::Value> = String::from_utf8_lossy(&out.stdout)
-        .lines()
-        .filter_map(|line| line.strip_prefix("ELICIT_AUDIT="))
-        .map(|line| serde_json::from_str(line).unwrap())
-        .collect();
-    assert_eq!(rows.len(), 11);
-    for (index, row) in rows.iter().enumerate() {
-        assert_eq!(row["index"], index);
-        assert_eq!(row["checked"], matches!(index, 0 | 6 | 8 | 10));
-    }
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
-fn aeneas_requested_success_is_not_poisoned_by_independent_missing_root() {
-    use cargo_elicit::{model::Outcome, store::Store};
-    let root = prepare_fixture("aeneas", "aeneas");
-    let source = root.join("src/lib.rs");
-    fs::write(
-        &source,
-        format!(
-            "{}\npub fn other(x:u32)->u32 {{ x }}\n",
-            fs::read_to_string(&source).unwrap()
-        ),
-    )
-    .unwrap();
-    let manifest = root.join("elicit-proofs/aeneas/contracts.toml");
-    fs::write(&manifest, format!("{}\n[contracts.\"elicit-aeneas-fixture::other::Function\"]\nensures = \"fun x result => result = x\"\ntheorem = \"Proofs.missing_other\"\n", fs::read_to_string(&manifest).unwrap())).unwrap();
-    ok(&root, &["init", "--tool", "aeneas"]);
-    let id = "elicit-aeneas-fixture::identity::Function";
-    let other = "elicit-aeneas-fixture::other::Function";
-    for target in [id, other] {
-        let revision = state(&root).revision.to_string();
-        ok(
-            &root,
-            &[
-                "agent",
-                "submit",
-                target,
-                "--revision",
-                &revision,
-                "--note",
-                "Reviewed original identity API",
-            ],
-        );
-    }
-    let store = Store { root: root.clone() };
-    let results = verify_in_process(&store, &[id.into()]);
-    assert!(
-        results
-            .iter()
-            .any(|r| r.target == id && r.outcome == Outcome::Success)
-    );
-    assert!(results.iter().all(|r| r.outcome == Outcome::Success));
-    let s = state(&root);
-    assert!(s.verified(id));
-    assert!(!s.verified(other));
-    assert!(s.results.iter().any(|r| r.target == other
-        && r.input == s.input
-        && r.outcome == Outcome::Unresolved
-        && r.diagnostic.is_some()));
-    assert!(
-        cargo_elicit::aeneas::prepared_targets(&s)
-            .unwrap()
-            .is_empty()
-    );
-    fs::remove_dir_all(root).unwrap();
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
-fn aeneas_finalization_checks_deadline_edits_and_respects_external_interrupt() {
-    use cargo_elicit::{model::Outcome, plan, store::Store};
-    for case in [
-        "deadline_api",
-        "deadline_lemma",
-        "deadline_invalid",
-        "external_interrupt",
-    ] {
-        if std::env::var("ELICIT_FINALIZATION_CASE").is_ok_and(|selected| selected != case) {
-            continue;
-        }
-        let root = prepare_fixture("aeneas", "aeneas");
-        let proofs = root.join("elicit-proofs/aeneas/Proofs.lean");
-        let valid = fs::read_to_string(&proofs).unwrap();
-        fs::remove_file(&proofs).unwrap();
-        fs::write(
-            root.join("elicit.toml"),
-            "[agent]\nprovider=\"codex\"\n[verification]\ntool=\"aeneas\"\nrequired=true\n",
-        )
-        .unwrap();
-        ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
-        let id = "elicit-aeneas-fixture::identity::Function";
-        if case != "deadline_lemma" {
-            let revision = state(&root).revision.to_string();
-            ok(
-                &root,
-                &[
-                    "agent",
-                    "submit",
-                    id,
-                    "--revision",
-                    &revision,
-                    "--note",
-                    "Reviewed original identity contract",
-                ],
-            );
-        } else {
-            // A prior inspection with no completed plan leads to a repair Plan
-            // turn. Its lemma edit must be collected by finalization, not the
-            // ordinary post-Integrate/Verify checkpoint path.
-            let store = Store { root: root.clone() };
-            store
-                .transaction(None, |s| {
-                    s.proof_plan
-                        .inspected
-                        .insert(id.into(), plan::inspection_input(s, id));
-                    Ok(())
-                })
-                .unwrap();
-        }
-        let candidate = match case {
-            "deadline_lemma" => "import ElicitContracts\nnamespace FinalCheckpoint\ntheorem saved : True := trivial\nend FinalCheckpoint\n".to_owned(),
-            "deadline_invalid" => "import ElicitContracts\ntheorem invalid : False := by exact True.intro\n".to_owned(),
-            _ => valid,
-        };
-        fs::create_dir_all(root.join(".elicit/cache")).unwrap();
-        fs::write(root.join(".elicit/cache/deadline-edit.txt"), &candidate).unwrap();
-        let wall_start_ms = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_millis() as u64;
-        let tick = Instant::now();
-        let run = cmd(&root)
-            .env(
-                "MOCK_CASE",
-                if case == "external_interrupt" {
-                    "deadline_api"
-                } else {
-                    case
-                },
-            )
-            .args([
-                "run",
-                "--workflow",
-                "planned",
-                "--max-tasks",
-                "1",
-                "--max-seconds",
-                "120",
-                "--task-seconds",
-                "600",
-                "--finalize-seconds",
-                "60",
-            ])
-            .stdout(Stdio::null())
-            .stderr(Stdio::piped())
-            .spawn()
-            .unwrap();
-        if case == "external_interrupt" {
-            let deadline = Instant::now() + Duration::from_secs(60);
-            while !root.join(".elicit/runtime/deadline-edit-saved").exists() {
-                assert!(
-                    Instant::now() < deadline,
-                    "worker did not save its test edit"
-                );
-                thread::sleep(Duration::from_millis(50));
-            }
-            unsafe {
-                libc::kill(run.id() as i32, libc::SIGINT);
-            }
-        }
-        let output = run.wait_with_output().unwrap();
-        let elapsed = tick.elapsed();
-        let s = state(&root);
-        assert!(
-            elapsed < Duration::from_secs(135),
-            "{case}: exceeded overall budget: {elapsed:?}"
-        );
-        match case {
-            "deadline_api" => {
-                assert_eq!(
-                    output.status.code(),
-                    Some(0),
-                    "{}",
-                    String::from_utf8_lossy(&output.stderr)
-                );
-                assert!(s.complete(true));
-            }
-            "deadline_lemma" => {
-                assert_eq!(
-                    output.status.code(),
-                    Some(1),
-                    "{}",
-                    String::from_utf8_lossy(&output.stderr)
-                );
-                let step = s
-                    .proof_plan
-                    .steps
-                    .iter()
-                    .find(|p| p.id == "final_lemma")
-                    .unwrap();
-                assert!(plan::checked(&s, step));
-                assert!(!s.verified(id));
-            }
-            "deadline_invalid" => {
-                assert_ne!(output.status.code(), Some(0));
-                assert!(!s.verified(id));
-                assert!(s.results.iter().all(|r| r.outcome != Outcome::Success));
-                assert_eq!(fs::read_to_string(&proofs).unwrap(), candidate);
-            }
-            _ => {
-                assert_eq!(output.status.code(), Some(130));
-                assert!(
-                    s.results.is_empty(),
-                    "external interrupt accepted new evidence"
-                );
-                assert_eq!(fs::read_to_string(&proofs).unwrap(), candidate);
-            }
-        }
-        if case != "external_interrupt" {
-            let events = fs::read_to_string(root.join(".elicit/events.jsonl")).unwrap();
-            assert!(
-                events
-                    .lines()
-                    .filter_map(|l| serde_json::from_str::<serde_json::Value>(l).ok())
-                    .any(|v| v["event"] == "task_finished" && v["data"]["worker_deadline"] == true)
-            );
-        }
-        if matches!(case, "deadline_api" | "deadline_lemma") {
-            let events = fs::read_to_string(root.join(".elicit/events.jsonl")).unwrap();
-            let accepted = events
-                .lines()
-                .filter_map(|l| serde_json::from_str::<serde_json::Value>(l).ok())
-                .filter(|e| {
-                    (e["event"] == "verification_finished"
-                        && e["data"]["results"]
-                            .as_array()
-                            .is_some_and(|rs| rs.iter().any(|r| r["outcome"] == "success")))
-                        || (e["event"] == "lemma_checks_finished"
-                            && e["data"]["results"]
-                                .as_object()
-                                .is_some_and(|rs| rs.values().any(|r| r["outcome"] == "success")))
-                })
-                .map(|e| {
-                    e["timestamp_ms"]
-                        .as_u64()
-                        .unwrap()
-                        .saturating_sub(wall_start_ms)
-                })
-                .collect::<Vec<_>>();
-            assert!(!accepted.is_empty());
-            for at_ms in accepted {
-                println!("{case}: evidence recorded at {:.3}s", at_ms as f64 / 1000.0);
-                assert!(
-                    at_ms <= 120_000,
-                    "{case}: evidence accepted after the overall 120s budget"
-                );
-            }
-        }
-        println!("{case}: passed in {:.2}s", elapsed.as_secs_f64());
-        fs::remove_dir_all(root).unwrap();
-    }
-}
-
-#[test]
-#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0"]
-fn aeneas_autonomous_collects_nested_sources_and_rejects_imported_axioms() {
-    let root = prepare_fixture("aeneas", "aeneas");
-    let proofs = root.join("elicit-proofs/aeneas");
-    fs::create_dir(proofs.join("Support")).unwrap();
-    fs::create_dir(proofs.join("Models")).unwrap();
-    fs::rename(
-        proofs.join("Proofs.lean"),
-        proofs.join("Support/Identity.lean"),
-    )
-    .unwrap();
-    fs::write(proofs.join("Proofs.lean"), "import Support.Identity\n").unwrap();
-    fs::rename(
-        proofs.join("Specs.lean"),
-        proofs.join("Models/Identity.lean"),
-    )
-    .unwrap();
-    fs::write(proofs.join("Specs.lean"), "import Models.Identity\n").unwrap();
-    fs::write(
-        root.join("elicit.toml"),
-        "[agent]\nprovider=\"codex\"\n[verification]\ntool=\"aeneas\"\nrequired=true\n",
-    )
-    .unwrap();
-    ok(&root, &["init", "--tool", "aeneas", "--api", "identity"]);
-    let output = cmd(&root)
-        .env("MOCK_CASE", "stage")
-        .args(["run", "--task-seconds", "1", "--max-seconds", "180"])
-        .output()
-        .unwrap();
-    assert!(
-        output.status.success(),
-        "{}\n{}",
+fn invoke(root: &Path, args: &[&str], code: i32) -> Value {
+    let started = Instant::now();
+    let output = command(root).args(args).output().unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(code),
+        "{args:?}: {}\n{}",
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     );
-    let id = "elicit-aeneas-fixture::identity::Function";
-    assert!(state(&root).complete(true));
-    assert!(state(&root).proof_plan.steps.is_empty());
-    let hash = state(&root).targets[id].spec_hash.clone();
-    fs::write(proofs.join("Support/Identity.lean"), format!("import ElicitContracts\naxiom projectAssumption : {}\nnamespace Proofs\ntheorem identity_spec : {} := projectAssumption\nend Proofs\n",cargo_elicit::aeneas::contract_name(id),cargo_elicit::aeneas::contract_name(id))).unwrap();
-    ok(&root, &["status"]);
-    assert_eq!(hash, state(&root).targets[id].spec_hash);
-    assert!(!state(&root).verified(id));
-    let out = cmd(&root).args(["collect"]).output().unwrap();
-    assert_eq!(
-        out.status.code(),
-        Some(1),
-        "{}",
-        String::from_utf8_lossy(&out.stderr)
-    );
-    assert!(
-        !state(&root).verified(id),
-        "an imported project axiom must fail the transitive audit"
-    );
-    let result = state(&root)
-        .results
+    let directory = root.join(".elicit/native-validation");
+    fs::create_dir_all(&directory).unwrap();
+    let number = fs::read_dir(&directory).unwrap().count();
+    fs::write(directory.join(format!("{number:02}.json")),serde_json::to_vec_pretty(&serde_json::json!({"args":args,"code":code,"seconds":started.elapsed().as_secs_f64(),"stdout":String::from_utf8_lossy(&output.stdout),"stderr":String::from_utf8_lossy(&output.stderr)})).unwrap()).unwrap();
+    if args.contains(&"--json") {
+        serde_json::from_slice(&output.stdout).unwrap()
+    } else {
+        Value::Null
+    }
+}
+fn fixture(name: &str) -> PathBuf {
+    let root = tempfile::Builder::new()
+        .prefix("elicit-independent-native-")
+        .tempdir()
+        .unwrap()
+        .keep();
+    let original = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join(name);
+    for entry in walkdir::WalkDir::new(&original)
         .into_iter()
-        .rev()
-        .find(|r| r.target == id)
-        .unwrap();
-    let diagnostic = result.diagnostic.unwrap();
-    assert_eq!(
-        diagnostic.phase, "audit",
-        "the theorem must reach the axiom audit"
+        .filter_entry(|e| !matches!(e.file_name().to_str(), Some("target" | ".elicit")))
+    {
+        let entry = entry.unwrap();
+        let target = root.join(entry.path().strip_prefix(&original).unwrap());
+        if entry.file_type().is_dir() {
+            fs::create_dir_all(target).unwrap();
+        } else {
+            fs::copy(entry.path(), target).unwrap();
+        }
+    }
+    root
+}
+fn stages(root: &Path) -> Vec<Value> {
+    fs::read_to_string(root.join(".elicit/events.jsonl"))
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<Value>(line).unwrap())
+        .filter(|e| e["event"] == "pipeline_stage_finished")
+        .map(|e| e["data"].clone())
+        .collect()
+}
+#[test]
+#[ignore = "requires pinned Charon/Aeneas and Lean 4.35.0; no live model"]
+fn aeneas_incremental_audit_and_independent_semantic_review() {
+    let root = fixture("aeneas");
+    println!("validation_root={}", root.display());
+    let proof = root.join("elicit-proofs/aeneas");
+    fs::create_dir(proof.join("Models")).unwrap();
+    fs::rename(proof.join("Specs.lean"), proof.join("Models/Identity.lean")).unwrap();
+    fs::write(proof.join("Specs.lean"), "import Models.Identity\n").unwrap();
+    let file = proof.join("Proofs.lean");
+    let original = fs::read_to_string(&file).unwrap();
+    fs::write(
+        &file,
+        format!("{original}\n theorem Proofs.fact : True := True.intro\n"),
+    )
+    .unwrap();
+    invoke(&root, &["init", "--api", "identity"], 0);
+    let config = root.join("elicit.toml");
+    fs::write(
+        &config,
+        format!(
+            "{}\n[[obligations]]\nid=\"fact\"\nstatement=\"True\"\ntheorem=\"Proofs.fact\"\n",
+            fs::read_to_string(&config).unwrap()
+        ),
+    )
+    .unwrap();
+    invoke(&root, &["audit", "--json"], 0);
+    let status = invoke(&root, &["status", "--json"], 0);
+    assert_eq!(status["declared_obligations_audited_at_snapshot"], true);
+    assert!(
+        status["goals"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|g| g["review"] == "unreviewed")
+    );
+    invoke(&root, &["check", "--json"], 0);
+    let count = stages(&root).len();
+    invoke(&root, &["check", "--json"], 0);
+    assert!(
+        stages(&root)[count..]
+            .iter()
+            .any(|stage| stage["stage"] == "Proofs.lean" && stage["cache_hit"] == true)
     );
     assert!(
-        Path::new(&diagnostic.cache)
-            .join("Support/Identity.olean")
-            .is_file()
+        stages(&root)[count..]
+            .iter()
+            .any(|stage| stage["stage"] == "Audit.lean" && stage["cache_hit"] == false)
     );
-    ok(
+    let count = stages(&root).len();
+    fs::write(
+        &file,
+        format!(
+            "{}\n-- proof-only edit\n",
+            fs::read_to_string(&file).unwrap()
+        ),
+    )
+    .unwrap();
+    invoke(&root, &["check", "--json"], 0);
+    assert!(
+        stages(&root)[count..]
+            .iter()
+            .any(|stage| stage["stage"] == "Identity.lean" && stage["cache_hit"] == true)
+    );
+    invoke(
         &root,
         &[
-            "agent",
-            "stage",
-            "--all",
+            "review",
             "--note",
-            "Reviewed identity contract",
+            "Identity model and arbitrary-input contract match the requested behavior",
+            "--json",
         ],
+        0,
     );
-    let model = proofs.join("Models/Identity.lean");
+    let model = proof.join("Models/Identity.lean");
     fs::write(
         &model,
         fs::read_to_string(&model)
@@ -1044,8 +145,86 @@ fn aeneas_autonomous_collects_nested_sources_and_rejects_imported_axioms() {
             .replace(":= x", ":= x + 1"),
     )
     .unwrap();
-    let out = cmd(&root).args(["collect"]).output().unwrap();
-    assert_eq!(out.status.code(), Some(2));
-    assert!(!state(&root).targets[id].ready());
-    fs::remove_dir_all(root).unwrap();
+    let refreshed = invoke(&root, &["refresh", "--json"], 0);
+    assert!(
+        refreshed["goals"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|g| g["id"] == "identity"
+                && g["review"] == "stale"
+                && g["audit"] == "missing_or_stale")
+    );
+    fs::write(
+        &model,
+        fs::read_to_string(&model)
+            .unwrap()
+            .replace(":= x + 1", ":= x"),
+    )
+    .unwrap();
+    let proposition = "ElicitContracts.c_a944f8e645077fd5";
+    fs::write(&file,format!("import ElicitContracts\naxiom projectAssumption : {proposition}\nnamespace Proofs\ntheorem identity_spec : {proposition} := projectAssumption\ntheorem fact : True := True.intro\nend Proofs\n")).unwrap();
+    let rejected = invoke(&root, &["check", "--json"], 1);
+    assert!(
+        rejected["goals"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|g| g["id"] == "identity" && g["check"] == "failed")
+    );
+    assert!(
+        rejected["goals"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|g| g["id"] == "fact" && g["check"] == "accepted")
+    );
+    fs::write(
+        &file,
+        format!("{original}\n theorem Proofs.fact : True := True.intro\n"),
+    )
+    .unwrap();
+    let count = stages(&root).len();
+    invoke(&root, &["audit", "--json"], 0);
+    assert!(
+        stages(&root)[count..]
+            .iter()
+            .all(|e| e["cache_hit"] == false)
+    );
+    let snapshot: Value =
+        serde_json::from_slice(&fs::read(root.join(".elicit/snapshot.json")).unwrap()).unwrap();
+    let receipt = snapshot["evidence"]["identity"]
+        .as_array()
+        .unwrap()
+        .last()
+        .unwrap()["receipt"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let evidence: Value = serde_json::from_slice(&fs::read(root.join(&receipt)).unwrap()).unwrap();
+    let logs = root
+        .join(evidence["report"]["cache"].as_str().unwrap())
+        .join("logs/Audit.log");
+    assert!(logs.is_file());
+    fs::remove_dir_all(root.join(".elicit/cache")).unwrap();
+    invoke(&root, &["status", "--json"], 0);
+    assert!(logs.is_file());
+}
+#[test]
+#[ignore = "requires native Kani 0.68 toolchain"]
+fn kani_original_contract_audit() {
+    let root = fixture("kani");
+    invoke(&root, &["init", "--tool", "kani", "--api", "identity"], 0);
+    invoke(&root, &["audit", "--json"], 0);
+}
+#[test]
+#[ignore = "requires native Creusot 0.14 with Why3/solvers"]
+fn creusot_original_contract_audit() {
+    let root = fixture("creusot");
+    invoke(
+        &root,
+        &["init", "--tool", "creusot", "--api", "identity"],
+        0,
+    );
+    invoke(&root, &["audit", "--json"], 0);
 }

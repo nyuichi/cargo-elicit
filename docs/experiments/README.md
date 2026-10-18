@@ -4,6 +4,8 @@ These records preserve successful and unsuccessful trials, original measurements
 
 ## Start here
 
+- [Independent CLI redesign (0.2)](2026-10-18-independent-cli.md): the incompatible human/AI-common CLI, removed orchestration, cache/audit separation and mechanism validation. No new authoring speed claim.
+
 - [Why the recorded product trajectory took longer](adler2-latency-analysis.md): disjoint timing analysis of the 28.40-minute ordinary trial versus the 89.36-minute product trajectory, and the corrected resumed-thread token accounting.
 - [Complete change and overfitting audit](adler2-change-audit.md): all 26 pre-audit commits and every changed path; identifies benchmark coupling separately from general mechanisms.
 - [Final selected-goal result](adler2-iteration-9.md): five selected APIs completed across an initial segment and same-case continuation; exact contracts, audits and the remaining CLI status limitation.

@@ -1,0 +1,186 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running tests/native.rs (target/debug/deps/native-9bc98c2a841ee9cf)
+
+running 3 tests
+test aeneas_incremental_audit_and_independent_semantic_review ... validation_root=/tmp/elicit-independent-native-0ENnrq
+ok
+test creusot_original_contract_audit ... ok
+test kani_original_contract_audit ... 
+thread 'kani_original_contract_audit' (309046) panicked at tests/native.rs:17:5:
+assertion `left == right` failed: ["audit", "--json"]: {
+  "analysis_limitations": [],
+  "changed_inputs": [],
+  "declared_obligations_audited_at_snapshot": false,
+  "goals": [
+    {
+      "audit": "failed",
+      "check": "missing_or_stale",
+      "description": "",
+      "id": "identity",
+      "last_evidence": {
+        "accepted": false,
+        "input": "90dd8c30309929f7cd717e06d70e653a68c74382111087f88801e218a5829c13",
+        "kind": "audit",
+        "phase": "extraction-or-environment",
+        "reason": "native proof_for_contract: all primitive inputs, all contract and safety obligations discharged",
+        "receipt": ".elicit/evidence/audit-1792327778427.json",
+        "recorded_at": 1792327778428,
+        "result": {
+          "assumptions": [],
+          "diagnostic": {
+            "cache": ".elicit/evidence/audit-1792327778427",
+            "phase": "extraction-or-environment"
+          },
+          "elapsed_ms": 652,
+          "id": "1792327777774-elicit-kani-fixture::identity::Function-0",
+          "input": "90dd8c30309929f7cd717e06d70e653a68c74382111087f88801e218a5829c13",
+          "obligations": [
+            "check_identity:1:unwind",
+            "check_identity:2:assertion",
+            "check_identity:3:assertion",
+            "check_identity:4:assertion",
+            "check_identity:5:unwind",
+            "check_identity:6:single_top_level_call",
+            "check_identity:7:no_alloc_dealloc_in_requires",
+            "check_identity:8:no_alloc_dealloc_in_ensures",
+            "check_identity:9:no_recursive_call",
+            "check_identity:10:frees",
+            "check_identity:11:assertion",
+            "check_identity:12:unreachable",
+            "check_identity:13:assigns",
+            "check_identity:14:unreachable",
+            "check_identity:15:unreachable",
+            "check_identity:16:pointer_dereference",
+            "check_identity:17:pointer_dereference",
+            "check_identity:18:pointer_dereference",
+            "check_identity:19:pointer_dereference",
+            "check_identity:20:pointer_dereference",
+            "check_identity:21:pointer_dereference",
+            "check_identity:22:pointer_dereference",
+            "check_identity:23:pointer_dereference",
+            "check_identity:24:pointer_dereference",
+            "check_identity:25:pointer_dereference",
+            "check_identity:26:pointer_dereference",
+            "check_identity:27:pointer_dereference",
+            "check_identity:28:pointer_dereference",
+            "check_identity:29:pointer_dereference",
+            "check_identity:30:pointer_dereference",
+            "check_identity:31:pointer_dereference",
+            "check_identity:32:pointer_dereference",
+            "check_identity:33:pointer_dereference",
+            "check_identity:34:precondition_instance",
+            "check_identity:35:precondition_instance",
+            "check_identity:36:precondition_instance",
+            "check_identity:37:precondition_instance",
+            "check_identity:38:precondition_instance",
+            "check_identity:39:precondition_instance",
+            "check_identity:40:pointer_dereference",
+            "check_identity:41:pointer_dereference",
+            "check_identity:42:pointer_dereference",
+            "check_identity:43:pointer_dereference",
+            "check_identity:44:pointer_dereference",
+            "check_identity:45:pointer_dereference",
+            "check_identity:46:pointer_dereference",
+            "check_identity:47:pointer_dereference",
+            "check_identity:48:pointer_dereference",
+            "check_identity:49:pointer_dereference",
+            "check_identity:50:pointer_dereference",
+            "check_identity:51:pointer_dereference",
+            "check_identity:52:pointer_dereference",
+            "check_identity:53:pointer_dereference",
+            "check_identity:54:pointer_dereference",
+            "check_identity:55:pointer_dereference",
+            "check_identity:56:pointer_dereference",
+            "check_identity:57:pointer_dereference",
+            "check_identity:58:bit_count",
+            "check_identity:59:bit_count",
+            "check_identity:60:bit_count",
+            "check_identity:61:pointer_dereference",
+            "check_identity:62:pointer_dereference",
+            "check_identity:63:pointer_dereference",
+            "check_identity:64:pointer_dereference",
+            "check_identity:65:pointer_dereference",
+            "check_identity:66:pointer_dereference",
+            "check_identity:67:pointer_dereference",
+            "check_identity:68:pointer_dereference",
+            "check_identity:69:pointer_dereference",
+            "check_identity:70:pointer_dereference",
+            "check_identity:71:pointer_dereference",
+            "check_identity:72:pointer_dereference",
+            "check_identity:73:pointer_dereference",
+            "check_identity:74:pointer_dereference",
+            "check_identity:75:pointer_dereference",
+            "check_identity:76:pointer_dereference",
+            "check_identity:77:pointer_dereference",
+            "check_identity:78:pointer_dereference",
+            "check_identity:79:pointer_dereference",
+            "check_identity:80:pointer_dereference",
+            "check_identity:81:pointer_dereference",
+            "check_identity:82:pointer_dereference",
+            "check_identity:83:pointer_dereference",
+            "check_identity:84:pointer_dereference"
+          ],
+          "outcome": "success",
+          "restrictions": [],
+          "reusable": false,
+          "scope": "full_contract",
+          "summary": "native proof_for_contract: all primitive inputs, all contract and safety obligations discharged",
+          "target": "elicit-kani-fixture::identity::Function",
+          "tool": "kani",
+          "tool_version": "Kani Rust Verifier 0.68.0 (cargo plugin)\nCBMC 6.11.0",
+          "trusted_base": [
+            "Kani 0.68 compiler and contract transformation",
+            "CBMC bit-vector logic and standard Rust/Kani models"
+          ],
+          "units": [
+            "contract",
+            "harness:check_identity"
+          ]
+        },
+        "specification": "2d02ab1a99cca6c3ec49135553477769c1f61f1d3a4a1a60db254b54f3f2b95b"
+      },
+      "limitation": null,
+      "next": "author with native tools; check when useful; audit for final evidence",
+      "review": "unreviewed",
+      "target": "elicit-kani-fixture::identity::Function"
+    }
+  ],
+  "observation": "saved_snapshot",
+  "observed_at_unix_ms": 1792327777756,
+  "schema": 2,
+  "scope": {
+    "all_features": false,
+    "config_path": "/tmp/elicit-independent-native-NeQUGk/elicit.toml",
+    "features": [],
+    "local_roots": [
+      "/tmp/elicit-independent-native-NeQUGk"
+    ],
+    "manifest_path": "/tmp/elicit-independent-native-NeQUGk/Cargo.toml",
+    "no_default_features": false,
+    "package": "elicit-kani-fixture",
+    "requested_target": null,
+    "resolved_features": [],
+    "target": "x86_64-unknown-linux-gnu",
+    "target_directory": "/tmp/elicit-independent-native-NeQUGk/target",
+    "workspace_root": "/tmp/elicit-independent-native-NeQUGk"
+  },
+  "snapshot": "90dd8c30309929f7cd717e06d70e653a68c74382111087f88801e218a5829c13",
+  "uncovered_public_inventory": [],
+  "whole_package_claim": false,
+  "workspace_currentness": "not_observed_by_this_read; run refresh or check/audit"
+}
+
+
+  left: Some(1)
+ right: Some(0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    kani_original_contract_audit
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 175.02s
+
+error: test failed, to rerun pass `--test native`

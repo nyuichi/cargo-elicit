@@ -1,110 +1,88 @@
 # cargo-elicit
 
-A Cargo subcommand that uses Codex to continuously develop contracts, type invariants, and proof code for existing Rust crates. It selects work, persists progress, tracks the effects of specification changes, and reuses verification results.
+A Rust CLI for people and external AI tools to organize verification work, inspect obligations, and preserve evidence tied to the original crate.
 
-## Installation
+**cargo-elicit never starts an AI.** It does not choose proof strategies, dispatch tasks, generate helpers, or require submission/checkpoint protocols. Use your editor, native verifier and preferred assistant normally.
 
-Requires Rust 1.86 or later.
-
-```sh
-cargo install --git https://github.com/nyuichi/cargo-elicit --locked
-rustup component add rust-analyzer rust-src
-```
-
-Install [Codex CLI](https://developers.openai.com/codex/cli/) 0.159.x and one of [Creusot](https://github.com/creusot-rs/creusot) 0.14.x, [Kani](https://github.com/model-checking/kani) 0.68.x, or [Aeneas with Lean 4](docs/aeneas.md) using their installation instructions. Creusot also requires its bundled Why3, Why3find, standard models, and SMT solver configuration. The model, reasoning effort, authentication, sandbox, and approval policy come from Codex's own configuration.
-
-## Usage
-
-Run these commands in the target crate's directory:
+## Workflow
 
 ```sh
-cargo elicit init --tool kani
-cargo elicit run
+cargo install --git https://github.com/nyuichi/cargo-elicit
+cd your-crate
+cargo elicit init --tool aeneas --api identity
+cargo elicit list
+cargo elicit show identity
+# Write contracts and proofs using normal native tools.
+cargo elicit check
+cargo elicit audit
 cargo elicit status
-cargo elicit list --json
 ```
 
-For Creusot, use `init --tool creusot`; for Aeneas, use `init --tool aeneas` ([setup and proof format](docs/aeneas.md)). Configuration consists of three settings:
+Rust 1.86+ builds the CLI. Explicit discovery requires Cargo, rustc and rust-analyzer; install the chosen verifier for checks. [Aeneas/Lean setup and proof format](docs/aeneas.md) describes the pinned toolchain. Kani 0.68 and Creusot 0.14 retain their native evidence adapters and narrower supported coverage.
+
+| Command | Behavior |
+| --- | --- |
+| `init` | Create configuration and explicitly discover the original Rust inventory |
+| `refresh` | Observe current scope, sources, declarations and tools; no proof compilation |
+| `status`, `list`, `show` | Read the saved snapshot only; no processes, hashing, reconciliation or writes |
+| `check [ID ...]` | Refresh inputs and validate obligations; Aeneas reuses matching checker-owned Lean products |
+| `audit [ID ...]` | Refresh inputs, independently rebuild in a fresh workspace and audit exact proof coverage |
+| `review [ID ...] --note REASON` | Record semantic judgment, separately from machine evidence |
+
+Read commands explicitly identify their snapshot and observation time. **They do not assert that files or tools still match it.** Use `refresh`, `check` or `audit` to observe later changes. Successful incremental checks and fresh audits are separate columns; semantic review does not gate either.
+
+## Declare what you want established
+
+Edit `elicit.toml`; no revision tokens or submission commands are needed:
 
 ```toml
-[agent]
-provider = "codex"
+schema = 2
 
 [verification]
-tool = "kani" # or "creusot" / "aeneas"
-required = false
+tool = "aeneas"
+
+[package]
+features = []
+all_features = false
+no_default_features = false
+
+[[obligations]]
+id = "identity"
+target = "identity"
+description = "Returns its argument for every input."
+
+[[obligations]]
+id = "supporting-fact"
+statement = "True"
+theorem = "Proofs.fact"
+description = "Replace this example with the mathematical fact you need."
 ```
 
-With `required = false`, the goal is specification work plus syntax and type checking by the verifier. Changing it to `true` reuses existing specifications and adds proof of the entire contract to the completion criteria. Types and traits do not have an independent `verified` status.
+A target selector may be an exact inventory ID, a unique function name or a method alias. A proposition obligation instead names an exact Lean statement and theorem. The example `True` is only a format demonstration, not a useful verification goal. Formal API predicates remain in native contract files. See [architecture and guarantees](docs/implementation.md).
 
-Explicitly select one package in a workspace with multiple packages:
+Omitting declarations selects discovered public function/method/trait-implementation obligations. Unsupported targets remain explicit; they do not become proved because another method passes. `list --inventory` also shows types, private helpers and discovery limitations. Passing every declared obligation does not establish unspecified invariants, trait laws, other features or whole-package correctness.
+
+`--package`, `--features`, `--all-features`, `--no-default-features` and `--target` select build scope at initialization. Edit the package section and refresh when changing scope. In a multi-package workspace, choose one package explicitly.
+
+## Evidence and review
+
+A backend exit code, an author's claim, and an accepted review cannot create a proof. API evidence requires original-source correspondence, complete native contract coverage and the adapter's scope/trust checks. Aeneas checks the actual translated signature and transitive axioms; only `propext`, `Classical.choice` and `Quot.sound` are allowed. Arbitrary proposition evidence is distinguished from Rust API coverage.
 
 ```sh
-cargo elicit init --tool creusot --package my-crate --features feature-a,feature-b
-cargo elicit status --json
-cargo elicit run --retry --max-tasks 10 --max-seconds 1200
+cargo elicit review identity --note 'The predicate captures the intended arbitrary-input behavior.'
+cargo elicit review identity --verdict needs-work --note 'The specification needs clarification.'
 ```
 
-The requested features and target, along with resolved features and the default host target, are saved and displayed at initialization. The Kani 0.68 adapter supports only the host target. Changing the saved verifier or build scope is rejected, preserving the existing ledger. Use a separate working directory for a different configuration.
+Review binds to the specification and its human description. Changing editorial description can stale review without discarding a machine proof. Changing a contract/model or formal declaration invalidates the corresponding bindings. A proof-only edit invalidates input freshness until explicitly checked. No command edits the Rust implementation or approves an implementation change.
 
-For the planned workflow, default run limits are 32 tasks, 3,600 seconds overall, 600 seconds per task, 600 seconds per verification, three cumulative attempts per task, and two consecutive attempts without progress. These defaults appear in CLI `--help` and can be overridden with arguments. The same failure is not retried on identical inputs. After reviewing the approach, use `run --retry` to retry explicitly.
+The versioned snapshot is `.elicit/snapshot.json`. Durable receipts, phase logs and diagnostic sources are under `.elicit/evidence/`; paths in receipts are project-relative. `.elicit/cache/` and `.elicit/runtime/` are regenerable and should be ignored by Git. Cache deletion preserves saved evidence and review summaries. Evidence is an audit trail, not a tamper-proof store against someone who can rewrite it under the same OS account.
 
-Aeneas defaults to autonomous authoring: one worker receives the entire selected API set and the remaining overall authoring budget. `--task-seconds` and `--plan-seconds` do not split that work. It chooses its own proof order and saves source artifacts, then records semantic review once with `agent stage --all --note REASON`. After the worker stops, cargo-elicit checks stable artifacts and records matching reviews and kernel evidence. `collect` performs this acceptance without starting a model. Interruptions and authoring deadlines preserve resumable work. Use `run --workflow planned` for the previous step dispatcher; Kani and Creusot continue to use it by default. See [autonomous Aeneas authoring](docs/autonomous-aeneas.md).
+Read commands exit 0 on a successful read. `check`/`audit` exit 0 for successful requested evidence at that command's level, 1 for unresolved work, 2 for configuration/environment errors, and 130 for interruption. `--json` exposes the same saved facts.
 
-The `run` exit codes are 0 for goal completion, 1 for unresolved work, 2 for configuration or environment errors, and 130 for interruption. `status` and `list` return 0 on a successful read, even if work remains unresolved.
+## Use with an AI assistant
 
-## What you can rely on
+The optional [cargo-elicit skill](skills/cargo-elicit/SKILL.md) teaches external assistants these commands. It leaves planning and authoring to the assistant. Humans need no skill or AI credentials. There is no `run` command or built-in Codex integration.
 
-- Contracts, proofs, and models are saved in the original source tree. Functions are not duplicated for verification.
-- Only cargo-elicit's wrapper records official proof results. A claim from Codex or a tool's exit code of 0 does not establish `verified` status.
-- Harnesses restricted to particular types or input ranges, unproved helpers, `trusted` declarations, unexecuted obligations, and results whose inputs changed during verification are not promoted to proofs of the entire API.
-- Specification review and proof validity are tracked separately. If a direct dependent can be reviewed without changing its specification, specification regeneration does not propagate further through that dependent.
-- `status` and `list` also reconcile against current sources. Broad fingerprints covering the package, local dependencies, configuration, tools, standard models, and other inputs prevent reuse of old proofs even when specification dependencies were not declared.
+This is an incompatible 0.2 redesign. Old ledgers/configuration are not migrated. Historical experiments are preserved in [the experiment index](docs/experiments/README.md); they describe older products and do not demonstrate that this version speeds up proof authoring.
 
-**Kani and Creusot full-contract completion is limited to independent free functions using bool, char, integers, and unit.** Kani results are checked against explicitly typed arbitrary-input harnesses in the same file. Creusot results are checked against fresh Coma output mapped to the original function and a complete Why3 proof tree. Aeneas supports mapped methods, structures, slices and internal helpers, with a Lean theorem quantifying the actual translated signature and a transitive axiom audit. For Kani/Creusot, results for generics, methods, trait conformance, helpers, or custom models are retained as partial evidence or evidence of unknown scope. Properties that cannot be expressed or processed as type invariants or trait laws must also be reported as unresolved. See [Implementation and limitations](docs/implementation.md) for details.
-
-The usefulness of a specification and its correspondence to the user's intent are not automatically guaranteed. Review the changes generated by Codex.
-
-## Persistence and resumption
-
-```text
-elicit.toml
-src/                         # Original implementation, contracts, and proofs
-.elicit/state.toml            # Single versioned ledger, result summaries, retries, and resumption
-.elicit/runtime/              # Run / state / worker / verifier locks
-.elicit/cache/                # Regenerable analysis and verification output, dedicated build cache
-```
-
-The ledger can be tracked in Git. Add `.elicit/runtime/`, `.elicit/cache/`, and Creusot's `.why3find/` to your Gitignore. Deleting the cache does not lose specification progress or summaries of successful results.
-
-On Ctrl-C, cargo-elicit stops the worker and its child processes where possible, keeping the unfinalized task as a checkpoint. The next run resumes by reconciling the sources. Running `init` again also preserves existing code, the ledger, and results. cargo-elicit does not commit, reset, or clean uncommitted changes in the target crate.
-
-Agent changes to implementation bodies block completion. Only after a human reviews the diff and decides the change is intended should the following command update the baseline. Specification review is still required afterward.
-
-```sh
-cargo elicit accept-implementation 'TARGET_ID' --reason 'Reason for approving the change'
-```
-
-If approval is required during unattended execution, cargo-elicit stops instead of approving automatically. In an interactive terminal, it displays Codex command and file approval requests. Unsupported interactive requests stop execution with a reason.
-
-## Development and testing
-
-```sh
-cargo fmt --check
-cargo clippy --locked --all-targets -- -D warnings
-cargo test --locked -- --test-threads=2
-cargo +1.86 check --locked
-# After installing the actual verifiers and their toolchains:
-cargo test --release --locked --test native -- --ignored --test-threads=1
-```
-
-Regular CLI tests use actual Cargo and rust-analyzer with deterministic Codex and verifier protocol fixtures. Native tests use actual verifiers to check both modes, interruption and resumption, and reuse after cache deletion. They do not execute a live AI turn. See [Testing](docs/testing.md).
-
-Specification: [v0.6](docs/spec-v0.6.md). License: [MIT](LICENSE-MIT) OR [Apache-2.0](LICENSE-APACHE).
-
-For selected API goals, caller-driven proof plans, intermediate Lean checkpoints,
-and reusable Aeneas `step*` rules, see [Goal-directed Aeneas verification](docs/goal-directed-aeneas.md).
-
-Measured comparisons, proof artifacts, failed trials and corrected analyses are indexed in
-[Verification experiment records](docs/experiments/README.md). The current records do not
-establish a general speed advantage over ordinary Codex.
+Licensed under MIT OR Apache-2.0.

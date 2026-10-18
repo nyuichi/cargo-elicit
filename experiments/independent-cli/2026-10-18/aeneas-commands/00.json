@@ -1,0 +1,11 @@
+{
+  "args": [
+    "init",
+    "--api",
+    "identity"
+  ],
+  "code": 0,
+  "seconds": 15.091791304,
+  "stderr": "",
+  "stdout": "Saved snapshot b9f200460554 (1792327618456)\nWorkspace currentness was not checked by this read. Use refresh, check or audit to observe inputs.\n1 obligations; audited at snapshot: false. This is not a whole-package claim.\nidentity  audit=missing_or_stale  check=missing_or_stale  review=unreviewed\n"
+}

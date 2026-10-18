@@ -1,41 +1,22 @@
-# Testing
-
-The regular `cargo test --locked` suite covers the ledger, stale propagation, coverage, retries, SCC ordering, locks, revision conflicts, CLI regressions using actual Cargo and rust-analyzer, and result parsing using actual Kani 0.68.0 JSON output. On Unix, process termination tests check timeouts for child processes, including children in separate process groups on Linux. CLI tests require Python 3.
-
-`tests/support/codex.py` simulates the stdio app-server and calls the actual cargo-elicit agent CLI. It reproduces completion notifications without accepted work, failed turn status, unattended approval requests, body edits, interruption, and thread resumption. `tests/support/cargo.py` replaces verifier commands and delegates ordinary Cargo operations, such as metadata, to actual Cargo. The product has no test-only environment variables or fake success paths.
-
-Native tests are ignored by default. They run actual verifiers through the same wrapper used in the product. The Codex side uses a deterministic protocol peer; these tests do not assess AI generation quality or execute live AI turns.
+# Validation
 
 ```sh
-cargo test --release --locked --test native -- --ignored --test-threads=1
+cargo fmt --check
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked
+cargo +1.86 check --locked
 ```
 
-Each test copies the entire fixture package into a temporary directory and verifies its original functions. It does not duplicate implementation functions into a separate crate for verification. Tests cover interruption and resumption, specification mode without proof search, verification-required mode, and reuse of proof results after deleting the cache and running `init` again. Temporary directories are retained on failure for diagnosis.
+Regular tests cover snapshot read purity with absent tools and changed files, explicit refresh without proof compilation, independent review/evidence, incremental dependency reuse and corruption rejection, clean audit isolation, unsupported import rejection, proposition goals and configuration races. Deterministic verifier peers test command/evidence boundaries; they do not establish native kernel acceptance.
 
-During reconstruction, all 39 regular tests and both native tests passed on Linux x86_64. Formatting, Clippy, and the Rust 1.86 build check also passed.
+Opt-in native tests use real pinned verifiers and never invoke AI:
 
-Tool versions used during reconstruction:
+```sh
+cargo test --locked --test native aeneas_incremental_audit_and_independent_semantic_review -- --ignored --nocapture
+cargo test --locked --test native kani_original_contract_audit -- --ignored --nocapture
+cargo test --locked --test native creusot_original_contract_audit -- --ignored --nocapture
+```
 
-- Rust stable 1.99.1 / MSRV 1.86.0
-- Codex app-server schema 0.159.2
-- Kani 0.68.0 / CBMC 6.11.0 / nightly-2026-08-21
-- Creusot 0.14.0 / nightly-2026-08-03
-- Why3 `05bf4ddf55cb3042f34c3bc0ed3aff56a226978a` (1.8.2+git)
-- Why3find `0f054b93c86ac7ba20bca7df5d1563a9a4434a30` (1.3.0+dev)
-- Alt-Ergo 2.6.4
+The Lean test exercises actual API and proposition proofs, warm module reuse, proof/model edits, independent semantic review, project-axiom rejection, partial acceptance of an independent proposition, fresh audit and durable diagnostics after cache deletion. It prints its retained fixture location. Never rebuild the cargo-elicit executable while a native test is checking its tracked identity.
 
-CI runs formatting, Clippy, regular tests, and the MSRV check. It does not install native verifier toolchains or execute live AI turns. Consult the repository's CI status and commit validation records for execution results.
-
-## Aeneas / Lean 4
-
-Regular CLI regression tests use deterministic Charon/Aeneas/Lake protocol peers to exercise both modes, missing proof rejection, axiom rejection, theorem mismatch, and separate contract/proof invalidation. The ignored `aeneas_both_modes_interruption_resume` test instead uses the actual pinned tools and Lean kernel, including rejection of `sorry`, project axioms, and theorem mismatches, with [fixtures/aeneas](../fixtures/aeneas). Follow [Aeneas setup](aeneas.md), then run `cargo test --release --locked --test native aeneas -- --ignored --test-threads=1`. Native tests use the deterministic Codex peer and do not consume AI credits.
-
-The Aeneas extension was validated on Linux x86_64 with 42 regular tests, formatting, Clippy, and Rust 1.86 checks, plus the native Aeneas test using Aeneas `e62dd83`, Charon 0.1.293 (`de8736f` / nightly-2026-09-17), Lean 4.35.0, and the backend's pinned Mathlib dependencies. The earlier reconstruction results above describe the Creusot/Kani baseline.
-
-The rich Aeneas fixture additionally exercises struct-valued outputs, read and write methods, slices and machine-size integers, and a local helper call. Its native test checks both modes, interruption/resumption and persisted results. Contracts are generated from the translated Lean function telescope, so the original primitive-only fixture and the axiom/mismatch rejection checks remain regressions.
-
-State-transaction regression tests cover contention with concurrent reconciliation. The rich native Aeneas test invokes the real `status` command after an early successful proof while verification is still running, checks the output, and requires the full run to finish successfully.
-
-The expanded implementation has 43 regular tests after adding the state-contention regression. The rich native fixture also preserves an actual mid-run `status` observation (1/5 verified in the validation run) and checks that subsequent verification completes. Timings from these deterministic-Codex native checks are not live authoring measurements.
-
-Scheduler/freshness regression tests cover unsupported traits remaining in the denominator, persistent issue blockers, task-specific retry inputs and forward progress excluding diagnostic changes. CLI tests check report-only edits and conservative fallbacks for build scripts, Rust file-input/path macros and Lean file-reading code. Real Aeneas fixtures additionally require one requested proof to record all ready audited methods, report edits to retain evidence, and proof-module refresh to run without another AI turn. The usual negative sorry/project-axiom/wrong-contract tests remain mandatory.
+Historical experiment scripts under experiments/adler2 target v0.1. They remain preserved evidence rather than current product tests. A new authoring speedup is not established by these mechanism tests.

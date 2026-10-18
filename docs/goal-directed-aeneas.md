@@ -1,3 +1,5 @@
+> Historical v0.1 document. The incompatible v0.2 product is documented in [README](../README.md) and [architecture](implementation.md). This page does not describe the current CLI.
+
 # Goal-directed Aeneas verification
 
 This page describes `run --workflow planned`. The Aeneas default is now [autonomous authoring and collection](autonomous-aeneas.md).
