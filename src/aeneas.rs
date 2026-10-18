@@ -109,6 +109,11 @@ pub fn attach_specs(scope: &Scope, targets: &mut [Target]) -> Result<()> {
         .unwrap_or_else(|_| "unavailable local Lean graph".into());
     for t in targets {
         let c = m.contracts.get(&t.id);
+        t.native_contract = c.map(|c| {
+            serde_json::json!({"backend":"aeneas","requires":c.requires.as_deref().unwrap_or("by intros; exact True"),
+            "ensures":c.ensures,"theorem":c.theorem,"proposition":contract_name(&t.id),
+            "file":proof_root(scope).join("contracts.toml")})
+        });
         t.model_base_hash = fingerprint::hash(serde_json::to_vec(&(
             &t.spec_hash,
             c.map(|c| (&c.requires, &c.ensures)),

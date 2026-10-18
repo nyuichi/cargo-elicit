@@ -12,6 +12,7 @@ cd your-crate
 cargo elicit init --tool aeneas --api identity
 cargo elicit list
 cargo elicit show identity
+cargo elicit plan identity
 # Write contracts and proofs using normal native tools.
 cargo elicit check
 cargo elicit audit
@@ -24,12 +25,18 @@ Rust 1.86+ builds the CLI. Explicit discovery requires Cargo, rustc and rust-ana
 | --- | --- |
 | `init` | Create configuration and explicitly discover the original Rust inventory |
 | `refresh` | Observe current scope, sources, declarations and tools; no proof compilation |
-| `status`, `list`, `show` | Read the saved snapshot only; no processes, hashing, reconciliation or writes |
+| `plan [API ...]` | Show reachable call graph collapsed into dependency-first SCCs, shared callees, contracts, evidence and unresolved boundaries |
+| `status [--all]` | Show remaining work and a short candidate-SCC summary; hide audited and semantically reviewed items unless `--all` |
+| `list`, `show` | Read all saved obligations or details; no processes, hashing, reconciliation or writes |
 | `check [ID ...]` | Refresh inputs and validate obligations; Aeneas reuses matching checker-owned Lean products |
 | `audit [ID ...]` | Refresh inputs, independently rebuild in a fresh workspace and audit exact proof coverage |
 | `review [ID ...] --note REASON` | Record semantic judgment, separately from machine evidence |
 
+[Dependency-first planning](docs/planning.md) explains candidate SCCs, caller requirements, proof reuse and the distinction between call edges and proof dependencies.
+
 Read commands explicitly identify their snapshot and observation time. **They do not assert that files or tools still match it.** Use `refresh`, `check` or `audit` to observe later changes. Successful incremental checks and fresh audits are separate columns; semantic review does not gate either.
+
+For frequent progress reads, `status` focuses on remaining work. A goal is hidden only when its saved fresh audit and semantic review are accepted and there is no current failed incremental check. Completed counts remain visible; `status --all` includes every goal. JSON applies the same filter and includes total/completed/remaining counts. Refreshed stale evidence or review makes a goal visible again. `list` and `plan` retain completed items so dependencies remain understandable.
 
 ## Declare what you want established
 

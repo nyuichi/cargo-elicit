@@ -162,6 +162,12 @@ impl Modules {
         }
         Ok(project)
     }
+    pub fn planning_view(&self) -> serde_json::Value {
+        serde_json::json!({"kind":"Lean module imports; not theorem-use dependencies",
+            "modules":self.imports.iter().map(|(name,imports)|serde_json::json!({"name":name,"imports":imports,
+                "imported_by":self.imports.iter().filter(|(_,ds)|ds.contains(name)).map(|(n,_)|n).collect::<Vec<_>>()
+            })).collect::<Vec<_>>()})
+    }
     pub fn contains(&self, name: &str) -> bool {
         self.sources.contains_key(name)
     }

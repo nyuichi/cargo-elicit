@@ -104,6 +104,8 @@ pub struct Snapshot {
     pub goals: Vec<Goal>,
     pub evidence: BTreeMap<String, Vec<Evidence>>,
     pub reviews: BTreeMap<String, Review>,
+    #[serde(default)]
+    pub proof_modules: Option<serde_json::Value>,
 }
 pub fn config(store: &Store) -> Result<Config> {
     let c: Config = toml::from_str(&fs::read_to_string(store.root.join("elicit.toml"))?)?;
@@ -193,6 +195,16 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
     let before = fingerprint::inputs(&package.scope, config.verification.tool, &version);
     let mut analyzer = Analyzer::default();
     let (inventory, mut limitations) = analyzer.analyze(&package, config.verification.tool)?;
+    let proof_modules = if config.verification.tool == Tool::Aeneas {
+        Some(
+            match crate::lean_modules::Modules::load(&crate::aeneas::proof_root(&package.scope)) {
+                Ok(modules) => modules.planning_view(),
+                Err(e) => serde_json::json!({"error":format!("{e:#}"),"modules":[]}),
+            },
+        )
+    } else {
+        None
+    };
     // Re-resolve Cargo metadata so mutations during initial scope discovery
     // cannot attach old cfg/features/dependency resolution to a newer input.
     let resolved = analysis::package(&store.root, &selection)?;
@@ -286,6 +298,7 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
     };
     let snapshot = Snapshot {
         schema: 2,
+        proof_modules,
         tool: config.verification.tool,
         observed_at: now(),
         input,

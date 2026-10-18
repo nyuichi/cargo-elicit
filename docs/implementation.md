@@ -4,7 +4,7 @@ Version 0.2 separates obligations, machine evidence, semantic review and observa
 
 ## Observation
 
-`status`, `list` and `show` deserialize the last saved snapshot. They spawn no processes, inspect no tools, acquire no write locks and make no attempt to silently update evidence. Every output identifies its saved-snapshot nature and observation time. A saved accepted audit is not a claim about an unobserved later workspace.
+`status`, `list`, `show` and `plan` deserialize the last saved snapshot. They spawn no processes, inspect no tools, acquire no write locks and make no attempt to silently update evidence. Every output identifies its saved-snapshot nature and observation time. A saved accepted audit is not a claim about an unobserved later workspace.
 
 `refresh` explicitly resolves Cargo scope and uses rust-analyzer plus structural source indexing to discover stable IDs and locations. It reads contract/model declarations without compiling them. Input/configuration fingerprints surround discovery, and Cargo scope is resolved again afterward; raced observations are rejected. Missing verifier installations can be recorded as inspection limitations rather than turning progress viewing into a setup workflow.
 
@@ -39,3 +39,7 @@ This cache is a correctness mechanism for ordinary development, not a security b
 One project lock serializes mutation/check operations. Read commands remain lock-free against atomic snapshot replacement. Original source files are never modified by the CLI. Durable run receipts contain scope, declarations, input-file hashes, result coverage, trusted base and backend decisions. Per-run logs and generated diagnostic sources are copied out of mutable build caches; deleting the cache does not erase them. Evidence is tied to inputs, not to an AI session identity.
 
 `show` provides the target location, generated Aeneas proposition name, saved results, phase and receipt. Historical failed results remain inspectable; newer failures are not hidden by an older success for the same operation/input. Review has its own accepted/needs-work/stale state and never erases a kernel result.
+
+## Planning
+
+`plan` derives a reachable local call graph from the saved inventory, collapses SCCs and joins it to saved obligation evidence without running tools. It provides dependency-first layers, selected-root sharing, inverse edges, source structure, native Aeneas contracts and explicit unresolved/external boundaries. Local Lean imports remain a separate graph, not theorem dependencies. See [planning semantics and limitations](planning.md). Planning never creates evidence or requires helper registration.

@@ -96,6 +96,12 @@ pub struct Target {
     pub source_hash: String,
     pub calls: BTreeSet<String>,
     pub unresolved_calls: Vec<String>,
+    #[serde(default)]
+    pub external_calls: BTreeSet<String>,
+    #[serde(default)]
+    pub source_facts: Option<serde_json::Value>,
+    #[serde(default)]
+    pub native_contract: Option<serde_json::Value>,
     pub required_units: Vec<String>,
     pub closed_primitive: bool,
     pub trusted: bool,

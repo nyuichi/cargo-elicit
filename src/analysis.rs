@@ -293,6 +293,13 @@ impl Analyzer {
                     t.unresolved_calls
                         .push(format!("{file}:{}:{}", line + 1, col + 1));
                 }
+                if external {
+                    t.external_calls.extend(
+                        locations.iter().map(|(f, l)| {
+                            format!("{file}:{}:{} -> {f}:{}", line + 1, col + 1, l + 1)
+                        }),
+                    );
+                }
                 t.calls.extend(matches);
             }
         }
@@ -605,6 +612,9 @@ impl Index {
             source_hash: hash(format!("{spec_hash}{body}")),
             calls: BTreeSet::new(),
             unresolved_calls: vec![],
+            external_calls: Default::default(),
+            source_facts: None,
+            native_contract: None,
             required_units: if kind.proof() {
                 vec!["contract".into()]
             } else {
@@ -887,30 +897,58 @@ impl Index {
         Ok(())
     }
     fn calls(&mut self, id: &str, file: &Path, block: &syn::Block) {
-        struct Calls(Vec<(usize, usize)>);
+        #[derive(Default)]
+        struct Calls {
+            sites: Vec<(usize, usize)>,
+            loops: usize,
+            branches: usize,
+            unsafe_blocks: usize,
+            macros: usize,
+            indirect_calls: usize,
+        }
         impl<'a> Visit<'a> for Calls {
             fn visit_expr_call(&mut self, e: &'a syn::ExprCall) {
+                if !matches!(e.func.as_ref(), syn::Expr::Path(_)) {
+                    self.indirect_calls += 1;
+                }
                 let p = match e.func.as_ref() {
                     syn::Expr::Path(p) => p.path.segments.last().unwrap().ident.span(),
                     _ => e.func.span(),
                 }
                 .start();
-                self.0.push((p.line - 1, p.column));
+                self.sites.push((p.line - 1, p.column));
                 visit::visit_expr_call(self, e);
             }
             fn visit_expr_method_call(&mut self, e: &'a syn::ExprMethodCall) {
                 let p = e.method.span().start();
-                self.0.push((p.line - 1, p.column));
+                self.sites.push((p.line - 1, p.column));
                 visit::visit_expr_method_call(self, e);
             }
+            fn visit_expr(&mut self, e: &'a syn::Expr) {
+                match e {
+                    syn::Expr::Loop(_) | syn::Expr::While(_) | syn::Expr::ForLoop(_) => {
+                        self.loops += 1
+                    }
+                    syn::Expr::If(_) | syn::Expr::Match(_) => self.branches += 1,
+                    syn::Expr::Unsafe(_) => self.unsafe_blocks += 1,
+                    _ => {}
+                }
+                visit::visit_expr(self, e);
+            }
             fn visit_expr_macro(&mut self, e: &'a syn::ExprMacro) {
+                self.macros += 1;
                 let p = e.span().start();
-                self.0.push((p.line - 1, p.column));
+                self.sites.push((p.line - 1, p.column));
             }
         }
-        let mut c = Calls(vec![]);
+        let mut c = Calls::default();
         c.visit_block(block);
-        for (l, c) in c.0 {
+        if let Some(t) = self.targets.iter_mut().find(|t| t.id == id) {
+            t.source_facts = Some(serde_json::json!({"loops":c.loops,"branches":c.branches,
+                "unsafe_blocks":c.unsafe_blocks,"macro_invocations":c.macros,"syntactic_indirect_calls":c.indirect_calls,
+                "scope":"unexpanded source syntax; nested bodies included; not proof complexity or exhaustive unsafe analysis"}));
+        }
+        for (l, c) in c.sites {
             self.calls
                 .push((id.into(), file.to_string_lossy().into_owned(), l, c));
         }

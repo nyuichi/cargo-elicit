@@ -5,6 +5,7 @@ mod fingerprint;
 mod lean_cache;
 mod lean_modules;
 mod model;
+mod plan;
 pub mod process;
 mod project;
 mod store;

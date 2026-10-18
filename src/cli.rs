@@ -43,6 +43,9 @@ enum Commands {
     Status {
         #[arg(long)]
         json: bool,
+        /// Include obligations with accepted fresh audit and semantic review.
+        #[arg(long)]
+        all: bool,
     },
     /// List saved obligation statuses or the complete saved API inventory.
     List {
@@ -54,6 +57,13 @@ enum Commands {
     /// Explain an obligation, its evidence, review and next actions from saved data.
     Show {
         id: String,
+        #[arg(long)]
+        json: bool,
+    },
+    /// Inspect a dependency-first SCC plan from saved data; never starts tools.
+    Plan {
+        /// Obligation IDs or inventory IDs/names; defaults to declared API goals.
+        ids: Vec<String>,
         #[arg(long)]
         json: bool,
     },
@@ -105,7 +115,40 @@ pub fn entry() -> i32 {
     }
 }
 fn print(snapshot: &project::Snapshot, json: bool) -> Result<()> {
-    let view = project::view(snapshot);
+    print_mode(snapshot, json, None)
+}
+fn print_mode(snapshot: &project::Snapshot, json: bool, status_all: Option<bool>) -> Result<()> {
+    let mut view = project::view(snapshot);
+    if let Some(all) = status_all {
+        let goals = view["goals"].as_array().unwrap();
+        let completed = |g: &&serde_json::Value| {
+            g["audit"] == "accepted" && g["review"] == "accepted" && g["check"] != "failed"
+        };
+        let done = goals.iter().filter(completed).count();
+        let shown: Vec<_> = goals
+            .iter()
+            .filter(|g| all || !completed(g))
+            .cloned()
+            .collect();
+        view["summary"] = serde_json::json!({"total":goals.len(),"completed":done,
+            "remaining":goals.len()-done,"hidden_completed":if all {0}else{done},
+            "completion_criterion":"accepted fresh audit and accepted semantic review at saved snapshot; no current failed check"});
+        view["goals"] = shown.into();
+        view["filter"] = if all { "all" } else { "remaining" }.into();
+        let plan = crate::plan::build(snapshot, &[])?;
+        view["candidate_sccs"] = plan["components"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|r| r["candidate"] == true)
+            .map(|r| {
+                serde_json::json!({"id":r["id"],
+                "members":r["members"],"selected_root_count":r["selected_root_count"],
+                "call_resolution_incomplete":r["call_resolution_incomplete"]})
+            })
+            .collect::<Vec<_>>()
+            .into();
+    }
     if json {
         println!("{}", serde_json::to_string_pretty(&view)?);
         return Ok(());
@@ -123,6 +166,33 @@ fn print(snapshot: &project::Snapshot, json: bool) -> Result<()> {
         snapshot.goals.len(),
         view["declared_obligations_audited_at_snapshot"]
     );
+    if status_all.is_some() {
+        println!(
+            "{} remaining; {} completed ({} hidden). Completion = fresh audit + semantic review. Use status --all to include completed items.",
+            view["summary"]["remaining"],
+            view["summary"]["completed"],
+            view["summary"]["hidden_completed"]
+        );
+        let candidates = view["candidate_sccs"].as_array().unwrap();
+        if !candidates.is_empty() {
+            println!("Candidate SCCs (known call dependencies only; inspect plan for boundaries):");
+            for c in candidates.iter().take(5) {
+                println!(
+                    "  {} (shared by {} selected roots){}",
+                    c["id"].as_str().unwrap(),
+                    c["selected_root_count"],
+                    if c["call_resolution_incomplete"] == true {
+                        "; unresolved calls"
+                    } else {
+                        ""
+                    }
+                );
+            }
+            if candidates.len() > 5 {
+                println!("  ... {} more in plan", candidates.len() - 5);
+            }
+        }
+    }
     for goal in view["goals"].as_array().unwrap() {
         println!(
             "{}  audit={}  check={}  review={}",
@@ -140,6 +210,7 @@ fn print(snapshot: &project::Snapshot, json: bool) -> Result<()> {
             println!("  receipt: {}", evidence["receipt"].as_str().unwrap_or(""));
         }
     }
+    println!("Use plan [API ...] for dependency-first SCCs, shared callees and evidence status.");
     for issue in &snapshot.limitations {
         println!("inventory limitation: {issue}");
     }
@@ -185,7 +256,7 @@ fn run(cli: Cli) -> Result<i32> {
     }
     let store = Store::discover(&root)?;
     match cli.command {
-        Commands::Status { json } => print(&project::load(&store)?, json)?,
+        Commands::Status { json, all } => print_mode(&project::load(&store)?, json, Some(all))?,
         Commands::List { json, inventory } => {
             let snapshot = project::load(&store)?;
             if inventory {
@@ -232,6 +303,14 @@ fn run(cli: Cli) -> Result<i32> {
                     println!("Receipt: {}", evidence["receipt"]);
                 }
                 println!("{}", value["next"].as_str().unwrap_or(""));
+            }
+        }
+        Commands::Plan { ids, json } => {
+            let value = crate::plan::build(&project::load(&store)?, &ids)?;
+            if json {
+                println!("{}", serde_json::to_string_pretty(&value)?);
+            } else {
+                println!("{}", crate::plan::render(&value));
             }
         }
         Commands::Refresh { json } => {

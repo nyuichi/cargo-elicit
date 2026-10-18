@@ -122,6 +122,7 @@ fn observation_is_pure_even_with_missing_tools_and_changed_workspace() {
         vec!["status", "--json"],
         vec!["list", "--inventory", "--json"],
         vec!["show", "identity", "--json"],
+        vec!["plan", "identity", "--json"],
     ] {
         let out = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"))
             .current_dir(p.dir.path())
@@ -415,4 +416,163 @@ fn proposition_obligations_and_semantic_changes_during_check() {
     p.ok(&["refresh"]);
     let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
     assert_eq!(status["declared_obligations_audited_at_snapshot"], false);
+}
+
+#[test]
+fn dependency_plan_combines_scc_sharing_evidence_and_uncertainty_without_tools() {
+    let p = Project::new();
+    let mut snapshot = p.snapshot();
+    let base = snapshot["inventory"][0].clone();
+    let mut targets = vec![];
+    for (id, calls) in [
+        ("A", vec!["B", "C"]),
+        ("X", vec!["D"]),
+        ("B", vec!["D"]),
+        ("C", vec![]),
+        ("D", vec!["E"]),
+        ("E", vec!["D"]),
+        ("Outside", vec!["D"]),
+        ("Unrelated", vec![]),
+    ] {
+        let mut t = base.clone();
+        t["id"] = id.into();
+        t["name"] = id.into();
+        t["aliases"] = serde_json::json!([]);
+        t["calls"] = serde_json::json!(calls);
+        if id == "D" {
+            t["unresolved_calls"] = serde_json::json!(["src/lib.rs:3:4"]);
+            t["external_calls"] = serde_json::json!(["external.rs:42"]);
+        }
+        targets.push(t);
+    }
+    snapshot["inventory"] = targets.into();
+    let goal = snapshot["goals"][0].clone();
+    snapshot["goals"] = ["A", "X", "C"]
+        .into_iter()
+        .map(|id| {
+            let mut g = goal.clone();
+            g["id"] = id.into();
+            g["target"] = id.into();
+            g
+        })
+        .collect::<Vec<_>>()
+        .into();
+    snapshot["evidence"] = serde_json::json!({"C":[{
+        "kind":"check","recorded_at":1,"input":snapshot["input"],
+        "specification":goal["specification"],"accepted":true,"result":null,
+        "receipt":".elicit/evidence/c.json","phase":"check","reason":"accepted"
+    }]});
+    let path = p.dir.path().join(".elicit/snapshot.json");
+    fs::write(&path, serde_json::to_vec_pretty(&snapshot).unwrap()).unwrap();
+    let before = fs::read(&path).unwrap();
+    let out = p
+        .cmd()
+        .env("PATH", "/nonexistent")
+        .args(["plan", "A", "X", "--json"])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let plan: Value = serde_json::from_slice(&out.stdout).unwrap();
+    let rows = plan["components"].as_array().unwrap();
+    assert_eq!(rows.len(), 5);
+    let row = |id: &str| rows.iter().find(|r| r["id"] == id).unwrap();
+    assert_eq!(row("D")["members"], serde_json::json!(["D", "E"]));
+    assert_eq!(row("D")["recursive"], true);
+    assert_eq!(row("D")["selected_root_count"], 2);
+    assert_eq!(row("D")["candidate"], true);
+    assert_eq!(row("D")["call_resolution_incomplete"], true);
+    assert_eq!(
+        row("D")["nodes"][0]["callers"],
+        serde_json::json!(["B", "E", "Outside", "X"])
+    );
+    assert_eq!(row("C")["all_members_have_accepted_evidence"], true);
+    assert_eq!(row("C")["candidate"], false);
+    assert_eq!(
+        row("A")["pending_dependency_sccs"],
+        serde_json::json!(["B"])
+    );
+    assert_eq!(row("A")["layer"], 2);
+    assert_eq!(row("D")["layer"], 0);
+    assert_eq!(fs::read(&path).unwrap(), before);
+    let text = String::from_utf8(p.ok(&["plan", "A", "X"]).stdout).unwrap();
+    assert!(text.contains("UNRESOLVED calls"));
+    assert!(text.contains("External boundaries"));
+    assert!(text.contains("No declared obligation"));
+    assert!(text.contains("not a proof dependency graph"));
+    assert!(!p.call(&["plan", "missing"]).status.success());
+    // A contract edit invalidates the saved evidence binding without hiding history.
+    snapshot["goals"][2]["specification"] = "changed-contract".into();
+    fs::write(&path, serde_json::to_vec(&snapshot).unwrap()).unwrap();
+    let plan: Value = serde_json::from_slice(&p.ok(&["plan", "C", "--json"]).stdout).unwrap();
+    assert_eq!(
+        plan["components"][0]["all_members_have_accepted_evidence"],
+        false
+    );
+    assert_eq!(
+        plan["components"][0]["nodes"][0]["obligations"][0]["check"],
+        "missing_or_stale"
+    );
+}
+
+#[test]
+fn plan_collects_native_contracts_source_structure_and_module_imports_on_refresh() {
+    let p = Project::new();
+    p.proof();
+    fs::write(p.dir.path().join("src/lib.rs"),
+        "pub fn identity(x:u32)->u32 { let mut y=x; while y>0 { if y==1 { y=0; } else { y-=1; } } x }\n").unwrap();
+    p.ok(&["refresh"]);
+    let plan: Value =
+        serde_json::from_slice(&p.ok(&["plan", "identity", "--json"]).stdout).unwrap();
+    let node = &plan["components"][0]["nodes"][0];
+    assert_eq!(node["source_facts"]["loops"], 1);
+    assert_eq!(node["source_facts"]["branches"], 1);
+    assert_eq!(node["native_contract"]["ensures"], "fun x out => out = x");
+    assert_eq!(node["native_contract"]["theorem"], "Proofs.identity_spec");
+    assert_eq!(plan["proof_module_imports"]["modules"][0]["name"], "Proofs");
+    assert_eq!(
+        plan["proof_module_imports"]["modules"][0]["imports"],
+        serde_json::json!(["ElicitContracts"])
+    );
+}
+
+#[test]
+fn status_focus_hides_only_audited_reviewed_goals_and_restores_stale_items() {
+    let p = Project::new();
+    let mut s = p.snapshot();
+    let id = s["goals"][0]["id"].as_str().unwrap().to_owned();
+    s["evidence"] = serde_json::json!({id.clone():[{
+        "kind":"audit","recorded_at":1,"input":s["input"],
+        "specification":s["goals"][0]["specification"],"accepted":true,
+        "result":null,"receipt":".elicit/evidence/a.json","phase":"audit","reason":"accepted"
+    }]});
+    let path = p.dir.path().join(".elicit/snapshot.json");
+    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
+    // A kernel result alone is visible until the specification is reviewed.
+    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
+    assert_eq!(status["goals"].as_array().unwrap().len(), 1);
+    s["reviews"] = serde_json::json!({id.clone():{
+        "specification":s["goals"][0]["review_specification"],"verdict":"accepted","note":"Matches intended property","recorded_at":1
+    }});
+    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
+    let before = fs::read(&path).unwrap();
+    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
+    assert!(status["goals"].as_array().unwrap().is_empty());
+    assert_eq!(status["summary"]["hidden_completed"], 1);
+    assert_eq!(status["summary"]["remaining"], 0);
+    let all: Value = serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
+    assert_eq!(all["goals"].as_array().unwrap().len(), 1);
+    assert_eq!(all["summary"]["hidden_completed"], 0);
+    assert_eq!(fs::read(&path).unwrap(), before);
+    let plan: Value = serde_json::from_slice(&p.ok(&["plan", "--json"]).stdout).unwrap();
+    assert_eq!(plan["components"].as_array().unwrap().len(), 1);
+    // A refreshed observation with a changed input makes the API visible again.
+    s["input"] = "changed-input".into();
+    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
+    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
+    assert_eq!(status["summary"]["remaining"], 1);
+    assert_eq!(status["goals"][0]["audit"], "missing_or_stale");
 }
