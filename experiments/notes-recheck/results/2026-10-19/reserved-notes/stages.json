@@ -1,0 +1,443 @@
+[
+  {
+    "timestamp_ms": 1792453622225,
+    "stage": "charon",
+    "elapsed_ms": 145,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453624482,
+    "stage": "aeneas",
+    "elapsed_ms": 2257,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453626438,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 1943,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453628299,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 1861,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453630041,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1741,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453631767,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1726,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453633806,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2038,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453637470,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3663,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453639291,
+    "stage": "Math.lean",
+    "elapsed_ms": 1820,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453644528,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5237,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453646290,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1761,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453652649,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6358,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453656987,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4338,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453679301,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22313,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453682391,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3089,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453684173,
+    "stage": "Api.lean",
+    "elapsed_ms": 1781,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453686028,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1854,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453687725,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1696,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453689467,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1741,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453691173,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1706,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453693008,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1834,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453701740,
+    "stage": "charon",
+    "elapsed_ms": 166,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453704038,
+    "stage": "aeneas",
+    "elapsed_ms": 2298,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453705889,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 1838,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453707711,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 1821,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453709487,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1776,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453711247,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1758,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453713303,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2056,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453716899,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3595,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453718802,
+    "stage": "Math.lean",
+    "elapsed_ms": 1903,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453724049,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5246,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453725867,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1818,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453732129,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6261,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453736280,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4150,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453758491,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22210,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453761764,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3273,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453763523,
+    "stage": "Api.lean",
+    "elapsed_ms": 1758,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453765282,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1758,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453766897,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1615,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453768537,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1639,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453770193,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1656,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453772137,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1943,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453786328,
+    "stage": "charon",
+    "elapsed_ms": 169,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788746,
+    "stage": "aeneas",
+    "elapsed_ms": 2417,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788760,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788760,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788760,
+    "stage": "Specs.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788761,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788761,
+    "stage": "Codec.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788762,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788762,
+    "stage": "Math.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788762,
+    "stage": "Inner.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788762,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788763,
+    "stage": "Outer.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788763,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788764,
+    "stage": "Finish.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "Compute.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "Api.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "Laws.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453788765,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 0,
+    "cache_hit": true,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453790690,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1924,
+    "cache_hit": false,
+    "success": true
+  }
+]

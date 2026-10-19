@@ -1,0 +1,93 @@
+[
+  {
+    "label": "notes-directory",
+    "argv": [
+      "notes",
+      "--json"
+    ],
+    "wall_seconds": 0.001174053002614528,
+    "exit_code": 0
+  },
+  {
+    "label": "initial-audit",
+    "argv": [
+      "audit",
+      "--seconds",
+      "600",
+      "--json"
+    ],
+    "wall_seconds": 88.41922285498003,
+    "exit_code": 0
+  },
+  {
+    "label": "warm-check",
+    "argv": [
+      "check",
+      "--seconds",
+      "600",
+      "--json"
+    ],
+    "wall_seconds": 79.12471025899868,
+    "exit_code": 0
+  },
+  {
+    "label": "progress-refresh",
+    "argv": [
+      "refresh",
+      "--json"
+    ],
+    "wall_seconds": 5.375922156992601,
+    "exit_code": 0
+  },
+  {
+    "label": "progress-status",
+    "argv": [
+      "status",
+      "--all",
+      "--json"
+    ],
+    "wall_seconds": 0.002344071021070704,
+    "exit_code": 0
+  },
+  {
+    "label": "progress-check",
+    "argv": [
+      "check",
+      "--seconds",
+      "600",
+      "--json"
+    ],
+    "wall_seconds": 80.71096381501411,
+    "exit_code": 0
+  },
+  {
+    "label": "final-refresh",
+    "argv": [
+      "refresh",
+      "--json"
+    ],
+    "wall_seconds": 5.579965344979428,
+    "exit_code": 0
+  },
+  {
+    "label": "final-status",
+    "argv": [
+      "status",
+      "--all",
+      "--json"
+    ],
+    "wall_seconds": 0.00250777299515903,
+    "exit_code": 0
+  },
+  {
+    "label": "final-audit",
+    "argv": [
+      "audit",
+      "--seconds",
+      "600",
+      "--json"
+    ],
+    "wall_seconds": 77.99058275300195,
+    "exit_code": 0
+  }
+]

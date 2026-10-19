@@ -1,0 +1,590 @@
+[
+  {
+    "timestamp_ms": 1792453286447,
+    "stage": "charon",
+    "elapsed_ms": 145,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453288782,
+    "stage": "aeneas",
+    "elapsed_ms": 2334,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453290886,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 2091,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453293151,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 2264,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453294861,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1709,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453296582,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1720,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453298681,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2098,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453302639,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3958,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453304418,
+    "stage": "Math.lean",
+    "elapsed_ms": 1778,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453310124,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5706,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453312007,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1882,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453318392,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6385,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453322559,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4166,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453345034,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22474,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453348225,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3190,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453350002,
+    "stage": "Api.lean",
+    "elapsed_ms": 1777,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453351889,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1886,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453353546,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1657,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453355266,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1720,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453356926,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1660,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453358753,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1827,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453367708,
+    "stage": "charon",
+    "elapsed_ms": 150,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453369926,
+    "stage": "aeneas",
+    "elapsed_ms": 2218,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453371799,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 1860,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453373774,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 1974,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453375517,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1742,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453377175,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1657,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453379176,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2000,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453382775,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3599,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453384534,
+    "stage": "Math.lean",
+    "elapsed_ms": 1758,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453389728,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5194,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453391565,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1837,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453397852,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6286,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453401990,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4137,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453424143,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22153,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453427264,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3121,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453429102,
+    "stage": "Api.lean",
+    "elapsed_ms": 1837,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453430962,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1860,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453432633,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1671,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453434389,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1756,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453436120,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1730,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453437917,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1797,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453451872,
+    "stage": "charon",
+    "elapsed_ms": 166,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453454146,
+    "stage": "aeneas",
+    "elapsed_ms": 2273,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453456124,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 1966,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453457962,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 1837,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453459844,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1882,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453461561,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1716,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453463683,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2121,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453467417,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3733,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453469212,
+    "stage": "Math.lean",
+    "elapsed_ms": 1794,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453474543,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5330,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453476442,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1899,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453482868,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6426,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453487181,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4312,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453509642,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22461,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453512920,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3277,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453514682,
+    "stage": "Api.lean",
+    "elapsed_ms": 1762,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453516549,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1866,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453518390,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1841,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453520154,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1763,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453522016,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1862,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453523942,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1925,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453538160,
+    "stage": "charon",
+    "elapsed_ms": 146,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453540364,
+    "stage": "aeneas",
+    "elapsed_ms": 2203,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453542402,
+    "stage": "ElicitGenerated.lean",
+    "elapsed_ms": 2025,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453544309,
+    "stage": "ElicitAdapter.lean",
+    "elapsed_ms": 1907,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453546104,
+    "stage": "Specs.lean",
+    "elapsed_ms": 1794,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453547819,
+    "stage": "ElicitContracts.lean",
+    "elapsed_ms": 1714,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453549878,
+    "stage": "Codec.lean",
+    "elapsed_ms": 2059,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453553525,
+    "stage": "Vectors.lean",
+    "elapsed_ms": 3646,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453555259,
+    "stage": "Math.lean",
+    "elapsed_ms": 1733,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453560408,
+    "stage": "Inner.lean",
+    "elapsed_ms": 5148,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453562133,
+    "stage": "Chunks.lean",
+    "elapsed_ms": 1725,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453568338,
+    "stage": "Outer.lean",
+    "elapsed_ms": 6205,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453572452,
+    "stage": "FinishLoops.lean",
+    "elapsed_ms": 4113,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453594510,
+    "stage": "Finish.lean",
+    "elapsed_ms": 22058,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453597517,
+    "stage": "Compute.lean",
+    "elapsed_ms": 3007,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453599213,
+    "stage": "Api.lean",
+    "elapsed_ms": 1695,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453600929,
+    "stage": "CodecLaws.lean",
+    "elapsed_ms": 1715,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453602583,
+    "stage": "SpecReview.lean",
+    "elapsed_ms": 1653,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453604297,
+    "stage": "Laws.lean",
+    "elapsed_ms": 1713,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453605917,
+    "stage": "Proofs.lean",
+    "elapsed_ms": 1620,
+    "cache_hit": false,
+    "success": true
+  },
+  {
+    "timestamp_ms": 1792453607655,
+    "stage": "Audit.lean",
+    "elapsed_ms": 1737,
+    "cache_hit": false,
+    "success": true
+  }
+]

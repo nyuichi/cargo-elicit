@@ -576,3 +576,89 @@ fn status_focus_hides_only_audited_reviewed_goals_and_restores_stale_items() {
     assert_eq!(status["summary"]["remaining"], 1);
     assert_eq!(status["goals"][0]["audit"], "missing_or_stale");
 }
+
+#[test]
+fn notes_preserve_audit_and_cache_while_tracked_changes_explain_staleness() {
+    let p = Project::new();
+    p.proof();
+    p.ok(&["check"]);
+    p.ok(&["audit"]);
+    let binding = p.snapshot()["input"].clone();
+    let receipt = p.snapshot()["evidence"]["identity"]
+        .as_array()
+        .unwrap()
+        .last()
+        .unwrap()["receipt"]
+        .clone();
+    let output: Value = serde_json::from_slice(&p.ok(&["notes", "--json"]).stdout).unwrap();
+    assert_eq!(output["excluded_from_verification_inputs"], true);
+    let notes = p.dir.path().join(".elicit/notes");
+    fs::write(notes.join("PROGRESS.md"), "Progress changed\n").unwrap();
+    fs::write(notes.join("FINAL_REPORT.md"), "Final report changed\n").unwrap();
+    p.ok(&["refresh"]);
+    assert_eq!(p.snapshot()["input"], binding);
+    let status: Value =
+        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
+    assert_eq!(
+        status["goals"][0]["audit_validity"]["state"],
+        "valid_at_snapshot"
+    );
+    assert_eq!(status["goals"][0]["audit_validity"]["receipt"], receipt);
+    assert_eq!(
+        status["goals"][0]["audit_validity"]["fresh_audit_needed_at_snapshot"],
+        false
+    );
+    let count = p.stages().len();
+    p.ok(&["check"]);
+    assert!(p.stages()[count..].iter().any(|s| s["cache_hit"] == true));
+    // Arbitrary Markdown stays tracked; no extension or benchmark-filename whitelist.
+    fs::write(
+        p.dir.path().join("FINAL_REPORT.md"),
+        "Tracked build input\n",
+    )
+    .unwrap();
+    p.ok(&["refresh"]);
+    p.ok(&["refresh"]); // Reasons must compare with the audit, not only the last refresh.
+    let status: Value =
+        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
+    let detail = &status["goals"][0]["audit_validity"];
+    assert_eq!(detail["state"], "stale");
+    assert!(detail["input_changes"].as_array().unwrap().iter().any(|c| {
+        c["path"].as_str().unwrap().ends_with("/FINAL_REPORT.md") && c["change"] == "added"
+    }));
+    fs::remove_file(p.dir.path().join("FINAL_REPORT.md")).unwrap();
+    let file = p.dir.path().join("elicit-proofs/aeneas/contracts.toml");
+    let source = fs::read_to_string(&file)
+        .unwrap()
+        .replace("out = x", "out = x + 1");
+    fs::write(file, source).unwrap();
+    p.ok(&["refresh"]);
+    let status: Value =
+        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
+    let detail = &status["goals"][0]["audit_validity"];
+    assert_eq!(detail["state"], "stale");
+    assert_eq!(detail["specification_changed"], true);
+    assert!(
+        detail["input_changes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|c| c["path"].as_str().unwrap().ends_with("/contracts.toml"))
+    );
+    // Retain older snapshots without making status read receipt files.
+    let mut saved = p.snapshot();
+    for e in saved["evidence"]["identity"].as_array_mut().unwrap() {
+        e.as_object_mut().unwrap().remove("input_files");
+    }
+    fs::write(
+        p.dir.path().join(".elicit/snapshot.json"),
+        serde_json::to_vec(&saved).unwrap(),
+    )
+    .unwrap();
+    let status: Value =
+        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
+    assert_eq!(
+        status["goals"][0]["audit_validity"]["change_details_available"],
+        false
+    );
+}

@@ -43,3 +43,9 @@ One project lock serializes mutation/check operations. Read commands remain lock
 ## Planning
 
 `plan` derives a reachable local call graph from the saved inventory, collapses SCCs and joins it to saved obligation evidence without running tools. It provides dependency-first layers, selected-root sharing, inverse edges, source structure, native Aeneas contracts and explicit unresolved/external boundaries. Local Lean imports remain a separate graph, not theorem dependencies. See [planning semantics and limitations](planning.md). Planning never creates evidence or requires helper registration.
+
+## Operational notes and audit validity
+
+`.elicit/notes/` is the official operational-record directory; `init` and the explicit `notes` command create a guide there without overwriting an existing guide. It inherits the existing `.elicit` fingerprint exclusion. No Markdown wildcard or named-report exemption is introduced. This is a declared non-semantic boundary, not automatic dependency analysis or sandbox enforcement: build/proof code must never read notes. Notes need separate archival because `.elicit` is usually Git-ignored.
+
+New evidence summaries retain their exact input-file hash maps. Pure reads compare these against the saved snapshot, so audit invalidation paths are relative to the audit, not the immediately preceding refresh. No receipt I/O or file inspection is added to `status`, `list` or `show`. Existing summaries without hash maps remain readable and explicitly lack detailed invalidation reasons. A valid audit remains valid through operational-note edits; an explicit fresh audit still always recompiles. The workflow saves semantic artifacts before auditing and writes the final operational report afterward.

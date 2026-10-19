@@ -34,6 +34,11 @@ enum Commands {
         #[arg(long = "api")]
         apis: Vec<String>,
     },
+    /// Create the reserved operational-notes directory and print its path.
+    Notes {
+        #[arg(long)]
+        json: bool,
+    },
     /// Observe current Cargo scope, sources and tool inputs; never runs Lean proofs.
     Refresh {
         #[arg(long)]
@@ -201,6 +206,35 @@ fn print_mode(snapshot: &project::Snapshot, json: bool, status_all: Option<bool>
             goal["check"].as_str().unwrap(),
             goal["review"].as_str().unwrap()
         );
+        let validity = &goal["audit_validity"];
+        if let Some(receipt) = validity["receipt"].as_str() {
+            println!(
+                "  audit {}: {} (saved observation)",
+                validity["state"].as_str().unwrap(),
+                receipt
+            );
+        }
+        if validity["state"] == "stale" {
+            if validity["specification_changed"] == true {
+                println!("  audit invalidated: formal specification binding changed");
+            }
+            for change in validity["input_changes"].as_array().unwrap().iter().take(5) {
+                println!(
+                    "  audit invalidated: {} {}",
+                    change["change"].as_str().unwrap(),
+                    change["path"].as_str().unwrap()
+                );
+            }
+            let count = validity["input_changes"].as_array().unwrap().len();
+            if count > 5 {
+                println!("  ... {} more input changes in status --json", count - 5);
+            }
+            if validity["change_details_available"] != true {
+                println!(
+                    "  detailed changes unavailable in this older evidence record; rerun audit for current evidence"
+                );
+            }
+        }
         if let Some(evidence) = goal.get("last_evidence").filter(|e| e["accepted"] == false) {
             println!(
                 "  {}: {}",
@@ -256,6 +290,22 @@ fn run(cli: Cli) -> Result<i32> {
     }
     let store = Store::discover(&root)?;
     match cli.command {
+        Commands::Notes { json } => {
+            process::install_interrupt()?;
+            let _lock = store.lock("project")?;
+            let path = project::notes(&store)?;
+            if json {
+                println!(
+                    "{}",
+                    serde_json::json!({"path":path,"excluded_from_verification_inputs":true,"policy":"operational records only; never read from build/proof code; archive separately"})
+                );
+            } else {
+                println!(
+                    "{}\nOperational records only. Never read from build/proof code. Archive separately (.elicit is usually Git-ignored).",
+                    path.display()
+                );
+            }
+        }
         Commands::Status { json, all } => print_mode(&project::load(&store)?, json, Some(all))?,
         Commands::List { json, inventory } => {
             let snapshot = project::load(&store)?;

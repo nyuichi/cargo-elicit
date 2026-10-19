@@ -205,9 +205,9 @@ fn environment_inputs(
         .collect()
 }
 
-// Only ignore the two named operational reports in demonstrably simple crates.
-// Arbitrary files, build scripts, dependencies/proc macros, file-input macros and
-// custom compiler hooks retain conservative whole-package invalidation.
+// Determine whether compiler environment selectors can be normalized.
+// Project files remain conservatively tracked; operational notes belong under
+// the reserved .elicit/notes directory and must never be semantic inputs.
 fn dependency_active(
     manifest: &toml::Value,
     scope: &Scope,

@@ -1,0 +1,9 @@
+{
+  "receipt": ".elicit/evidence/audit-1792453359937.json",
+  "accepted_apis": 5,
+  "stages": 21,
+  "cache_hits": 0,
+  "cached_modules": [],
+  "verifier_stage_ms": 72427,
+  "input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9"
+}

@@ -1,0 +1,54 @@
+{
+  "arm": "reserved-notes",
+  "initial_audit": {
+    "receipt": ".elicit/evidence/audit-1792453694100.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 70902,
+    "input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054"
+  },
+  "warm_check": {
+    "receipt": ".elicit/evidence/check-1792453773387.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 70538,
+    "input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054"
+  },
+  "progress_check": {
+    "receipt": ".elicit/evidence/check-1792453791858.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 18,
+    "cached_modules": [
+      "ElicitGenerated.lean",
+      "ElicitAdapter.lean",
+      "Specs.lean",
+      "ElicitContracts.lean",
+      "Codec.lean",
+      "Vectors.lean",
+      "Math.lean",
+      "Inner.lean",
+      "Chunks.lean",
+      "Outer.lean",
+      "FinishLoops.lean",
+      "Finish.lean",
+      "Compute.lean",
+      "Api.lean",
+      "CodecLaws.lean",
+      "SpecReview.lean",
+      "Laws.lean",
+      "Proofs.lean"
+    ],
+    "verifier_stage_ms": 4510,
+    "input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054"
+  },
+  "final_audit": null,
+  "measured_wall_seconds": 23.91344886299339,
+  "final_audit_command_executed": false,
+  "source_and_proofs_unchanged": true,
+  "note_policy": "Operational notes are never read by build/proof code; explicit trust boundary."
+}

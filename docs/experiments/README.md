@@ -4,6 +4,8 @@ These records preserve successful and unsuccessful trials, original measurements
 
 ## Start here
 
+- [Operational-note invalidation](adler2-operational-notes.md): a completed-proof, same-binary comparison; 18 cached Lean modules and retained fresh-audit evidence after operational record edits. This measures checking overhead, not new proof authoring.
+
 - [Fresh adler2 authoring with the independent CLI](adler2-independent-cli.md): a new matched 0.2 CLI+skill versus ordinary Codex pair, fresh five-API proofs, independent audits, metrics and limits.
 
 - [Independent CLI redesign (0.2)](2026-10-18-independent-cli.md): the incompatible human/AI-common CLI, removed orchestration, cache/audit separation and mechanism validation. No new authoring speed claim.

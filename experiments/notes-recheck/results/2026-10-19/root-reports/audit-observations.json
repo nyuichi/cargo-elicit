@@ -1,0 +1,264 @@
+{
+  "progress-status": {
+    "snapshot": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+    "declared_obligations_audited_at_snapshot": false,
+    "goals": [
+      {
+        "id": "Adler32::new",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::checksum",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::from_checksum",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::write_slice",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "adler32_slice",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      }
+    ]
+  },
+  "final-status": {
+    "snapshot": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+    "declared_obligations_audited_at_snapshot": false,
+    "goals": [
+      {
+        "id": "Adler32::new",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/FINAL_REPORT.md"
+            },
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::checksum",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/FINAL_REPORT.md"
+            },
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::from_checksum",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/FINAL_REPORT.md"
+            },
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::write_slice",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/FINAL_REPORT.md"
+            },
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "adler32_slice",
+        "check": "missing_or_stale",
+        "audit": "missing_or_stale",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": true,
+          "input_changes": [
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/FINAL_REPORT.md"
+            },
+            {
+              "change": "modified",
+              "path": "/workspace/elicit-notes-recheck-2026-10-19/cases/root-reports/PROGRESS.md"
+            }
+          ],
+          "observed_input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4",
+          "receipt": ".elicit/evidence/audit-1792453359937.json",
+          "recorded_at": 1792453359939,
+          "specification_changed": false,
+          "state": "stale",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      }
+    ]
+  }
+}

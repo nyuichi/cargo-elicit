@@ -1,0 +1,28 @@
+{
+  "receipt": ".elicit/evidence/check-1792453791858.json",
+  "accepted_apis": 5,
+  "stages": 21,
+  "cache_hits": 18,
+  "cached_modules": [
+    "ElicitGenerated.lean",
+    "ElicitAdapter.lean",
+    "Specs.lean",
+    "ElicitContracts.lean",
+    "Codec.lean",
+    "Vectors.lean",
+    "Math.lean",
+    "Inner.lean",
+    "Chunks.lean",
+    "Outer.lean",
+    "FinishLoops.lean",
+    "Finish.lean",
+    "Compute.lean",
+    "Api.lean",
+    "CodecLaws.lean",
+    "SpecReview.lean",
+    "Laws.lean",
+    "Proofs.lean"
+  ],
+  "verifier_stage_ms": 4510,
+  "input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054"
+}

@@ -1,0 +1,194 @@
+{
+  "progress-status": {
+    "snapshot": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+    "declared_obligations_audited_at_snapshot": true,
+    "goals": [
+      {
+        "id": "Adler32::new",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::checksum",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::from_checksum",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::write_slice",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "adler32_slice",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      }
+    ]
+  },
+  "final-status": {
+    "snapshot": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+    "declared_obligations_audited_at_snapshot": true,
+    "goals": [
+      {
+        "id": "Adler32::new",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::checksum",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::from_checksum",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "Adler32::write_slice",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      },
+      {
+        "id": "adler32_slice",
+        "check": "accepted",
+        "audit": "accepted",
+        "review": "unreviewed",
+        "audit_validity": {
+          "audit_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "change_details_available": true,
+          "fresh_audit_needed_at_snapshot": false,
+          "input_changes": [],
+          "observed_input": "509381d3d0e100a54c5fa9c0796814c6cd7d9fd43a1499969f79bbc7fa68e054",
+          "receipt": ".elicit/evidence/audit-1792453694100.json",
+          "recorded_at": 1792453694103,
+          "specification_changed": false,
+          "state": "valid_at_snapshot",
+          "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+        }
+      }
+    ]
+  }
+}

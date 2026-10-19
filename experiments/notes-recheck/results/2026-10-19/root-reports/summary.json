@@ -1,0 +1,43 @@
+{
+  "arm": "root-reports",
+  "initial_audit": {
+    "receipt": ".elicit/evidence/audit-1792453359937.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 72427,
+    "input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9"
+  },
+  "warm_check": {
+    "receipt": ".elicit/evidence/check-1792453439063.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 70337,
+    "input": "bc87896969962757efb7e63a2c20e394e98f5af9dfeb26f7c16202c0607684b9"
+  },
+  "progress_check": {
+    "receipt": ".elicit/evidence/check-1792453525154.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 72212,
+    "input": "22048e3978d996da48db0e18cbe8b9a4933ba9c670efe44d097e51d114ea1117"
+  },
+  "final_audit": {
+    "receipt": ".elicit/evidence/audit-1792453608729.json",
+    "accepted_apis": 5,
+    "stages": 21,
+    "cache_hits": 0,
+    "cached_modules": [],
+    "verifier_stage_ms": 69616,
+    "input": "0a830f37ede9fa7c9c9263adbd809f9c37de3faba480eada64f785274b4445f4"
+  },
+  "measured_wall_seconds": 169.66228591400431,
+  "final_audit_command_executed": true,
+  "source_and_proofs_unchanged": true,
+  "note_policy": "Operational notes are never read by build/proof code; explicit trust boundary."
+}

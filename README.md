@@ -24,6 +24,7 @@ Rust 1.86+ builds the CLI. Explicit discovery requires Cargo, rustc and rust-ana
 | Command | Behavior |
 | --- | --- |
 | `init` | Create configuration and explicitly discover the original Rust inventory |
+| `notes` | Create/locate `.elicit/notes/` for progress, handoff and final reports outside verification inputs |
 | `refresh` | Observe current scope, sources, declarations and tools; no proof compilation |
 | `plan [API ...]` | Show reachable call graph collapsed into dependency-first SCCs, shared callees, contracts, evidence and unresolved boundaries |
 | `status [--all]` | Show remaining work and a short candidate-SCC summary; hide audited and semantically reviewed items unless `--all` |
@@ -93,3 +94,11 @@ The optional [cargo-elicit skill](skills/cargo-elicit/SKILL.md) teaches external
 This is an incompatible 0.2 redesign. Old ledgers/configuration are not migrated. Historical experiments are preserved in [the experiment index](docs/experiments/README.md); they describe older products and do not demonstrate that this version speeds up proof authoring.
 
 Licensed under MIT OR Apache-2.0.
+
+## Operational records and final audit
+
+Use `cargo elicit notes` to create/locate `.elicit/notes/` (also created by `init`). Keep progress, handoff notes and final reports there. `.elicit/` was already excluded from fingerprints; this is an explicit workflow convention, not a broader exclusion rule. Other project files, including arbitrary Markdown and root-level reports, stay tracked.
+
+Never import or read operational notes from Rust, build scripts, proc macros, Lean or verifier code. Such dependencies are outside the reproducibility guarantee. Keep all specifications, models and proofs in tracked input locations. Archive notes explicitly when publishing/moving work: `.elicit` is normally Git-ignored.
+
+Save semantic inputs and reproduction scripts, run the final `audit`, then write the report in `.elicit/notes/`. Notes alone do not require another audit. After `refresh`, `status --all` identifies the current audit receipt and, for stale evidence, compares saved audit input hashes with the newly observed input hashes. `--json` exposes `audit_validity`, changed paths, formal-binding changes and whether a fresh audit is needed at the saved snapshot. Reasons survive repeated refreshes; older evidence without saved input hashes reports that details are unavailable. A plain `status` does not inspect current files. Explicit `audit` continues to rebuild from scratch every time.

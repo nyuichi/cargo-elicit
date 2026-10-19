@@ -78,6 +78,8 @@ pub struct Review {
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evidence {
+    #[serde(default)]
+    pub input_files: BTreeMap<String, String>,
     pub kind: String,
     pub recorded_at: u64,
     pub input: String,
@@ -176,7 +178,27 @@ pub fn init(root: &Path, c: Config) -> Result<Snapshot> {
         root: root.to_path_buf(),
     };
     let _lock = store.lock("project")?;
+    notes(&store)?;
     refresh(&store)
+}
+/// Operational records are deliberately outside proof/build inputs.
+pub fn notes(store: &Store) -> Result<std::path::PathBuf> {
+    let path = store.root.join(".elicit/notes");
+    fs::create_dir_all(&path)?;
+    let guide = path.join("README.md");
+    match fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(guide)
+    {
+        Ok(mut file) => {
+            use std::io::Write;
+            file.write_all(b"# Operational notes\n\nKeep progress, handoff notes and final reports here. This directory is excluded from verification inputs. Never import or read it from Rust, build scripts, proc macros, Lean or verifier code; such dependencies are outside the reproducibility guarantee. Keep specifications, proofs and all semantic inputs in tracked source locations. Archive this directory separately when preserving work: .elicit is usually ignored by Git.\n")?;
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {}
+        Err(e) => return Err(e.into()),
+    }
+    Ok(path)
 }
 /// Explicit observation: Cargo/discovery and fingerprints; no verifier compilation.
 pub fn refresh(store: &Store) -> Result<Snapshot> {
@@ -362,12 +384,42 @@ pub fn evidence_status<'a>(s: &'a Snapshot, g: &Goal, kind: &str) -> Option<&'a 
         .rev()
         .find(|e| e.kind == kind && e.input == s.input && e.specification == g.specification)
 }
+fn audit_validity(s: &Snapshot, g: &Goal) -> serde_json::Value {
+    let current = evidence_status(s, g, "audit");
+    let latest = s
+        .evidence
+        .get(&g.id)
+        .into_iter()
+        .flatten()
+        .rev()
+        .find(|e| e.kind == "audit");
+    let reference = current.or(latest);
+    let state = match current {
+        Some(e) if e.accepted => "valid_at_snapshot",
+        Some(_) => "failed_at_snapshot",
+        None if latest.is_some() => "stale",
+        None => "missing",
+    };
+    let changes: Vec<_> = reference.into_iter().filter(|e|!e.input_files.is_empty()).flat_map(|e| {
+        e.input_files.keys().chain(s.input_files.keys()).collect::<std::collections::BTreeSet<_>>()
+            .into_iter().filter(|k|e.input_files.get(*k)!=s.input_files.get(*k)).map(|k| {
+                serde_json::json!({"path":k,"change":if !e.input_files.contains_key(k){"added"}else if !s.input_files.contains_key(k){"removed"}else{"modified"}})
+            }).collect::<Vec<_>>()
+    }).collect();
+    serde_json::json!({"state":state,"receipt":reference.map(|e|&e.receipt),
+        "recorded_at":reference.map(|e|e.recorded_at),"input_changes":changes,
+        "change_details_available":reference.is_some_and(|e|!e.input_files.is_empty()),
+        "specification_changed":reference.map(|e|e.specification != g.specification),
+        "audit_input":reference.map(|e|&e.input),"observed_input":s.input,
+        "fresh_audit_needed_at_snapshot":!current.is_some_and(|e|e.accepted),
+        "workspace_currentness":"not_observed_by_this_read; refresh to compare current files"})
+}
 pub fn view(s: &Snapshot) -> serde_json::Value {
     let goals=s.goals.iter().map(|g|{
   let audit=evidence_status(s,g,"audit");let check=evidence_status(s,g,"check");
   let review=s.reviews.get(&g.id);
   let review_state=match review{None=>"unreviewed",Some(r) if r.specification!=g.review_specification=>"stale",Some(r)=>r.verdict.as_str()};
-  serde_json::json!({"id":g.id,"target":g.target,"description":g.description,"limitation":g.limitation,"audit":audit.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"check":check.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"review":review_state,"last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()),"next":if audit.is_some_and(|e|e.accepted){"inspect scope/semantic review as needed"}else{"author with native tools; check when useful; audit for final evidence"}})
+  serde_json::json!({"id":g.id,"target":g.target,"description":g.description,"limitation":g.limitation,"audit":audit.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"check":check.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"review":review_state,"audit_validity":audit_validity(s,g),"last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()),"next":if audit.is_some_and(|e|e.accepted){"inspect scope/semantic review as needed"}else{"author with native tools; check when useful; audit for final evidence"}})
  }).collect::<Vec<_>>();
     let complete = !s.goals.is_empty()
         && s.goals.iter().all(|g| {
@@ -382,7 +434,7 @@ pub fn view(s: &Snapshot) -> serde_json::Value {
         })
         .map(|t| t.id.clone())
         .collect::<Vec<_>>();
-    serde_json::json!({"schema":2,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run refresh or check/audit","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_obligations_audited_at_snapshot":complete,"whole_package_claim":false,"uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"changed_inputs":s.changed_inputs,"goals":goals})
+    serde_json::json!({"schema":2,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run refresh or check/audit","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_obligations_audited_at_snapshot":complete,"whole_package_claim":false,"notes_directory":".elicit/notes","notes_policy":"operational only; never read from build or proof code; archive separately","uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"changed_inputs":s.changed_inputs,"goals":goals})
 }
 pub fn review(store: &Store, selectors: &[String], verdict: &str, note: &str) -> Result<Snapshot> {
     if note.trim().is_empty() {
@@ -550,6 +602,7 @@ pub fn check(
                 kind: if audit { "audit" } else { "check" }.into(),
                 recorded_at: now(),
                 input: report.input.clone(),
+                input_files: snapshot.input_files.clone(),
                 specification: goal.specification,
                 accepted,
                 result,
