@@ -1,0 +1,87 @@
+{
+  "receipt": ".elicit/evidence/audit-1792457248533.json",
+  "input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+  "stable": true,
+  "results": [
+    {
+      "target": "adler2::adler32_slice::Function",
+      "scope": "full_contract",
+      "outcome": "success",
+      "obligations": [
+        "ElicitContracts.c_8484fdd92cfcd3e7"
+      ],
+      "assumptions": [],
+      "restrictions": [],
+      "trusted_base": [
+        "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+        "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+      ],
+      "reusable": true,
+      "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "scope": "full_contract",
+      "outcome": "success",
+      "obligations": [
+        "ElicitContracts.c_0a059b8c0885cf07"
+      ],
+      "assumptions": [],
+      "restrictions": [],
+      "trusted_base": [
+        "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+        "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+      ],
+      "reusable": true,
+      "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "scope": "full_contract",
+      "outcome": "success",
+      "obligations": [
+        "ElicitContracts.c_9a31b7b9cb8492b0"
+      ],
+      "assumptions": [],
+      "restrictions": [],
+      "trusted_base": [
+        "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+        "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+      ],
+      "reusable": true,
+      "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "scope": "full_contract",
+      "outcome": "success",
+      "obligations": [
+        "ElicitContracts.c_8055bec449b87b3d"
+      ],
+      "assumptions": [],
+      "restrictions": [],
+      "trusted_base": [
+        "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+        "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+      ],
+      "reusable": true,
+      "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+    },
+    {
+      "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "scope": "full_contract",
+      "outcome": "success",
+      "obligations": [
+        "ElicitContracts.c_98f3436459f22f5d"
+      ],
+      "assumptions": [],
+      "restrictions": [],
+      "trusted_base": [
+        "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+        "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+      ],
+      "reusable": true,
+      "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only"
+    }
+  ]
+}

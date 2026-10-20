@@ -1,0 +1,5 @@
+{
+  "timed_implementation_public_commit": "0c53a65f5752eba6016664ac843d051ed59a22f9",
+  "timed_implementation_local_commit": "38625c9b87b100f1b35fe5b74daa937218528a25",
+  "post_trial_change": "Preserve all completed goals for check/audit JSON and expanded operation views; default status remains filtered. Normal concise text unchanged. Regression-tested; not included in timed trial."
+}

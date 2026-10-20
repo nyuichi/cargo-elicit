@@ -1,0 +1,33 @@
+{
+  "observer_protocol_sha256": {
+    "run.py": "f1bdb4d139462db698e736a65d3472333f401ed609b932cab040a04c1ba2eb66",
+    "prepare.py": "b8fc6c5ddea3160f2994da5678fbb817afc65f7a80a983c9c2b0660d92ab88f9",
+    "TASK.md": "69e27b49d2a72f0ccfee31bade03b4622b3a892103f47d6af6fc66b30bef7cd2",
+    "README.md": "de2617d57ddae7f650c3c5e3092d11c568783749fdf5c4495f36e198064460b3",
+    "compare_saved.py": "c9ba4a83e84c7fb01700038ca2e3c56a528fb33e1b8dfd548032f39eb0ea4892",
+    "summarize.py": "ea9519e1a92fcab5bb3d029303f276fe5276f371ede6403d12e805210d37b89e"
+  },
+  "setup_attempts": [
+    {
+      "directory": "results",
+      "status": "environment_or_protocol_error",
+      "seconds": 0.016342741990229115,
+      "reason": "Codex app-server disconnected",
+      "live_response_observed": false
+    },
+    {
+      "directory": "results-live",
+      "status": "environment_or_protocol_error",
+      "seconds": 0.4189610460016411,
+      "reason": "Codex app-server disconnected",
+      "live_response_observed": false
+    },
+    {
+      "directory": "results-runtime",
+      "status": "failed",
+      "seconds": 19.53939257300226,
+      "reason": "See retained failed turn: workspace routing discovery failed",
+      "live_response_observed": false
+    }
+  ]
+}

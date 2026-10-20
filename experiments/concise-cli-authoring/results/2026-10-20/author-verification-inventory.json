@@ -1,0 +1,380 @@
+{
+  "schema_version": 1,
+  "crate": {
+    "name": "adler2",
+    "version": "2.0.1",
+    "manifest": "Cargo.toml",
+    "target": "x86_64-unknown-linux-gnu",
+    "features": [
+      "default",
+      "std"
+    ]
+  },
+  "selected_api_count": 5,
+  "apis": [
+    {
+      "api": "Adler32::new",
+      "rust_target": "adler2::impl[ff6e69000b04949b]::new::Method",
+      "theorem_root": "Proofs.new_spec",
+      "contract": "ElicitContracts.c_8055bec449b87b3d",
+      "contract_precondition": "True",
+      "postcondition": "Returns (a,b)=(1,0).",
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "proved_unconditionally_for_all_translated_inputs_fresh_audit_accepted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "audit_receipt": ".elicit/evidence/audit-1792456951678.json",
+      "audit_validity": {
+        "audit_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "receipt": ".elicit/evidence/audit-1792456951678.json",
+        "recorded_at": 1792456951681,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "api": "Adler32::checksum",
+      "rust_target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+      "theorem_root": "Proofs.checksum_spec",
+      "contract": "ElicitContracts.c_0a059b8c0885cf07",
+      "contract_precondition": "True",
+      "postcondition": "Returns the natural number 65536*b+a.",
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "proved_unconditionally_for_all_translated_inputs_fresh_audit_accepted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "audit_receipt": ".elicit/evidence/audit-1792456951678.json",
+      "audit_validity": {
+        "audit_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "receipt": ".elicit/evidence/audit-1792456951678.json",
+        "recorded_at": 1792456951681,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "api": "Adler32::from_checksum",
+      "rust_target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+      "theorem_root": "Proofs.from_checksum_spec",
+      "contract": "ElicitContracts.c_9a31b7b9cb8492b0",
+      "contract_precondition": "True",
+      "postcondition": "For all u32 sum, returns a=sum mod 65536 and b=sum div 65536.",
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "proved_unconditionally_for_all_translated_inputs_fresh_audit_accepted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "audit_receipt": ".elicit/evidence/audit-1792456951678.json",
+      "audit_validity": {
+        "audit_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "receipt": ".elicit/evidence/audit-1792456951678.json",
+        "recorded_at": 1792456951681,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "api": "Adler32::write_slice",
+      "rust_target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+      "theorem_root": "Proofs.write_slice_spec",
+      "contract": "ElicitContracts.c_98f3436459f22f5d",
+      "contract_precondition": "True",
+      "postcondition": "Returns exactly AdlerSpec.run (AdlerSpec.state self) bytes.val.",
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "proved_unconditionally_for_all_translated_inputs_fresh_audit_accepted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "audit_receipt": ".elicit/evidence/audit-1792456951678.json",
+      "audit_validity": {
+        "audit_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "receipt": ".elicit/evidence/audit-1792456951678.json",
+        "recorded_at": 1792456951681,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "api": "adler32_slice",
+      "rust_target": "adler2::adler32_slice::Function",
+      "theorem_root": "Proofs.adler32_slice_spec",
+      "contract": "ElicitContracts.c_8484fdd92cfcd3e7",
+      "contract_precondition": "True",
+      "postcondition": "Returns AdlerSpec.pack (AdlerSpec.run (1,0) bytes.val).",
+      "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+      "status": "proved_unconditionally_for_all_translated_inputs_fresh_audit_accepted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "audit_receipt": ".elicit/evidence/audit-1792456951678.json",
+      "audit_validity": {
+        "audit_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+        "receipt": ".elicit/evidence/audit-1792456951678.json",
+        "recorded_at": 1792456951681,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    }
+  ],
+  "laws": [
+    {
+      "theorem_root": "CodecLaws.encode_decode",
+      "proof_module": "elicit-proofs/aeneas/CodecLaws.lean",
+      "condition": "None; every u32.",
+      "status": "proved_and_compiled_in_independent_fresh_audit_graph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log"
+    },
+    {
+      "theorem_root": "CodecLaws.decode_encode",
+      "proof_module": "elicit-proofs/aeneas/CodecLaws.lean",
+      "condition": "None; every representable Adler32 state.",
+      "status": "proved_and_compiled_in_independent_fresh_audit_graph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log"
+    },
+    {
+      "theorem_root": "Laws.split_update",
+      "proof_module": "elicit-proofs/aeneas/Laws.lean",
+      "condition": "xs.val.length + ys.val.length <= Usize.max; concat constructs a representable slice.",
+      "status": "proved_and_compiled_in_independent_fresh_audit_graph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log"
+    },
+    {
+      "theorem_root": "Laws.save_restore_resume",
+      "proof_module": "elicit-proofs/aeneas/Laws.lean",
+      "condition": "None beyond the state and byte-slice types; both executions succeed.",
+      "status": "proved_and_compiled_in_independent_fresh_audit_graph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log"
+    },
+    {
+      "theorem_root": "Laws.split_checksum_resume",
+      "proof_module": "elicit-proofs/aeneas/Laws.lean",
+      "condition": "xs.val.length + ys.val.length <= Usize.max; both executions succeed.",
+      "status": "proved_and_compiled_in_independent_fresh_audit_graph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log"
+    }
+  ],
+  "specification": {
+    "module": "elicit-proofs/aeneas/Specs.lean",
+    "definitions": [
+      "AdlerSpec.normalize",
+      "AdlerSpec.step",
+      "AdlerSpec.run",
+      "AdlerSpec.state",
+      "AdlerSpec.pack"
+    ],
+    "meaning": "Normalize both seed halves modulo 65521, then fold a=(a+byte) mod 65521; b=(b+a) mod 65521, using the new a. Empty input still normalizes.",
+    "input_assumptions": [
+      "Standard Aeneas U16, U32 and Slice U8 representations.",
+      "No normalized-seed precondition.",
+      "No artificial byte-length bound; only standard slice representability."
+    ]
+  },
+  "module_order": {
+    "generated_first": [
+      "ElicitGenerated",
+      "ElicitAdapter"
+    ],
+    "authored_topological_order": [
+      "Specs",
+      "Codec",
+      "Vector",
+      "Chunks",
+      "Inner",
+      "Recurrence",
+      "Algebra",
+      "Outer",
+      "Tail",
+      "FinishMath",
+      "Compute",
+      "API",
+      "CodecLaws",
+      "Laws",
+      "ExtraAudit",
+      "Proofs"
+    ],
+    "generated_contracts": "ElicitContracts imports Specs, ElicitGenerated and ElicitAdapter; build it before Proofs.",
+    "path_prefix": "elicit-proofs/aeneas/"
+  },
+  "compute_helper": {
+    "rust_target": "adler2::algo::impl[ff6e69000b04949b]::compute::Method",
+    "theorem_root": "Compute.compute_spec",
+    "contract": "ElicitContracts.c_a058c96663922dc4",
+    "proof_module": "elicit-proofs/aeneas/Proofs.lean",
+    "execution_theorem": "Compute.compute_correct",
+    "execution_module": "elicit-proofs/aeneas/Compute.lean",
+    "precondition": "True",
+    "status": "full_contract_checked_in_fresh_audit"
+  },
+  "coverage": {
+    "vector_helpers": [
+      "Vector.from_spec",
+      "Vector.add_spec",
+      "Vector.rem_spec",
+      "Vector.mul_spec"
+    ],
+    "partition": [
+      "Chunks.raw_partition",
+      "Chunks.exact_spec",
+      "Chunks.values_length",
+      "Chunks.four_spec"
+    ],
+    "inner_loops": [
+      "Inner.inner_spec",
+      "Inner.remainder_spec"
+    ],
+    "outer_loop": "Outer.outer_spec",
+    "sum_loops": [
+      "Tail.sum_spec",
+      "Tail.sum_b_spec"
+    ],
+    "serial_loop": "Tail.serial_spec",
+    "arithmetic": [
+      "Inner.budget_step",
+      "Inner.budget_initial",
+      "Compute.chunk_size_spec",
+      "Compute.correction_cast"
+    ],
+    "functional_bridge": [
+      "LaneAlgebra.block",
+      "LaneAlgebra.parallel_combine",
+      "LaneAlgebra.inner_combine",
+      "LaneAlgebra.cast_run",
+      "LaneAlgebra.cast_inj"
+    ],
+    "wrappers": [
+      "API.write_correct",
+      "API.slice_correct"
+    ]
+  },
+  "commands": {
+    "environment": "source elicit-proofs/env.sh",
+    "initialization": "cargo elicit init --tool aeneas --target x86_64-unknown-linux-gnu --api Adler32::new --api Adler32::checksum --api Adler32::from_checksum --api Adler32::write_slice --api adler32_slice",
+    "checker": "cargo elicit check",
+    "independent_rebuild": "cargo elicit audit",
+    "runtime_validation": "elicit-proofs/runtime-check.sh",
+    "final_saved_evidence_inspection": "cargo elicit status --all --json",
+    "extraction_options": [
+      "--preset=aeneas",
+      "--sysroot=default",
+      "--format=json",
+      "--no-dedup-serialized-ast"
+    ],
+    "translation": "aeneas -backend lean -namespace ElicitGenerated -dest <translation-directory> <fresh-crate.llbc>",
+    "native_iteration_actual": "elicit-proofs/lean.sh -o MODULE.olean MODULE.lean, individually for each authored module in dependency order",
+    "native_build_convenience_not_run_as_one_command": "elicit-proofs/native-build.sh (after generated checker modules exist)",
+    "provided_reproduction_script": "elicit-proofs/validate.sh"
+  },
+  "runtime_validation": {
+    "upstream_tests_passed": 6,
+    "additional_arbitrary_seed_cases_passed": 1350,
+    "also_checked": [
+      "adler32_slice",
+      "empty normalization",
+      "4-byte and 22208-byte boundaries",
+      "multiple chunks",
+      "split updates",
+      "checksum save/restore/resume"
+    ],
+    "limitations": "Finite tests supplement the unbounded proofs; passing BufRead tests does not verify generic I/O."
+  },
+  "source_preservation": {
+    "baseline": "elicit-proofs/runtime.sha256",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "claim": "Original runtime and manifest bytes unchanged; no replacement implementation."
+  },
+  "remaining_selected_obligations": [],
+  "unverified_scope": [
+    "Generic BufRead I/O",
+    "Hasher laws",
+    "Derived traits",
+    "no_std configuration",
+    "Alternative targets",
+    "Whole-crate completion"
+  ],
+  "trusted_boundaries": [
+    "Lean kernel and the three allowed axioms.",
+    "Pinned Charon extraction, Aeneas translation, Rust compilation/sysroot and their correspondence to original Rust.",
+    "Unedited pinned Aeneas standard-library models, including slice/chunk iterators, arrays, machine integers and partial-fixpoint Result semantics.",
+    "Frozen cargo-elicit source mapping, exact-contract and transitive-axiom checker.",
+    "Generated opaque I/O declarations are outside selected proof dependencies.",
+    "Semantic review is the author's judgment, separate from machine evidence; independent investigation remains external."
+  ],
+  "tools": "aeneas e62dd83; Charon 0.1.293 (de8736f7c995ac54dc490345cef9ea5143c06c62); Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+  "evidence": {
+    "incremental_receipt": ".elicit/evidence/check-1792456793271.json",
+    "fresh_audit": ".elicit/evidence/audit-1792456951678.json",
+    "stable": true,
+    "snapshot": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+    "selected_apis_passed": 5,
+    "selected_apis_unresolved": 0,
+    "api_and_helper_axiom_log": ".elicit/evidence/audit-1792456951678/logs/Audit.log",
+    "optional_law_axiom_log": ".elicit/evidence/audit-1792456951678/logs/ExtraAudit.log",
+    "audit_validity": "valid_at_snapshot; no input changes or specification changes; no fresh audit needed",
+    "semantic_review": "accepted author review; separate from kernel evidence"
+  },
+  "operational_notes_boundary": "No Rust, Lean, build or proof script reads .elicit/notes/."
+}

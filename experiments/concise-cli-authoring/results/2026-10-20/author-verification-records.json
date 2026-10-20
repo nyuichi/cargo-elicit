@@ -1,0 +1,620 @@
+[
+  {
+    "receipt": ".elicit/evidence/audit-1792456951678.json",
+    "kind": "audit",
+    "recorded_at": 1792456951680,
+    "input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_8484fdd92cfcd3e7"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 135713
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_0a059b8c0885cf07"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 135713
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_9a31b7b9cb8492b0"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 135713
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_8055bec449b87b3d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 135713
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_98f3436459f22f5d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 135713
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455197839.json",
+    "kind": "check",
+    "recorded_at": 1792455197840,
+    "input": "a8faa27d1e71a426c620b440d489d9e2eb41ba78336a8c95f61e1c7a4cc1a5cb",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 11506
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 11506
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 11506
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 11506
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 11506
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455304743.json",
+    "kind": "check",
+    "recorded_at": 1792455304744,
+    "input": "07fe839773eab3623bf576c0e7e84ae4c9dcba8fd11e98f0079f61b14766fb1b",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 8924
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 8924
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 8924
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 8924
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "no kernel-checked theorem mapped to the complete original Rust contract",
+        "elapsed_ms": 8924
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455347009.json",
+    "kind": "check",
+    "recorded_at": 1792455347009,
+    "input": "37f4f7cb2f25edbc5b5da06fd8e6246b3574042ec2d74be452fb5f9c4fb1afb7",
+    "stable": false,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "unknown",
+        "outcome": "input_changed",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "inputs changed or checking interrupted; no current evidence accepted",
+        "elapsed_ms": 18997
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "unknown",
+        "outcome": "input_changed",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "inputs changed or checking interrupted; no current evidence accepted",
+        "elapsed_ms": 18997
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "full_contract",
+        "outcome": "input_changed",
+        "obligations": [
+          "ElicitContracts.c_9a31b7b9cb8492b0"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "inputs changed or checking interrupted; no current evidence accepted",
+        "elapsed_ms": 18997
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "full_contract",
+        "outcome": "input_changed",
+        "obligations": [
+          "ElicitContracts.c_8055bec449b87b3d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "inputs changed or checking interrupted; no current evidence accepted",
+        "elapsed_ms": 18997
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "unknown",
+        "outcome": "input_changed",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": false,
+        "summary": "inputs changed or checking interrupted; no current evidence accepted",
+        "elapsed_ms": 18997
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455444508.json",
+    "kind": "check",
+    "recorded_at": 1792455444509,
+    "input": "097b2c01f5ba8038d381f96108a923360091496ee2b0b797d52f1813c8dd8f5d",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 9016
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 9016
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 9016
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 9016
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 9016
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455504066.json",
+    "kind": "check",
+    "recorded_at": 1792455504066,
+    "input": "f833a20cf7e67625923378ec196eea61b325f92451352a3e57d9c3662958e0a6",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 7738
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 7738
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "unknown",
+        "outcome": "unresolved",
+        "obligations": [],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [],
+        "reusable": false,
+        "summary": "verifier exited Some(1); inspect phase logs",
+        "elapsed_ms": 7738
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792455547204.json",
+    "kind": "check",
+    "recorded_at": 1792455547205,
+    "input": "28ac54ea42cf11002b409d34460e76edb90a7fb34e065149247b69ce4fe0ebad",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_0a059b8c0885cf07"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 16434
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_9a31b7b9cb8492b0"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 16434
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_8055bec449b87b3d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 16434
+      }
+    ]
+  },
+  {
+    "receipt": ".elicit/evidence/check-1792456793271.json",
+    "kind": "check",
+    "recorded_at": 1792456793272,
+    "input": "77d21cf036d4412c0a8d79c655b53a01ca9b239ef7cd4621392613429e51c73f",
+    "stable": true,
+    "results": [
+      {
+        "target": "adler2::adler32_slice::Function",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_8484fdd92cfcd3e7"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 125256
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_0a059b8c0885cf07"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 125256
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::from_checksum::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_9a31b7b9cb8492b0"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 125256
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::new::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_8055bec449b87b3d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 125256
+      },
+      {
+        "target": "adler2::impl[ff6e69000b04949b]::write_slice::Method",
+        "scope": "full_contract",
+        "outcome": "success",
+        "obligations": [
+          "ElicitContracts.c_98f3436459f22f5d"
+        ],
+        "assumptions": [],
+        "restrictions": [],
+        "trusted_base": [
+          "Charon de8736f7c995ac54dc490345cef9ea5143c06c62 extraction and Aeneas e62dd83d133d9043e7d3628096838b7430f36565 translation",
+          "Lean 4.35.0 kernel, standard axioms and pinned Aeneas Rust models"
+        ],
+        "reusable": true,
+        "summary": "Lean kernel checked the original function contract for all translated inputs; standard axioms only",
+        "elapsed_ms": 125256
+      }
+    ]
+  }
+]

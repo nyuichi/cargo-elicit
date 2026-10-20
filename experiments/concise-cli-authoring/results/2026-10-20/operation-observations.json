@@ -1,0 +1,14 @@
+{
+  "timed_backend_receipts": {
+    "check": 7,
+    "audit": 1
+  },
+  "author_status_reads": {
+    "count": 1,
+    "tool_item_index": 148,
+    "command_sha256": "660d131fe4e48c670a987c8214e24520d8f8e102998d85a104dcfc1bfffa2aaf",
+    "purpose": "Final programmatic receipt/inventory validation, not repeated progress polling."
+  },
+  "external_observer_status_calls": 10,
+  "caveat": "Observer outputs are not sent to the author. Backend receipts do not count setup failures; CLI-text classification is heuristic."
+}

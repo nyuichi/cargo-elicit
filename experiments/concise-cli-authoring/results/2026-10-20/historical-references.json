@@ -1,0 +1,25 @@
+{
+  "comparison_limit": "Historical unmatched references, predating the SCC/notes/concise changes; no causal speed or token claim.",
+  "trials": {
+    "with": {
+      "source": "experiments/independent-cli-authoring/results/2026-10-18/with/metrics.json",
+      "authoring_wall_seconds": 1776.5724485490027,
+      "cached_input_tokens": 20608384,
+      "noncached_input_tokens": 250342,
+      "output_tokens": 55163,
+      "reasoning_output_tokens": 15652,
+      "command_items": 143,
+      "command_output_utf8_bytes": 424209
+    },
+    "without": {
+      "source": "experiments/independent-cli-authoring/results/2026-10-18/without/metrics.json",
+      "authoring_wall_seconds": 1878.6744130510015,
+      "cached_input_tokens": 15347456,
+      "noncached_input_tokens": 272186,
+      "output_tokens": 54142,
+      "reasoning_output_tokens": 18341,
+      "command_items": 109,
+      "command_output_utf8_bytes": 322998
+    }
+  }
+}

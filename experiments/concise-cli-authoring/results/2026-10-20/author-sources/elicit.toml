@@ -1,0 +1,35 @@
+schema = 2
+
+[verification]
+tool = "aeneas"
+
+[package]
+features = []
+all_features = false
+no_default_features = false
+target = "x86_64-unknown-linux-gnu"
+
+[[obligations]]
+id = "Adler32::new"
+target = "Adler32::new"
+description = "Returns state halves (1, 0), with successful execution."
+
+[[obligations]]
+id = "Adler32::checksum"
+target = "Adler32::checksum"
+description = "For every representable state, successfully returns 65536*b+a."
+
+[[obligations]]
+id = "Adler32::from_checksum"
+target = "Adler32::from_checksum"
+description = "For every u32, successfully decodes its low and high 16-bit halves."
+
+[[obligations]]
+id = "Adler32::write_slice"
+target = "Adler32::write_slice"
+description = "For every representable initial state and byte slice, successfully returns the scalar Adler recurrence modulo 65521, normalizing even an empty update."
+
+[[obligations]]
+id = "adler32_slice"
+target = "adler32_slice"
+description = "For every representable byte slice, successfully returns the packed scalar Adler recurrence from (1, 0)."

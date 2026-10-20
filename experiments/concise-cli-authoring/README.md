@@ -25,3 +25,5 @@ python experiments/concise-cli-authoring/run.py with \
 The current runner uses an ephemeral, workspace-write Codex thread; no session resumption is tested. Runtime filesystem/network permissions must permit ordinary Codex operation. Preparation installs the frozen CLI into this environment's toolchain bin (saving the previous executable), so login shells use the same binary as the observer. Restore/change that installation only after the trial.
 
 Publish curated metrics and necessary verification records. Raw model sessions, inherited workspace archives, authentication/runtime databases and server stderr are not public artifacts.
+
+Completed result: [report](../../docs/experiments/adler2-concise-cli.md). A post-trial correction retains completed goals in check/audit JSON and expanded operation views; the frozen trial and normal concise output are unchanged.

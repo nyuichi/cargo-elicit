@@ -1,0 +1,154 @@
+{
+  "selected_apis": 5,
+  "fresh_investigator_audit_passed": true,
+  "outside_authoring_clock": true,
+  "source_hashes": {
+    "elicit-proofs/aeneas/Specs.lean": "074d829c968b82b00be91cc845c5c6abaf1f22091e5805ba61422e6f327dfd71",
+    "elicit-proofs/aeneas/Compute.lean": "e5253c414f7d56dc827056fe560b197a0db9c7ee1497218fd769f1c672ba1608",
+    "elicit-proofs/aeneas/Vector.lean": "1f4bdfdb7132d65b5bd3bfcd8cee8110a1200aa19802fd0be09b31513bc34376",
+    "elicit-proofs/aeneas/FinishMath.lean": "177a5e6c948d36dffb721307849fd73dd1c77554db8ed5fad9c9469951a75d99",
+    "elicit-proofs/aeneas/ExtraAudit.lean": "5e277d348340153cd55cbae3e431abf68f0864d33496728c31fc25829339e0d2",
+    "elicit-proofs/aeneas/Recurrence.lean": "73c5e6f5f3b1f2efb5c1c67438b19ddd505007fa30d864ecf5cb71be505930e0",
+    "elicit-proofs/aeneas/Tail.lean": "a7d1f78b2febeca7b31b2c937c6a53a12c59e4f61ccf27dd7b0b7542daac916e",
+    "elicit-proofs/aeneas/Codec.lean": "e6f79a0f6028907cb7febebb828ac4340e76a386dec70a16a810f95192f0df68",
+    "elicit-proofs/aeneas/Algebra.lean": "71cb08c05f1f1a13d5c5d4ab4d4632f32391c5a2fa17c52a8d6afd47ad4d39c3",
+    "elicit-proofs/aeneas/Inner.lean": "734ccd0c29b8377337cee99dec1020b3af542eb7157a3e8f913827be2af678f7",
+    "elicit-proofs/aeneas/Outer.lean": "c4e4bd30d778c2f9e0915d71b01be1cef07a7d037b43f51e3e61130c91f1c10a",
+    "elicit-proofs/aeneas/CodecLaws.lean": "0afef06b5ae03c3f56403b270ccef35627152e253972478754375986c930525c",
+    "elicit-proofs/aeneas/Proofs.lean": "21e337e62d50737354e14903b1592dcd7ac72557a7fb32d65dc62ee048838837",
+    "elicit-proofs/aeneas/Laws.lean": "e82920489229e14650116a257162fe2c376eacc521f7b29e230dc9a7bbcb1f34",
+    "elicit-proofs/aeneas/Chunks.lean": "b200c7ba6f2470325f5d8e7c4c8da6cdbc56bc334c9009c21a679c6eee575b68",
+    "elicit-proofs/aeneas/API.lean": "2b211f2b94568bebb219368cb8c182c3a5705f61c50f4a037f0a222c26befc29",
+    "elicit-proofs/aeneas/contracts.toml": "fdb5f74f77a922e86657939cc93e9796b7ccbfd25d855303e46237b9e92edee7",
+    "elicit.toml": "a677a37d81c21e353cc0ac896f5e8b7e88acaf9c0dd6111aae9dfb5d52093bc8",
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded"
+  },
+  "specification_review": {
+    "normalization": "AdlerSpec.run normalizes both Nat seed halves modulo 65521 before folding, including empty input.",
+    "step": "a=(a+byte)%65521; b=(b+a)%65521 using updated a; exact Nat field values, not only residue equivalence.",
+    "arbitrary_input": "All five contracts omit requires, hence use True; standard translated scalar/slice types provide representability bounds only.",
+    "codec": "Exact low/high 16-bit decode and 65536*b+a encode for arbitrary representable states.",
+    "split_laws": "Both split theorems explicitly require concatenated slice length <= Usize.max.",
+    "runtime_correspondence": "Original manifest and src hashes unchanged; pinned adapter freshly extracted original bodies and checked exact API propositions."
+  },
+  "trust_boundary": "Lean kernel, standard allowed axioms propext/Classical.choice/Quot.sound, pinned Rust/Charon/Aeneas and standard models.",
+  "excluded": [
+    "BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std",
+    "other targets",
+    "whole-crate correctness"
+  ],
+  "investigator_goals": [
+    {
+      "id": "Adler32::new",
+      "audit": "accepted",
+      "audit_validity": {
+        "audit_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "receipt": ".elicit/evidence/audit-1792457248533.json",
+        "recorded_at": 1792457248539,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "id": "Adler32::checksum",
+      "audit": "accepted",
+      "audit_validity": {
+        "audit_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "receipt": ".elicit/evidence/audit-1792457248533.json",
+        "recorded_at": 1792457248539,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "id": "Adler32::from_checksum",
+      "audit": "accepted",
+      "audit_validity": {
+        "audit_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "receipt": ".elicit/evidence/audit-1792457248533.json",
+        "recorded_at": 1792457248539,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "id": "Adler32::write_slice",
+      "audit": "accepted",
+      "audit_validity": {
+        "audit_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "receipt": ".elicit/evidence/audit-1792457248533.json",
+        "recorded_at": 1792457248539,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    },
+    {
+      "id": "adler32_slice",
+      "audit": "accepted",
+      "audit_validity": {
+        "audit_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "change_details_available": true,
+        "fresh_audit_needed_at_snapshot": false,
+        "input_changes": [],
+        "observed_input": "a42c5093e2fc5717b68e993c7ef5a3cd8ea72f4ecfc8297145506d379cb3b96d",
+        "receipt": ".elicit/evidence/audit-1792457248533.json",
+        "recorded_at": 1792457248539,
+        "specification_changed": false,
+        "state": "valid_at_snapshot",
+        "workspace_currentness": "not_observed_by_this_read; refresh to compare current files"
+      }
+    }
+  ],
+  "optional_theorem_axioms": {
+    "CodecLaws.encode_decode": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "CodecLaws.decode_encode": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Laws.split_update": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Laws.save_restore_resume": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Laws.split_checksum_resume": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  }
+}

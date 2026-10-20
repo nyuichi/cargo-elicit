@@ -137,7 +137,7 @@ fn print_mode(
 ) -> Result<()> {
     let mut view = project::view(snapshot);
     {
-        let all = status_all.unwrap_or(false);
+        let all = status_all.unwrap_or(json || verbose);
         let goals = view["goals"].as_array().unwrap();
         let completed = |g: &&serde_json::Value| {
             g["audit"] == "accepted" && g["review"] == "accepted" && g["check"] != "failed"

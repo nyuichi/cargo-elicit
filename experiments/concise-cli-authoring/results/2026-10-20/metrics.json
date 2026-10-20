@@ -1,0 +1,81 @@
+{
+  "arm": "with",
+  "start_unix": 1792455136.0519454,
+  "budget_seconds": 10800,
+  "status": "completed",
+  "live_response_observed": true,
+  "timed_work_seconds": 1914.130314577982,
+  "end_to_end_seconds": 1914.1586698649917,
+  "observation_seconds": 0.1131598959909752,
+  "settings": {
+    "model": "gpt-6.1-sol",
+    "modelProvider": "openai",
+    "reasoningEffort": null,
+    "serviceTier": null,
+    "approvalPolicy": "on-request",
+    "sandbox": {
+      "type": "workspaceWrite",
+      "writableRoots": [],
+      "networkAccess": false,
+      "excludeTmpdirEnvVar": false,
+      "excludeSlashTmp": false
+    }
+  },
+  "tokens_cumulative_last": {
+    "total": {
+      "totalTokens": 22896311,
+      "inputTokens": 22817912,
+      "cachedInputTokens": 22572928,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 78399,
+      "reasoningOutputTokens": 35608
+    },
+    "last": {
+      "totalTokens": 228247,
+      "inputTokens": 227889,
+      "cachedInputTokens": 226432,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 358,
+      "reasoningOutputTokens": 291
+    },
+    "modelContextWindow": 475000
+  },
+  "commands_completed": 152,
+  "token_usage_event_count": 168,
+  "command_duration_seconds_sum": 1074.569,
+  "failed_commands": 68,
+  "event_counts": {
+    "remoteControl/status/changed": 1,
+    "account/updated": 1,
+    "thread/started": 1,
+    "mcpServer/startupStatus/updated": 4,
+    "thread/status/changed": 2,
+    "turn/started": 1,
+    "item/started": 339,
+    "item/completed": 339,
+    "item/agentMessage/delta": 832,
+    "thread/tokenUsage/updated": 168,
+    "account/rateLimits/updated": 168,
+    "item/commandExecution/outputDelta": 97,
+    "item/commandExecution/terminalInteraction": 40,
+    "turn/diff/updated": 43,
+    "turn/completed": 1
+  },
+  "human_proof_hints": 0,
+  "source_hashes_before": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "source_hashes_after": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "original_sources_unchanged": true,
+  "children_resource_usage": {
+    "user_seconds": 1053.721128,
+    "system_seconds": 107.086609
+  },
+  "coverage": "Requires investigator semantic review and independent kernel audit; do not infer from turn status"
+}

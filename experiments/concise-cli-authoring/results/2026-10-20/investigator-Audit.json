@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "raw_stdout": "ELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":0}\nELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":1}\nELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":2}\nELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":3}\nELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":4}\nELICIT_AUDIT={\"axioms\":[\"propext\",\"Classical.choice\",\"Quot.sound\"],\"checked\":true,\"index\":5}\n\n",
+  "raw_stdout_sha256": "96ba1a6065a32ba51b6f76deb6bf530b130b997811120c0ca5c9569e9e8fe98a"
+}

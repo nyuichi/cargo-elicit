@@ -1,0 +1,132 @@
+[
+  {
+    "reason": "first_api_evidence",
+    "at_seconds": 411.1590906700003,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.012391751981340349
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.010970806994009763
+      }
+    ],
+    "seconds": 0.023396429984131828
+  },
+  {
+    "reason": "three_api_evidence",
+    "at_seconds": 411.1826044539921,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.010682138992706314
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.010024932998931035
+      }
+    ],
+    "seconds": 0.020731728000100702
+  },
+  {
+    "reason": "ten_minutes",
+    "at_seconds": 600.6921362220019,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.011348229978466406
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.010216249997029081
+      }
+    ],
+    "seconds": 0.02159551699878648
+  },
+  {
+    "reason": "checkpoint_30_minutes",
+    "at_seconds": 1800.8886288439971,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.012264363002032042
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.010268045996781439
+      }
+    ],
+    "seconds": 0.022573611000552773
+  },
+  {
+    "reason": "termination",
+    "at_seconds": 1914.1303190249891,
+    "commands": [
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status"
+        ],
+        "exit": 0,
+        "seconds": 0.014258853014325723
+      },
+      {
+        "argv": [
+          "cargo",
+          "elicit",
+          "status",
+          "--json"
+        ],
+        "exit": 0,
+        "seconds": 0.010516526992432773
+      }
+    ],
+    "seconds": 0.02486261000740342
+  }
+]

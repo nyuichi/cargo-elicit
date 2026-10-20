@@ -691,4 +691,20 @@ fn compact_check_includes_outcomes_remaining_candidates_and_detail_escape_hatch(
     assert!(compact.len() < details.len());
     assert!(!compact.contains("Ensures:"));
     assert!(details.contains("Ensures:"));
+    // Completed goals stay present in machine check/audit results, while the
+    // default status view remains focused on outstanding work.
+    p.ok(&["audit"]);
+    p.ok(&[
+        "review",
+        "identity",
+        "--note",
+        "Identity predicate matches the intended behavior.",
+    ]);
+    let checked: Value = serde_json::from_slice(&p.ok(&["check", "--json"]).stdout).unwrap();
+    assert_eq!(checked["operation"]["passed"], 1);
+    assert_eq!(checked["goals"].as_array().unwrap().len(), 1);
+    let audited: Value = serde_json::from_slice(&p.ok(&["audit", "--json"]).stdout).unwrap();
+    assert_eq!(audited["goals"].as_array().unwrap().len(), 1);
+    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
+    assert!(status["goals"].as_array().unwrap().is_empty());
 }

@@ -4,6 +4,8 @@ These records preserve successful and unsuccessful trials, original measurements
 
 ## Start here
 
+- [Concise CLI feedback and new authoring trial](adler2-concise-cli.md): same-state output shrank substantially; a new five-API proof-free trial finished in 31:54, without demonstrating overall token/time improvement against historical references.
+
 - [Operational-note invalidation](adler2-operational-notes.md): a completed-proof, same-binary comparison; 18 cached Lean modules and retained fresh-audit evidence after operational record edits. This measures checking overhead, not new proof authoring.
 
 - [Fresh adler2 authoring with the independent CLI](adler2-independent-cli.md): a new matched 0.2 CLI+skill versus ordinary Codex pair, fresh five-API proofs, independent audits, metrics and limits.

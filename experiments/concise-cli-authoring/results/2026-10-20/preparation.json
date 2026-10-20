@@ -1,0 +1,28 @@
+{
+  "proof_free": true,
+  "binary_sha256": "982d97121a9c3d07383022e41b1d3bc0337447de74458db0d89a7ffb575809e8",
+  "production_source_sha256": {
+    "src/plan.rs": "3720e95cc76be0421ede15323fadcd734c0dac3e167e80faa82dd54dcc72eacf",
+    "src/main.rs": "33b8a1adaa2692f59b044ffb489d430b6efdfb350230760677862b1aff489c25",
+    "src/project.rs": "e3425c7cf5948d571ecd989ed9c5c8a0114433280e585ca24accdb31ee561614",
+    "src/ui.rs": "a3505cedd92c4be580faf07467d1d3fb54e6bf0ec7537649d1409b73d433ba90",
+    "src/process.rs": "fb66bc7225f8984648345c9c00faed7c905a74e8225fab5543b2430edb9024e9",
+    "src/lean_cache.rs": "ef1ac74c2060a0f0b9fef934df1d3c440ecfe43c352d80d1dca5ee470248b767",
+    "src/cli.rs": "81f382c54a7ae646d4f1644ebf4e2fc1b6c8b0ffb79365e0f9e38646ca375586",
+    "src/model.rs": "363ee99034891c3583b6eed0dda0c2db776cee169f60cf664b5595cbe30ac60d",
+    "src/fingerprint.rs": "f379202d67d3dabd891201613c288e9b223d6e382653bc916fc436e1d06fbf3e",
+    "src/lean_modules.rs": "5a74191c26d8bbc828cbe916a181020aa3ae715f37904f62014f99ddfd10448d",
+    "src/lib.rs": "e6dd6a0785d956a3ce352ae01c1b805b133512d6f139df750ca876519dece76e",
+    "src/analysis.rs": "9196fa6d3060d4d6f9aea6e841d467c4494e56bc84e9c9d6eaaf9ce872692495",
+    "src/verifier.rs": "5681c1b54a339e6ff46f3e4aede7b7aa625809e1ad0b6bbc254c487aa2b225fd",
+    "src/aeneas.rs": "b2aef2bdadfcceefd2b597f60121de826f823d53acea8c337fc607a40d96e676",
+    "src/store.rs": "fc041cec3699176ef86ab71c1e8dcc35cecd03745d1c57cee97e66cbaf645324",
+    "src/lean/ElicitModelInputs.lean": "270a13215750cde343e50601408001da9a19d4e7d2e923f5ea239879901ca6e0",
+    "src/lean/ElicitAudit.lean": "10d950afbdb8136f0baa2d9a7c451c8c4f563fd266ec5cb0c6016a8507541b0e",
+    "src/lean/ElicitAdapter.lean": "8c9f7cde823068e7eb811fa09d8eb7386495b622fcd3c87c68ccf4d47c97b642",
+    "Cargo.toml": "56c0508dc0dbbd18a8a270df331a97cda4816a56729cb48432f195d63b7556af",
+    "Cargo.lock": "800d38fa186a2ca8a4cd80a964e4742ad3af12be95312783baa94fac285cdd77"
+  },
+  "archive_sha256": "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa",
+  "comparison": "One fresh concise trial; historical trials are unmatched references, not a new control arm."
+}

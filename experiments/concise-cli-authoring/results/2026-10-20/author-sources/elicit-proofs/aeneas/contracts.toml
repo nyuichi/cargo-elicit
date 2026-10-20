@@ -1,0 +1,25 @@
+schema_version = 1
+
+[contracts."adler2::impl[ff6e69000b04949b]::new::Method"]
+ensures = "fun out => out.a.val = 1 ∧ out.b.val = 0"
+theorem = "Proofs.new_spec"
+
+[contracts."adler2::impl[ff6e69000b04949b]::checksum::Method"]
+ensures = "fun self out => out.val = 65536 * self.b.val + self.a.val"
+theorem = "Proofs.checksum_spec"
+
+[contracts."adler2::impl[ff6e69000b04949b]::from_checksum::Method"]
+ensures = "fun sum out => out.a.val = sum.val % 65536 ∧ out.b.val = sum.val / 65536"
+theorem = "Proofs.from_checksum_spec"
+
+[contracts."adler2::algo::impl[ff6e69000b04949b]::compute::Method"]
+ensures = "fun self bytes out => AdlerSpec.state out = AdlerSpec.run (AdlerSpec.state self) bytes.val"
+theorem = "Compute.compute_spec"
+
+[contracts."adler2::impl[ff6e69000b04949b]::write_slice::Method"]
+ensures = "fun self bytes out => AdlerSpec.state out = AdlerSpec.run (AdlerSpec.state self) bytes.val"
+theorem = "Proofs.write_slice_spec"
+
+[contracts."adler2::adler32_slice::Function"]
+ensures = "fun bytes out => out.val = AdlerSpec.pack (AdlerSpec.run (1, 0) bytes.val)"
+theorem = "Proofs.adler32_slice_spec"
