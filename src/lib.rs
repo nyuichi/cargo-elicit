@@ -9,4 +9,5 @@ mod plan;
 pub mod process;
 mod project;
 mod store;
+mod ui;
 mod verifier;

@@ -12,6 +12,9 @@ use clap::{Parser, Subcommand, ValueEnum};
     about = "Inspect obligations, check proofs, and preserve reproducible verification evidence. Never starts an AI."
 )]
 struct Cli {
+    /// Expand saved details instead of the bounded summary.
+    #[arg(long, global = true)]
+    verbose: bool,
     #[command(subcommand)]
     command: Commands,
 }
@@ -67,6 +70,9 @@ enum Commands {
     },
     /// Inspect a dependency-first SCC plan from saved data; never starts tools.
     Plan {
+        /// Show contracts, accepted dependencies and full graph details.
+        #[arg(long)]
+        details: bool,
         /// Obligation IDs or inventory IDs/names; defaults to declared API goals.
         ids: Vec<String>,
         #[arg(long)]
@@ -119,12 +125,19 @@ pub fn entry() -> i32 {
         }
     }
 }
-fn print(snapshot: &project::Snapshot, json: bool) -> Result<()> {
-    print_mode(snapshot, json, None)
+fn print(snapshot: &project::Snapshot, json: bool, verbose: bool) -> Result<()> {
+    print_mode(snapshot, json, None, verbose, None)
 }
-fn print_mode(snapshot: &project::Snapshot, json: bool, status_all: Option<bool>) -> Result<()> {
+fn print_mode(
+    snapshot: &project::Snapshot,
+    json: bool,
+    status_all: Option<bool>,
+    verbose: bool,
+    operation: Option<(&str, &[String])>,
+) -> Result<()> {
     let mut view = project::view(snapshot);
-    if let Some(all) = status_all {
+    {
+        let all = status_all.unwrap_or(false);
         let goals = view["goals"].as_array().unwrap();
         let completed = |g: &&serde_json::Value| {
             g["audit"] == "accepted" && g["review"] == "accepted" && g["check"] != "failed"
@@ -147,12 +160,31 @@ fn print_mode(snapshot: &project::Snapshot, json: bool, status_all: Option<bool>
             .iter()
             .filter(|r| r["candidate"] == true)
             .map(|r| {
-                serde_json::json!({"id":r["id"],
+                serde_json::json!({"id":r["id"],"label":({
+                    let id = r["id"].as_str().unwrap();
+                    match snapshot.inventory.iter().find(|t| t.id == id) {
+                        Some(t) if snapshot.inventory.iter().filter(|p|p.name==t.name).count()==1 => t.name.clone(),
+                        _ => id.to_owned()
+                    }
+                }),
                 "members":r["members"],"selected_root_count":r["selected_root_count"],
                 "call_resolution_incomplete":r["call_resolution_incomplete"]})
             })
             .collect::<Vec<_>>()
             .into();
+    }
+    if let Some((kind, ids)) = operation {
+        let results: Vec<_> = project::select(snapshot, ids)?.into_iter().map(|g| {
+            let e=project::evidence_status(snapshot,g,kind);
+            serde_json::json!({"id":g.id,"accepted":e.is_some_and(|e|e.accepted),
+                "reason":e.map(|e|e.reason.as_str()).unwrap_or("no current evidence"),"receipt":e.map(|e|&e.receipt)})
+        }).collect();
+        let passed = results.iter().filter(|r| r["accepted"] == true).count();
+        view["operation"] = serde_json::json!({"kind":kind,"requested":results.len(),"passed":passed,"unresolved":results.len()-passed,"results":results});
+    }
+    if !json && !verbose {
+        println!("{}", crate::ui::status(&view));
+        return Ok(());
     }
     if json {
         println!("{}", serde_json::to_string_pretty(&view)?);
@@ -252,6 +284,7 @@ fn print_mode(snapshot: &project::Snapshot, json: bool, status_all: Option<bool>
 }
 fn run(cli: Cli) -> Result<i32> {
     let root = std::env::current_dir()?;
+    let verbose = cli.verbose;
     if let Commands::Init {
         tool,
         package,
@@ -285,7 +318,7 @@ fn run(cli: Cli) -> Result<i32> {
                 .collect(),
         };
         let snapshot = project::init(&root, config)?;
-        print(&snapshot, false)?;
+        print(&snapshot, false, verbose)?;
         return Ok(0);
     }
     let store = Store::discover(&root)?;
@@ -306,7 +339,9 @@ fn run(cli: Cli) -> Result<i32> {
                 );
             }
         }
-        Commands::Status { json, all } => print_mode(&project::load(&store)?, json, Some(all))?,
+        Commands::Status { json, all } => {
+            print_mode(&project::load(&store)?, json, Some(all), verbose, None)?
+        }
         Commands::List { json, inventory } => {
             let snapshot = project::load(&store)?;
             if inventory {
@@ -327,7 +362,7 @@ fn run(cli: Cli) -> Result<i32> {
                     }
                 }
             } else {
-                print(&snapshot, json)?;
+                print_mode(&snapshot, json, Some(true), verbose, None)?;
             }
         }
         Commands::Show { id, json } => {
@@ -355,29 +390,36 @@ fn run(cli: Cli) -> Result<i32> {
                 println!("{}", value["next"].as_str().unwrap_or(""));
             }
         }
-        Commands::Plan { ids, json } => {
+        Commands::Plan { ids, json, details } => {
             let value = crate::plan::build(&project::load(&store)?, &ids)?;
             if json {
                 println!("{}", serde_json::to_string_pretty(&value)?);
             } else {
-                println!("{}", crate::plan::render(&value));
+                println!(
+                    "{}",
+                    if details || verbose {
+                        crate::plan::render(&value)
+                    } else {
+                        crate::ui::plan(&value)
+                    }
+                );
             }
         }
         Commands::Refresh { json } => {
             process::install_interrupt()?;
             let _lock = store.lock("project")?;
-            print(&project::refresh(&store)?, json)?;
+            print(&project::refresh(&store)?, json, verbose)?;
         }
         Commands::Check { ids, seconds, json } => {
             process::install_interrupt()?;
             let (s, code) = project::check(&store, &ids, seconds, false)?;
-            print(&s, json)?;
+            print_mode(&s, json, None, verbose, Some(("check", &ids)))?;
             return Ok(code);
         }
         Commands::Audit { ids, seconds, json } => {
             process::install_interrupt()?;
             let (s, code) = project::check(&store, &ids, seconds, true)?;
-            print(&s, json)?;
+            print_mode(&s, json, None, verbose, Some(("audit", &ids)))?;
             return Ok(code);
         }
         Commands::Review {
@@ -391,7 +433,11 @@ fn run(cli: Cli) -> Result<i32> {
                 Verdict::Accepted => "accepted",
                 Verdict::NeedsWork => "needs_work",
             };
-            print(&project::review(&store, &ids, verdict, &note)?, json)?;
+            print(
+                &project::review(&store, &ids, verdict, &note)?,
+                json,
+                verbose,
+            )?;
         }
         Commands::Init { .. } => unreachable!(),
     }

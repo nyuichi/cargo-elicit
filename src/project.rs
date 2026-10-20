@@ -414,12 +414,17 @@ fn audit_validity(s: &Snapshot, g: &Goal) -> serde_json::Value {
         "fresh_audit_needed_at_snapshot":!current.is_some_and(|e|e.accepted),
         "workspace_currentness":"not_observed_by_this_read; refresh to compare current files"})
 }
+fn evidence_view(e: &Evidence) -> serde_json::Value {
+    let mut value = serde_json::json!(e);
+    value.as_object_mut().unwrap().remove("input_files");
+    value
+}
 pub fn view(s: &Snapshot) -> serde_json::Value {
     let goals=s.goals.iter().map(|g|{
   let audit=evidence_status(s,g,"audit");let check=evidence_status(s,g,"check");
   let review=s.reviews.get(&g.id);
   let review_state=match review{None=>"unreviewed",Some(r) if r.specification!=g.review_specification=>"stale",Some(r)=>r.verdict.as_str()};
-  serde_json::json!({"id":g.id,"target":g.target,"description":g.description,"limitation":g.limitation,"audit":audit.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"check":check.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"review":review_state,"audit_validity":audit_validity(s,g),"last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()),"next":if audit.is_some_and(|e|e.accepted){"inspect scope/semantic review as needed"}else{"author with native tools; check when useful; audit for final evidence"}})
+  serde_json::json!({"id":g.id,"target":g.target,"description":g.description,"limitation":g.limitation,"audit":audit.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"check":check.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"review":review_state,"audit_validity":audit_validity(s,g),"last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()).map(evidence_view),"next":if audit.is_some_and(|e|e.accepted){"inspect scope/semantic review as needed"}else{"author with native tools; check when useful; audit for final evidence"}})
  }).collect::<Vec<_>>();
     let complete = !s.goals.is_empty()
         && s.goals.iter().all(|g| {

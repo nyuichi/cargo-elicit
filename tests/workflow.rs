@@ -498,7 +498,7 @@ fn dependency_plan_combines_scc_sharing_evidence_and_uncertainty_without_tools()
     assert_eq!(row("A")["layer"], 2);
     assert_eq!(row("D")["layer"], 0);
     assert_eq!(fs::read(&path).unwrap(), before);
-    let text = String::from_utf8(p.ok(&["plan", "A", "X"]).stdout).unwrap();
+    let text = String::from_utf8(p.ok(&["plan", "A", "X", "--details"]).stdout).unwrap();
     assert!(text.contains("UNRESOLVED calls"));
     assert!(text.contains("External boundaries"));
     assert!(text.contains("No declared obligation"));
@@ -661,4 +661,34 @@ fn notes_preserve_audit_and_cache_while_tracked_changes_explain_staleness() {
         status["goals"][0]["audit_validity"]["change_details_available"],
         false
     );
+}
+
+#[test]
+fn compact_check_includes_outcomes_remaining_candidates_and_detail_escape_hatch() {
+    let p = Project::new();
+    p.proof();
+    let concise = p.ok(&["check"]);
+    let text = String::from_utf8(concise.stdout).unwrap();
+    assert!(text.contains("check: 1 passed, 0 unresolved"));
+    assert!(text.contains("Remaining:"));
+    assert!(text.contains("Details:"));
+    assert!(!text.contains("receipt:"));
+    let full = String::from_utf8(p.ok(&["status", "--verbose"]).stdout).unwrap();
+    assert!(full.contains("Saved snapshot"));
+    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
+    assert!(
+        status["goals"][0]["last_evidence"]
+            .get("input_files")
+            .is_none()
+    );
+    assert!(!p.snapshot()["evidence"]["identity"][0]["input_files"].is_null());
+    let check: Value = serde_json::from_slice(&p.ok(&["check", "--json"]).stdout).unwrap();
+    assert_eq!(check["operation"]["passed"], 1);
+    assert_eq!(check["operation"]["requested"], 1);
+    assert!(check["candidate_sccs"].is_array());
+    let compact = String::from_utf8(p.ok(&["plan"]).stdout).unwrap();
+    let details = String::from_utf8(p.ok(&["plan", "--details"]).stdout).unwrap();
+    assert!(compact.len() < details.len());
+    assert!(!compact.contains("Ensures:"));
+    assert!(details.contains("Ensures:"));
 }

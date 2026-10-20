@@ -1,0 +1,7 @@
+{
+  "comparison": "Ignore duplicate last-evidence input hashes and additive candidate labels; compare all other saved JSON facts",
+  "equal": {
+    "status-json": true,
+    "plan-json": true
+  }
+}

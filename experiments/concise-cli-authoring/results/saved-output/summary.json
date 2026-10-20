@@ -1,0 +1,103 @@
+{
+  "unit": "bytes/characters/lines; no tokenizer estimate or model-token claim",
+  "saved_snapshot_sha256": "0ed09c05cc0eefd57b55a9bbbd4da2aa02827543628a949e8cedfde83fe3bae6",
+  "snapshot_unchanged": true,
+  "binary_sha256": {
+    "previous": "e0dfe89f446d43d0cb5fb032d113003e703d63baba9e41b28bbcddcb097a07a6",
+    "concise": "982d97121a9c3d07383022e41b1d3bc0337447de74458db0d89a7ffb575809e8"
+  },
+  "records": [
+    {
+      "binary": "previous",
+      "view": "status",
+      "argv": [
+        "status"
+      ],
+      "utf8_bytes": 1698,
+      "characters": 1698,
+      "lines": 20,
+      "output_sha256": "c846dc16e93cff6c699c24fbd2d29f40a642502700d37442877a5c447378f045"
+    },
+    {
+      "binary": "previous",
+      "view": "status-json",
+      "argv": [
+        "status",
+        "--json"
+      ],
+      "utf8_bytes": 52181,
+      "characters": 52181,
+      "lines": 605,
+      "output_sha256": "2095f47db14398883c82ef4cc1203ca823ef2fa4cfce721356f4d4fc288166bf"
+    },
+    {
+      "binary": "previous",
+      "view": "plan",
+      "argv": [
+        "plan"
+      ],
+      "utf8_bytes": 18708,
+      "characters": 18702,
+      "lines": 154,
+      "output_sha256": "e8bf693efebec16ebe948f7c1a76bc3c829b0ea715cdb4c2358e6c83a9da8a57"
+    },
+    {
+      "binary": "previous",
+      "view": "plan-json",
+      "argv": [
+        "plan",
+        "--json"
+      ],
+      "utf8_bytes": 86993,
+      "characters": 86989,
+      "lines": 1346,
+      "output_sha256": "373418a8c74d3889efd1d4782e07d94ab05409a100c335b7c28abdf50f4f6bd4"
+    },
+    {
+      "binary": "concise",
+      "view": "status",
+      "argv": [
+        "status"
+      ],
+      "utf8_bytes": 859,
+      "characters": 851,
+      "lines": 13,
+      "output_sha256": "eb75f550a1f987a9c72835823441f78e9429b26bf77f7c79a9d2d0d5370229a2"
+    },
+    {
+      "binary": "concise",
+      "view": "status-json",
+      "argv": [
+        "status",
+        "--json"
+      ],
+      "utf8_bytes": 16870,
+      "characters": 16870,
+      "lines": 372,
+      "output_sha256": "8a70eab0e487995002b50a48ced21069867356821f229fc7ede5db0f573577e8"
+    },
+    {
+      "binary": "concise",
+      "view": "plan",
+      "argv": [
+        "plan"
+      ],
+      "utf8_bytes": 1078,
+      "characters": 1070,
+      "lines": 12,
+      "output_sha256": "f74107c4c668f9254ca156b30bdc4551c43b97dcafb249cdea182b5148d53733"
+    },
+    {
+      "binary": "concise",
+      "view": "plan-json",
+      "argv": [
+        "plan",
+        "--json"
+      ],
+      "utf8_bytes": 49753,
+      "characters": 49749,
+      "lines": 1111,
+      "output_sha256": "a1cc241ef97503cb45f26a2d0583d2f204e8af4a4dfd9eab9779359edf52823e"
+    }
+  ]
+}
