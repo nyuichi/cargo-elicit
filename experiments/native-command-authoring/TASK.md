@@ -1,0 +1,27 @@
+# Verification task
+
+Verify the computation core of the original adler2 2.0.1 Rust crate using Charon, Aeneas and Lean 4. All report text, contracts, comments and proof files must be in English. Preserve every byte of src/ and the upstream Cargo manifest. Do not copy runtime functions into another Rust crate or replace the optimized implementation with a scalar rewrite. Work as one worker without subagents.
+
+Prove successful execution and functional correctness for these five APIs:
+
+1. Adler32::new: returns state (1, 0).
+2. Adler32::checksum: returns 65536*b+a for every representable state.
+3. Adler32::from_checksum: decodes every u32 into its low/high 16-bit halves.
+4. Adler32::write_slice: for every representable initial state and byte slice, returns exactly the scalar Adler recurrence modulo 65521, normalizing state halves even for an empty update.
+5. adler32_slice: equals that recurrence from (1, 0).
+
+The original optimized compute body, all its loops, machine arithmetic, indexing, and helper calls must be covered. No normalized-seed assumption or artificial input-length bound. If the claim is false, preserve a reproducible counterexample and explain rather than silently weakening it.
+
+Separately attempt codec roundtrips, split-update equivalence, and checksum save/restore/resume equivalence. Explicitly require concatenated slice representability for split laws. Generic BufRead I/O, Hasher laws, derived traits, no_std and alternative targets are outside the common goal; report them as unverified. A selected-API result is not whole-crate completion.
+
+Use the installed pinned tools and their standard models. AENEAS_HOME is the installed Aeneas checkout; its prepared Lean backend is backends/lean. Charon extraction should use --preset=aeneas --sysroot=default with the original Cargo manifest and x86_64-unknown-linux-gnu target. Generated models must be fresh and unedited. Lean axioms may only be propext, Classical.choice and Quot.sound. No sorry/admit, project axioms, or native-decision axioms. Syntax checking or a successful translation is not a proof.
+
+Read .agents/skills/cargo-elicit/SKILL.md and the current .agents/README.md and .agents/docs. Use cargo-elicit as the ordinary progress/result utility described there. Initialize exactly the five requested API goals. Choose and configure the native verification command you would normally use; cargo-elicit does not translate Rust, generate contract propositions, inspect proof axioms, or certify API correspondence. Author normal Aeneas/Lean proofs without dedicated elicit contract annotations or wrapper requirements. There is no review or finish command.
+
+Use status after a meaningful initial verification checkpoint and after substantial further progress when deciding next work. Use focused status/plan views when they answer a concrete question; avoid timer-based polling and redundant full ledger reads. Local Lean compilation is the normal edit loop, and verify is for useful milestones. Save inputs before verify and do not change active inputs while it runs. Automatic analysis caching needs no manual maintenance. There is no notes/handoff convention. If notes are useful, put them outside the crate tree in ../reports so they do not invalidate native results. Do not read reports or internal CLI state from build/proof code.
+
+The workspace starts without proofs, generated models or old progress. The installed native environment is available by sourcing /tmp/elicit-implementation-env; preserve it for tool invocations if needed. The frozen CLI is also installed on the toolchain PATH. Standard toolchain/library documentation is available from the installed tools. Keep authored semantic inputs and reproduction commands inside this crate; prefer normal native cache/output directories. Use fail-fast commands if final validation has several steps. Preserve every byte of original src/ and Cargo.toml.
+
+Do not access published adler/adler2 proof solutions, proofs.rs report source repositories, sibling experiment directories, cargo-elicit source/test fixture proofs, authentication files or model session databases. You may read this workspace, the provided tool documentation, installed tool/library documentation and Rust source dependencies. Do not commit/reset/clean repositories, alter installed cargo-elicit, or change the frozen skill/docs. No human proof hints will be supplied. Work as one author without subagents for up to three hours. Continue useful independent work rather than intentionally stopping after an easy partial result; preserve accurate partial work at the time limit.
+
+At the end write ../reports/FINAL_REPORT.md in English with independently checkable theorem names and module/build order; exact guarantees and assumptions for the five APIs and optional laws; actual reproduction commands; unfinished/disproved claims and counterexamples; trusted boundaries; and a candid self-assessment of cargo-elicit/skill benefits and friction with concrete examples. Identify which native command was associated with each goal and avoid inferring mathematical correctness from CLI command success alone. A concise final inventory of theorem roots, source correspondence and commands is sufficient; no manual progress ledger is required. Do not invent wall time or token counts: the observer measures them. Finish the requested APIs before optional laws where useful, choosing your own mathematics and proof order.
