@@ -1,0 +1,30 @@
+{
+  "proof_free": true,
+  "product_local_commit": "acec01cc6e1167f349676111ef98fd4f6e6743df",
+  "binary_sha256": "5a05047a1fef0d2027423ec08b092d7c7855b1ac6c81d46cdd1aaee63558ff65",
+  "skill_sha256": "b147c9d50490f8b2f217ed6a194afb7e2c4f21733e20c70a8c25e3a2058dca06",
+  "archive_sha256": "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa",
+  "source_sha256": {
+    "src/analysis.rs": "8064b79c36acc1e38e666b263833cfd9075847723616e95c66ef8c91a2c552bc",
+    "src/cli.rs": "23dfd1cb18a109e07a6c3d46a98fd0e3cfc10d9d035a10a0cf2b00c4342a20ac",
+    "src/fingerprint.rs": "ad5a8c25e7458f2a23c5cc945ab6463de2a4e3f5bfe1b187a1aa4f6ac7cbb0ee",
+    "src/lean_modules.rs": "00b2a5b92a517053e1c4ed554f1f451fce4a50dc68b4f16e0364e69e11e2a7ad",
+    "src/lib.rs": "edc8e6196c2f38d8f064d6d330b3ad8758dc6e645af65bfe45d856bba67f1b1a",
+    "src/main.rs": "33b8a1adaa2692f59b044ffb489d430b6efdfb350230760677862b1aff489c25",
+    "src/model.rs": "c673e21f871cffc888d4d2041063c371b76507fcd28788d752c28bdf43a19246",
+    "src/observation.rs": "19b5803638788a5ed629645d1f68e11dc6851d97c44fa34be4642ca0079349ae",
+    "src/plan.rs": "affff03d5b96646fd34bba09d3f9e53816d9bb9c308c0bddd1f143c485cb8265",
+    "src/process.rs": "fb66bc7225f8984648345c9c00faed7c905a74e8225fab5543b2430edb9024e9",
+    "src/project.rs": "986a734cc61eb6d61081e17bf08a62e770e075b28aad1504c87baf6e42323e1a",
+    "src/resume.rs": "f33dd04988fca78637482ae02c6846b084e57030420ac583b7bfc700cd69b49f",
+    "src/runner.rs": "3d7c0292221d30d48b51f28020f9e6a3434ac854c3020d3c340053df60fbd6dc",
+    "src/store.rs": "ca125af68b8809de03e694bb9844956aaf1aee66cbc259a938ba312557504355",
+    "src/ui.rs": "924cb6dd748fc6c9446da79958ba40c7c2a39f8f03ec4b414c20b9fcb7fe1200"
+  },
+  "original_sha256": {
+    "Cargo.toml": "8f30dbd092f3acc475b9d339736cd7b64c6489bc47cd234a7f2232fc52e2d490",
+    "src/algo.rs": "932c2bc591d13fe4470185125617b5aaa660a3898f23b553acc85df0bf49dded",
+    "src/lib.rs": "4acd41668fe30daffa37084e7e223f268957b816afc1864ffb3f5d6d7adf0890"
+  },
+  "comparison": "Fresh native-command CLI authoring versus historical no-CLI trial; not a new matched control or isolated causal estimate."
+}

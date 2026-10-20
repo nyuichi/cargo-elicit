@@ -1,0 +1,75 @@
+{
+  "judgment": "accepted for the common historical computation-core scope",
+  "required_apis": {
+    "Adler32::new": {
+      "accepted": true,
+      "root": "Verification.new_correct",
+      "meaning": "Original translated new returns the raw state (1,0)."
+    },
+    "Adler32::checksum": {
+      "accepted": true,
+      "root": "Verification.checksum_correct",
+      "meaning": "Every representable pair of u16 halves returns a u32 of natural value 65536*b+a; no normalized-state precondition."
+    },
+    "Adler32::from_checksum": {
+      "accepted": true,
+      "root": "Verification.from_checksum_correct",
+      "meaning": "Every u32 decodes to low/high 16-bit halves."
+    },
+    "Adler32::write_slice": {
+      "accepted": true,
+      "roots": [
+        "Verification.write_slice_correct",
+        "Verification.write_slice_returns"
+      ],
+      "meaning": "Every raw Adler32 state and representable Slice U8 successfully returns the scalar recurrence. Empty updates normalize both seed halves modulo 65521; no artificial input bound."
+    },
+    "adler32_slice": {
+      "accepted": true,
+      "roots": [
+        "Verification.adler32_slice_correct",
+        "Verification.adler32_slice_returns"
+      ],
+      "meaning": "Every representable slice successfully returns the encoded scalar recurrence starting at (1,0)."
+    }
+  },
+  "common_behavior_categories": {
+    "state_codec_roundtrip": {
+      "accepted": true,
+      "root": "Verification.codec_state_execution"
+    },
+    "word_codec_roundtrip": {
+      "accepted": true,
+      "root": "Verification.codec_word_execution"
+    },
+    "split_update": {
+      "accepted": true,
+      "root": "Verification.split_update",
+      "precondition": "Concatenated length <= Usize.max, exactly the Slice representability requirement."
+    },
+    "save_restore_resume": {
+      "accepted": true,
+      "roots": [
+        "Verification.save_restore_resume",
+        "Verification.split_save_restore_resume"
+      ]
+    }
+  },
+  "statement_review": {
+    "scalar_definition": "Algebra.scalar normalizes seeds then folds scalarStep, a=(a+byte)%65521, b=(b+a)%65521. Inspected definitions are archived in command-32.log.",
+    "correspondence": "Core.compute_correct unfolds the original generated compute body; Inner/Outer induct on exact chunks with arithmetic bounds, Mix/Finish match the generated suffix definitionally. Helper-loop equivalences are kernel-checked. Api applies this result to generated write_slice and adler32_slice. No substitute Rust algorithm or edited generated model was used.",
+    "success_not_partial_correctness": "Laws.spec_returns case-splits Result: failed/divergent cases contradict the total-correctness predicate. Explicit return roots are audited.",
+    "arithmetic": "Original checked overflow remains enabled. Proof handles all raw u16 seeds, natural accumulator bounds, final modulo/casts, and all representable input slices.",
+    "foundations": "All 14 roots use only propext, Classical.choice, Quot.sound. No custom axioms, sorryAx or native-decide axioms occur in their transitive dependencies."
+  },
+  "outside_scope": [
+    "generic BufRead I/O",
+    "Hasher laws",
+    "derived traits",
+    "no_std and alternative targets",
+    "physical resource exhaustion",
+    "compiler/translation-chain correctness"
+  ],
+  "independent_audit_seconds": 62.72601945101633,
+  "scope_note": "Full benchmark completion, not whole-crate/all-public-API verification. The investigator supplied no authoring hints; source/model/root review occurred after author completion."
+}

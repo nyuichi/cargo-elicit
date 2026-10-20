@@ -1,0 +1,14 @@
+def Verification.scalar : ℕ × ℕ → List Aeneas.Std.U8 → ℕ × ℕ :=
+fun s xs => List.foldl Verification.scalarStep (s.1 % 65521, s.2 % 65521) xs
+def Verification.scalarStep : ℕ × ℕ → Aeneas.Std.U8 → ℕ × ℕ :=
+fun s x =>
+  have a := (s.1 + ↑x) % 65521;
+  (a, (s.2 + a) % 65521)
+def Verification.run : Verification.State → List Aeneas.Std.U8 → Verification.State :=
+fun s xs => List.foldl Verification.advance s xs
+def Verification.advance : Verification.State → Aeneas.Std.U8 → Verification.State :=
+fun s x => (s.1 + ↑↑x, s.2 + s.1 + ↑↑x)
+def Verification.encode : adler2.Adler32 → Aeneas.Std.U32 :=
+fun s => (BitVec.setWidth 32 s.b.bv <<< 16 ||| BitVec.setWidth 32 s.a.bv)#uscalar
+def Verification.decode : Aeneas.Std.U32 → adler2.Adler32 :=
+fun c => { a := BitVec.setWidth 16 c.bv#uscalar, b := BitVec.setWidth 16 (c.bv >>> 16)#uscalar }

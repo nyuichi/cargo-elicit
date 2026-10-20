@@ -1,0 +1,36 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:21:8: warning: This simp argument is unused:
+  vec
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Array.make, Std.Array.set]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:21:13: warning: This simp argument is unused:
+  Array.make
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [vec, Std.Array.set]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:21:25: warning: This simp argument is unused:
+  Std.Array.set
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [vec, Array.make]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:29:8: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:29:8: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:55:8: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:55:12: warning: Unused tactic linter: `simp_all [Slice.length]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean:55:12: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`

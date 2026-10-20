@@ -1,0 +1,381 @@
+[
+  {
+    "argv": [
+      "charon",
+      "cargo",
+      "--preset=aeneas",
+      "--sysroot=default",
+      "--start-from",
+      "adler2::adler32_slice",
+      "--start-from",
+      "adler2::Adler32::from_checksum",
+      "--dest",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/fresh",
+      "--",
+      "--manifest-path",
+      "Cargo.toml",
+      "--target",
+      "x86_64-unknown-linux-gnu",
+      "--lib"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.1404872300045099,
+    "log": "command-0.log"
+  },
+  {
+    "argv": [
+      "aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/fresh",
+      "-no-progress-bar",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/fresh/adler2.llbc"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.145586796978023,
+    "log": "command-1.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Generated/Adler2.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Generated/Adler2.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.2867561700113583,
+    "log": "command-2.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Vector.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.420095253997715,
+    "log": "command-3.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Algebra.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Algebra.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.8222454540082254,
+    "log": "command-4.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Lanes.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Lanes.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.8366661579930224,
+    "log": "command-5.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Bounds.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Bounds.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.7904743049875833,
+    "log": "command-6.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.8653962450043764,
+    "log": "command-7.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Chunks.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Chunks.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.7290681789745577,
+    "log": "command-8.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Outer.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Outer.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.1566394769761246,
+    "log": "command-9.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Next.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Next.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.6538595329911914,
+    "log": "command-10.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.9361389289842919,
+    "log": "command-11.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 8.006707853986882,
+    "log": "command-12.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Finish.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Finish.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.9004411379864905,
+    "log": "command-13.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Codec.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Codec.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.3185401879891288,
+    "log": "command-14.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.750988501997199,
+    "log": "command-15.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Api.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Api.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.7098050420172513,
+    "log": "command-16.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "-o",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Laws.olean",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Laws.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.6497184519830626,
+    "log": "command-17.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_0.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5453524480108172,
+    "log": "command-18.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_1.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.569407616974786,
+    "log": "command-19.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_2.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.6537660750036594,
+    "log": "command-20.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_3.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.613726167997811,
+    "log": "command-21.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_4.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5712431680003647,
+    "log": "command-22.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_5.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.565111470001284,
+    "log": "command-23.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_6.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.570751218998339,
+    "log": "command-24.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_7.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5827860239951406,
+    "log": "command-25.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_8.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.570190491998801,
+    "log": "command-26.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_9.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.7012954969832208,
+    "log": "command-27.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_10.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.6152242390089668,
+    "log": "command-28.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_11.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5918295109877363,
+    "log": "command-29.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_12.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.590834623988485,
+    "log": "command-30.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Audit_13.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.5540804140036926,
+    "log": "command-31.log"
+  },
+  {
+    "argv": [
+      "lean",
+      "--root=/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit",
+      "/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/InspectDefinitions.lean"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.676991755986819,
+    "log": "command-32.log"
+  }
+]

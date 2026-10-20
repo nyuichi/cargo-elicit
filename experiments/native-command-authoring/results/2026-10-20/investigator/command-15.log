@@ -1,0 +1,16 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.lean:11:8: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.lean:11:12: warning: Unused tactic linter: `scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.lean:11:12: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Core.lean:77:10: warning: This simp argument is unused:
+  zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [combineQ, combine, a, b, core.convert.num.FromU32U16.from_val_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

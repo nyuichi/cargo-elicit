@@ -1,0 +1,4 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling adler2 v2.0.1 (/workspace/elicit-benchmarks/native-command-2026-10-20/case)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s

@@ -1,0 +1,34 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:50:30: warning: This simp argument is unused:
+  lift
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [vec, Array.make, bind_ok, core.slice.Slice.iter]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:52:71: warning: This simp argument is unused:
+  Array.make
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [remainingSum, Std.Array.to_slice, Std.Array.set, Q.arr, vec]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:52:83: warning: This simp argument is unused:
+  Q.arr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [remainingSum, Std.Array.to_slice, Std.Array.set, Array.make, vec]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:52:90: warning: This simp argument is unused:
+  vec
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [remainingSum, Std.Array.to_slice, Std.Array.set, Array.make, Q.arr]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:48:2: warning: Unused tactic linter: `all_goals try scalar_tac` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Mix.lean:54:2: warning: Unused tactic linter: `all_goals try omega` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

@@ -1,0 +1,62 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:21:15: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:37:15: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:17:13: warning: This simp argument is unused:
+  Std.uncurry
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:38:19: warning: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:26:8: warning: Unused tactic linter: `simp only [bind_ok, Std.uncurry]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:34:8: warning: Unused tactic linter: `simp only [Slice.getElem_Nat_eq]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:58:15: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:77:15: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:58:49: warning: This simp argument is unused:
+  lift
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [dif_pos hi, bind_ok, Std.uncurry]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:78:15: warning: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:59:8: warning: Unused tactic linter: `simp only [bind_ok]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:66:8: warning: Unused tactic linter: `simp only [bind_ok, Std.uncurry]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:75:29: warning: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Iterators.lean:75:29: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`

@@ -1,0 +1,45 @@
+schema = 3
+
+[verification]
+tool = "aeneas"
+command = [
+    "bash",
+    "validate.sh",
+]
+directory = "verification"
+inputs = ["/tmp/elicit-implementation-env", "/workspace/toolchain/aeneas-src/bin/aeneas", "/workspace/toolchain/aeneas-src/charon/charon/target/release/charon", "/workspace/toolchain/aeneas-src/charon/charon/target/release/charon-driver", "/workspace/toolchain/aeneas-src/backends/lean/.lake/packages/mathlib/Mathlib", "/workspace/toolchain/aeneas-src/backends/lean/Aeneas", "/workspace/toolchain/aeneas-src/backends/lean/AeneasMeta", "/workspace/toolchain/aeneas-src/backends/lean/lean-toolchain", "/workspace/toolchain/aeneas-src/backends/lean/lake-manifest.json"]
+
+[package]
+features = []
+all_features = false
+no_default_features = false
+
+[[obligations]]
+id = "Adler32::new"
+target = "Adler32::new"
+description = ""
+command = []
+
+[[obligations]]
+id = "Adler32::checksum"
+target = "Adler32::checksum"
+description = ""
+command = []
+
+[[obligations]]
+id = "Adler32::from_checksum"
+target = "Adler32::from_checksum"
+description = ""
+command = []
+
+[[obligations]]
+id = "Adler32::write_slice"
+target = "Adler32::write_slice"
+description = ""
+command = []
+
+[[obligations]]
+id = "adler32_slice"
+target = "adler32_slice"
+description = ""
+command = []

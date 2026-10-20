@@ -1,0 +1,3 @@
+Verification.from_checksum_correct : ∀ (c : Aeneas.Std.U32),
+  ∃ s, adler2.Adler32.from_checksum c = Aeneas.Std.Result.ok s ∧ ↑s.a = ↑c % 65536 ∧ ↑s.b = ↑c / 65536
+'Verification.from_checksum_correct' depends on axioms: [propext, Classical.choice, Quot.sound]

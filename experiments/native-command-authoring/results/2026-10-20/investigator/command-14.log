@@ -1,0 +1,14 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Codec.lean:19:25: warning: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [bind_tc_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Codec.lean:27:25: warning: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [bind_tc_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

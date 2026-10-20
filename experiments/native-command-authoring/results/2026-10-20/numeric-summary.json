@@ -1,0 +1,44 @@
+{
+  "status": "completed",
+  "authoring_wall_seconds": 1894.4095018159715,
+  "provider_total_usage": {
+    "totalTokens": 19292991,
+    "inputTokens": 19230948,
+    "cachedInputTokens": 18987008,
+    "cacheWriteInputTokens": 0,
+    "outputTokens": 62043,
+    "reasoningOutputTokens": 23493
+  },
+  "noncached_input_tokens": 243940,
+  "completed_command_tool_items": 113,
+  "nonzero_exit_command_items": 48,
+  "failed_status_command_items": 48,
+  "unknown_exit_command_items": 0,
+  "command_output_utf8_bytes": 431246,
+  "command_items_containing_cli_text": 9,
+  "output_bytes_of_cli_text_items": 33027,
+  "usage_notifications": 146,
+  "classification_limit": "CLI-text matching includes docs/heredocs and mixed output; not exact CLI invocation or token counts. Usage notifications are not exact model-request counts. Command items are not subprocess counts.",
+  "original_sources_unchanged": true,
+  "settings": {
+    "model": "gpt-6.1-sol",
+    "modelProvider": "openai",
+    "reasoningEffort": null,
+    "serviceTier": null,
+    "approvalPolicy": "never",
+    "sandbox": {
+      "type": "workspaceWrite",
+      "writableRoots": [
+        "/workspace/elicit-benchmarks/native-command-2026-10-20/reports"
+      ],
+      "networkAccess": false,
+      "excludeTmpdirEnvVar": false,
+      "excludeSlashTmp": false
+    }
+  },
+  "effective_turn_sandbox_policy": {
+    "type": "externalSandbox",
+    "networkAccess": "restricted"
+  },
+  "coverage": "Requires separate investigator semantic and fresh kernel review; not inferred from status or self-report."
+}

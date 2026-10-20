@@ -1,0 +1,3 @@
+Verification.write_slice_returns : ∀ (self : adler2.Adler32) (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  ∃ s, self.write_slice bytes = Aeneas.Std.Result.ok s ∧ (↑s.a, ↑s.b) = Verification.scalar (↑self.a, ↑self.b) ↑bytes
+'Verification.write_slice_returns' depends on axioms: [propext, Classical.choice, Quot.sound]

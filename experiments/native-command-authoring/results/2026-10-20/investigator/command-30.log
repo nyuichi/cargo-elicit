@@ -1,0 +1,7 @@
+Verification.save_restore_resume : ∀ (s : adler2.Adler32) (ys : Aeneas.Std.Slice Aeneas.Std.U8),
+  (do
+      let c ← s.checksum
+      let restored ← adler2.Adler32.from_checksum c
+      restored.write_slice ys) =
+    s.write_slice ys
+'Verification.save_restore_resume' depends on axioms: [propext, Classical.choice, Quot.sound]

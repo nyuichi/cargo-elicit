@@ -1,0 +1,7 @@
+Verification.split_update : ∀ (self : adler2.Adler32) (xs ys : Aeneas.Std.Slice Aeneas.Std.U8)
+  (hcat : (↑xs).length + (↑ys).length ≤ Aeneas.Std.Usize.max),
+  (do
+      let s ← self.write_slice xs
+      s.write_slice ys) =
+    self.write_slice (Verification.concatSlice xs ys hcat)
+'Verification.split_update' depends on axioms: [propext, Classical.choice, Quot.sound]

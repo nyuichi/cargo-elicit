@@ -1,0 +1,5 @@
+Verification.adler32_slice_returns : ∀ (bytes : Aeneas.Std.Slice Aeneas.Std.U8),
+  ∃ c,
+    adler2.adler32_slice bytes = Aeneas.Std.Result.ok c ∧
+      ↑c = 65536 * (Verification.scalar (1, 0) ↑bytes).2 + (Verification.scalar (1, 0) ↑bytes).1
+'Verification.adler32_slice_returns' depends on axioms: [propext, Classical.choice, Quot.sound]

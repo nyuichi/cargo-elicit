@@ -44,3 +44,9 @@ python experiments/native-command-authoring/run.py with \
   --codex /opt/codex/bin/codex --model gpt-6.1-sol --seconds 10800 \
   --external-sandbox
 ```
+
+## Completed trial
+
+The [October 20 results](results/2026-10-20/README.md) and
+[comparison analysis](../../docs/experiments/adler2-native-command.md) record
+a fresh full-scope run versus the historical no-CLI control.

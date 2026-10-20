@@ -1,0 +1,2 @@
+Verification.codec_word : ∀ (c : Aeneas.Std.U32), Verification.encode (Verification.decode c) = c
+'Verification.codec_word' depends on axioms: [propext, Quot.sound]

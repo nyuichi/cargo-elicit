@@ -1,0 +1,6 @@
+Verification.codec_word_execution : ∀ (c : Aeneas.Std.U32),
+  (do
+      let s ← adler2.Adler32.from_checksum c
+      s.checksum) =
+    Aeneas.Std.Result.ok c
+'Verification.codec_word_execution' depends on axioms: [propext, Classical.choice, Quot.sound]

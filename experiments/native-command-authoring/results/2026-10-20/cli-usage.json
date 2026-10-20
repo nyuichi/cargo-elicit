@@ -1,0 +1,182 @@
+{
+  "actual_invocations": [
+    {
+      "completed_at_seconds": 28.838875623972854,
+      "operation": "init",
+      "command_tool_item_duration_ms": 2743,
+      "exit_code": 0,
+      "output": "Adler2.lean\nadler2.llbc\nSnapshot 113c61a3977a\u2026 \u2014 saved observation; status to inspect edits.\nRemaining: 5 / 5; complete: 0 (native command results). Selected goals only.\n  Adler32::new: missing_or_stale\n  Adler32::checksum: missing_or_stale\n  Adler32::from_checksum: missing_or_stale\n  Adler32::write_slice: missing_or_stale\n  adler32_slice: missing_or_stale\nCandidates (known call dependencies; inspect boundaries):\n  from \u2014 2 selected roots; unresolved calls\n  default \u2014 2 selected roots\n  checksum \u2014 2 selected roots\n  from_checksum \u2014 1 selected roots\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nDetails: status ID; status --plan --details; --verbose or --json. No need to run status again after this summary.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 345.2789999899978,
+      "operation": "verify codec",
+      "command_tool_item_duration_ms": 5331,
+      "exit_code": 0,
+      "output": "Snapshot e62f5ea3d2b1\u2026 \u2014 saved observation; status to inspect edits.\nverify: 3 passed, 0 unresolved (3 requested).\nRemaining: 2 / 5; complete: 3 (native command results). Selected goals only.\n  Adler32::write_slice: missing_or_stale\n  adler32_slice: missing_or_stale\nCandidates (known call dependencies; inspect boundaries):\n  from \u2014 2 selected roots; unresolved calls\n  default \u2014 2 selected roots\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nDetails: status ID; status --plan --details; --verbose or --json. No need to run status again after this summary.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 359.9507812069787,
+      "operation": "status plan",
+      "command_tool_item_duration_ms": 2957,
+      "exit_code": 0,
+      "output": "Observation: refreshed_inputs_without_proof_execution; observed_at_snapshot; not a new proof or a guarantee against later edits\nDependency plan \u2014 snapshot ff3ad268c11022e6f86f9e446ab8ffa8726ce928f236892bdb35db5f8117e85a at 1792500894861\nobserved_at_snapshot; not a new proof or a guarantee against later edits\nSelected API roots: adler2::impl[ff6e69000b04949b]::write_slice::Method\nScope: package=\"adler2\" target=\"x86_64-unknown-linux-gnu\" features=[\"default\",\"std\"]\nCandidates with no known open callee SCC: adler2::algo::impl[16f54fa5277eca59]::from::Method\nLayers follow known call edges, dependencies first. Within a layer, shared roots first; this is not an estimated fastest proof order.\n\nLayer 0 | CANDIDATE | SCC adler2::algo::impl[16f54fa5277eca59]::from::Method | reaches 1 selected root(s)\n  Callee SCCs: \n  Open callee SCCs: \n  Caller SCCs: adler2::algo::impl[ff6e69000b04949b]::compute::Method\n  Selected roots using this SCC: adler2::impl[ff6e69000b04949b]::write_slice::Method\n  adler2::algo::impl[16f54fa5277eca59]::from::Method [not_declared] at /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:116\n    Calls: adler2::algo::U32X4::Struct\n    Callers (whole inventory): adler2::algo::impl[ff6e69000b04949b]::compute::Method\n    Source syntax: loops=0 branches=0 unsafe blocks=0 macros=0 indirect calls=0 (unexpanded, includes nested bodies)\n    External boundaries (not proved here): /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:118:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:118:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:80, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:119:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:119:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:80, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:120:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:120:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:80, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:121:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:121:18 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:80\n    MISSING inventory targets: adler2::algo::U32X4::Struct\n    No declared obligation/evidence binding. This does not mean a separate proof is mandatory.\n\nLayer 1 | DEPENDENCIES OPEN | SCC adler2::algo::impl[ff6e69000b04949b]::compute::Method | reaches 1 selected root(s)\n  Callee SCCs: adler2::algo::impl[16f54fa5277eca59]::from::Method\n  Open callee SCCs: adler2::algo::impl[16f54fa5277eca59]::from::Method\n  Caller SCCs: adler2::impl[ff6e69000b04949b]::write_slice::Method\n  Selected roots using this SCC: adler2::impl[ff6e69000b04949b]::write_slice::Method\n  adler2::algo::impl[ff6e69000b04949b]::compute::Method [not_declared] at /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:5\n    Calls: adler2::algo::U32X4::Struct, adler2::algo::impl[16f54fa5277eca59]::from::Method\n    Callers (whole inventory): adler2::impl[ff6e69000b04949b]::write_slice::Method\n    Source syntax: loops=6 branches=0 unsafe blocks=0 macros=0 indirect calls=0 (unexpanded, includes nested bodies)\n    External boundaries (not proved here): /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:101:32 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1039, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:102:23 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:102:23 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:80, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:55:26 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:55:26 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:84, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:56:26 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:69, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:56:26 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/convert/num.rs:84, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:60:40 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1961, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:60:55 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:116, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:60:69 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:116, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:63:32 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1241, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:64:42 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:1876, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:66:35 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1241, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:78:41 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1241, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:83:30 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:116, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:93:28 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1039, /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/algo.rs:96:28 -> /workspace/toolchain/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:1039\n    MISSING inventory targets: adler2::algo::U32X4::Struct\n    No declared obligation/evidence binding. This does not mean a separate proof is mandatory.\n\nLayer 2 | DEPENDENCIES OPEN | SCC adler2::impl[ff6e69000b04949b]::write_slice::Method | reaches 1 selected root(s)\n  Callee SCCs: adler2::algo::impl[ff6e69000b04949b]::compute::Method\n  Open callee SCCs: adler2::algo::impl[ff6e69000b04949b]::compute::Method\n  Caller SCCs: \n  Selected roots using this SCC: adler2::impl[ff6e69000b04949b]::write_slice::Method\n  adler2::impl[ff6e69000b04949b]::write_slice::Method [missing_failed_or_stale] at /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/lib.rs:142\n    Calls: adler2::algo::impl[ff6e69000b04949b]::compute::Method\n    Callers (whole inventory): adler2::adler32::Function, adler2::adler32_slice::Function, adler2::impl[c15b331ca2ffd1e4]::write::Method\n    Source syntax: loops=0 branches=0 unsafe blocks=0 macros=0 indirect calls=0 (unexpanded, includes nested bodies)\n    Goal Adler32::write_slice: missing_or_stale\n      Requirement: \n\nLean module imports (separate from Rust calls; not theorem-use dependencies):\n  Check -> [Generated.Adler2]; imported by []\n  Codec -> [Generated.Adler2]; imported by [Proofs]\n  Generated.Adler2 -> [Aeneas]; imported by [Check, Codec, Vector]\n  Proofs -> [Codec]; imported by []\n  Vector -> [Generated.Adler2]; imported by []\n  lakefile -> [Lake]; imported by []\nAnalysis limitation: attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nAnalysis limitation: attribute may generate or hide definitions; review required: # [derive (Debug , Copy , Clone)]\nChanged input: /workspace/elicit-benchmarks/native-command-2026-10-20/case/verification/Vector.lean\n\nImplementation call graph, not a proof dependency graph. Candidate means no known unaccepted callee SCC; not a prerequisite or a guarantee of contract reuse. Confirm caller requirements top-down; inspect contracts and prove bottom-up. External calls, dynamic dispatch, macros and indirect calls can leave gaps. Old snapshots may not record external calls. Saved evidence records the declared command result at this snapshot; it does not establish API coverage or theorem reuse.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 1219.1496675919916,
+      "operation": "status",
+      "command_tool_item_duration_ms": 3022,
+      "exit_code": 0,
+      "output": "Status \u2014 refreshed_inputs_without_proof_execution\nobserved_at_snapshot; not a new proof or a guarantee against later edits\nObserved at: 1792501754054 ms; snapshot 4d60af0901fa\u2026\nSelected goals only; no proof executed.\nComplete: 0/5; remaining: 5 (native command results at snapshot).\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nAdler32::write_slice: missing_or_stale\n  Rust: /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/lib.rs:142\n  Command: [\"bash\",\"validate.sh\"] (directory: verification)\n  Next: work with native tools; verify at useful milestones\nCandidates (known call dependencies, not proof prerequisites):\n  adler2::algo::impl[16f54fa5277eca59]::from::Method \u2014 2 selected roots; unresolved calls\n  adler2::impl[6f07fcfab3542315]::default::Method \u2014 2 selected roots\n  adler2::impl[ff6e69000b04949b]::checksum::Method \u2014 2 selected roots\n  adler2::impl[ff6e69000b04949b]::from_checksum::Method \u2014 1 selected roots\nRecent recorded milestones (not additional proof evidence):\n  1792501754060 inputs_observed\n  1792500894863 inputs_observed\n  1792500880148 verification_finished\n  Details: status --saved --json; durable log: .elicit/history.jsonl\nDetails: status --saved --json; status ID; status [API ...] --plan. Call edges do not establish proofs.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 1642.3682218479807,
+      "operation": "verify core",
+      "command_tool_item_duration_ms": 16052,
+      "exit_code": 0,
+      "output": "Snapshot 8d5d4af9e37a\u2026 \u2014 saved observation; status to inspect edits.\nverify: 5 passed, 0 unresolved (5 requested).\nRemaining: 0 / 5; complete: 5 (native command results). Selected goals only.\nCandidates (known call dependencies; inspect boundaries):\n  from \u2014 2 selected roots; unresolved calls\n  default \u2014 2 selected roots\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nDetails: status ID; status --plan --details; --verbose or --json. No need to run status again after this summary.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 1690.171922650974,
+      "operation": "status",
+      "command_tool_item_duration_ms": 3119,
+      "exit_code": 0,
+      "output": "Status \u2014 refreshed_inputs_without_proof_execution\nobserved_at_snapshot; not a new proof or a guarantee against later edits\nObserved at: 1792502225082 ms; snapshot 5bf2b25ab630\u2026\nSelected goals only; no proof executed.\nComplete: 0/5; remaining: 5 (native command results at snapshot).\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nAdler32::write_slice: missing_or_stale\n  Rust: /workspace/elicit-benchmarks/native-command-2026-10-20/case/src/lib.rs:142\n  Command: [\"bash\",\"validate.sh\"] (directory: verification)\n  Last evidence (current=false): native command exited 0; no theorem, axiom or API coverage checks\n  Receipt: .elicit/evidence/run-1792502177277.json\n  Changed since evidence: /workspace/elicit-benchmarks/native-command-2026-10-20/case/verification/Laws.lean\n  Changed since evidence: /workspace/elicit-benchmarks/native-command-2026-10-20/case/verification/lakefile.lean\n  Next: inspect changed inputs/specification; recheck at a useful milestone\nCandidates (known call dependencies, not proof prerequisites):\n  adler2::algo::impl[16f54fa5277eca59]::from::Method \u2014 2 selected roots; unresolved calls\n  adler2::impl[6f07fcfab3542315]::default::Method \u2014 2 selected roots\n  adler2::impl[ff6e69000b04949b]::checksum::Method \u2014 2 selected roots\n  adler2::impl[ff6e69000b04949b]::from_checksum::Method \u2014 1 selected roots\nRecent recorded milestones (not additional proof evidence):\n  1792502225084 inputs_observed\n  1792502177280 verification_finished\n  1792502164601 inputs_observed\n  Details: status --saved --json; durable log: .elicit/history.jsonl\nDetails: status --saved --json; status ID; status [API ...] --plan. Call edges do not establish proofs.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    },
+    {
+      "completed_at_seconds": 1839.522083186981,
+      "operation": "verify final",
+      "command_tool_item_duration_ms": 41659,
+      "exit_code": 0,
+      "output": "Snapshot 0b26093fda65\u2026 \u2014 saved observation; status to inspect edits.\nverify: 5 passed, 0 unresolved (5 requested).\nRemaining: 0 / 5; complete: 5 (native command results). Selected goals only.\nCandidates (known call dependencies; inspect boundaries):\n  from \u2014 2 selected roots; unresolved calls\n  default \u2014 2 selected roots\nAnalysis limitations: 2. attribute may generate or hide definitions; review required: # [derive (Copy , Clone)]\nDetails: status ID; status --plan --details; --verbose or --json. No need to run status again after this summary.\n\n",
+      "duration_note": "Whole command item; may include shell setup and edits. Not isolated CLI overhead."
+    }
+  ],
+  "verification_history_events": [
+    {
+      "recorded_at": 1792500880148,
+      "elapsed_ms": 5470,
+      "exit_code": 0,
+      "fresh": false,
+      "goals": [
+        {
+          "accepted": true,
+          "id": "Adler32::checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792500880136.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::from_checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792500880136.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::new",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792500880136.json"
+        }
+      ],
+      "input": "e62f5ea3d2b11b79eb45cc29fd5689fe5ca5b7014b2f632e849c91c10ef5b067"
+    },
+    {
+      "recorded_at": 1792502177280,
+      "elapsed_ms": 16173,
+      "exit_code": 0,
+      "fresh": false,
+      "goals": [
+        {
+          "accepted": true,
+          "id": "Adler32::checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502177277.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::from_checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502177277.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::new",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502177277.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::write_slice",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502177277.json"
+        },
+        {
+          "accepted": true,
+          "id": "adler32_slice",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502177277.json"
+        }
+      ],
+      "input": "8d5d4af9e37a44e3a5e30f75f36f35c5c1820ae8916dff3db6b2d6b1d745b69c"
+    },
+    {
+      "recorded_at": 1792502374434,
+      "elapsed_ms": 41786,
+      "exit_code": 0,
+      "fresh": false,
+      "goals": [
+        {
+          "accepted": true,
+          "id": "Adler32::checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502374432.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::from_checksum",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502374432.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::new",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502374432.json"
+        },
+        {
+          "accepted": true,
+          "id": "Adler32::write_slice",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502374432.json"
+        },
+        {
+          "accepted": true,
+          "id": "adler32_slice",
+          "phase": "command",
+          "reason": "native command exited 0; no theorem, axiom or API coverage checks",
+          "receipt": ".elicit/evidence/run-1792502374432.json"
+        }
+      ],
+      "input": "0b26093fda65571f021968fe2e7a35bbe528b10355cb9153ca2879a5fb752c5c"
+    }
+  ],
+  "no_failures": true,
+  "note": "History elapsed includes the configured native validator; not management overhead. Successful commands alone do not establish proof coverage."
+}

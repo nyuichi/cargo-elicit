@@ -1,0 +1,18 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Chunks.lean:22:17: warning: This simp argument is unused:
+  List.flatten_cons
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [List.append_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Chunks.lean:31:37: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Chunks.lean:40:41: warning: This simp argument is unused:
+  Function.comp_def
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [flat, List.flatMap_map, Slice.from_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

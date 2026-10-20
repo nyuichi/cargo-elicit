@@ -1,0 +1,61 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:25:57: warning: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [algo.Adler32.compute_loop0_loop0.body, core.slice.iter.IteratorChunksExact.next, bind_ok, spec_ok,
+    innerPost]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:25:69: warning: This simp argument is unused:
+  spec_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [algo.Adler32.compute_loop0_loop0.body, core.slice.iter.IteratorChunksExact.next, bind_ok,
+    bind_tc_ok, innerPost]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:25:78: warning: This simp argument is unused:
+  innerPost
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [algo.Adler32.compute_loop0_loop0.body, core.slice.iter.IteratorChunksExact.next, bind_ok,
+    bind_tc_ok, spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:27:28: warning: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [bind_ok, spec_ok, Std.uncurry, WP.uncurry']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:27:49: warning: This simp argument is unused:
+  Std.uncurry
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [bind_ok, bind_tc_ok, spec_ok, WP.uncurry']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:27:62: warning: This simp argument is unused:
+  WP.uncurry'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [bind_ok, bind_tc_ok, spec_ok, Std.uncurry]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:42:57: warning: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [algo.Adler32.compute_loop0_loop0.body, core.slice.iter.IteratorChunksExact.next, bind_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:28:4: warning: Unused tactic linter: `change innerPost [] k x y (x.arr, y.arr)` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:56:8: warning: Unused tactic linter: `dsimp only [Std.uncurry, WP.uncurry']` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Inner.lean:57:8: warning: Unused tactic linter: `simp only [bind_ok, bind_tc_ok, Std.uncurry, WP.uncurry']` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

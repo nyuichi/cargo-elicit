@@ -1,0 +1,124 @@
+{
+  "historical_without_cli": {
+    "wall_seconds": 1878.6744130510015,
+    "end_to_end_seconds": 1878.678068559002,
+    "command_items": 109,
+    "failed_command_items": 54,
+    "input_tokens": 15619642,
+    "cached_input_tokens": 15347456,
+    "noncached_input_tokens": 272186,
+    "output_tokens": 54142,
+    "reasoning_output_tokens_subset": 18341,
+    "original_sources_unchanged": true,
+    "settings": {
+      "model": "gpt-6.1-sol",
+      "modelProvider": "openai",
+      "reasoningEffort": null,
+      "serviceTier": null,
+      "approvalPolicy": "on-request",
+      "sandbox": {
+        "type": "workspaceWrite",
+        "writableRoots": [
+          "/workspace/toolchain"
+        ],
+        "networkAccess": true,
+        "excludeTmpdirEnvVar": false,
+        "excludeSlashTmp": false
+      }
+    },
+    "effective_sandbox": {
+      "type": "workspaceWrite",
+      "writableRoots": [
+        "/workspace/toolchain"
+      ],
+      "networkAccess": true,
+      "excludeTmpdirEnvVar": false,
+      "excludeSlashTmp": false
+    }
+  },
+  "new_native_command_cli": {
+    "wall_seconds": 1894.4095018159715,
+    "end_to_end_seconds": 1894.4396397009841,
+    "command_items": 113,
+    "failed_command_items": 48,
+    "input_tokens": 19230948,
+    "cached_input_tokens": 18987008,
+    "noncached_input_tokens": 243940,
+    "output_tokens": 62043,
+    "reasoning_output_tokens_subset": 23493,
+    "original_sources_unchanged": true,
+    "settings": {
+      "model": "gpt-6.1-sol",
+      "modelProvider": "openai",
+      "reasoningEffort": null,
+      "serviceTier": null,
+      "approvalPolicy": "never",
+      "sandbox": {
+        "type": "workspaceWrite",
+        "writableRoots": [
+          "/workspace/elicit-benchmarks/native-command-2026-10-20/reports"
+        ],
+        "networkAccess": false,
+        "excludeTmpdirEnvVar": false,
+        "excludeSlashTmp": false
+      }
+    },
+    "effective_sandbox": {
+      "type": "externalSandbox",
+      "networkAccess": "restricted"
+    }
+  },
+  "delta": {
+    "wall_seconds": {
+      "difference": 15.735088764969987,
+      "percent": 0.8375633721127818
+    },
+    "end_to_end_seconds": {
+      "difference": 15.761571141982131,
+      "percent": 0.8389713706548729
+    },
+    "command_items": {
+      "difference": 4,
+      "percent": 3.669724770642202
+    },
+    "failed_command_items": {
+      "difference": -6,
+      "percent": -11.111111111111116
+    },
+    "input_tokens": {
+      "difference": 3611306,
+      "percent": 23.120286623726717
+    },
+    "cached_input_tokens": {
+      "difference": 3639552,
+      "percent": 23.714366732831806
+    },
+    "noncached_input_tokens": {
+      "difference": -28246,
+      "percent": -10.377462470516486
+    },
+    "output_tokens": {
+      "difference": 7901,
+      "percent": 14.593107014886787
+    },
+    "reasoning_output_tokens_subset": {
+      "difference": 5152,
+      "percent": 28.090071424676943
+    }
+  },
+  "proof_acceptance": {
+    "current_required_apis": "5/5 independently accepted",
+    "current_common_behavior_categories": "4/4 independently accepted",
+    "historical_required_apis": "5/5 independently accepted",
+    "historical_common_behavior_categories": "4/4 independently accepted",
+    "current_fresh_audit_seconds": 62.72601945101633,
+    "audit_outside_authoring_time": true
+  },
+  "limits": [
+    "One fresh treatment versus a historical control, not a paired causal experiment.",
+    "Same requested five APIs and optional laws, but proof strategies may differ.",
+    "Effective inner sandbox and approval policies differ; current execution relies on the managed outer environment.",
+    "Current protocol requires only an outside-tree final report; historical control also required progress and inventory files.",
+    "Cached input is a subset of input; reasoning output is a subset of output. No pricing/quota inference."
+  ]
+}

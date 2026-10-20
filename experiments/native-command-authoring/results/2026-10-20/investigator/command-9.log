@@ -1,0 +1,9 @@
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Outer.lean:28:6: warning: Unused tactic linter: `simp only [lift, bind_ok, Std.uncurry]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Outer.lean:38:6: warning: Unused tactic linter: `simp only [spec_ok]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/elicit-benchmarks/native-command-2026-10-20/independent-audit/Outer.lean:68:8: warning: Unused tactic linter: `simp only [bind_ok, spec_ok]` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

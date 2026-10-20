@@ -1,0 +1,2 @@
+Verification.codec_state : ∀ (s : adler2.Adler32), Verification.decode (Verification.encode s) = s
+'Verification.codec_state' depends on axioms: [propext, Quot.sound]
