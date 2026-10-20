@@ -1,62 +1,60 @@
 ---
 name: cargo-elicit
-description: Track crate verification progress and input-bound native command results with init, status and verify.
+description: Use cargo-elicit to inspect crate verification progress and record native verification command results.
 ---
 
-cargo-elicit is a normal utility for people and AI tools. It does not start an
-AI, prescribe proof strategies, or judge whether a theorem proves an API correct.
+Use cargo-elicit alongside ordinary native proof tools. It tracks selected APIs,
+command results and input changes. Write specifications and proofs normally;
+assess their meaning and assumptions as part of that work.
 
-1. Inspect the user's requested properties and native verification project. For
-   a new project use `cargo elicit init --api API --command PROGRAM ARG...`;
-   repeat `--api` to select more APIs. Put other init options before `--command`.
-   Use `--directory PATH` if the native command runs in a subdirectory. Init
-   discovers APIs and writes schema-3 configuration, not proof scaffolds.
-2. Configure the ordinary native verification command you would use without
-   cargo-elicit (for example `lake build` or a fail-fast translation/build script).
-   `verification.command` is argv, not shell text. Per-obligation command and
-   directory overrides are available. Shared commands run once per request.
-   Add external semantic dependencies/scripts/toolchain files to
-   `verification.inputs` as needed. Tool versions are not pinned by elicit.
-3. On resumption use `cargo elicit status` for current input observations, saved
-   command results, changed paths, failures/logs and recorded milestones.
-   Current observations automatically reuse disk-cached Rust/Cargo analysis
-   when its inputs match; no daemon runs. Lean-only edits can retain that cache
-   while invalidating native command results. Build scripts/macros/custom module
-   paths keep conservative analysis invalidation. Do not manually refresh or
-   delete the cache as a routine step. `status --saved` is a fast saved read with
-   unknown workspace freshness.
-   Use `status API` for focused details, `status --inventory` for API discovery,
-   and `status [API ...] --plan` for dependency-first SCCs and shared callees.
-   `--plan --details` expands graph details. Call/import edges are advisory,
-   not logical proof prerequisites; do not prove every helper automatically.
-4. Author specifications and proofs normally with native tools. No elicit
-   contract syntax, generated proposition, wrapper, theorem registration,
-   approval text, or handoff file is required. Optional statement/theorem fields
-   are metadata only. Whether the chosen theorem covers the requested API and
-   whether its assumptions are acceptable remain ordinary verification work.
-5. At useful milestones use `cargo elicit verify [API ...]` to execute native
-   commands and save input-bound results. Valid successful receipts may be
-   reused; `verify --fresh` forces execution without cleaning native caches.
-   Native clean-build or strict-warning policies belong in the chosen command.
-   Do not run verify after every edit or immediately follow its summary with
-   another status call unless a new observation is needed.
-6. Save inputs before verification and do not edit them while a command runs.
-   On failure use the returned diagnostic/log, fix locally and retry at a useful
-   milestone. Missing executables, nonzero exits, timeouts, interruptions, input
-   races and invalid durable receipts remain explicit failures.
-7. No handoff or notes format is read or required. Use source comments as useful;
-   comments in tracked files count as input changes. If changing a memo should
-   not invalidate results, put it in a separate Markdown file outside the project
-   tree. Merely using Markdown inside the project does not exclude it. Never
-   read untracked memos or internal CLI state from build/proof code. Archive
-   `.elicit` explicitly when transferring workspaces.
-8. Describe results accurately: elicit records native command success, not an
-   independent proof audit. It does not inspect `sorry`, custom axioms, theorem
-   type correspondence or full Rust API coverage. Choose a stricter native
-   command if required by the user; do not invent an additional CLI approval
-   ritual. There is no `review` or `finish` command.
+## Setup
 
-Only `init`, `status`, and `verify` exist. Saved receipt modes named `run` and
-`rerun` distinguish ordinary and forced command runs; neither is an additional
-command or a semantic certification. Status hides current successful goals by
-default; use `--all` to include them. Use JSON for actual programmatic processing.
+Inspect the requested properties, native project and existing `elicit.toml`.
+For a new project, select APIs and the command normally used to validate them:
+
+```sh
+cargo elicit init --api identity --directory verification --command lake build
+```
+
+Repeat `--api` for more targets. Put other init options before `--command`.
+Commands are argv, not shell text; use a fail-fast script for multiple steps.
+Existing projects can edit `verification.command` and `verification.directory`
+in `elicit.toml`, with per-obligation overrides when needed. A shared command runs
+once per request and its result is associated with the selected goals using it.
+Add external semantic inputs to `verification.inputs`; dependencies inside native
+build directories such as `.lake` are not automatically fingerprinted.
+See [README](../../README.md) for configuration details.
+
+## Work
+
+1. Use `cargo elicit status` at the start, after interruption, and when deciding
+   what to do next. It observes changes and shows unfinished goals, saved results
+   and failure logs. `status API` focuses one goal; `--all` includes successful
+   goals; `--inventory` lists APIs. `--saved` reads saved state without checking
+   current files. Use JSON for programmatic processing.
+2. Use `status [API ...] --plan` when dependency information helps. It shows
+   callee-first SCCs and shared callees; `--details` expands the graph. These are
+   planning hints, not mandatory proof prerequisites. Prove helpers as needed
+   for the requested properties, rather than registering every helper.
+3. Iterate with native tools. At useful milestones, save inputs and run
+   `cargo elicit verify [API ...]`. Avoid a verify after every edit or an immediate
+   status call when verify already provided enough information. Keep active
+   inputs unchanged while verification runs. On failure, use its diagnostic/log
+   and fix locally.
+4. Successful unchanged results can be reused. Use `verify --fresh` only to force
+   another command execution; native cache cleaning or stricter validation must
+   be part of the configured command. Analysis caching is automatic and needs
+   no routine maintenance.
+
+## Results and workspace
+
+Report what the native command established for the requested properties.
+cargo-elicit records command success and freshness; it does not independently
+validate theorem meaning, assumptions or API coverage. API/command associations
+are user-declared.
+
+Progress and execution history are automatic. Use ordinary comments or Markdown
+for reasoning if useful. If memo edits should not invalidate results, keep the
+memo outside the project tree; project-local comments and Markdown are tracked.
+Build/proof code must not read untracked memos or internal CLI state. Preserve
+`.elicit` explicitly when transferring a workspace if saved results are needed.
