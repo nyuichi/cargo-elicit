@@ -27,6 +27,16 @@ impl Store {
         }
         bail!("elicit.toml not found; run cargo elicit init")
     }
+    pub fn prepare_gitignore(&self) -> Result<()> {
+        let path = self.root.join(".elicit/.gitignore");
+        if !path.exists() {
+            atomic_write(
+                &path,
+                b"/*\n!/.gitignore\n!/evidence/\n/evidence/*\n!/evidence/*.json\n",
+            )?;
+        }
+        Ok(())
+    }
     pub fn lock(&self, name: &str) -> Result<Lock> {
         self.lock_for(name, std::time::Duration::ZERO)
     }

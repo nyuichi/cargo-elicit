@@ -295,6 +295,10 @@ fn run(cli: Cli) -> Result<i32> {
                 };
                 recovery
             };
+            if saved && value["progress"].is_object() {
+                value["progress"]["source_status"] = "unknown".into();
+                value["progress"]["environment_status"] = "unknown".into();
+            }
             value["observation"] = observation.into();
             value["workspace_currentness"] = currentness.into();
             if json || (verbose && !plan) {

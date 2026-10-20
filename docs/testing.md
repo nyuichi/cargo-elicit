@@ -14,7 +14,11 @@ dependencies, features, workspace-glob additions, macro/build-script fallbacks,
 nonstandard Rust module paths, corrupt/deleted caches and sources that need no
 language-server queries. Structural graph
 and fingerprint tests exercise advisory analysis and freshness independently
-from mathematical proof admission, which no longer exists.
+from mathematical proof admission, which no longer exists. Git-checkpoint tests
+commit the actual records, clone into another directory without logs/caches,
+recover historical success, require a new environment check, and then reuse it.
+They also cover deleted snapshots, separate source/environment changes, immutable
+records, tracked/ignored file boundaries and content-addressed record corruption.
 
 One opt-in test uses real Lean, without any AI or full-crate authoring run:
 

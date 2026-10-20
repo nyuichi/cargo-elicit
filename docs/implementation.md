@@ -20,7 +20,7 @@ are governed by the native command, not rejected by cargo-elicit. Native tool
 errors still fail through their exit status. Native build caches are tool-owned.
 
 Ordinary verify can reuse current successful durable receipts. Reuse validates
-receipt path, kind, input digest/map, project scope, goal/command binding, saved
+receipt path, kind, input digest/map (including scope), goal/command binding, saved
 result agreement, zero exit and successful outcome. Failed, missing, corrupted
 or stale receipts run again. `--fresh` bypasses receipt reuse and reruns the
 command; it does not perform a clean build or claim an independent audit.
@@ -36,8 +36,26 @@ bind additional dependencies, including files under otherwise excluded trees.
 Input hashes establish observed freshness, not a hermetic execution guarantee.
 No environment values are stored in receipts; only their hashes are recorded.
 
-Native output logs are copied into the durable receipt directory before saving
-results. An input race or missing input inspection cannot establish current
+Schema-4 command records are immutable content-addressed JSON files under
+`.elicit/evidence/`, suitable for Git. They are the canonical history. Each input
+map uses relative project paths, hashed external identities, and separate source
+and environment digests. Local execution still binds the full conservative
+fingerprint, including absolute paths and inherited environment, so relocation
+preserves history without silently reusing results. Record filenames verify the
+serialized bytes; checksums do not authenticate an author or validate proofs.
+Corrupt/unsupported records produce visible limitations and are not reused.
+
+Native output logs and richer diagnostic excerpts are copied into ignored
+`.elicit/logs/`. Records contain relative artifact references, SHA-256 hashes and
+sizes, but no raw diagnostic excerpts. Optional local diagnostics are loaded for
+failure navigation. A missing log does not invalidate the record. No artifact
+upload or cloud scheduler is implemented. `.elicit/cache/snapshot.json` is a
+rebuildable materialized view; ordinary status can reconstruct it without previous
+cache/runtime/history files. Saved-only status requires a local snapshot and
+cannot establish current input or environment matching. Init/verify create an
+internal ignore file when absent; status never changes Git-tracked state.
+
+An input race or missing input inspection cannot establish current
 success. Signals/timeouts stop descendant processes. The existing project lock
 serializes CLI mutations; it does not prevent external edits. `.elicit/history.jsonl`
 records observations, outcomes, reuse and errors; bounded recent history is

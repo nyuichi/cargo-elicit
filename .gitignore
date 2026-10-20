@@ -1,7 +1,7 @@
 /target/
-/.elicit/
 /.why3find/
 **/target/
-**/.elicit/
 **/.why3find/
-
+**/.elicit/*
+!**/.elicit/.gitignore
+!**/.elicit/evidence/

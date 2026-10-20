@@ -64,7 +64,7 @@ impl Project {
         serde_json::from_slice(&self.ok(args).stdout).unwrap()
     }
     fn snapshot(&self) -> Value {
-        serde_json::from_slice(&fs::read(self.root().join(".elicit/snapshot.json")).unwrap())
+        serde_json::from_slice(&fs::read(self.root().join(".elicit/cache/snapshot.json")).unwrap())
             .unwrap()
     }
     fn count(&self) -> usize {
@@ -166,6 +166,25 @@ fn failure_has_durable_log_and_fresh_success_replaces_it() {
     let saved: Value = serde_json::from_slice(&fs::read(p.root().join(receipt)).unwrap()).unwrap();
     let result = &saved["report"]["results"][0];
     assert_eq!(result["exit_code"], 7);
+    assert!(result["diagnostic"].get("message").is_none());
+    assert!(
+        !fs::read_to_string(p.root().join(receipt))
+            .unwrap()
+            .contains("expected failure")
+    );
+    assert!(
+        saved["artifacts"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|a| a["path"].as_str().unwrap().starts_with(".elicit/logs/")
+                && a["sha256"].as_str().unwrap().len() == 64)
+    );
+    assert!(
+        String::from_utf8(p.ok(&["status"]).stdout)
+            .unwrap()
+            .contains("expected failure")
+    );
     let log = p
         .root()
         .join(result["diagnostic"]["cache"].as_str().unwrap())
@@ -174,6 +193,12 @@ fn failure_has_durable_log_and_fresh_success_replaces_it() {
         fs::read_to_string(log)
             .unwrap()
             .contains("expected failure")
+    );
+    fs::remove_dir_all(p.root().join(".elicit/logs")).unwrap();
+    assert!(
+        String::from_utf8(p.ok(&["status"]).stdout)
+            .unwrap()
+            .contains("not available in this workspace")
     );
     p.script("echo run >> .elicit/count\n");
     p.ok(&["verify", "--fresh"]);
@@ -196,7 +221,7 @@ fn input_race_is_not_saved_as_current_success() {
     assert_eq!(evidence["accepted"], false);
 }
 #[test]
-fn missing_or_corrupt_receipt_forces_execution_and_partial_reuse_is_preserved() {
+fn corrupt_content_addressed_receipt_is_ignored_and_forces_execution() {
     let p = Project::new();
     p.ok(&["verify"]);
     let s = p.snapshot();
@@ -210,7 +235,7 @@ fn missing_or_corrupt_receipt_forces_execution_and_partial_reuse_is_preserved() 
         .retain(|r| r["target"] != "identity");
     fs::write(&path, serde_json::to_vec(&receipt).unwrap()).unwrap();
     let v = p.json(&["verify", "--json"]);
-    assert_eq!(v["operation"]["reused_count"], 1);
+    assert_eq!(v["operation"]["reused_count"], 0);
     assert_eq!(p.count(), 2);
     let s = p.snapshot();
     let path = p.root().join(
@@ -255,7 +280,7 @@ fn saved_status_is_pure_and_dependency_planning_remains_available() {
     let p = Project::new();
     fs::write(p.root().join("src/lib.rs"),"fn leaf(x:u32)->u32{x}\npub fn identity(x:u32)->u32{leaf(x)}\npub fn other(x:u32)->u32{leaf(x)}\n").unwrap();
     p.ok(&["status"]);
-    let snapshot = fs::read(p.root().join(".elicit/snapshot.json")).unwrap();
+    let snapshot = fs::read(p.root().join(".elicit/cache/snapshot.json")).unwrap();
     let history = fs::read(p.root().join(".elicit/history.jsonl")).unwrap();
     for args in [
         vec!["status", "--saved", "--json"],
@@ -273,7 +298,7 @@ fn saved_status_is_pure_and_dependency_planning_remains_available() {
     }
     assert_eq!(
         snapshot,
-        fs::read(p.root().join(".elicit/snapshot.json")).unwrap()
+        fs::read(p.root().join(".elicit/cache/snapshot.json")).unwrap()
     );
     assert_eq!(
         history,
@@ -652,4 +677,134 @@ fn synthetic_environment_keys_are_never_treated_as_source_paths() {
     );
     assert_eq!(p.snapshot()["analysis_reused"], false);
     assert!(p.snapshot()["input_files"]["@env:CUSTOM_INPUT.rs"].is_string());
+}
+
+#[test]
+fn committed_evidence_survives_git_clone_without_cache_or_logs() {
+    let p = Project::new();
+    fs::write(p.root().join(".gitignore"), "/target/\n").unwrap();
+    p.ok(&["verify"]);
+    let evidence_dir = p.root().join(".elicit/evidence");
+    assert!(
+        fs::read_dir(&evidence_dir).unwrap().all(|e| e
+            .unwrap()
+            .path()
+            .extension()
+            .is_some_and(|s| s == "json"))
+    );
+    let before: Vec<_> = fs::read_dir(&evidence_dir)
+        .unwrap()
+        .map(|e| {
+            let path = e.unwrap().path();
+            (path.clone(), fs::read(path).unwrap())
+        })
+        .collect();
+    p.ok(&["status"]);
+    for (path, bytes) in before {
+        assert_eq!(fs::read(path).unwrap(), bytes);
+    }
+    for args in [
+        vec!["init", "-q"],
+        vec!["add", "."],
+        vec![
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.invalid",
+            "commit",
+            "-qm",
+            "checkpoint",
+        ],
+    ] {
+        assert!(
+            Command::new("git")
+                .args(args)
+                .current_dir(p.root())
+                .output()
+                .unwrap()
+                .status
+                .success()
+        );
+    }
+    let tracked = Command::new("git")
+        .args(["ls-files"])
+        .current_dir(p.root())
+        .output()
+        .unwrap();
+    let tracked = String::from_utf8(tracked.stdout).unwrap();
+    assert!(tracked.contains(".elicit/evidence/"));
+    assert!(tracked.contains(".elicit/.gitignore"));
+    assert!(!tracked.contains(".elicit/cache/"));
+    assert!(!tracked.contains(".elicit/logs/"));
+    assert!(!tracked.contains(".elicit/runtime/"));
+    assert!(!tracked.contains("history.jsonl"));
+    let clone = Project {
+        dir: tempfile::tempdir().unwrap(),
+    };
+    assert!(
+        Command::new("git")
+            .arg("clone")
+            .arg("-q")
+            .arg(p.root())
+            .arg(clone.root())
+            .output()
+            .unwrap()
+            .status
+            .success()
+    );
+    assert!(!clone.root().join(".elicit/cache").exists());
+    let s = clone.json(&["status", "--json"]);
+    let g = &s["goals"][0];
+    assert_eq!(g["historical_result"], "succeeded");
+    assert_eq!(g["source_status"], "unchanged");
+    assert_eq!(g["environment_status"], "different");
+    assert_eq!(s["summary"]["completed"], 0);
+    assert!(
+        String::from_utf8(clone.ok(&["status"]).stdout)
+            .unwrap()
+            .contains("past result preserved")
+    );
+    let v = clone.json(&["verify", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 0);
+    assert_eq!(clone.count(), 1);
+    let v = clone.json(&["verify", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 2);
+    assert_eq!(clone.count(), 1);
+}
+
+#[test]
+fn evidence_is_canonical_and_environment_changes_do_not_erase_past_success() {
+    let p = Project::new();
+    p.ok(&["verify"]);
+    fs::remove_dir_all(p.root().join(".elicit/cache")).unwrap();
+    let s = p.json(&["status", "--all", "--json"]);
+    assert_eq!(s["summary"]["completed"], 2);
+    assert_eq!(s["goals"][0]["source_status"], "unchanged");
+    let o = p
+        .cmd()
+        .env("ELICIT_TEST_ENVIRONMENT", "different")
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(o.status.success());
+    let s: Value = serde_json::from_slice(&o.stdout).unwrap();
+    assert_eq!(s["goals"][0]["historical_result"], "succeeded");
+    assert_eq!(s["goals"][0]["source_status"], "unchanged");
+    assert_eq!(s["goals"][0]["environment_status"], "different");
+    let s = p.json(&["status", "--saved", "--all", "--json"]);
+    assert_eq!(s["goals"][0]["environment_status"], "unknown");
+    fs::write(
+        p.root().join("src/lib.rs"),
+        "pub fn identity(x:u32)->u32{x+1}\npub fn other(x:u32)->u32{x}\n",
+    )
+    .unwrap();
+    let s = p.json(&["status", "--json"]);
+    assert_eq!(s["goals"][0]["source_status"], "changed");
+    assert_eq!(s["goals"][0]["historical_result"], "succeeded");
+    for entry in fs::read_dir(p.root().join(".elicit/evidence")).unwrap() {
+        let contents = fs::read_to_string(entry.unwrap().path()).unwrap();
+        assert!(!contents.contains(p.root().to_str().unwrap()));
+        let v: Value = serde_json::from_str(&contents).unwrap();
+        assert!(v["input_files"].get("src/lib.rs").is_some());
+    }
 }

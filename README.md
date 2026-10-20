@@ -97,12 +97,44 @@ inferred; list additional semantic inputs explicitly. A command that changes
 tracked inputs cannot produce a current successful result. Native caches remain
 owned by the native tools; cargo-elicit does not validate their contents.
 
-Command output is saved with the receipt under `.elicit/evidence/`. Automatic
-history records input observations and command outcomes. No notes feature exists.
+Verification records in `.elicit/evidence/*.json` are intended for Git. They
+contain command results, relative project input paths and hashes, separate source
+and environment identities, and log references with content hashes. They are
+immutable, content-addressed records, not certificates of mathematical correctness
+or authenticated worker attestations. A checksum detects damage, not forgery.
+
+```sh
+git add src verification elicit.toml .elicit/.gitignore .elicit/evidence
+git commit -m "Checkpoint verification"
+# In another checkout:
+cargo elicit status
+```
+
+Use your project's actual proof directory, and commit its toolchain/lock files as
+usual. `init` (and `verify` when missing) creates `.elicit/.gitignore`: evidence
+JSON and that ignore file are tracked; logs, caches, runtime state and local
+history are ignored. `status` never writes Git-tracked CLI records. No additional
+handwritten progress file or command is required.
+
+`.elicit/cache/snapshot.json` is a disposable view. Without it, ordinary `status`
+rebuilds the view from source, configuration and evidence; `--saved` requires an
+existing local snapshot and does not inspect current inputs/environment. Status
+separately reports historical outcome, unchanged/changed project inputs, and
+matching/different environment. Relocating a checkout preserves history but
+conservatively requires verification again. Exact local input/environment binding
+is still required for successful receipt reuse. External inputs remain part of
+the environment identity and are conservatively rechecked.
+
+Raw command output and diagnostic excerpts live in `.elicit/logs/`, outside Git.
+Evidence references their relative paths and hashes; logs can be archived by a
+cloud runner without committing them. Missing logs do not erase results or prevent
+rechecking; status marks unavailable diagnostic logs. This CLI does not upload
+artifacts or manage cloud jobs. `.elicit/history.jsonl` is optional local operation
+history, not the source of verification records. There is no notes feature.
 Use comments or Markdown as needed; memos outside the project tree do not
 invalidate evidence. Project-local comments and Markdown remain tracked. Build
-and proof code must not read untracked memos or internal CLI state. Archive
-`.elicit` explicitly when moving workspaces; it is normally Git-ignored.
+and proof code must not read untracked memos or internal CLI state. Existing
+schema-3 evidence/snapshots are not migrated; rerun verification for new records.
 
 Exit codes: 0 for successful requested commands/reads, 1 for command failure,
 timeout or changed inputs, 2 for configuration/environment errors, 130 for

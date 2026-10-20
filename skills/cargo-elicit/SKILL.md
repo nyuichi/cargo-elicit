@@ -56,5 +56,15 @@ are user-declared.
 Progress and execution history are automatic. Use ordinary comments or Markdown
 for reasoning if useful. If memo edits should not invalidate results, keep the
 memo outside the project tree; project-local comments and Markdown are tracked.
-Build/proof code must not read untracked memos or internal CLI state. Preserve
-`.elicit` explicitly when transferring a workspace if saved results are needed.
+Build/proof code must not read untracked memos or internal CLI state.
+
+For checkpoints, commit source/proofs, configuration, toolchain/lock files,
+`.elicit/.gitignore` and `.elicit/evidence/`. Init/verify create the ignore file;
+logs, caches, runtime state and local history stay outside Git. After a clone,
+ordinary `status` reconstructs progress from evidence without the old snapshot.
+Past success, project input changes and environment differences are distinct:
+an environment-only difference preserves history but requires verification in
+that environment. `--saved` needs a local snapshot and does not establish either
+match. Missing local logs do not erase results. Evidence is a command record,
+not mathematical certification or worker authentication. No handwritten progress
+file or extra checkpoint command is needed.

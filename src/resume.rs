@@ -20,6 +20,10 @@ pub fn view(store: &Store, s: &project::Snapshot, refreshed: bool) -> Result<Val
         "unknown; --saved did not inspect verification inputs"
     });
     for g in v["goals"].as_array_mut().unwrap() {
+        if !refreshed {
+            g["source_status"] = json!("unknown");
+            g["environment_status"] = json!("unknown");
+        }
         let goal = s.goals.iter().find(|x| x.id == g["id"]).unwrap();
         let t = goal
             .target
@@ -35,6 +39,15 @@ pub fn view(store: &Store, s: &project::Snapshot, refreshed: bool) -> Result<Val
                 .is_some_and(|e| e.input == s.input && e.specification == goal.specification)
         );
         let last = s.evidence.get(&goal.id).and_then(|es| es.last());
+        g["log_available"] = json!(
+            last.and_then(|e| e.result.as_ref())
+                .and_then(|r| r.diagnostic.as_ref())
+                .and_then(|d| d.log.as_ref().map(|log| store
+                    .root
+                    .join(&d.cache)
+                    .join(log)
+                    .is_file()))
+        );
         let changes: Vec<_> = last
             .filter(|e| !e.input_files.is_empty())
             .into_iter()
@@ -53,6 +66,8 @@ pub fn view(store: &Store, s: &project::Snapshot, refreshed: bool) -> Result<Val
         g["change_details_available"] = json!(last.is_some_and(|e| !e.input_files.is_empty()));
         g["next"] = json!(if goal.limitation.is_some() {
             "inspect the declared limitation"
+        } else if g["source_status"] == "unchanged" && g["environment_status"] == "different" {
+            "past result preserved; verify in the current environment"
         } else if !g["last_evidence_current"].as_bool().unwrap() && last.is_some() {
             "inspect changed inputs/specification; recheck at a useful milestone"
         } else if last.is_some_and(|e| !e.accepted) {
@@ -113,6 +128,13 @@ pub fn render(v: &Value) -> String {
             g["id"].as_str().unwrap(),
             g["command_status"].as_str().unwrap()
         );
+        let _ = writeln!(
+            out,
+            "  History: {}; inputs: {}; environment: {}",
+            g["historical_result"].as_str().unwrap_or("none"),
+            g["source_status"].as_str().unwrap_or("unknown"),
+            g["environment_status"].as_str().unwrap_or("unknown")
+        );
         if let Some(file) = g["source"]["file"].as_str() {
             let _ = writeln!(out, "  Rust: {file}:{}", g["source"]["line"]);
         }
@@ -146,7 +168,16 @@ pub fn render(v: &Value) -> String {
                 let _ = writeln!(out, "  Diagnostic: {}", ui::one_line(message, 300));
             }
             if let Some(log) = d["log"].as_str() {
-                let _ = writeln!(out, "  Log: {}/{log}", d["cache"].as_str().unwrap_or(""));
+                let _ = writeln!(
+                    out,
+                    "  Log{}: {}/{log}",
+                    if g["log_available"] == false {
+                        " (not available in this workspace)"
+                    } else {
+                        ""
+                    },
+                    d["cache"].as_str().unwrap_or("")
+                );
             }
         }
         let changes = g["changes_since_last_evidence"].as_array().unwrap();

@@ -93,7 +93,7 @@ pub struct Diagnostic {
     pub cache: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Relative to cache, which is relocated into the durable receipt directory.
+    /// Relative to cache, which is relocated into the local logs directory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub log: Option<String>,
 }

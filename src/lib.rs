@@ -1,5 +1,6 @@
 mod analysis;
 pub mod cli;
+mod evidence;
 mod fingerprint;
 mod lean_modules;
 mod model;

@@ -1,6 +1,7 @@
 //! Model-independent project snapshots, obligations and evidence.
 use crate::{
     analysis::Selection,
+    evidence::{input_identities, portable_inputs, read_evidence},
     fingerprint,
     model::*,
     process,
@@ -84,6 +85,8 @@ pub struct Goal {
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evidence {
+    pub source_input: String,
+    pub environment_input: String,
     #[serde(default)]
     pub input_files: BTreeMap<String, String>,
     pub kind: String,
@@ -139,22 +142,28 @@ pub fn config(store: &Store) -> Result<Config> {
     }
     Ok(c)
 }
-pub fn load(store: &Store) -> Result<Snapshot> {
+fn load_cached(store: &Store) -> Result<Snapshot> {
     let value: serde_json::Value = serde_json::from_slice(
-        &fs::read(store.root.join(".elicit/snapshot.json"))
+        &fs::read(store.root.join(".elicit/cache/snapshot.json"))
             .context("no project snapshot; run cargo elicit status")?,
     )?;
-    if value["schema"] != 3 {
+    if value["schema"] != 4 {
         bail!(
-            "unsupported snapshot schema; existing data was preserved (native-command projects use schema 3)"
+            "unsupported snapshot schema; existing data was preserved (native-command snapshot schema is 4)"
         );
     }
-    let snapshot: Snapshot = serde_json::from_value(value)?;
+    Ok(serde_json::from_value(value)?)
+}
+pub fn load(store: &Store) -> Result<Snapshot> {
+    let mut snapshot = load_cached(store)?;
+    let (evidence, warnings) = read_evidence(store)?;
+    snapshot.evidence = evidence;
+    snapshot.limitations.extend(warnings);
     Ok(snapshot)
 }
 fn save(store: &Store, s: &Snapshot) -> Result<()> {
     store::atomic_write(
-        &store.root.join(".elicit/snapshot.json"),
+        &store.root.join(".elicit/cache/snapshot.json"),
         &serde_json::to_vec_pretty(s)?,
     )
 }
@@ -183,6 +192,7 @@ pub fn init(root: &Path, c: Config) -> Result<Snapshot> {
         root: root.to_path_buf(),
     };
     let _lock = store.lock("project")?;
+    store.prepare_gitignore()?;
     refresh(&store)
 }
 /// Explicit observation: Cargo/discovery and fingerprints; no verifier compilation.
@@ -200,7 +210,8 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
     let package = observed.package;
     let inventory = observed.inventory;
     let limitations = observed.limitations;
-    let (input, context, input_files) = observed.inputs;
+    let (input, context, raw_input_files) = observed.inputs;
+    let input_files = portable_inputs(&store.root, &package.scope, &raw_input_files)?;
     let version = observed.version;
     let proof_modules = if config.verification.tool == Tool::Aeneas {
         Some(
@@ -275,8 +286,8 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
             directory,
         });
     }
-    let old = if store.root.join(".elicit/snapshot.json").exists() {
-        Some(load(store)?)
+    let old = if store.root.join(".elicit/cache/snapshot.json").exists() {
+        load_cached(store).ok()
     } else {
         None
     };
@@ -292,8 +303,11 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
     } else {
         input_files.keys().cloned().collect()
     };
+    let (evidence, warnings) = read_evidence(store)?;
+    let mut limitations = limitations;
+    limitations.extend(warnings);
     let snapshot = Snapshot {
-        schema: 3,
+        schema: 4,
         analysis_reused: observed.reused,
         proof_modules,
         tool: config.verification.tool,
@@ -307,7 +321,7 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
         inventory,
         limitations,
         goals,
-        evidence: old.as_ref().map(|s| s.evidence.clone()).unwrap_or_default(),
+        evidence,
     };
     save(store, &snapshot)?;
     if !snapshot.changed_inputs.is_empty() {
@@ -348,7 +362,7 @@ pub fn select<'a>(s: &'a Snapshot, selectors: &[String]) -> Result<Vec<&'a Goal>
     }
     Ok(goals)
 }
-fn machine_success(r: &Verification) -> bool {
+pub(crate) fn machine_success(r: &Verification) -> bool {
     r.outcome == Outcome::Success && r.exit_code == Some(0)
 }
 pub fn current_evidence<'a>(s: &'a Snapshot, g: &Goal) -> Option<&'a Evidence> {
@@ -364,11 +378,16 @@ fn evidence_view(e: &Evidence) -> serde_json::Value {
     value
 }
 pub fn view(s: &Snapshot) -> serde_json::Value {
+    let (source, environment) = input_identities(&s.input_files).expect("serializable input maps");
     let goals = s.goals.iter().map(|g| {
         let current = current_evidence(s, g);
+        let last = s.evidence.get(&g.id).and_then(|es| es.last());
         serde_json::json!({"id":g.id,"target":g.target,"description":g.description,
             "command":g.command,"directory":g.directory,
             "command_status":current.map(|e|if e.accepted{"succeeded"}else{"failed"}).unwrap_or("missing_or_stale"),
+            "historical_result":last.map(|e|if e.accepted{"succeeded"}else{"failed_or_interrupted"}).unwrap_or("none"),
+            "source_status":last.map(|e|if e.source_input==source && e.specification==g.specification{"unchanged"}else{"changed"}).unwrap_or("unknown"),
+            "environment_status":last.map(|e|if e.environment_input==environment{"matching"}else{"different"}).unwrap_or("unknown"),
             "limitation":g.limitation,
             "last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()).map(evidence_view),
             "next":"work with native tools; verify at useful milestones"})
@@ -386,7 +405,7 @@ pub fn view(s: &Snapshot) -> serde_json::Value {
         })
         .map(|t| t.id.clone())
         .collect::<Vec<_>>();
-    serde_json::json!({"schema":3,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_commands_succeeded_at_snapshot":complete,"whole_package_claim":false,"evidence_semantics":"native_command_result; no theorem, axiom or Rust correspondence checks","uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"analysis_reused":s.analysis_reused,"changed_inputs":s.changed_inputs,"goals":goals})
+    serde_json::json!({"schema":4,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_commands_succeeded_at_snapshot":complete,"whole_package_claim":false,"evidence_semantics":"native_command_result; no theorem, axiom or Rust correspondence checks","uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"analysis_reused":s.analysis_reused,"changed_inputs":s.changed_inputs,"goals":goals})
 }
 // A saved status bit alone is insufficient: require the durable receipt to agree
 // with the exact observed inputs, specification, scope and accepted native result.
@@ -425,7 +444,6 @@ fn reusable_receipt(
     };
     if receipt["kind"] != e.kind
         || receipt["input_files"] != serde_json::json!(s.input_files)
-        || receipt["scope"] != serde_json::json!(s.scope)
         || receipt["report"]["stable"] != true
         || receipt["report"]["input"] != s.input
         || !receipt["goals"].as_array().is_some_and(|gs| {
@@ -441,8 +459,16 @@ fn reusable_receipt(
     result.command == g.command
         && result.directory == g.directory
         && receipt["report"]["results"].as_array().is_some_and(|rs| {
-            rs.iter()
-                .any(|r| r["target"] == g.id && *r == serde_json::json!(result))
+            rs.iter().any(|r| {
+                r["target"] == g.id
+                    && *r == {
+                        let mut value = serde_json::json!(result);
+                        if let Some(d) = value["diagnostic"].as_object_mut() {
+                            d.remove("message");
+                        }
+                        value
+                    }
+            })
         })
 }
 
@@ -457,6 +483,7 @@ pub fn check(
         bail!("seconds must be positive");
     }
     let _lock = store.lock("project")?;
+    store.prepare_gitignore()?;
     let mut snapshot = refresh(store)?;
     let goals = select(&snapshot, selectors)?
         .into_iter()
@@ -498,12 +525,15 @@ pub fn check(
         return Ok((snapshot, 0, reused.len()));
     }
     let mut report = crate::runner::verify(&snapshot, &store.root, &goals, seconds)?;
-    let id = format!("{}-{}", if fresh { "rerun" } else { "run" }, now());
     let receipt_dir = store.root.join(".elicit/evidence");
     fs::create_dir_all(&receipt_dir)?;
-    let receipt = receipt_dir.join(format!("{id}.json"));
-    let artifacts = receipt_dir.join(&id);
-    fs::create_dir_all(&artifacts)?;
+    let logs = store.root.join(".elicit/logs");
+    fs::create_dir_all(&logs)?;
+    let artifacts = tempfile::Builder::new()
+        .prefix("run-")
+        .tempdir_in(&logs)?
+        .keep();
+    let mut artifact_refs = Vec::new();
     let source_cache = std::path::Path::new(&report.cache);
     for entry in walkdir::WalkDir::new(source_cache)
         .into_iter()
@@ -523,7 +553,12 @@ pub fn check(
         }
         let target = artifacts.join(entry.path().strip_prefix(source_cache)?);
         fs::create_dir_all(target.parent().unwrap())?;
-        fs::copy(entry.path(), target)?;
+        fs::copy(entry.path(), &target)?;
+        let bytes = fs::read(&target)?;
+        artifact_refs.push(serde_json::json!({
+            "path":target.strip_prefix(&store.root)?.to_string_lossy(),
+            "sha256":fingerprint::hash(&bytes),"bytes":bytes.len()
+        }));
     }
     for result in &mut report.results {
         if let Some(diagnostic) = &mut result.diagnostic {
@@ -538,44 +573,37 @@ pub fn check(
         .to_string_lossy()
         .into_owned();
 
+    let (source_input, environment_input) = input_identities(&snapshot.input_files)?;
     store::atomic_write(
-        &receipt,
-        &serde_json::to_vec_pretty(
-            &serde_json::json!({"schema":3,"kind":if fresh{"rerun"}else{"run"},"recorded_at":now(),"scope":snapshot.scope,"input_files":snapshot.input_files,"goals":goals,"report":report}),
-        )?,
+        &artifacts.join("diagnostics.json"),
+        &serde_json::to_vec(&report.results)?,
     )?;
-    let mut all = true;
-    for goal in goals {
-        let result = report.results.iter().find(|r| r.target == goal.id).cloned();
-        let accepted = report.stable && result.as_ref().is_some_and(machine_success);
-        all &= accepted;
-        let phase = "command".to_string();
-        let reason = result
-            .as_ref()
-            .map(|r| r.summary.clone())
-            .unwrap_or_else(|| "command was not executed".into());
-        snapshot
-            .evidence
-            .entry(goal.id)
-            .or_default()
-            .push(Evidence {
-                kind: if fresh { "rerun" } else { "run" }.into(),
-                recorded_at: now(),
-                input: report.input.clone(),
-                input_files: snapshot.input_files.clone(),
-                specification: goal.specification,
-                accepted,
-                result,
-                receipt: receipt
-                    .strip_prefix(&store.root)?
-                    .to_string_lossy()
-                    .into_owned(),
-                phase,
-                reason,
-            });
+    let mut published_report = serde_json::to_value(&report)?;
+    // Raw diagnostic excerpts remain local; committed records reference logs.
+    for result in published_report["results"].as_array_mut().unwrap() {
+        if let Some(d) = result["diagnostic"].as_object_mut() {
+            d.remove("message");
+        }
     }
+    let bytes = serde_json::to_vec_pretty(&serde_json::json!({
+        "schema":4,"kind":if fresh{"rerun"}else{"run"},"recorded_at":now(),
+        "source_input":source_input,"environment_input":environment_input,
+        "input_files":snapshot.input_files,"goals":goals,"report":published_report,"artifacts":artifact_refs
+    }))?;
+    let receipt = receipt_dir.join(format!("{}.json", fingerprint::hash(&bytes)));
+    store::atomic_write(&receipt, &bytes)?;
+    let all = goals.iter().all(|goal| {
+        report.stable
+            && report
+                .results
+                .iter()
+                .find(|r| r.target == goal.id)
+                .is_some_and(machine_success)
+    });
     // Observation and evidence are distinct: a raced check never makes the old
     // input look current. Refresh is explicit on the next write/check operation.
+    // Reload canonical records and optional local diagnostics.
+    snapshot.evidence = read_evidence(store)?.0;
     save(store, &snapshot)?;
     let code = if process::interrupted() {
         130
@@ -597,6 +625,6 @@ pub fn show(s: &Snapshot, selector: &str) -> Result<serde_json::Value> {
         .as_ref()
         .and_then(|id| s.inventory.iter().find(|t| &t.id == id));
     Ok(
-        serde_json::json!({"schema":3,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"goal":goal,"target":target,"evidence":s.evidence.get(&goal.id),"next":"Work with native tools; verify at useful milestones; verify --fresh to rerun the configured command."}),
+        serde_json::json!({"schema":4,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"goal":goal,"target":target,"progress":view(s)["goals"].as_array().unwrap().iter().find(|g|g["id"]==goal.id),"evidence":s.evidence.get(&goal.id),"next":"Work with native tools; verify at useful milestones; verify --fresh to rerun the configured command."}),
     )
 }
