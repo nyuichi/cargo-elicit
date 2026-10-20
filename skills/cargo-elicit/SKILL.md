@@ -1,17 +1,62 @@
 ---
 name: cargo-elicit
-description: Use cargo-elicit to inspect Rust verification obligations, check work, and preserve evidence while authoring with native tools.
+description: Track crate verification progress and input-bound native command results with init, status and verify.
 ---
 
-Use this skill when the user wants systematic verification of a Rust crate or its selected APIs. cargo-elicit is a normal CLI; it does not launch or coordinate AI agents.
+cargo-elicit is a normal utility for people and AI tools. It does not start an
+AI, prescribe proof strategies, or judge whether a theorem proves an API correct.
 
-1. Inspect `elicit.toml` and the user's mathematical requirements. If a project exists, use `cargo elicit status` / `list` / `show ID` to inspect its saved snapshot. These reads do not establish workspace freshness; use `refresh` when an updated inventory is needed. For a new project, initialize the intended verifier, package/features/target and API selection.
-2. Preserve the requested arbitrary-input properties and original runtime implementation. Do not weaken contracts, remove requested goals, or substitute copied/simplified runtime functions to obtain a green result. Ask about ambiguous intended semantics when judgment is needed.
-3. Use `cargo elicit plan [API ...]` after initialization or a refreshed observation to inspect the reachable dependency-first SCCs, candidate frontier, shared callees, caller requirements, native contracts and check/audit/review states. Inspect unresolved and external boundaries. Consider mutually recursive members together. Establish needed properties top-down and consider proving leaf SCCs bottom-up; the displayed order is advice, not a gate. A call edge does not require a separate proof, and accepted evidence does not imply contract-strength compatibility. Do not register/prove every helper automatically. Local Lean module imports are not theorem-use dependencies.
-4. Prefer the concise normal text output for interactive work. `check`/`audit` already report requested outcomes, remaining work and structural candidates; do not immediately repeat `status`/`plan` if that summary answers the question. Inspect `show ID`, `--verbose`, or `plan [API ...] --details` only for a specific unresolved question or a change of strategy. Use JSON for actual programmatic processing, not routine reading of the entire ledger. Bounded summaries can omit items; follow the displayed detail hint if needed. Inspect progress after meaningful work or when resuming, not after every native compiler edit. `status --since` is not implemented.
-5. Store progress, handoff notes and final reports under `.elicit/notes/` (`cargo elicit notes` creates it for existing projects). This reserved operational directory is outside verification inputs. Never import/read it from Rust, build scripts, proc macros, Lean or verifier code; keep every semantic input in tracked source locations. Archive the notes explicitly when publishing or moving workers: `.elicit` is usually Git-ignored. Root-level reports remain tracked and can invalidate evidence.
-6. Author freely with the native compiler/verifier and your own proof order, supporting lemmas and module organization. No per-lemma plan, submission, revision token or forced return is required. Save useful work normally. Use `check [ID ...]` when its feedback will help, rather than repeatedly collecting status or running clean audits after every edit.
-7. After a meaningful amount of work or when resuming, inspect status/receipts as useful. `status` focuses on remaining work, hiding only audited and semantically reviewed goals with no current failed check; use `status --all` for completed details. `plan` retains completed dependencies. Distinguish checked, audited, stale/unobserved, unsupported and unreviewed states. A compilation/mapping problem may require fixing a declaration or wrapper rather than redoing mathematics.
-8. Save all semantic inputs and reproduction scripts before the final `audit [ID ...]`. Inspect `status --all` and `audit_validity`: an accepted audit bound to the refreshed snapshot needs no repetition solely because operational notes changed. Write the final report under `.elicit/notes/`; reference the audit receipt and scope. If actual source, contracts, proofs, scope or tools change, refresh/check and obtain new final audit evidence. An explicit `audit` always rebuilds; it is never silently skipped. Inspect failed phases, scope, assumptions and uncovered inventory. A theorem about an arbitrary proposition is not automatically a proof of the crate API. Report exactly which requested obligations passed and what remains outside coverage.
+1. Inspect the user's requested properties and native verification project. For
+   a new project use `cargo elicit init --api API --command PROGRAM ARG...`;
+   repeat `--api` to select more APIs. Put other init options before `--command`.
+   Use `--directory PATH` if the native command runs in a subdirectory. Init
+   discovers APIs and writes schema-3 configuration, not proof scaffolds.
+2. Configure the ordinary native verification command you would use without
+   cargo-elicit (for example `lake build` or a fail-fast translation/build script).
+   `verification.command` is argv, not shell text. Per-obligation command and
+   directory overrides are available. Shared commands run once per request.
+   Add external semantic dependencies/scripts/toolchain files to
+   `verification.inputs` as needed. Tool versions are not pinned by elicit.
+3. On resumption use `cargo elicit status` for current input observations, saved
+   command results, changed paths, failures/logs and recorded milestones.
+   Current observations automatically reuse disk-cached Rust/Cargo analysis
+   when its inputs match; no daemon runs. Lean-only edits can retain that cache
+   while invalidating native command results. Build scripts/macros/custom module
+   paths keep conservative analysis invalidation. Do not manually refresh or
+   delete the cache as a routine step. `status --saved` is a fast saved read with
+   unknown workspace freshness.
+   Use `status API` for focused details, `status --inventory` for API discovery,
+   and `status [API ...] --plan` for dependency-first SCCs and shared callees.
+   `--plan --details` expands graph details. Call/import edges are advisory,
+   not logical proof prerequisites; do not prove every helper automatically.
+4. Author specifications and proofs normally with native tools. No elicit
+   contract syntax, generated proposition, wrapper, theorem registration,
+   approval text, or handoff file is required. Optional statement/theorem fields
+   are metadata only. Whether the chosen theorem covers the requested API and
+   whether its assumptions are acceptable remain ordinary verification work.
+5. At useful milestones use `cargo elicit verify [API ...]` to execute native
+   commands and save input-bound results. Valid successful receipts may be
+   reused; `verify --fresh` forces execution without cleaning native caches.
+   Native clean-build or strict-warning policies belong in the chosen command.
+   Do not run verify after every edit or immediately follow its summary with
+   another status call unless a new observation is needed.
+6. Save inputs before verification and do not edit them while a command runs.
+   On failure use the returned diagnostic/log, fix locally and retry at a useful
+   milestone. Missing executables, nonzero exits, timeouts, interruptions, input
+   races and invalid durable receipts remain explicit failures.
+7. No handoff or notes format is read or required. Use source comments as useful;
+   comments in tracked files count as input changes. If changing a memo should
+   not invalidate results, put it in a separate Markdown file outside the project
+   tree. Merely using Markdown inside the project does not exclude it. Never
+   read untracked memos or internal CLI state from build/proof code. Archive
+   `.elicit` explicitly when transferring workspaces.
+8. Describe results accurately: elicit records native command success, not an
+   independent proof audit. It does not inspect `sorry`, custom axioms, theorem
+   type correspondence or full Rust API coverage. Choose a stricter native
+   command if required by the user; do not invent an additional CLI approval
+   ritual. There is no `review` or `finish` command.
 
-Use `review --note ...` only to record an actual judgment that the formal specification matches the intended property; it is independent of proof acceptance. Neither a review nor an author's statement establishes a proof. Use the user's requested completion criterion; do not invent additional bookkeeping work merely to populate the ledger.
+Only `init`, `status`, and `verify` exist. Saved receipt modes named `run` and
+`rerun` distinguish ordinary and forced command runs; neither is an additional
+command or a semantic certification. Status hides current successful goals by
+default; use `--all` to include them. Use JSON for actual programmatic processing.

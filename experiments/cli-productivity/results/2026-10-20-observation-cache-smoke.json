@@ -1,0 +1,303 @@
+{
+  "kind": "native-command CLI latency smoke; no AI authoring or adler2 full verification",
+  "before_commit": "88a17e2",
+  "before_binary_sha256": "c937c797f7fc36e5752de206aa0b81947d33ff13de84e1ab375756620077cf63",
+  "after_binary_sha256": "5a05047a1fef0d2027423ec08b092d7c7855b1ac6c81d46cdd1aaee63558ff65",
+  "fixtures": {
+    "no_calls": {
+      "before_init_ms": 2483.678,
+      "before_status": {
+        "median_ms": 2450.308,
+        "samples_ms": [
+          2450.308,
+          2393.901,
+          2384.662,
+          2456.827,
+          2515.81
+        ],
+        "analysis_reused": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "before_reused_verify": {
+        "median_ms": 2485.96,
+        "samples_ms": [
+          2449.425,
+          2486.001,
+          2474.37,
+          2485.96,
+          2548.847
+        ],
+        "analysis_reused": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "after_cold_status_ms": 419.395,
+      "after_warm_status": {
+        "median_ms": 208.256,
+        "samples_ms": [
+          207.956,
+          209.48,
+          207.052,
+          211.926,
+          208.256
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_proof_edit_status": {
+        "median_ms": 206.971,
+        "samples_ms": [
+          207.858,
+          206.971,
+          206.207,
+          208.879,
+          206.79
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_reused_verify": {
+        "median_ms": 299.653,
+        "samples_ms": [
+          311.484,
+          324.739,
+          299.653,
+          297.532,
+          297.676
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_forced_noop_verify": {
+        "median_ms": 364.801,
+        "samples_ms": [
+          364.801,
+          366.14,
+          362.327,
+          366.877,
+          359.938
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_saved_status": {
+        "median_ms": 1.359,
+        "samples_ms": [
+          1.561,
+          1.332,
+          1.696,
+          1.359,
+          1.237
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_rust_body_edit_status": {
+        "median_ms": 470.014,
+        "samples_ms": [
+          468.515,
+          505.059,
+          470.014
+        ],
+        "analysis_reused": [
+          false,
+          false,
+          false
+        ]
+      },
+      "source": "pub fn identity(x:u32)->u32{x}\n",
+      "native_command": [
+        "true"
+      ]
+    },
+    "local_call": {
+      "before_init_ms": 2430.407,
+      "before_status": {
+        "median_ms": 2371.241,
+        "samples_ms": [
+          2437.727,
+          2371.241,
+          2368.298,
+          2367.958,
+          2438.951
+        ],
+        "analysis_reused": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "after_cold_status_ms": 2502.605,
+      "after_warm_status": {
+        "median_ms": 208.645,
+        "samples_ms": [
+          209.425,
+          207.012,
+          207.379,
+          208.645,
+          208.812
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_proof_edit_status": {
+        "median_ms": 210.177,
+        "samples_ms": [
+          210.177,
+          210.857,
+          209.419,
+          213.588,
+          208.858
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_reused_verify": {
+        "median_ms": 300.563,
+        "samples_ms": [
+          298.298,
+          300.563,
+          297.824,
+          301.743,
+          302.137
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_forced_noop_verify": {
+        "median_ms": 369.499,
+        "samples_ms": [
+          365.392,
+          359.217,
+          383.504,
+          370.061,
+          369.499
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_saved_status": {
+        "median_ms": 1.462,
+        "samples_ms": [
+          1.649,
+          1.747,
+          1.462,
+          1.417,
+          1.38
+        ],
+        "analysis_reused": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "after_rust_body_edit_status": {
+        "median_ms": 2550.077,
+        "samples_ms": [
+          2541.283,
+          2551.966,
+          2550.077
+        ],
+        "analysis_reused": [
+          false,
+          false,
+          false
+        ]
+      },
+      "source": "fn helper(x:u32)->u32{x}\npub fn identity(x:u32)->u32{helper(x)}\n",
+      "native_command": [
+        "true"
+      ]
+    }
+  },
+  "default_samples_per_case": 5,
+  "rust_edit_samples_per_case": 3,
+  "limitations": [
+    "Tiny dependency-free fixtures; not a large-crate or cold-filesystem guarantee.",
+    "Sequential local wall-clock samples, not randomized authoring trials.",
+    "Native command true isolates CLI overhead; no AI authoring or full adler2 verification.",
+    "Lean/Rust body edits were made before each corresponding sample. Rust-edit cases have three samples; other repeated cases have five.",
+    "Macro/build-script/custom-path conservative invalidation is tested separately, not benchmarked here."
+  ],
+  "validation": {
+    "regular_tests_passed": 30,
+    "real_lean_smoke_tests_passed": 1,
+    "clippy_all_targets": "passed",
+    "daemon": false
+  },
+  "source_sha256": {
+    "src/analysis.rs": "8064b79c36acc1e38e666b263833cfd9075847723616e95c66ef8c91a2c552bc",
+    "src/cli.rs": "23dfd1cb18a109e07a6c3d46a98fd0e3cfc10d9d035a10a0cf2b00c4342a20ac",
+    "src/fingerprint.rs": "ad5a8c25e7458f2a23c5cc945ab6463de2a4e3f5bfe1b187a1aa4f6ac7cbb0ee",
+    "src/lean_modules.rs": "00b2a5b92a517053e1c4ed554f1f451fce4a50dc68b4f16e0364e69e11e2a7ad",
+    "src/lib.rs": "edc8e6196c2f38d8f064d6d330b3ad8758dc6e645af65bfe45d856bba67f1b1a",
+    "src/main.rs": "33b8a1adaa2692f59b044ffb489d430b6efdfb350230760677862b1aff489c25",
+    "src/model.rs": "c673e21f871cffc888d4d2041063c371b76507fcd28788d752c28bdf43a19246",
+    "src/observation.rs": "19b5803638788a5ed629645d1f68e11dc6851d97c44fa34be4642ca0079349ae",
+    "src/plan.rs": "affff03d5b96646fd34bba09d3f9e53816d9bb9c308c0bddd1f143c485cb8265",
+    "src/process.rs": "fb66bc7225f8984648345c9c00faed7c905a74e8225fab5543b2430edb9024e9",
+    "src/project.rs": "986a734cc61eb6d61081e17bf08a62e770e075b28aad1504c87baf6e42323e1a",
+    "src/resume.rs": "f33dd04988fca78637482ae02c6846b084e57030420ac583b7bfc700cd69b49f",
+    "src/runner.rs": "3d7c0292221d30d48b51f28020f9e6a3434ac854c3020d3c340053df60fbd6dc",
+    "src/store.rs": "ca125af68b8809de03e694bb9844956aaf1aee66cbc259a938ba312557504355",
+    "src/ui.rs": "924cb6dd748fc6c9446da79958ba40c7c2a39f8f03ec4b414c20b9fcb7fe1200"
+  }
+}

@@ -186,9 +186,7 @@ pub fn build(s: &Snapshot, selectors: &[String]) -> Result<Value> {
             .filter(|g| g["target"].as_str() == Some(id))
             .cloned()
             .collect();
-        let checked = bindings
-            .iter()
-            .any(|g| g["check"] == "accepted" || g["audit"] == "accepted");
+        let checked = bindings.iter().any(|g| g["command_status"] == "succeeded");
         let callers: Vec<_> = full
             .iter()
             .filter(|(_, tos)| tos.contains(id))
@@ -206,13 +204,13 @@ pub fn build(s: &Snapshot, selectors: &[String]) -> Result<Value> {
             .cloned()
             .collect();
         nodes.insert(id.clone(), json!({"id":id,"scc":owner[id],"location":{"file":t.file,"line":t.line,"column":t.column},
-            "source_changed_since_previous_observation":s.changed_inputs.contains(&t.file),"source_facts":t.source_facts,"native_contract":t.native_contract,"required_units":t.required_units,"visibility":t.visibility,"selected_root":roots.contains(id),"selected_roots_reaching":selected_roots,
+            "source_changed_since_previous_observation":s.changed_inputs.contains(&t.file),"source_facts":t.source_facts,"visibility":t.visibility,"selected_root":roots.contains(id),"selected_roots_reaching":selected_roots,
             "selected_root_count":selected_roots.len(),"calls":t.calls,"callers":callers,
             "callers_in_scope":callers.iter().filter(|c|included.contains(*c)).collect::<Vec<_>>(),
             "unresolved_calls":t.unresolved_calls,"external_calls":t.external_calls,"missing_inventory_targets":unknown_targets,
             "obligations":bindings,"has_accepted_evidence":checked,
             "evidence_state":if checked {"accepted_at_snapshot"} else if bindings.is_empty(){"not_declared"}else{"missing_failed_or_stale"},
-            "specification_state":"inspect native contracts and caller requirements; proof success does not establish semantic adequacy"}));
+            "specification_state":"user-declared command association; inspect native specifications and caller requirements"}));
     }
     let mut rows = vec![];
     for ms in groups {
@@ -284,10 +282,10 @@ pub fn build(s: &Snapshot, selectors: &[String]) -> Result<Value> {
         .collect();
     Ok(
         json!({"schema":1,"observation":"saved_snapshot","snapshot":s.input,"observed_at_unix_ms":s.observed_at,
-        "workspace_currentness":"not_observed_by_this_read; run refresh",
+        "workspace_currentness":"not_observed_by_this_read; use status to observe inputs",
         "scope":s.scope,"proof_module_imports":s.proof_modules,"selected_roots":roots,"components":rows,"standalone_obligations":standalone,
         "missing_inventory_obligations":missing,"analysis_limitations":s.limitations,"changed_inputs":s.changed_inputs,
-        "semantics":"Implementation call graph, not a proof dependency graph. Candidate means no known unaccepted callee SCC; not a prerequisite or a guarantee of contract reuse. Confirm caller requirements top-down; inspect contracts and prove bottom-up. External calls, dynamic dispatch, macros and indirect calls can leave gaps. Old snapshots may not record external calls. Accepted evidence is bound to this snapshot and its declared contract, not every property a caller might need."}),
+        "semantics":"Implementation call graph, not a proof dependency graph. Candidate means no known unaccepted callee SCC; not a prerequisite or a guarantee of contract reuse. Confirm caller requirements top-down; inspect contracts and prove bottom-up. External calls, dynamic dispatch, macros and indirect calls can leave gaps. Old snapshots may not record external calls. Saved evidence records the declared command result at this snapshot; it does not establish API coverage or theorem reuse."}),
     )
 }
 
@@ -302,9 +300,12 @@ fn strings(v: &Value) -> String {
 pub fn render(v: &Value) -> String {
     use std::fmt::Write;
     let mut out = format!(
-        "Dependency plan — saved snapshot {} at {}\nCurrent files were not inspected; run refresh after changes or when resuming.\nSelected API roots: {}\n",
+        "Dependency plan — snapshot {} at {}\n{}\nSelected API roots: {}\n",
         v["snapshot"].as_str().unwrap(),
         v["observed_at_unix_ms"],
+        v["workspace_currentness"]
+            .as_str()
+            .unwrap_or("inspect observation metadata"),
         strings(&v["selected_roots"])
     );
     let _ = writeln!(
@@ -383,27 +384,12 @@ pub fn render(v: &Value) -> String {
                     "    Source structure unavailable in this snapshot; refresh to collect it.\n",
                 );
             }
-            if !n["native_contract"].is_null() {
-                let c = &n["native_contract"];
-                let _ = writeln!(
-                    out,
-                    "    Native contract: {}\n      Requires: {}\n      Ensures: {}\n      Theorem: {}",
-                    c["file"].as_str().unwrap_or("unknown"),
-                    c["requires"].as_str().unwrap_or("unspecified"),
-                    c["ensures"].as_str().unwrap_or("unspecified"),
-                    c["theorem"].as_str().unwrap_or("backend default")
-                );
-            } else {
-                out.push_str("    Native contract details not recorded (absent, unsupported backend or older snapshot).\n");
-            }
             for g in n["obligations"].as_array().unwrap() {
                 let _ = writeln!(
                     out,
-                    "    Goal {}: check={} audit={} review={}\n      Requirement: {}",
+                    "    Goal {}: {}\n      Requirement: {}",
                     g["id"].as_str().unwrap(),
-                    g["check"].as_str().unwrap(),
-                    g["audit"].as_str().unwrap(),
-                    g["review"].as_str().unwrap(),
+                    g["command_status"].as_str().unwrap(),
                     g["description"].as_str().unwrap()
                 );
                 if !g["limitation"].is_null() {
@@ -454,8 +440,8 @@ pub fn render(v: &Value) -> String {
     for g in v["standalone_obligations"].as_array().unwrap() {
         let _ = writeln!(
             out,
-            "\nStandalone proposition {}: check={} audit={} (no inferred Rust call edges)",
-            g["id"], g["check"], g["audit"]
+            "\nStandalone goal {}: {} (no inferred Rust call edges)",
+            g["id"], g["command_status"]
         );
     }
     for (key, label) in [

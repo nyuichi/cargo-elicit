@@ -5,11 +5,12 @@ use crate::{
     store::Store,
 };
 use anyhow::Result;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[command(
     version,
-    about = "Inspect obligations, check proofs, and preserve reproducible verification evidence. Never starts an AI."
+    disable_help_subcommand = true,
+    about = "Track native verification command results and input freshness. Never starts an AI."
 )]
 struct Cli {
     /// Expand saved details instead of the bounded summary.
@@ -36,79 +37,46 @@ enum Commands {
         target: Option<String>,
         #[arg(long = "api")]
         apis: Vec<String>,
-    },
-    /// Create the reserved operational-notes directory and print its path.
-    Notes {
+        /// Native verification argv; place after all other init options.
+        #[arg(long, num_args = 1.., allow_hyphen_values = true)]
+        command: Vec<String>,
+        /// Working directory for the native command, relative to the project.
         #[arg(long)]
-        json: bool,
+        directory: Option<String>,
     },
-    /// Observe current Cargo scope, sources and tool inputs; never runs Lean proofs.
-    Refresh {
-        #[arg(long)]
-        json: bool,
-    },
-    /// Read the last saved snapshot only. Does not inspect current files or start tools.
+    /// Observe inputs and show progress, recovery facts or focused details. Never runs proofs.
     Status {
+        /// Obligation/API selector; with --plan, one or more dependency roots.
+        ids: Vec<String>,
+        /// Read the saved snapshot immediately, without tools or input observation.
+        #[arg(long)]
+        saved: bool,
         #[arg(long)]
         json: bool,
-        /// Include obligations with accepted fresh audit and semantic review.
-        #[arg(long)]
+        /// Include completed goals in the summary.
+        #[arg(long, conflicts_with_all = ["plan", "inventory"])]
         all: bool,
-    },
-    /// List saved obligation statuses or the complete saved API inventory.
-    List {
-        #[arg(long)]
-        json: bool,
-        #[arg(long)]
+        /// Show dependency-first SCCs and shared callees.
+        #[arg(long, conflicts_with = "inventory")]
+        plan: bool,
+        /// Show the complete saved API inventory for this observation.
+        #[arg(long, conflicts_with = "ids")]
         inventory: bool,
-    },
-    /// Explain an obligation, its evidence, review and next actions from saved data.
-    Show {
-        id: String,
-        #[arg(long)]
-        json: bool,
-    },
-    /// Inspect a dependency-first SCC plan from saved data; never starts tools.
-    Plan {
-        /// Show contracts, accepted dependencies and full graph details.
-        #[arg(long)]
+        /// Expand dependency and source details.
+        #[arg(long, requires = "plan")]
         details: bool,
-        /// Obligation IDs or inventory IDs/names; defaults to declared API goals.
-        ids: Vec<String>,
-        #[arg(long)]
-        json: bool,
     },
-    /// Check current inputs; reuse authenticated unchanged Lean module products.
-    Check {
+    /// Run native verification commands and save input-bound results.
+    Verify {
         ids: Vec<String>,
+        /// Run the configured command again instead of reusing a saved result.
+        #[arg(long)]
+        fresh: bool,
         #[arg(long, default_value_t = 600)]
         seconds: u64,
         #[arg(long)]
         json: bool,
     },
-    /// Independently rebuild and audit current inputs in a fresh isolated workspace.
-    Audit {
-        ids: Vec<String>,
-        #[arg(long, default_value_t = 600)]
-        seconds: u64,
-        #[arg(long)]
-        json: bool,
-    },
-    /// Record semantic judgment separately from machine proof. No review gates checks.
-    Review {
-        ids: Vec<String>,
-        #[arg(long, value_enum, default_value = "accepted")]
-        verdict: Verdict,
-        #[arg(long)]
-        note: String,
-        #[arg(long)]
-        json: bool,
-    },
-}
-#[derive(Clone, Copy, ValueEnum)]
-enum Verdict {
-    Accepted,
-    NeedsWork,
 }
 pub fn entry() -> i32 {
     let mut args = std::env::args().collect::<Vec<_>>();
@@ -116,32 +84,45 @@ pub fn entry() -> i32 {
         args.remove(1);
     }
     let cli = Cli::parse_from(args);
+    let action = match &cli.command {
+        Commands::Init { .. } => "init",
+        Commands::Status { .. } => "status",
+        Commands::Verify { .. } => "verify",
+    };
+    let record_failures = !matches!(&cli.command, Commands::Status { saved: true, .. });
     // Even read-only commands install no signal handler and need no runtime/tool setup.
     match run(cli) {
         Ok(code) => code,
         Err(e) => {
+            if record_failures {
+                if let Ok(root) = std::env::current_dir() {
+                    if let Ok(store) = Store::discover(&root) {
+                        let _ = store.history(
+                            "operation_failed",
+                            serde_json::json!({"operation":action,"reason":format!("{e:#}")}),
+                        );
+                    }
+                }
+            }
             eprintln!("error: {e:#}");
             if process::interrupted() { 130 } else { 2 }
         }
     }
 }
 fn print(snapshot: &project::Snapshot, json: bool, verbose: bool) -> Result<()> {
-    print_mode(snapshot, json, None, verbose, None)
+    print_mode(snapshot, json, verbose, None)
 }
 fn print_mode(
     snapshot: &project::Snapshot,
     json: bool,
-    status_all: Option<bool>,
     verbose: bool,
-    operation: Option<(&str, &[String])>,
+    operation: Option<(&str, &[String], usize)>,
 ) -> Result<()> {
     let mut view = project::view(snapshot);
     {
-        let all = status_all.unwrap_or(json || verbose);
+        let all = json || verbose;
         let goals = view["goals"].as_array().unwrap();
-        let completed = |g: &&serde_json::Value| {
-            g["audit"] == "accepted" && g["review"] == "accepted" && g["check"] != "failed"
-        };
+        let completed = |g: &&serde_json::Value| crate::resume::complete(g);
         let done = goals.iter().filter(completed).count();
         let shown: Vec<_> = goals
             .iter()
@@ -150,7 +131,7 @@ fn print_mode(
             .collect();
         view["summary"] = serde_json::json!({"total":goals.len(),"completed":done,
             "remaining":goals.len()-done,"hidden_completed":if all {0}else{done},
-            "completion_criterion":"accepted fresh audit and accepted semantic review at saved snapshot; no current failed check"});
+            "completion_criterion":"successful native command at saved snapshot; no newer failure"});
         view["goals"] = shown.into();
         view["filter"] = if all { "all" } else { "remaining" }.into();
         let plan = crate::plan::build(snapshot, &[])?;
@@ -173,14 +154,27 @@ fn print_mode(
             .collect::<Vec<_>>()
             .into();
     }
-    if let Some((kind, ids)) = operation {
+    if let Some((kind, ids, reused_count)) = operation {
+        let evidence_kind = match kind {
+            "verify" => "run",
+            "verify-fresh" => "rerun",
+            other => other,
+        };
         let results: Vec<_> = project::select(snapshot, ids)?.into_iter().map(|g| {
-            let e=project::evidence_status(snapshot,g,kind);
+            let e=project::current_evidence(snapshot,g);
             serde_json::json!({"id":g.id,"accepted":e.is_some_and(|e|e.accepted),
-                "reason":e.map(|e|e.reason.as_str()).unwrap_or("no current evidence"),"receipt":e.map(|e|&e.receipt)})
+                "reason":g.limitation.as_deref().or_else(||e.map(|e|e.reason.as_str())).unwrap_or("no current evidence"),"receipt":e.map(|e|&e.receipt),
+                "phase":e.map(|e|&e.phase),"diagnostic":e.and_then(|e|e.result.as_ref()).and_then(|r|r.diagnostic.as_ref())})
         }).collect();
         let passed = results.iter().filter(|r| r["accepted"] == true).count();
         view["operation"] = serde_json::json!({"kind":kind,"requested":results.len(),"passed":passed,"unresolved":results.len()-passed,"results":results});
+        if matches!(kind, "verify" | "verify-fresh") {
+            view["operation"]["kind"] = "verify".into();
+            view["operation"]["evidence_kind"] = evidence_kind.into();
+            view["operation"]["fresh"] = (kind == "verify-fresh").into();
+            view["operation"]["reused_count"] = reused_count.into();
+            view["operation"]["reused_evidence"] = (reused_count == results.len()).into();
+        }
     }
     if !json && !verbose {
         println!("{}", crate::ui::status(&view));
@@ -190,98 +184,10 @@ fn print_mode(
         println!("{}", serde_json::to_string_pretty(&view)?);
         return Ok(());
     }
-    println!(
-        "Saved snapshot {} ({})",
-        &snapshot.input[..12.min(snapshot.input.len())],
-        snapshot.observed_at
-    );
-    println!(
-        "Workspace currentness was not checked by this read. Use refresh, check or audit to observe inputs."
-    );
-    println!(
-        "{} obligations; audited at snapshot: {}. This is not a whole-package claim.",
-        snapshot.goals.len(),
-        view["declared_obligations_audited_at_snapshot"]
-    );
-    if status_all.is_some() {
-        println!(
-            "{} remaining; {} completed ({} hidden). Completion = fresh audit + semantic review. Use status --all to include completed items.",
-            view["summary"]["remaining"],
-            view["summary"]["completed"],
-            view["summary"]["hidden_completed"]
-        );
-        let candidates = view["candidate_sccs"].as_array().unwrap();
-        if !candidates.is_empty() {
-            println!("Candidate SCCs (known call dependencies only; inspect plan for boundaries):");
-            for c in candidates.iter().take(5) {
-                println!(
-                    "  {} (shared by {} selected roots){}",
-                    c["id"].as_str().unwrap(),
-                    c["selected_root_count"],
-                    if c["call_resolution_incomplete"] == true {
-                        "; unresolved calls"
-                    } else {
-                        ""
-                    }
-                );
-            }
-            if candidates.len() > 5 {
-                println!("  ... {} more in plan", candidates.len() - 5);
-            }
-        }
-    }
-    for goal in view["goals"].as_array().unwrap() {
-        println!(
-            "{}  audit={}  check={}  review={}",
-            goal["id"].as_str().unwrap(),
-            goal["audit"].as_str().unwrap(),
-            goal["check"].as_str().unwrap(),
-            goal["review"].as_str().unwrap()
-        );
-        let validity = &goal["audit_validity"];
-        if let Some(receipt) = validity["receipt"].as_str() {
-            println!(
-                "  audit {}: {} (saved observation)",
-                validity["state"].as_str().unwrap(),
-                receipt
-            );
-        }
-        if validity["state"] == "stale" {
-            if validity["specification_changed"] == true {
-                println!("  audit invalidated: formal specification binding changed");
-            }
-            for change in validity["input_changes"].as_array().unwrap().iter().take(5) {
-                println!(
-                    "  audit invalidated: {} {}",
-                    change["change"].as_str().unwrap(),
-                    change["path"].as_str().unwrap()
-                );
-            }
-            let count = validity["input_changes"].as_array().unwrap().len();
-            if count > 5 {
-                println!("  ... {} more input changes in status --json", count - 5);
-            }
-            if validity["change_details_available"] != true {
-                println!(
-                    "  detailed changes unavailable in this older evidence record; rerun audit for current evidence"
-                );
-            }
-        }
-        if let Some(evidence) = goal.get("last_evidence").filter(|e| e["accepted"] == false) {
-            println!(
-                "  {}: {}",
-                evidence["phase"].as_str().unwrap_or("check"),
-                evidence["reason"].as_str().unwrap_or("unresolved")
-            );
-            println!("  receipt: {}", evidence["receipt"].as_str().unwrap_or(""));
-        }
-    }
-    println!("Use plan [API ...] for dependency-first SCCs, shared callees and evidence status.");
-    for issue in &snapshot.limitations {
-        println!("inventory limitation: {issue}");
-    }
+    println!("{}", serde_json::to_string_pretty(&view)?);
     Ok(())
 }
+
 fn run(cli: Cli) -> Result<i32> {
     let root = std::env::current_dir()?;
     let verbose = cli.verbose;
@@ -293,12 +199,19 @@ fn run(cli: Cli) -> Result<i32> {
         no_default_features,
         target,
         apis,
+        command,
+        directory,
     } = cli.command
     {
         process::install_interrupt()?;
         let config = Config {
-            schema: 2,
-            verification: VerificationConfig { tool },
+            schema: 3,
+            verification: VerificationConfig {
+                tool,
+                command,
+                directory,
+                inputs: Vec::new(),
+            },
             package: PackageConfig {
                 name: package,
                 features,
@@ -314,6 +227,8 @@ fn run(cli: Cli) -> Result<i32> {
                     statement: None,
                     theorem: None,
                     description: String::new(),
+                    command: Vec::new(),
+                    directory: None,
                 })
                 .collect(),
         };
@@ -323,78 +238,69 @@ fn run(cli: Cli) -> Result<i32> {
     }
     let store = Store::discover(&root)?;
     match cli.command {
-        Commands::Notes { json } => {
-            process::install_interrupt()?;
-            let _lock = store.lock("project")?;
-            let path = project::notes(&store)?;
-            if json {
-                println!(
-                    "{}",
-                    serde_json::json!({"path":path,"excluded_from_verification_inputs":true,"policy":"operational records only; never read from build/proof code; archive separately"})
-                );
-            } else {
-                println!(
-                    "{}\nOperational records only. Never read from build/proof code. Archive separately (.elicit is usually Git-ignored).",
-                    path.display()
+        Commands::Status {
+            ids,
+            saved,
+            json,
+            all,
+            plan,
+            inventory,
+            details,
+        } => {
+            if !plan && ids.len() > 1 {
+                anyhow::bail!(
+                    "status accepts one API selector; use --plan for multiple dependency roots"
                 );
             }
-        }
-        Commands::Status { json, all } => {
-            print_mode(&project::load(&store)?, json, Some(all), verbose, None)?
-        }
-        Commands::List { json, inventory } => {
-            let snapshot = project::load(&store)?;
-            if inventory {
-                if json {
-                    println!(
-                        "{}",
-                        serde_json::to_string_pretty(
-                            &serde_json::json!({"schema":2,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run refresh","observed_at_unix_ms":snapshot.observed_at,"inventory":snapshot.inventory})
-                        )?
-                    );
-                } else {
-                    println!(
-                        "Saved inventory at {}; current workspace not inspected.",
-                        snapshot.observed_at
-                    );
-                    for t in snapshot.inventory {
-                        println!("{}  {:?}  {}:{}", t.id, t.kind, t.file, t.line);
+            let snapshot = if saved {
+                project::load(&store)?
+            } else {
+                process::install_interrupt()?;
+                let _lock = store.lock("project")?;
+                project::refresh(&store)?
+            };
+            let observation = if saved {
+                "saved_snapshot"
+            } else {
+                "refreshed_inputs_without_proof_execution"
+            };
+            let currentness = if saved {
+                "unknown; --saved did not inspect verification inputs"
+            } else {
+                "observed_at_snapshot; not a new proof or a guarantee against later edits"
+            };
+            let mut value = if plan {
+                crate::plan::build(&snapshot, &ids)?
+            } else if inventory {
+                serde_json::json!({"schema":3,"snapshot":snapshot.input,"observed_at_unix_ms":snapshot.observed_at,"inventory":snapshot.inventory})
+            } else if let Some(id) = ids.first() {
+                let mut detail = project::show(&snapshot, id)?;
+                if let Some(history) = detail["evidence"].as_array_mut() {
+                    for e in history {
+                        e.as_object_mut().unwrap().remove("input_files");
                     }
                 }
+                detail
             } else {
-                print_mode(&snapshot, json, Some(true), verbose, None)?;
-            }
-        }
-        Commands::Show { id, json } => {
-            let value = project::show(&project::load(&store)?, &id)?;
-            if json {
-                println!("{}", serde_json::to_string_pretty(&value)?);
-            } else {
-                println!(
-                    "{} — saved snapshot at {}",
-                    value["goal"]["id"].as_str().unwrap_or("obligation"),
-                    value["observed_at_unix_ms"]
-                );
-                println!("Current workspace was not inspected; run refresh to observe changes.");
-                println!("{}", serde_json::to_string_pretty(&value["goal"])?);
-                if let Some(name) = value["aeneas_contract"].as_str() {
-                    println!("Generated API proposition: {name}");
+                let mut recovery = crate::resume::view(&store, &snapshot, !saved)?;
+                let goals = recovery["goals"].as_array_mut().unwrap();
+                if !all {
+                    goals.retain(|g| !crate::resume::complete(g));
                 }
-                if let Some(evidence) = value["evidence"].as_array().and_then(|v| v.last()) {
-                    println!(
-                        "Latest evidence: {} — {}",
-                        evidence["phase"], evidence["reason"]
-                    );
-                    println!("Receipt: {}", evidence["receipt"]);
-                }
-                println!("{}", value["next"].as_str().unwrap_or(""));
-            }
-        }
-        Commands::Plan { ids, json, details } => {
-            let value = crate::plan::build(&project::load(&store)?, &ids)?;
-            if json {
+                recovery["filter"] = if all { "all" } else { "remaining" }.into();
+                recovery["summary"]["hidden_completed"] = if all {
+                    0.into()
+                } else {
+                    recovery["summary"]["completed"].clone()
+                };
+                recovery
+            };
+            value["observation"] = observation.into();
+            value["workspace_currentness"] = currentness.into();
+            if json || (verbose && !plan) {
                 println!("{}", serde_json::to_string_pretty(&value)?);
-            } else {
+            } else if plan {
+                println!("Observation: {observation}; {currentness}");
                 println!(
                     "{}",
                     if details || verbose {
@@ -403,41 +309,43 @@ fn run(cli: Cli) -> Result<i32> {
                         crate::ui::plan(&value)
                     }
                 );
+            } else if inventory {
+                println!("Inventory — {observation}; {currentness}");
+                for t in &snapshot.inventory {
+                    println!("{}  {:?}  {}:{}", t.id, t.kind, t.file, t.line);
+                }
+            } else if !ids.is_empty() {
+                let mut recovery = crate::resume::view(&store, &snapshot, !saved)?;
+                let goal_id = value["goal"]["id"].clone();
+                recovery["goals"]
+                    .as_array_mut()
+                    .unwrap()
+                    .retain(|g| g["id"] == goal_id);
+                recovery["filter"] = "all".into();
+                println!("{}", crate::resume::render(&recovery));
+            } else {
+                print!("{}", crate::resume::render(&value));
             }
         }
-        Commands::Refresh { json } => {
-            process::install_interrupt()?;
-            let _lock = store.lock("project")?;
-            print(&project::refresh(&store)?, json, verbose)?;
-        }
-        Commands::Check { ids, seconds, json } => {
-            process::install_interrupt()?;
-            let (s, code) = project::check(&store, &ids, seconds, false)?;
-            print_mode(&s, json, None, verbose, Some(("check", &ids)))?;
-            return Ok(code);
-        }
-        Commands::Audit { ids, seconds, json } => {
-            process::install_interrupt()?;
-            let (s, code) = project::check(&store, &ids, seconds, true)?;
-            print_mode(&s, json, None, verbose, Some(("audit", &ids)))?;
-            return Ok(code);
-        }
-        Commands::Review {
+        Commands::Verify {
             ids,
-            verdict,
-            note,
+            fresh,
+            seconds,
             json,
         } => {
             process::install_interrupt()?;
-            let verdict = match verdict {
-                Verdict::Accepted => "accepted",
-                Verdict::NeedsWork => "needs_work",
-            };
-            print(
-                &project::review(&store, &ids, verdict, &note)?,
+            let (s, code, reused_count) = project::check(&store, &ids, seconds, fresh)?;
+            print_mode(
+                &s,
                 json,
                 verbose,
+                Some((
+                    if fresh { "verify-fresh" } else { "verify" },
+                    &ids,
+                    reused_count,
+                )),
             )?;
+            return Ok(code);
         }
         Commands::Init { .. } => unreachable!(),
     }

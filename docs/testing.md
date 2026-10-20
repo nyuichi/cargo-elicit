@@ -4,19 +4,28 @@
 cargo fmt --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
-cargo +1.86 check --locked
 ```
 
-Regular tests cover snapshot read purity with absent tools and changed files, explicit refresh without proof compilation, independent review/evidence, incremental dependency reuse and corruption rejection, clean audit isolation, unsupported import rejection, proposition goals and configuration races. Deterministic verifier peers test command/evidence boundaries; they do not establish native kernel acceptance.
+Regular tests cover native command execution, shared command deduplication,
+per-goal overrides, durable logs, partial reuse, missing/corrupt receipts,
+source/command/external-input invalidation, input races, nonzero exits, timeouts,
+missing executables, pure saved reads and dependency planning. Analysis-cache tests cover Lean-only edits, changed Rust call targets, path
+dependencies, features, workspace-glob additions, macro/build-script fallbacks,
+nonstandard Rust module paths, corrupt/deleted caches and sources that need no
+language-server queries. Structural graph
+and fingerprint tests exercise advisory analysis and freshness independently
+from mathematical proof admission, which no longer exists.
 
-Opt-in native tests use real pinned verifiers and never invoke AI:
+One opt-in test uses real Lean, without any AI or full-crate authoring run:
 
 ```sh
-cargo test --locked --test native aeneas_incremental_audit_and_independent_semantic_review -- --ignored --nocapture
-cargo test --locked --test native kani_original_contract_audit -- --ignored --nocapture
-cargo test --locked --test native creusot_original_contract_audit -- --ignored --nocapture
+cargo test --locked --test native native_lean_policy_is_owned_by_the_configured_command -- --ignored --nocapture
 ```
 
-The Lean test exercises actual API and proposition proofs, warm module reuse, proof/model edits, independent semantic review, project-axiom rejection, partial acceptance of an independent proposition, fresh audit and durable diagnostics after cache deletion. It prints its retained fixture location. Never rebuild the cargo-elicit executable while a native test is checking its tracked identity.
+It confirms that ordinary Lean command success is recorded even with an unrelated
+proposition, `sorry` and a custom axiom; native compilation errors still fail.
+It also checks receipt reuse. Never rebuild the CLI while a native check is
+observing the executable's input identity.
 
-Historical experiment scripts under experiments/adler2 target v0.1. They remain preserved evidence rather than current product tests. A new authoring speedup is not established by these mechanism tests.
+Historical benchmark scripts/reports use frozen older interfaces and are not
+current product tests. These software checks do not measure authoring speed.

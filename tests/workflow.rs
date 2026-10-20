@@ -3,73 +3,48 @@ use std::{
     fs,
     path::Path,
     process::{Command, Output},
-    thread,
-    time::{Duration, Instant},
 };
+
 struct Project {
     dir: tempfile::TempDir,
 }
 impl Project {
     fn new() -> Self {
-        let dir = tempfile::tempdir().unwrap();
-        let root = dir.path();
-        fs::create_dir_all(root.join("src")).unwrap();
-        fs::create_dir(root.join("bin")).unwrap();
+        Self::with_source("pub fn identity(x:u32)->u32{x}\npub fn other(x:u32)->u32{x}\n")
+    }
+    fn with_source(source: &str) -> Self {
+        let p = Self {
+            dir: tempfile::tempdir().unwrap(),
+        };
+        fs::create_dir(p.root().join("src")).unwrap();
         fs::write(
-            root.join("Cargo.toml"),
-            "[package]\nname=\"fixture\"\nversion=\"0.0.0\"\nedition=\"2021\"\n[workspace]\n",
+            p.root().join("Cargo.toml"),
+            "[package]\nname='fixture'\nversion='0.0.0'\nedition='2021'\n[workspace]\n",
         )
         .unwrap();
-        fs::write(
-            root.join("src/lib.rs"),
-            "pub fn identity(x:u32)->u32 { x }\n",
-        )
-        .unwrap();
-        for (name, source) in [
-            ("cargo", "cargo.py"),
-            ("charon", "aeneas.py"),
-            ("aeneas", "aeneas.py"),
-            ("lake", "aeneas.py"),
-        ] {
-            let path = root.join("bin").join(name);
-            fs::copy(
-                Path::new(env!("CARGO_MANIFEST_DIR"))
-                    .join("tests/support")
-                    .join(source),
-                &path,
-            )
-            .unwrap();
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::PermissionsExt;
-                fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
-            }
-        }
-        let backend = root.join(".elicit/runtime/aeneas/backends/lean");
-        fs::create_dir_all(backend.join(".lake/build/lib/lean")).unwrap();
-        fs::write(backend.join("lakefile.lean"), "").unwrap();
-        fs::write(backend.join("lake-manifest.json"), "{\"packages\":[]}").unwrap();
-        fs::write(backend.join(".lake/build/lib/lean/Aeneas.olean"), "").unwrap();
-        let p = Self { dir };
-        p.ok(&["init", "--api", "identity"]);
+        fs::write(p.root().join("src/lib.rs"), source).unwrap();
+        p.script("echo run >> .elicit/count\nprintf 'native success\\n'\n");
+        p.ok(&[
+            "init",
+            "--api",
+            "identity",
+            "--api",
+            "other",
+            "--command",
+            "sh",
+            "verify.sh",
+        ]);
         p
+    }
+    fn root(&self) -> &Path {
+        self.dir.path()
+    }
+    fn script(&self, source: &str) {
+        fs::write(self.root().join("verify.sh"), source).unwrap();
     }
     fn cmd(&self) -> Command {
         let mut c = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"));
-        c.current_dir(self.dir.path())
-            .env(
-                "PATH",
-                format!(
-                    "{}:{}",
-                    self.dir.path().join("bin").display(),
-                    std::env::var("PATH").unwrap()
-                ),
-            )
-            .env("ELICIT_REAL_CARGO", env!("CARGO"))
-            .env(
-                "AENEAS_HOME",
-                self.dir.path().join(".elicit/runtime/aeneas"),
-            );
+        c.current_dir(self.root());
         c
     }
     fn call(&self, args: &[&str]) -> Output {
@@ -85,626 +60,596 @@ impl Project {
         );
         o
     }
+    fn json(&self, args: &[&str]) -> Value {
+        serde_json::from_slice(&self.ok(args).stdout).unwrap()
+    }
     fn snapshot(&self) -> Value {
-        serde_json::from_slice(&fs::read(self.dir.path().join(".elicit/snapshot.json")).unwrap())
+        serde_json::from_slice(&fs::read(self.root().join(".elicit/snapshot.json")).unwrap())
             .unwrap()
     }
-    fn proof(&self) {
-        let root = self.dir.path().join("elicit-proofs/aeneas");
-        fs::create_dir_all(&root).unwrap();
-        fs::write(root.join("contracts.toml"),"schema_version=1\n[contracts.\"fixture::identity::Function\"]\nensures=\"fun x out => out = x\"\ntheorem=\"Proofs.identity_spec\"\n").unwrap();
-        fs::write(root.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
-    }
-    fn stages(&self) -> Vec<Value> {
-        fs::read_to_string(self.dir.path().join(".elicit/events.jsonl"))
-            .unwrap()
+    fn count(&self) -> usize {
+        fs::read_to_string(self.root().join(".elicit/count"))
+            .unwrap_or_default()
             .lines()
-            .map(|l| serde_json::from_str::<Value>(l).unwrap())
-            .filter(|v| v["event"] == "pipeline_stage_finished")
-            .map(|v| v["data"].clone())
-            .collect()
+            .count()
     }
 }
+
 #[test]
-fn observation_is_pure_even_with_missing_tools_and_changed_workspace() {
+fn only_three_commands_and_no_proof_scaffolds_or_approval_are_required() {
     let p = Project::new();
-    let saved = fs::read(p.dir.path().join(".elicit/snapshot.json")).unwrap();
-    assert!(
-        !p.dir.path().join(".elicit/events.jsonl").exists(),
-        "refresh must not compile verification inputs"
+    let help = String::from_utf8(p.ok(&["--help"]).stdout).unwrap();
+    let names: Vec<_> = help
+        .lines()
+        .skip_while(|l| *l != "Commands:")
+        .skip(1)
+        .take_while(|l| !l.trim().is_empty())
+        .map(|l| l.split_whitespace().next().unwrap())
+        .collect();
+    assert_eq!(names, ["init", "status", "verify"]);
+    for name in [
+        "review", "finish", "check", "audit", "notes", "resume", "show", "list", "plan", "refresh",
+    ] {
+        assert_eq!(p.call(&[name]).status.code(), Some(2));
+    }
+    assert!(!p.root().join("elicit-proofs").exists());
+    assert!(!p.root().join(".elicit/notes").exists());
+    assert!(p.snapshot().get("reviews").is_none());
+}
+#[test]
+fn shared_native_command_runs_once_and_saved_results_are_reused() {
+    let p = Project::new();
+    let first = p.json(&["verify", "--json"]);
+    assert_eq!(first["operation"]["passed"], 2);
+    assert_eq!(
+        p.count(),
+        1,
+        "same project command should not run once per API"
     );
+    let status = p.json(&["status", "--saved", "--json"]);
+    assert_eq!(status["summary"]["completed"], 2);
+    assert!(status["goals"].as_array().unwrap().is_empty());
+    assert_eq!(
+        status["evidence_semantics"],
+        "native_command_result; no theorem, axiom or Rust correspondence checks"
+    );
+    let second = p.json(&["verify", "--json"]);
+    assert_eq!(second["operation"]["reused_count"], 2);
+    assert_eq!(p.count(), 1);
+    p.ok(&["verify", "--fresh"]);
+    assert_eq!(p.count(), 2);
+    assert_eq!(
+        p.json(&["status", "--saved", "--json"])["summary"]["completed"],
+        2
+    );
+}
+#[test]
+fn source_and_command_edits_stale_results_but_internal_logs_do_not() {
+    let p = Project::new();
+    p.ok(&["verify"]);
+    let old = p.snapshot()["input"].clone();
+    fs::write(p.root().join(".elicit/arbitrary.md"), "not an input").unwrap();
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["input"], old);
     fs::write(
-        p.dir.path().join("src/lib.rs"),
-        "pub fn identity(x:u32)->u32 { x + 1 }\n",
+        p.root().join("src/lib.rs"),
+        "pub fn identity(x:u32)->u32{x+1}\npub fn other(x:u32)->u32{x}\n",
     )
     .unwrap();
-    for args in [
-        vec!["status", "--json"],
-        vec!["list", "--inventory", "--json"],
-        vec!["show", "identity", "--json"],
-        vec!["plan", "identity", "--json"],
-    ] {
-        let out = Command::new(env!("CARGO_BIN_EXE_cargo-elicit"))
-            .current_dir(p.dir.path())
-            .env("PATH", "/nonexistent")
-            .env("AENEAS_HOME", "/nonexistent")
-            .args(&args)
-            .output()
-            .unwrap();
-        assert!(
-            out.status.success(),
-            "{}",
-            String::from_utf8_lossy(&out.stderr)
-        );
-        let v: Value = serde_json::from_slice(&out.stdout).unwrap();
-        assert_eq!(v["observation"], "saved_snapshot");
-        assert!(
-            v["workspace_currentness"]
-                .as_str()
-                .unwrap()
-                .contains("not_observed")
-        );
-    }
-    assert_eq!(
-        saved,
-        fs::read(p.dir.path().join(".elicit/snapshot.json")).unwrap()
-    );
-    let previous = p.snapshot()["input"].clone();
-    p.ok(&["refresh"]);
-    assert_ne!(p.snapshot()["input"], previous);
+    let status = p.json(&["status", "--json"]);
+    assert_eq!(status["summary"]["remaining"], 2);
     assert!(
-        p.snapshot()["changed_inputs"]
+        status["goals"][0]["changes_since_last_evidence"]
             .as_array()
             .unwrap()
             .iter()
             .any(|v| v.as_str().unwrap().ends_with("src/lib.rs"))
     );
-    assert!(!p.dir.path().join(".elicit/events.jsonl").exists());
-    assert_eq!(
-        p.call(&["run"]).status.code(),
-        Some(2),
-        "AI orchestration was removed"
-    );
+    p.ok(&["verify"]);
+    assert_eq!(p.count(), 2);
+    p.script("echo run >> .elicit/count\n# changed native script\n");
+    p.ok(&["verify"]);
+    assert_eq!(p.count(), 3);
 }
 #[test]
-fn incremental_check_reuses_dependencies_and_audit_is_independent() {
+fn failure_has_durable_log_and_fresh_success_replaces_it() {
     let p = Project::new();
-    p.proof();
-    let root = p.dir.path().join("elicit-proofs/aeneas");
-    fs::write(root.join("Peer.lean"), "import ElicitContracts\n").unwrap();
-    fs::write(root.join("Facts.lean"), "import ElicitContracts\n").unwrap();
-    fs::write(root.join("Proofs.lean"), "import\tPeer\tFacts\n").unwrap();
-    p.ok(&["check"]);
-    let count = p.stages().len();
-    p.ok(&["check"]);
-    let stages = p.stages();
-    let second = &stages[count..];
-    assert!(
-        second
-            .iter()
-            .any(|v| v["stage"] == "Facts.lean" && v["cache_hit"] == true)
+    p.script(
+        "echo run >> .elicit/count\necho 'Proof.lean:3:2: error: expected failure' >&2\nexit 7\n",
     );
-    assert!(
-        second
-            .iter()
-            .any(|v| v["stage"] == "Audit.lean" && v["cache_hit"] == false)
-    );
-    let count = stages.len();
-    fs::write(
-        root.join("Facts.lean"),
-        "import ElicitContracts\n-- changed supporting proof\n",
-    )
-    .unwrap();
-    p.ok(&["check"]);
-    let stages = p.stages();
-    let changed = &stages[count..];
-    assert!(
-        changed
-            .iter()
-            .any(|v| v["stage"] == "Peer.lean" && v["cache_hit"] == true)
-    );
-    assert!(
-        changed
-            .iter()
-            .any(|v| v["stage"] == "Facts.lean" && v["cache_hit"] == false)
-    );
-    assert!(
-        changed
-            .iter()
-            .any(|v| v["stage"] == "Proofs.lean" && v["cache_hit"] == false)
-    );
-    let count = stages.len();
-    p.ok(&["audit"]);
-    assert!(p.stages()[count..].iter().all(|v| v["cache_hit"] == false));
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["declared_obligations_audited_at_snapshot"], true);
-    assert_eq!(status["goals"][0]["review"], "unreviewed");
-    // Checked objects cannot be used after corruption, even with unchanged sources.
-    fs::write(
-        p.dir.path().join(".elicit/cache/check/Facts.olean"),
-        "corrupt",
-    )
-    .unwrap();
-    let count = p.stages().len();
-    p.ok(&["check"]);
-    assert!(
-        p.stages()[count..]
-            .iter()
-            .any(|v| v["stage"] == "Facts.lean" && v["cache_hit"] == false)
-    );
-    // Persisted logs and receipts survive deletion of all regenerable products.
-    fs::remove_dir_all(p.dir.path().join(".elicit/cache")).unwrap();
-    let receipt = p.snapshot()["evidence"]["identity"][0]["receipt"]
+    let failed = p.call(&["verify", "--json"]);
+    assert_eq!(failed.status.code(), Some(1));
+    let output: Value = serde_json::from_slice(&failed.stdout).unwrap();
+    let receipt = output["operation"]["results"][0]["receipt"]
         .as_str()
-        .unwrap()
-        .to_string();
-    assert!(p.dir.path().join(&receipt).exists());
-    p.ok(&["status"]);
-}
-#[test]
-fn prose_review_and_machine_evidence_are_independent() {
-    let p = Project::new();
-    p.proof();
-    p.ok(&["audit"]);
-    p.ok(&[
-        "review",
-        "--note",
-        "The postcondition matches the desired identity behavior",
-    ]);
-    let input = p.snapshot()["input"].clone();
-    let file = p.dir.path().join("elicit.toml");
-    fs::write(
-        &file,
-        fs::read_to_string(&file).unwrap().replace(
-            "description = \"\"",
-            "description = \"Returns its argument\"",
-        ),
-    )
-    .unwrap();
-    p.ok(&["refresh"]);
-    assert_eq!(
-        p.snapshot()["input"],
-        input,
-        "editorial intent must not invalidate machine proofs"
-    );
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["goals"][0]["audit"], "accepted");
-    assert_eq!(status["goals"][0]["review"], "stale");
-    p.ok(&[
-        "review",
-        "--verdict",
-        "needs-work",
-        "--note",
-        "Need a clearer human interpretation",
-    ]);
-    p.ok(&["check"]);
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["goals"][0]["review"], "needs_work");
-    assert_eq!(status["goals"][0]["audit"], "accepted");
-}
-#[test]
-fn extra_axioms_and_unsupported_imports_never_accept() {
-    let p = Project::new();
-    p.proof();
-    let out = p
-        .cmd()
-        .env("MOCK_AENEAS", "sorryAx")
-        .args(["audit"])
-        .output()
         .unwrap();
-    assert_eq!(out.status.code(), Some(1));
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["goals"][0]["audit"], "failed");
-    let root = p.dir.path().join("elicit-proofs/aeneas");
-    fs::write(root.join("Support.lean"), "import ElicitContracts\n").unwrap();
-    fs::write(root.join("Proofs.lean"), "import Support\n").unwrap();
-    p.ok(&["check"]);
-    fs::remove_file(root.join("Support.lean")).unwrap();
-    fs::write(root.join("Proofs.lean"), "meta import Support\n").unwrap();
+    let saved: Value = serde_json::from_slice(&fs::read(p.root().join(receipt)).unwrap()).unwrap();
+    let result = &saved["report"]["results"][0];
+    assert_eq!(result["exit_code"], 7);
+    let log = p
+        .root()
+        .join(result["diagnostic"]["cache"].as_str().unwrap())
+        .join(result["diagnostic"]["log"].as_str().unwrap());
     assert!(
-        !p.call(&["check"]).status.success(),
-        "unsupported headers cannot load stale cached dependencies"
-    );
-}
-#[test]
-fn proposition_obligations_and_semantic_changes_during_check() {
-    let p = Project::new();
-    let root = p.dir.path().join("elicit-proofs/aeneas");
-    fs::create_dir_all(&root).unwrap();
-    fs::write(root.join("Proofs.lean"), "import ElicitContracts\n").unwrap();
-    let member = p.dir.path().join("member");
-    fs::create_dir(&member).unwrap();
-    fs::rename(
-        p.dir.path().join("elicit-proofs"),
-        member.join("elicit-proofs"),
-    )
-    .unwrap();
-    fs::rename(p.dir.path().join("src"), member.join("src")).unwrap();
-    fs::rename(p.dir.path().join("Cargo.toml"), member.join("Cargo.toml")).unwrap();
-    fs::write(
-        member.join("Cargo.toml"),
-        "[package]\nname=\"fixture\"\nversion=\"0.0.0\"\nedition=\"2021\"\n",
-    )
-    .unwrap();
-    fs::write(
-        p.dir.path().join("Cargo.toml"),
-        "[workspace]\nmembers=[\"member\"]\nresolver=\"2\"\n",
-    )
-    .unwrap();
-    fs::create_dir_all(member.join(".elicit/runtime")).unwrap();
-    let config = p.dir.path().join("elicit.toml");
-    let original = fs::read_to_string(&config).unwrap();
-    let head = original.split("[[obligations]]").next().unwrap();
-    fs::write(
-        &config,
-        format!(
-            "{head}\n[[obligations]]\nid=\"fact\"\nstatement=\"True\"\ntheorem=\"Proofs.fact\"\n"
-        ),
-    )
-    .unwrap();
-    let result = p.call(&["audit"]);
-    if !result.status.success() {
-        for entry in walkdir::WalkDir::new(p.dir.path().join(".elicit/evidence"))
-            .into_iter()
-            .flatten()
-        {
-            if entry.path().extension().is_some_and(|v| v == "log") {
-                eprintln!(
-                    "{}: {}",
-                    entry.path().display(),
-                    fs::read_to_string(entry.path()).unwrap_or_default()
-                );
-            }
-        }
-    }
-    assert!(
-        result.status.success(),
-        "{}",
-        String::from_utf8_lossy(&result.stdout)
-    );
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["declared_obligations_audited_at_snapshot"], true);
-    assert_eq!(status["whole_package_claim"], false);
-    let original_input = p.snapshot()["input"].clone();
-    fs::write(
-        &config,
-        fs::read_to_string(&config).unwrap().replace(
-            "id=\"fact\"",
-            "id=\"fact\"\ndescription=\"Editorial change\"",
-        ),
-    )
-    .unwrap();
-    p.ok(&["refresh"]);
-    assert_eq!(
-        p.snapshot()["input"],
-        original_input,
-        "workspace-root descriptions do not invalidate machine proofs"
-    );
-    let mut child = p
-        .cmd()
-        .env("MOCK_AENEAS", "wait")
-        .args(["check", "--seconds", "3"])
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .spawn()
-        .unwrap();
-    let end = Instant::now() + Duration::from_secs(30);
-    while !p
-        .dir
-        .path()
-        .join("member/.elicit/runtime/mock-checker-started")
-        .exists()
-    {
-        assert!(Instant::now() < end);
-        thread::sleep(Duration::from_millis(20));
-    }
-    fs::write(
-        &config,
-        fs::read_to_string(&config)
+        fs::read_to_string(log)
             .unwrap()
-            .replace("statement=\"True\"", "statement=\"False\""),
-    )
-    .unwrap();
-    assert!(!child.wait().unwrap().success());
-    let snapshot = p.snapshot();
-    let last = snapshot["evidence"]["fact"]
-        .as_array()
-        .unwrap()
-        .last()
-        .unwrap();
-    assert_eq!(last["accepted"], false);
-    p.ok(&["refresh"]);
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["declared_obligations_audited_at_snapshot"], false);
+            .contains("expected failure")
+    );
+    p.script("echo run >> .elicit/count\n");
+    p.ok(&["verify", "--fresh"]);
+    assert_eq!(
+        p.json(&["status", "--saved", "--json"])["summary"]["remaining"],
+        0
+    );
 }
-
 #[test]
-fn dependency_plan_combines_scc_sharing_evidence_and_uncertainty_without_tools() {
+fn input_race_is_not_saved_as_current_success() {
     let p = Project::new();
-    let mut snapshot = p.snapshot();
-    let base = snapshot["inventory"][0].clone();
-    let mut targets = vec![];
-    for (id, calls) in [
-        ("A", vec!["B", "C"]),
-        ("X", vec!["D"]),
-        ("B", vec!["D"]),
-        ("C", vec![]),
-        ("D", vec!["E"]),
-        ("E", vec!["D"]),
-        ("Outside", vec!["D"]),
-        ("Unrelated", vec![]),
+    p.script("echo '// edit during execution' >> src/lib.rs\nexit 0\n");
+    let out = p.call(&["verify", "--json"]);
+    assert_eq!(out.status.code(), Some(1));
+    let v: Value = serde_json::from_slice(&out.stdout).unwrap();
+    assert_eq!(v["operation"]["passed"], 0);
+    let evidence = &p.snapshot()["evidence"]["identity"][0];
+    assert_eq!(evidence["result"]["exit_code"], 0);
+    assert_eq!(evidence["result"]["outcome"], "input_changed");
+    assert_eq!(evidence["accepted"], false);
+}
+#[test]
+fn missing_or_corrupt_receipt_forces_execution_and_partial_reuse_is_preserved() {
+    let p = Project::new();
+    p.ok(&["verify"]);
+    let s = p.snapshot();
+    let path = p
+        .root()
+        .join(s["evidence"]["identity"][0]["receipt"].as_str().unwrap());
+    let mut receipt: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    receipt["report"]["results"]
+        .as_array_mut()
+        .unwrap()
+        .retain(|r| r["target"] != "identity");
+    fs::write(&path, serde_json::to_vec(&receipt).unwrap()).unwrap();
+    let v = p.json(&["verify", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 1);
+    assert_eq!(p.count(), 2);
+    let s = p.snapshot();
+    let path = p.root().join(
+        s["evidence"]["identity"]
+            .as_array()
+            .unwrap()
+            .last()
+            .unwrap()["receipt"]
+            .as_str()
+            .unwrap(),
+    );
+    fs::write(path, "broken json").unwrap();
+    let v = p.json(&["verify", "identity", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 0);
+    assert_eq!(p.count(), 3);
+}
+#[test]
+fn per_goal_native_commands_do_not_require_contracts_or_theorem_mapping() {
+    let p = Project::new();
+    let path = p.root().join("elicit.toml");
+    let mut c: toml::Value = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    c["obligations"][1]["command"] =
+        toml::Value::try_from(vec!["sh", "-c", "echo separate >> .elicit/count"]).unwrap();
+    // Arbitrary user-declared statement/theorem strings are metadata, not admission criteria.
+    c["obligations"][1].as_table_mut().unwrap().insert(
+        "statement".into(),
+        toml::Value::String("some arbitrary relational property".into()),
+    );
+    c["obligations"][1].as_table_mut().unwrap().insert(
+        "theorem".into(),
+        toml::Value::String("not inspected by elicit".into()),
+    );
+    fs::write(path, toml::to_string(&c).unwrap()).unwrap();
+    p.ok(&["verify", "identity"]);
+    assert_eq!(p.count(), 1);
+    let v = p.json(&["verify", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 1);
+    assert_eq!(p.count(), 2);
+}
+#[test]
+fn saved_status_is_pure_and_dependency_planning_remains_available() {
+    let p = Project::new();
+    fs::write(p.root().join("src/lib.rs"),"fn leaf(x:u32)->u32{x}\npub fn identity(x:u32)->u32{leaf(x)}\npub fn other(x:u32)->u32{leaf(x)}\n").unwrap();
+    p.ok(&["status"]);
+    let snapshot = fs::read(p.root().join(".elicit/snapshot.json")).unwrap();
+    let history = fs::read(p.root().join(".elicit/history.jsonl")).unwrap();
+    for args in [
+        vec!["status", "--saved", "--json"],
+        vec!["status", "identity", "--saved", "--json"],
+        vec!["status", "--plan", "--saved", "--json"],
+        vec!["status", "--inventory", "--saved", "--json"],
     ] {
-        let mut t = base.clone();
-        t["id"] = id.into();
-        t["name"] = id.into();
-        t["aliases"] = serde_json::json!([]);
-        t["calls"] = serde_json::json!(calls);
-        if id == "D" {
-            t["unresolved_calls"] = serde_json::json!(["src/lib.rs:3:4"]);
-            t["external_calls"] = serde_json::json!(["external.rs:42"]);
-        }
-        targets.push(t);
+        let o = p
+            .cmd()
+            .env("PATH", "/no-tools")
+            .args(args)
+            .output()
+            .unwrap();
+        assert!(o.status.success(), "{}", String::from_utf8_lossy(&o.stderr));
     }
-    snapshot["inventory"] = targets.into();
-    let goal = snapshot["goals"][0].clone();
-    snapshot["goals"] = ["A", "X", "C"]
-        .into_iter()
-        .map(|id| {
-            let mut g = goal.clone();
-            g["id"] = id.into();
-            g["target"] = id.into();
-            g
-        })
-        .collect::<Vec<_>>()
-        .into();
-    snapshot["evidence"] = serde_json::json!({"C":[{
-        "kind":"check","recorded_at":1,"input":snapshot["input"],
-        "specification":goal["specification"],"accepted":true,"result":null,
-        "receipt":".elicit/evidence/c.json","phase":"check","reason":"accepted"
-    }]});
-    let path = p.dir.path().join(".elicit/snapshot.json");
-    fs::write(&path, serde_json::to_vec_pretty(&snapshot).unwrap()).unwrap();
-    let before = fs::read(&path).unwrap();
-    let out = p
-        .cmd()
-        .env("PATH", "/nonexistent")
-        .args(["plan", "A", "X", "--json"])
-        .output()
-        .unwrap();
-    assert!(
-        out.status.success(),
-        "{}",
-        String::from_utf8_lossy(&out.stderr)
-    );
-    let plan: Value = serde_json::from_slice(&out.stdout).unwrap();
-    let rows = plan["components"].as_array().unwrap();
-    assert_eq!(rows.len(), 5);
-    let row = |id: &str| rows.iter().find(|r| r["id"] == id).unwrap();
-    assert_eq!(row("D")["members"], serde_json::json!(["D", "E"]));
-    assert_eq!(row("D")["recursive"], true);
-    assert_eq!(row("D")["selected_root_count"], 2);
-    assert_eq!(row("D")["candidate"], true);
-    assert_eq!(row("D")["call_resolution_incomplete"], true);
     assert_eq!(
-        row("D")["nodes"][0]["callers"],
-        serde_json::json!(["B", "E", "Outside", "X"])
-    );
-    assert_eq!(row("C")["all_members_have_accepted_evidence"], true);
-    assert_eq!(row("C")["candidate"], false);
-    assert_eq!(
-        row("A")["pending_dependency_sccs"],
-        serde_json::json!(["B"])
-    );
-    assert_eq!(row("A")["layer"], 2);
-    assert_eq!(row("D")["layer"], 0);
-    assert_eq!(fs::read(&path).unwrap(), before);
-    let text = String::from_utf8(p.ok(&["plan", "A", "X", "--details"]).stdout).unwrap();
-    assert!(text.contains("UNRESOLVED calls"));
-    assert!(text.contains("External boundaries"));
-    assert!(text.contains("No declared obligation"));
-    assert!(text.contains("not a proof dependency graph"));
-    assert!(!p.call(&["plan", "missing"]).status.success());
-    // A contract edit invalidates the saved evidence binding without hiding history.
-    snapshot["goals"][2]["specification"] = "changed-contract".into();
-    fs::write(&path, serde_json::to_vec(&snapshot).unwrap()).unwrap();
-    let plan: Value = serde_json::from_slice(&p.ok(&["plan", "C", "--json"]).stdout).unwrap();
-    assert_eq!(
-        plan["components"][0]["all_members_have_accepted_evidence"],
-        false
+        snapshot,
+        fs::read(p.root().join(".elicit/snapshot.json")).unwrap()
     );
     assert_eq!(
-        plan["components"][0]["nodes"][0]["obligations"][0]["check"],
-        "missing_or_stale"
+        history,
+        fs::read(p.root().join(".elicit/history.jsonl")).unwrap()
     );
-}
-
-#[test]
-fn plan_collects_native_contracts_source_structure_and_module_imports_on_refresh() {
-    let p = Project::new();
-    p.proof();
-    fs::write(p.dir.path().join("src/lib.rs"),
-        "pub fn identity(x:u32)->u32 { let mut y=x; while y>0 { if y==1 { y=0; } else { y-=1; } } x }\n").unwrap();
-    p.ok(&["refresh"]);
-    let plan: Value =
-        serde_json::from_slice(&p.ok(&["plan", "identity", "--json"]).stdout).unwrap();
-    let node = &plan["components"][0]["nodes"][0];
-    assert_eq!(node["source_facts"]["loops"], 1);
-    assert_eq!(node["source_facts"]["branches"], 1);
-    assert_eq!(node["native_contract"]["ensures"], "fun x out => out = x");
-    assert_eq!(node["native_contract"]["theorem"], "Proofs.identity_spec");
-    assert_eq!(plan["proof_module_imports"]["modules"][0]["name"], "Proofs");
-    assert_eq!(
-        plan["proof_module_imports"]["modules"][0]["imports"],
-        serde_json::json!(["ElicitContracts"])
-    );
-}
-
-#[test]
-fn status_focus_hides_only_audited_reviewed_goals_and_restores_stale_items() {
-    let p = Project::new();
-    let mut s = p.snapshot();
-    let id = s["goals"][0]["id"].as_str().unwrap().to_owned();
-    s["evidence"] = serde_json::json!({id.clone():[{
-        "kind":"audit","recorded_at":1,"input":s["input"],
-        "specification":s["goals"][0]["specification"],"accepted":true,
-        "result":null,"receipt":".elicit/evidence/a.json","phase":"audit","reason":"accepted"
-    }]});
-    let path = p.dir.path().join(".elicit/snapshot.json");
-    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
-    // A kernel result alone is visible until the specification is reviewed.
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["goals"].as_array().unwrap().len(), 1);
-    s["reviews"] = serde_json::json!({id.clone():{
-        "specification":s["goals"][0]["review_specification"],"verdict":"accepted","note":"Matches intended property","recorded_at":1
-    }});
-    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
-    let before = fs::read(&path).unwrap();
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert!(status["goals"].as_array().unwrap().is_empty());
-    assert_eq!(status["summary"]["hidden_completed"], 1);
-    assert_eq!(status["summary"]["remaining"], 0);
-    let all: Value = serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
-    assert_eq!(all["goals"].as_array().unwrap().len(), 1);
-    assert_eq!(all["summary"]["hidden_completed"], 0);
-    assert_eq!(fs::read(&path).unwrap(), before);
-    let plan: Value = serde_json::from_slice(&p.ok(&["plan", "--json"]).stdout).unwrap();
-    assert_eq!(plan["components"].as_array().unwrap().len(), 1);
-    // A refreshed observation with a changed input makes the API visible again.
-    s["input"] = "changed-input".into();
-    fs::write(&path, serde_json::to_vec(&s).unwrap()).unwrap();
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert_eq!(status["summary"]["remaining"], 1);
-    assert_eq!(status["goals"][0]["audit"], "missing_or_stale");
-}
-
-#[test]
-fn notes_preserve_audit_and_cache_while_tracked_changes_explain_staleness() {
-    let p = Project::new();
-    p.proof();
-    p.ok(&["check"]);
-    p.ok(&["audit"]);
-    let binding = p.snapshot()["input"].clone();
-    let receipt = p.snapshot()["evidence"]["identity"]
-        .as_array()
-        .unwrap()
-        .last()
-        .unwrap()["receipt"]
-        .clone();
-    let output: Value = serde_json::from_slice(&p.ok(&["notes", "--json"]).stdout).unwrap();
-    assert_eq!(output["excluded_from_verification_inputs"], true);
-    let notes = p.dir.path().join(".elicit/notes");
-    fs::write(notes.join("PROGRESS.md"), "Progress changed\n").unwrap();
-    fs::write(notes.join("FINAL_REPORT.md"), "Final report changed\n").unwrap();
-    p.ok(&["refresh"]);
-    assert_eq!(p.snapshot()["input"], binding);
-    let status: Value =
-        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
-    assert_eq!(
-        status["goals"][0]["audit_validity"]["state"],
-        "valid_at_snapshot"
-    );
-    assert_eq!(status["goals"][0]["audit_validity"]["receipt"], receipt);
-    assert_eq!(
-        status["goals"][0]["audit_validity"]["fresh_audit_needed_at_snapshot"],
-        false
-    );
-    let count = p.stages().len();
-    p.ok(&["check"]);
-    assert!(p.stages()[count..].iter().any(|s| s["cache_hit"] == true));
-    // Arbitrary Markdown stays tracked; no extension or benchmark-filename whitelist.
-    fs::write(
-        p.dir.path().join("FINAL_REPORT.md"),
-        "Tracked build input\n",
-    )
-    .unwrap();
-    p.ok(&["refresh"]);
-    p.ok(&["refresh"]); // Reasons must compare with the audit, not only the last refresh.
-    let status: Value =
-        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
-    let detail = &status["goals"][0]["audit_validity"];
-    assert_eq!(detail["state"], "stale");
-    assert!(detail["input_changes"].as_array().unwrap().iter().any(|c| {
-        c["path"].as_str().unwrap().ends_with("/FINAL_REPORT.md") && c["change"] == "added"
-    }));
-    fs::remove_file(p.dir.path().join("FINAL_REPORT.md")).unwrap();
-    let file = p.dir.path().join("elicit-proofs/aeneas/contracts.toml");
-    let source = fs::read_to_string(&file)
-        .unwrap()
-        .replace("out = x", "out = x + 1");
-    fs::write(file, source).unwrap();
-    p.ok(&["refresh"]);
-    let status: Value =
-        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
-    let detail = &status["goals"][0]["audit_validity"];
-    assert_eq!(detail["state"], "stale");
-    assert_eq!(detail["specification_changed"], true);
-    assert!(
-        detail["input_changes"]
+    let plan = p.json(&["status", "--plan", "--saved", "--json"]);
+    assert!(plan["components"].as_array().unwrap().iter().any(|c| {
+        c["members"]
             .as_array()
             .unwrap()
             .iter()
-            .any(|c| c["path"].as_str().unwrap().ends_with("/contracts.toml"))
+            .any(|v| v.as_str().unwrap().contains("leaf"))
+    }));
+}
+#[test]
+fn timeout_and_missing_executable_remain_failures() {
+    let p = Project::new();
+    p.script("sleep 10\n");
+    assert_eq!(p.call(&["verify", "--seconds", "1"]).status.code(), Some(1));
+    let path = p.root().join("elicit.toml");
+    let mut c: toml::Value = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    c["verification"]["command"] =
+        toml::Value::try_from(vec!["/no/such/elicit-test-command"]).unwrap();
+    fs::write(path, toml::to_string(&c).unwrap()).unwrap();
+    assert_eq!(p.call(&["verify"]).status.code(), Some(2));
+}
+#[test]
+fn declared_external_inputs_invalidate_saved_results() {
+    let p = Project::new();
+    let external = tempfile::tempdir().unwrap();
+    let f = external.path().join("Library.lean");
+    fs::write(&f, "-- original library\n").unwrap();
+    let path = p.root().join("elicit.toml");
+    let mut c: toml::Value = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    c["verification"]["inputs"] =
+        toml::Value::try_from(vec![f.to_string_lossy().into_owned()]).unwrap();
+    fs::write(path, toml::to_string(&c).unwrap()).unwrap();
+    p.ok(&["verify"]);
+    fs::write(f, "-- changed library\n").unwrap();
+    let v = p.json(&["verify", "--json"]);
+    assert_eq!(v["operation"]["reused_count"], 0);
+    assert_eq!(p.count(), 2);
+}
+#[test]
+fn no_command_does_not_turn_init_or_verify_into_successful_verification() {
+    let p = Project::new();
+    let path = p.root().join("elicit.toml");
+    let mut c: toml::Value = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    c["verification"]["command"] = toml::Value::Array(vec![]);
+    fs::write(path, toml::to_string(&c).unwrap()).unwrap();
+    let v = p.json(&["status", "--json"]);
+    assert!(
+        v["goals"][0]["limitation"]
+            .as_str()
+            .unwrap()
+            .contains("no verification command")
     );
-    // Retain older snapshots without making status read receipt files.
-    let mut saved = p.snapshot();
-    for e in saved["evidence"]["identity"].as_array_mut().unwrap() {
-        e.as_object_mut().unwrap().remove("input_files");
-    }
+    assert_eq!(p.call(&["verify"]).status.code(), Some(2));
+}
+
+#[test]
+fn working_directory_and_literal_argv_are_preserved() {
+    let p = Project::new();
+    let directory = p.root().join("verification");
+    fs::create_dir(&directory).unwrap();
+    fs::write(directory.join("verify.sh"),"test -f proof-input || exit 9\ntest \"$1\" = '$(touch SHOULD_NOT_EXIST)' || exit 8\necho run >> ../.elicit/count\n").unwrap();
+    fs::write(directory.join("proof-input"), "native proof input").unwrap();
+    let path = p.root().join("elicit.toml");
+    let mut c: toml::Value = toml::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+    c["verification"].as_table_mut().unwrap().insert(
+        "directory".into(),
+        toml::Value::String("verification".into()),
+    );
+    c["verification"]["command"] =
+        toml::Value::try_from(vec!["sh", "verify.sh", "$(touch SHOULD_NOT_EXIST)"]).unwrap();
+    fs::write(path, toml::to_string(&c).unwrap()).unwrap();
+    p.ok(&["verify"]);
+    assert_eq!(p.count(), 1);
+    assert!(!directory.join("SHOULD_NOT_EXIST").exists());
+    fs::create_dir_all(directory.join(".lake/build")).unwrap();
     fs::write(
-        p.dir.path().join(".elicit/snapshot.json"),
-        serde_json::to_vec(&saved).unwrap(),
+        directory.join(".lake/build/generated.olean"),
+        "native output",
     )
     .unwrap();
-    let status: Value =
-        serde_json::from_slice(&p.ok(&["status", "--all", "--json"]).stdout).unwrap();
-    assert_eq!(
-        status["goals"][0]["audit_validity"]["change_details_available"],
-        false
+    let reused = p.json(&["verify", "--json"]);
+    assert_eq!(reused["operation"]["reused_count"], 2);
+    assert_eq!(p.count(), 1);
+}
+#[test]
+fn inherited_native_environment_changes_invalidate_saved_results() {
+    let p = Project::new();
+    let first = p
+        .cmd()
+        .env("CUSTOM_PROOF_SETTING", "one")
+        .args(["verify", "--json"])
+        .output()
+        .unwrap();
+    assert!(first.status.success());
+    assert_eq!(p.count(), 1);
+    let second = p
+        .cmd()
+        .env("CUSTOM_PROOF_SETTING", "two")
+        .args(["verify", "--json"])
+        .output()
+        .unwrap();
+    assert!(second.status.success());
+    let second: Value = serde_json::from_slice(&second.stdout).unwrap();
+    assert_eq!(second["operation"]["reused_count"], 0);
+    assert_eq!(p.count(), 2);
+    // Only hashes, not the environment value, are stored in the input map.
+    assert_ne!(
+        p.snapshot()["input_files"]["@env:CUSTOM_PROOF_SETTING"],
+        "two"
     );
 }
 
 #[test]
-fn compact_check_includes_outcomes_remaining_candidates_and_detail_escape_hatch() {
+fn lean_edits_reuse_rust_analysis_but_stale_native_results() {
     let p = Project::new();
-    p.proof();
-    let concise = p.ok(&["check"]);
-    let text = String::from_utf8(concise.stdout).unwrap();
-    assert!(text.contains("check: 1 passed, 0 unresolved"));
-    assert!(text.contains("Remaining:"));
-    assert!(text.contains("Details:"));
-    assert!(!text.contains("receipt:"));
-    let full = String::from_utf8(p.ok(&["status", "--verbose"]).stdout).unwrap();
-    assert!(full.contains("Saved snapshot"));
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert!(
-        status["goals"][0]["last_evidence"]
-            .get("input_files")
-            .is_none()
+    fs::write(
+        p.root().join("Proof.lean"),
+        "theorem fact : True := True.intro\n",
+    )
+    .unwrap();
+    p.ok(&["verify"]);
+    assert!(p.snapshot()["analysis_reused"].as_bool().unwrap());
+    fs::write(
+        p.root().join("Proof.lean"),
+        "-- new proof input\ntheorem fact : True := True.intro\n",
+    )
+    .unwrap();
+    let status = p.json(&["status", "--json"]);
+    assert_eq!(status["analysis_reused"], true);
+    assert_eq!(status["summary"]["remaining"], 2);
+    p.ok(&["verify"]);
+    assert_eq!(
+        p.count(),
+        2,
+        "proof edits must still rerun native validation"
     );
-    assert!(!p.snapshot()["evidence"]["identity"][0]["input_files"].is_null());
-    let check: Value = serde_json::from_slice(&p.ok(&["check", "--json"]).stdout).unwrap();
-    assert_eq!(check["operation"]["passed"], 1);
-    assert_eq!(check["operation"]["requested"], 1);
-    assert!(check["candidate_sccs"].is_array());
-    let compact = String::from_utf8(p.ok(&["plan"]).stdout).unwrap();
-    let details = String::from_utf8(p.ok(&["plan", "--details"]).stdout).unwrap();
-    assert!(compact.len() < details.len());
-    assert!(!compact.contains("Ensures:"));
-    assert!(details.contains("Ensures:"));
-    // Completed goals stay present in machine check/audit results, while the
-    // default status view remains focused on outstanding work.
-    p.ok(&["audit"]);
-    p.ok(&[
-        "review",
-        "identity",
-        "--note",
-        "Identity predicate matches the intended behavior.",
-    ]);
-    let checked: Value = serde_json::from_slice(&p.ok(&["check", "--json"]).stdout).unwrap();
-    assert_eq!(checked["operation"]["passed"], 1);
-    assert_eq!(checked["goals"].as_array().unwrap().len(), 1);
-    let audited: Value = serde_json::from_slice(&p.ok(&["audit", "--json"]).stdout).unwrap();
-    assert_eq!(audited["goals"].as_array().unwrap().len(), 1);
-    let status: Value = serde_json::from_slice(&p.ok(&["status", "--json"]).stdout).unwrap();
-    assert!(status["goals"].as_array().unwrap().is_empty());
+    fs::remove_file(p.root().join("Proof.lean")).unwrap();
+    let status = p.json(&["status", "--json"]);
+    assert_eq!(status["analysis_reused"], true);
+    assert_eq!(status["summary"]["remaining"], 2);
+}
+#[test]
+fn rust_edits_rebuild_call_graph_and_then_reuse_the_new_observation() {
+    let p = Project::with_source(
+        "fn leaf(x:u32)->u32{x}\npub fn identity(x:u32)->u32{leaf(x)}\npub fn other(x:u32)->u32{x}\n",
+    );
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+    let warm = p.json(&["status", "--json"]);
+    assert_eq!(warm["analysis_reused"], true);
+    fs::write(p.root().join("src/lib.rs"),"fn replacement(x:u32)->u32{x}\npub fn identity(x:u32)->u32{replacement(x)}\npub fn other(x:u32)->u32{x}\n").unwrap();
+    p.ok(&["status"]);
+    let snapshot = p.snapshot();
+    assert_eq!(snapshot["analysis_reused"], false);
+    let inventory = snapshot["inventory"].as_array().unwrap();
+    let caller = inventory.iter().find(|t| t["name"] == "identity").unwrap();
+    assert!(
+        caller["calls"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|c| c.as_str().unwrap().contains("replacement"))
+    );
+    assert!(!inventory.iter().any(|t| t["name"] == "leaf"));
+    assert_eq!(p.json(&["status", "--json"])["analysis_reused"], true);
+}
+#[test]
+fn dependency_and_feature_changes_refresh_cached_cargo_scope() {
+    let p = Project::new();
+    let config_file = p.root().join("elicit.toml");
+    let mut selected: toml::Value =
+        toml::from_str(&fs::read_to_string(&config_file).unwrap()).unwrap();
+    selected["package"]
+        .as_table_mut()
+        .unwrap()
+        .insert("name".into(), toml::Value::String("fixture".into()));
+    fs::write(config_file, toml::to_string(&selected).unwrap()).unwrap();
+    let dependency = p.root().join("addon");
+    fs::create_dir_all(dependency.join("src")).unwrap();
+    fs::write(
+        dependency.join("Cargo.toml"),
+        "[package]\nname='addon'\nversion='0.0.0'\nedition='2021'\n",
+    )
+    .unwrap();
+    fs::write(dependency.join("src/lib.rs"), "pub fn helper(){}\n").unwrap();
+    let manifest = p.root().join("Cargo.toml");
+    let old = fs::read_to_string(&manifest).unwrap();
+    fs::write(
+        &manifest,
+        format!("{old}\n[dependencies]\naddon={{path='addon'}}\n[features]\nextra=[]\n"),
+    )
+    .unwrap();
+    p.ok(&["status"]);
+    let snapshot = p.snapshot();
+    assert_eq!(snapshot["analysis_reused"], false);
+    assert!(
+        snapshot["scope"]["local_roots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|v| v.as_str().unwrap().ends_with("/addon"))
+    );
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], true);
+    fs::write(dependency.join("src/lib.rs"), "pub fn changed_helper(){}\n").unwrap();
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+    fs::write(p.root().join("src/lib.rs"),"pub fn identity(x:u32)->u32{x}\npub fn other(x:u32)->u32{x}\n#[cfg(feature=\"extra\")] pub fn gated(){}\n").unwrap();
+    p.ok(&["status"]);
+    let file = p.root().join("elicit.toml");
+    let mut config: toml::Value = toml::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
+    config["package"]["features"] = toml::Value::try_from(vec!["extra"]).unwrap();
+    fs::write(file, toml::to_string(&config).unwrap()).unwrap();
+    p.ok(&["status"]);
+    let snapshot = p.snapshot();
+    assert_eq!(snapshot["analysis_reused"], false);
+    assert!(
+        snapshot["inventory"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|t| t["name"] == "gated")
+    );
+}
+#[test]
+fn build_scripts_and_file_reading_macros_keep_conservative_analysis_binding() {
+    let p = Project::new();
+    fs::write(p.root().join("build.rs"), "fn main(){}\n").unwrap();
+    fs::write(p.root().join("Proof.lean"), "-- original\n").unwrap();
+    p.ok(&["status"]);
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], true);
+    fs::write(p.root().join("Proof.lean"), "-- changed\n").unwrap();
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+    fs::remove_file(p.root().join("build.rs")).unwrap();
+    fs::write(p.root().join("src/lib.rs"),"const DATA: &str = include_str!(\"../Proof.lean\");\npub fn identity(x:u32)->u32{x}\npub fn other(x:u32)->u32{x}\n").unwrap();
+    p.ok(&["status"]);
+    fs::write(p.root().join("Proof.lean"), "-- changed again\n").unwrap();
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+}
+#[test]
+fn analysis_cache_corruption_or_deletion_falls_back_without_losing_receipts() {
+    let p = Project::new();
+    p.ok(&["verify"]);
+    let path = p.root().join(".elicit/cache/analysis.json");
+    let mut cache: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    cache["payload"]["inventory"] = serde_json::json!([]);
+    fs::write(&path, serde_json::to_vec(&cache).unwrap()).unwrap();
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+    assert!(!p.snapshot()["inventory"].as_array().unwrap().is_empty());
+    fs::remove_file(&path).unwrap();
+    let verified = p.json(&["verify", "--json"]);
+    assert_eq!(verified["operation"]["reused_count"], 2);
+    assert_eq!(p.count(), 1);
+}
+#[test]
+fn workspace_glob_additions_invalidate_cached_metadata() {
+    let p = Project::new();
+    let file = p.root().join("elicit.toml");
+    let mut config: toml::Value = toml::from_str(&fs::read_to_string(&file).unwrap()).unwrap();
+    config["package"]
+        .as_table_mut()
+        .unwrap()
+        .insert("name".into(), toml::Value::String("fixture".into()));
+    fs::write(file, toml::to_string(&config).unwrap()).unwrap();
+    let member = p.root().join("members/one");
+    fs::create_dir_all(member.join("src")).unwrap();
+    fs::write(
+        member.join("Cargo.toml"),
+        "[package]\nname='one'\nversion='0.0.0'\nedition='2021'\n",
+    )
+    .unwrap();
+    fs::write(member.join("src/lib.rs"), "").unwrap();
+    let manifest = p.root().join("Cargo.toml");
+    let source = fs::read_to_string(&manifest)
+        .unwrap()
+        .replace("[workspace]", "[workspace]\nmembers=['members/*']");
+    fs::write(&manifest, source).unwrap();
+    p.ok(&["status"]);
+    p.ok(&["status"]);
+    assert_eq!(p.snapshot()["analysis_reused"], true);
+    let member = p.root().join("members/two");
+    fs::create_dir_all(member.join("src")).unwrap();
+    fs::write(
+        member.join("Cargo.toml"),
+        "[package]\nname='two'\nversion='0.0.0'\nedition='2021'\n",
+    )
+    .unwrap();
+    fs::write(member.join("src/lib.rs"), "").unwrap();
+    p.ok(&["status"]);
+    let snapshot = p.snapshot();
+    assert_eq!(snapshot["analysis_reused"], false);
+    assert!(
+        snapshot["scope"]["local_roots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|v| v.as_str().unwrap().ends_with("members/two"))
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn sources_without_definition_queries_do_not_start_rust_analyzer() {
+    use std::os::unix::fs::PermissionsExt;
+    let p = Project::new();
+    let bin = p.root().join("bin");
+    fs::create_dir(&bin).unwrap();
+    let executable = bin.join("rust-analyzer");
+    fs::write(
+        &executable,
+        "#!/bin/sh\necho called >> .elicit/analyzer-called\nexit 73\n",
+    )
+    .unwrap();
+    fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
+    let result = p
+        .cmd()
+        .env(
+            "PATH",
+            format!("{}:{}", bin.display(), std::env::var("PATH").unwrap()),
+        )
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    assert!(!p.root().join(".elicit/analyzer-called").exists());
+    assert_eq!(
+        p.snapshot()["analysis_reused"],
+        false,
+        "tool identity changes must invalidate the cache even when no language server is needed"
+    );
+}
+#[test]
+fn nonstandard_rust_module_paths_are_not_mistaken_for_independent_lean_files() {
+    let p = Project::new();
+    fs::write(p.root().join("src/Support.lean"), "pub fn before(){}\n").unwrap();
+    fs::write(p.root().join("src/lib.rs"),"#[path=\"Support.lean\"] mod support;\npub fn identity(x:u32)->u32{x}\npub fn other(x:u32)->u32{x}\n").unwrap();
+    p.ok(&["status"]);
+    fs::write(p.root().join("src/Support.lean"), "pub fn after(){}\n").unwrap();
+    p.ok(&["status"]);
+    let snapshot = p.snapshot();
+    assert_eq!(snapshot["analysis_reused"], false);
+    assert!(
+        snapshot["inventory"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|t| t["name"] == "after")
+    );
+}
+
+#[test]
+fn synthetic_environment_keys_are_never_treated_as_source_paths() {
+    let p = Project::new();
+    let result = p
+        .cmd()
+        .env("CUSTOM_INPUT.rs", "value")
+        .args(["status", "--json"])
+        .output()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    assert_eq!(p.snapshot()["analysis_reused"], false);
+    assert!(p.snapshot()["input_files"]["@env:CUSTOM_INPUT.rs"].is_string());
 }

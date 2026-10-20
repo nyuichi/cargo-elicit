@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-20",
+  "kind": "small native identity software smoke, not a proof-authoring benchmark",
+  "fixture": "fixtures/aeneas with a second identity-like API; only identity authored, other left as draft",
+  "environment": "prepared pinned backend libraries; warm environment; no AI authoring",
+  "normal_tests_passed": 41,
+  "native_cases_passed": [
+    "aeneas_generated_entry_requires_real_specification_and_reuses_only_verified_work",
+    "aeneas_inline_contract_without_fixed_proof_root"
+  ],
+  "adler2_full_verification_run": false,
+  "proof_authoring_productivity_measured": false,
+  "native_assertions": [
+    "drafts never accepted",
+    "draft peer does not block authored API",
+    "valid native theorem accepted",
+    "repeated verify executes zero proof stages",
+    "custom axiom rejected",
+    "proof-only edits preserve runtime type reference"
+  ],
+  "native_command_timings": [
+    {
+      "args": [
+        "init",
+        "--api",
+        "identity",
+        "--api",
+        "other"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 29.161329523
+    },
+    {
+      "args": [
+        "status",
+        "identity",
+        "--saved",
+        "--json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.002461495
+    },
+    {
+      "args": [
+        "verify",
+        "--json"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 6.164848203
+    },
+    {
+      "args": [
+        "verify",
+        "identity",
+        "--json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 21.329245959
+    },
+    {
+      "args": [
+        "verify",
+        "identity",
+        "--json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 7.921963655
+    },
+    {
+      "args": [
+        "status",
+        "other",
+        "--saved",
+        "--json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.002310271
+    },
+    {
+      "args": [
+        "status",
+        "--saved",
+        "--json"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.00243789
+    }
+  ],
+  "release_saved_read_timings": [
+    {
+      "args": [
+        "status",
+        "--saved"
+      ],
+      "samples_ms": [
+        1.2438970152288675,
+        1.0420880280435085,
+        1.0782410099636763
+      ],
+      "median_ms": 1.0782410099636763
+    },
+    {
+      "args": [
+        "status",
+        "identity",
+        "--saved"
+      ],
+      "samples_ms": [
+        1.0537049965932965,
+        1.0266150056850165,
+        0.9916119743138552
+      ],
+      "median_ms": 1.0266150056850165
+    },
+    {
+      "args": [
+        "status",
+        "--plan",
+        "--saved"
+      ],
+      "samples_ms": [
+        0.8695409924257547,
+        0.8664669876452535,
+        0.8478889940306544
+      ],
+      "median_ms": 0.8664669876452535
+    },
+    {
+      "args": [
+        "status",
+        "--inventory",
+        "--saved"
+      ],
+      "samples_ms": [
+        0.7586569990962744,
+        0.7428030075971037,
+        0.9191049903165549
+      ],
+      "median_ms": 0.7586569990962744
+    }
+  ],
+  "identity": {
+    "debug_binary_sha256": "b229cad0c7a96c680b6ee6e05ce06764dcbce55b388170f75340161bf00f016d",
+    "release_binary_sha256": "e1f3a94f231ed25a169ee55138c4f329a44d7b1c57125377dfe6ac3b7c72862a",
+    "source_files_sha256": {
+      "Cargo.lock": "800d38fa186a2ca8a4cd80a964e4742ad3af12be95312783baa94fac285cdd77",
+      "Cargo.toml": "56c0508dc0dbbd18a8a270df331a97cda4816a56729cb48432f195d63b7556af",
+      "src/aeneas.rs": "76cf72b96196a2fe0b22c2c271b61b0ef6adba9394dc24b4febb721c2a3391f8",
+      "src/analysis.rs": "9196fa6d3060d4d6f9aea6e841d467c4494e56bc84e9c9d6eaaf9ce872692495",
+      "src/cli.rs": "3f8e7cc2228539ec0a0275493a16f280ace7678cd4b7c0153fc1aeb7cd7b68c0",
+      "src/fingerprint.rs": "f379202d67d3dabd891201613c288e9b223d6e382653bc916fc436e1d06fbf3e",
+      "src/lean/ElicitAdapter.lean": "8c9f7cde823068e7eb811fa09d8eb7386495b622fcd3c87c68ccf4d47c97b642",
+      "src/lean/ElicitAudit.lean": "10d950afbdb8136f0baa2d9a7c451c8c4f563fd266ec5cb0c6016a8507541b0e",
+      "src/lean/ElicitModelInputs.lean": "270a13215750cde343e50601408001da9a19d4e7d2e923f5ea239879901ca6e0",
+      "src/lean_cache.rs": "5bc222076d8c2716bf4d917e21b5b012e4dba0abd72f0842f505c6ab24391982",
+      "src/lean_modules.rs": "23aa3cb6384a1d3614ae9f18a1c1fec82a028d60d02f8f3d5187f427ba5beab2",
+      "src/lib.rs": "54f7ce8dd5bf5892908178cacecdc6184e5de2ad7ade620225c0330504fce904",
+      "src/main.rs": "33b8a1adaa2692f59b044ffb489d430b6efdfb350230760677862b1aff489c25",
+      "src/model.rs": "45d80ed81a45435d19d1e0c7d24cbfb0613c931b5c19e1ffc34efd4ae0994afb",
+      "src/plan.rs": "af9a2fef1eae91a0d2c58f26efe48789895f5280df10aba4ddf95cf2207aae0f",
+      "src/process.rs": "fb66bc7225f8984648345c9c00faed7c905a74e8225fab5543b2430edb9024e9",
+      "src/project.rs": "1b4b94c147578327291ebd80372b656861cfd86b9e28fcabfde508101dee7e6e",
+      "src/resume.rs": "029b126f400dc0acba5e2b81838946a3824d7c2a80bf62a4cf57cc0dff1c670c",
+      "src/scaffold.rs": "1289e7eacb0caae25a33193df7e5114445f5a0d18d102f84860ec59887bd3128",
+      "src/store.rs": "d474d344300504e965cfbd87e36308985df1a741dffcb28fd745c382a7800a8d",
+      "src/ui.rs": "845334921a36070698cdb6e23d361e569a1d3e4e822ed42d555e13f18b409587",
+      "src/verifier.rs": "a621e9e204cd003becadd562043909cabe7294e0d86ca8ebd5046f64c2f1c2c3",
+      "tests/native.rs": "431bf635ac9cce6a4baf47421633ca70a07473a0b761835cfde9985e9f6ed29f",
+      "tests/workflow.rs": "8c89d5a988ee5e2cec80e45873f6598c12164571f3784e6ae8f105e208e722e1"
+    }
+  },
+  "limits": "Single small fixture, three warm samples per saved read. Native timing includes observation; not a general speedup, cold-start or without-tool comparison. Raw workspaces and native stdout are not included."
+}

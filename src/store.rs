@@ -58,14 +58,12 @@ impl Store {
             }
         }
     }
-    pub fn event(&self, event: &str, data: serde_json::Value) -> Result<()> {
-        let path = self.root.join(".elicit/events.jsonl");
+    /// Compact milestones, separate from high-volume native pipeline telemetry.
+    pub fn history(&self, event: &str, data: serde_json::Value) -> Result<()> {
+        let path = self.root.join(".elicit/history.jsonl");
         fs::create_dir_all(path.parent().unwrap())?;
-        let timestamp = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)?
-            .as_millis();
         let mut line = serde_json::to_vec(
-            &serde_json::json!({"timestamp_ms":timestamp,"event":event,"data":data}),
+            &serde_json::json!({"schema":1,"recorded_at":crate::project::now(),"event":event,"data":data}),
         )?;
         line.push(b'\n');
         OpenOptions::new()
@@ -74,6 +72,28 @@ impl Store {
             .open(path)?
             .write_all(&line)?;
         Ok(())
+    }
+    pub fn recent_history(&self) -> Result<Vec<serde_json::Value>> {
+        use std::io::{Read, Seek, SeekFrom};
+        let path = self.root.join(".elicit/history.jsonl");
+        let mut file = match File::open(path) {
+            Ok(f) => f,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+            Err(e) => return Err(e.into()),
+        };
+        let len = file.metadata()?.len();
+        let start = len.saturating_sub(65536);
+        file.seek(SeekFrom::Start(start))?;
+        let mut bytes = Vec::new();
+        file.take(65536).read_to_end(&mut bytes)?;
+        let text = String::from_utf8_lossy(&bytes);
+        let mut lines = text.lines();
+        if start > 0 {
+            lines.next();
+        }
+        let mut records: Vec<_> = lines.filter_map(|l| serde_json::from_str(l).ok()).collect();
+        records.drain(..records.len().saturating_sub(8));
+        Ok(records)
     }
 }
 

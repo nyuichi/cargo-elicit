@@ -16,18 +16,33 @@ pub fn status(v: &Value) -> String {
     let mut out = String::new();
     let _ = writeln!(
         out,
-        "Snapshot {} — saved observation; refresh to inspect edits.",
+        "Snapshot {} — saved observation; status to inspect edits.",
         one_line(v["snapshot"].as_str().unwrap(), 12)
     );
     if let Some(op) = v.get("operation") {
         let _ = writeln!(
             out,
             "{}: {} passed, {} unresolved ({} requested).",
-            op["kind"].as_str().unwrap(),
+            if op["fresh"] == true {
+                "verify --fresh"
+            } else {
+                op["kind"].as_str().unwrap()
+            },
             op["passed"],
             op["unresolved"],
             op["requested"]
         );
+        if op["reused_count"].as_u64().is_some_and(|n| n > 0) {
+            let _ = writeln!(
+                out,
+                "Existing evidence reused: {} / {} requested.",
+                op["reused_count"], op["requested"]
+            );
+        }
+        if op["reused_evidence"] == true {
+            out.push_str("Saved command result reused; no command executed. Use verify --fresh to run it again.\n");
+        }
+        let mut seen = std::collections::BTreeSet::new();
         for g in op["results"]
             .as_array()
             .unwrap()
@@ -35,6 +50,32 @@ pub fn status(v: &Value) -> String {
             .filter(|g| g["accepted"] != true)
             .take(5)
         {
+            let d = &g["diagnostic"];
+            if let Some(log) = d["log"].as_str() {
+                let cache = d["cache"].as_str().unwrap_or("");
+                let key = format!("{cache}/{log}");
+                if seen.insert((key.clone(), g["reason"].as_str().unwrap_or("").to_owned())) {
+                    if let Some(reason) = g["reason"].as_str() {
+                        let _ = writeln!(out, "  {}", one_line(reason, 180));
+                    }
+                    let _ = writeln!(
+                        out,
+                        "  Failure [{}]: {}",
+                        g["phase"].as_str().unwrap_or("unknown"),
+                        one_line(
+                            d["message"]
+                                .as_str()
+                                .unwrap_or("no diagnostic output; inspect log"),
+                            300
+                        )
+                    );
+                    let _ = writeln!(
+                        out,
+                        "    Log: {key} (shared failures shown once; per-goal outcomes in --json)"
+                    );
+                }
+                continue;
+            }
             let _ = writeln!(
                 out,
                 "  {}: {}",
@@ -45,7 +86,7 @@ pub fn status(v: &Value) -> String {
     }
     let _ = writeln!(
         out,
-        "Remaining: {} / {}; complete: {} (fresh audit + semantic review). Selected obligations only.",
+        "Remaining: {} / {}; complete: {} (native command results). Selected goals only.",
         v["summary"]["remaining"], v["summary"]["total"], v["summary"]["completed"]
     );
     let goals = v["goals"].as_array().unwrap();
@@ -53,26 +94,10 @@ pub fn status(v: &Value) -> String {
     for g in goals.iter().take(limit) {
         let _ = writeln!(
             out,
-            "  {}: check={} audit={} review={}",
+            "  {}: {}",
             g["id"].as_str().unwrap(),
-            g["check"].as_str().unwrap(),
-            g["audit"].as_str().unwrap(),
-            g["review"].as_str().unwrap()
+            g["command_status"].as_str().unwrap()
         );
-        if g["audit_validity"]["state"] == "stale" {
-            let changes = g["audit_validity"]["input_changes"].as_array().unwrap();
-            if let Some(c) = changes.first() {
-                let _ = writeln!(
-                    out,
-                    "    Audit stale: {} {} ({} changed inputs)",
-                    c["change"].as_str().unwrap(),
-                    one_line(c["path"].as_str().unwrap(), 100),
-                    changes.len()
-                );
-            } else {
-                out.push_str("    Audit stale; inspect show ID / --verbose for binding details.\n");
-            }
-        }
     }
     if goals.len() > limit {
         let _ = writeln!(
@@ -98,7 +123,7 @@ pub fn status(v: &Value) -> String {
             );
         }
         if candidates.len() > 5 {
-            let _ = writeln!(out, "  … {} more in plan.", candidates.len() - 5);
+            let _ = writeln!(out, "  … {} more in status --plan.", candidates.len() - 5);
         }
     }
     let issues = v["analysis_limitations"].as_array().unwrap();
@@ -110,12 +135,12 @@ pub fn status(v: &Value) -> String {
             one_line(issues[0].as_str().unwrap(), 120)
         );
     }
-    out.push_str("Details: show ID; plan --details; --verbose or --json. No need to run status again after this summary.\n");
+    out.push_str("Details: status ID; status --plan --details; --verbose or --json. No need to run status again after this summary.\n");
     out
 }
 pub fn plan(v: &Value) -> String {
     let mut out = String::from(
-        "Dependency plan — saved observation; refresh to inspect edits.\nCallee-first SCC layers; structural candidates, not proof prerequisites.\n",
+        "Dependency plan — observed snapshot; --saved reads without re-observation.\nCallee-first SCC layers; structural candidates, not proof prerequisites.\n",
     );
     let rows = v["components"].as_array().unwrap();
     let open: Vec<_> = rows
@@ -180,13 +205,37 @@ pub fn plan(v: &Value) -> String {
         v["missing_inventory_obligations"].as_array().unwrap().len(),
         v["analysis_limitations"].as_array().unwrap().len()
     );
-    out.push_str("Accepted contracts may be too weak for callers. Details/accepted dependencies/contracts: plan [API ...] --details; --json retains full saved facts.\n");
+    out.push_str("Command success does not establish API coverage. Details/dependencies: status [API ...] --plan --details; --json retains full saved facts.\n");
     out
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn shared_failure_has_one_actionable_diagnostic_and_durable_log() {
+        let failure = serde_json::json!({"id":"api", "accepted":false, "phase":"proofs",
+            "diagnostic":{"cache":".elicit/evidence/check-1", "log":"logs/Codec.log",
+                "message":"Codec.lean:18:2: error: recursion limit"}});
+        let view = serde_json::json!({"snapshot":"abc", "operation":{"kind":"check",
+            "passed":0,"unresolved":2,"requested":2,"results":[failure.clone(),failure]},
+            "summary":{"remaining":2,"total":2,"completed":0},"goals":[],
+            "candidate_sccs":[],"analysis_limitations":[]});
+        let text = status(&view);
+        assert_eq!(text.matches("Codec.lean:18:2: error:").count(), 1);
+        assert!(text.contains(".elicit/evidence/check-1/logs/Codec.log"));
+        assert!(text.contains("Failure [proofs]"));
+        assert!(text.contains("2 unresolved"));
+    }
+    #[test]
+    fn older_receipt_diagnostics_remain_readable() {
+        let diagnostic: crate::model::Diagnostic = serde_json::from_value(
+            serde_json::json!({"phase":"proofs","cache":".elicit/evidence/check-old"}),
+        )
+        .unwrap();
+        assert!(diagnostic.message.is_none());
+        assert!(diagnostic.log.is_none());
+    }
     #[test]
     fn clipping_is_unicode_safe_and_removes_multiline_noise() {
         assert_eq!(one_line("日本語\n  契約", 3), "日本語…");

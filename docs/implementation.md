@@ -1,51 +1,78 @@
-# Architecture and evidence guarantees
+# Implementation
 
-Version 0.2 separates obligations, machine evidence, semantic review and observation freshness. The CLI is an author-independent tool. It has no AI client, scheduler, token accounting, task limits or approval/submission protocol.
+The CLI manages selected goals, observations and native command results. It does
+not certify theorem meaning, axiom policy, full-input coverage or correspondence
+between Rust and Lean. The old contract generator, Aeneas proof admission,
+transitive axiom audit and backend-specific coverage gates have been removed.
 
-## Observation
+`init` saves schema-3 configuration and inventories the original Rust crate.
+`status` observes inputs without running verification. `status --saved` is a
+pure saved read, explicitly unable to assert current workspace freshness.
+`verify` runs configured argv in its configured directory and records exit code,
+output, duration, input binding and diagnostics. Equal argv/directory pairs run
+once per request; associations with selected APIs are declared by the author.
+Per-goal commands override the project default. A missing command cannot succeed.
 
-`status`, `list`, `show` and `plan` deserialize the last saved snapshot. They spawn no processes, inspect no tools, acquire no write locks and make no attempt to silently update evidence. Every output identifies its saved-snapshot nature and observation time. A saved accepted audit is not a claim about an unobserved later workspace.
+Success means exit code zero, no timeout/interruption, and unchanged observed
+inputs before/after execution. No stdout parser determines mathematical success;
+`sorry`, additional axioms, partial-input theorems and unrelated propositions
+are governed by the native command, not rejected by cargo-elicit. Native tool
+errors still fail through their exit status. Native build caches are tool-owned.
 
-`refresh` explicitly resolves Cargo scope and uses rust-analyzer plus structural source indexing to discover stable IDs and locations. It reads contract/model declarations without compiling them. Input/configuration fingerprints surround discovery, and Cargo scope is resolved again afterward; raced observations are rejected. Missing verifier installations can be recorded as inspection limitations rather than turning progress viewing into a setup workflow.
+Ordinary verify can reuse current successful durable receipts. Reuse validates
+receipt path, kind, input digest/map, project scope, goal/command binding, saved
+result agreement, zero exit and successful outcome. Failed, missing, corrupted
+or stale receipts run again. `--fresh` bypasses receipt reuse and reruns the
+command; it does not perform a clean build or claim an independent audit.
 
-Discovery is conservative, not complete rustc HIR extraction. Unknown cfg, macros/attributes, unresolved calls, generated definitions and feature mismatches remain visible. Public types and trait laws do not automatically acquire executable function-contract obligations. Complete declared obligations and whole-crate correctness are different claims.
+Fingerprints cover local project/dependency files, scope, formal configuration,
+CLI binary, resolved command executables, Rust/native version observations,
+inherited environment hashes, and explicit `verification.inputs`. Editorial
+descriptions do not invalidate results. `.git`, internal `.elicit`, Cargo target,
+`.lake` and `.why3find` are excluded build/state boundaries. Externally installed
+models, interpreter arguments, libraries and arbitrary script dependencies are
+not exhaustively discovered. Add files/directories via `verification.inputs` to
+bind additional dependencies, including files under otherwise excluded trees.
+Input hashes establish observed freshness, not a hermetic execution guarantee.
+No environment values are stored in receipts; only their hashes are recorded.
 
-## Machine evidence
+Native output logs are copied into the durable receipt directory before saving
+results. An input race or missing input inspection cannot establish current
+success. Signals/timeouts stop descendant processes. The existing project lock
+serializes CLI mutations; it does not prevent external edits. `.elicit/history.jsonl`
+records observations, outcomes, reuse and errors; bounded recent history is
+navigation context, not extra evidence. There is no operational-notes directory,
+handoff-file convention, approval command, scheduler or AI client.
 
-`check` and `audit` refresh inputs automatically. They require no semantic review. Before/after fingerprints cover original sources, local dependencies, scope, formal declarations, environment, installed tools/models and the CLI executable. An input race, interruption, unsupported mapping, unexecuted obligation, extra assumption or unknown scope cannot become successful API evidence.
+Rust call graphs, SCCs, shared callees and Lean imports support planning only.
+Unresolved calls and parser limitations are shown; they never gate native command
+results. Completed goals have current successful command results; they are hidden
+by default, retained in saved history, and reappear when inputs become stale.
 
-Formal config includes tool/scope, target bindings, statement and theorem declarations. Editorial descriptions are excluded from machine fingerprints but included in review bindings. User review notes, snapshots and receipts live under `.elicit`, outside compiler inputs. Other project files remain conservatively tracked, including files a build might read.
+## Observation cache
 
-The trusted acceptance logic is retained from the previous verifier adapters:
+`.elicit/cache/analysis.json` stores Cargo package metadata, source entry points,
+cfg, inventory/call edges and analysis limitations. A checksum validates the
+serialized cache payload; missing, outdated or corrupt cache data falls back to
+ordinary discovery without deleting command receipts. No language-server process
+survives a CLI invocation. Cache persistence failures do not prevent observation.
 
-- Aeneas maps fresh Charon bodies and generated definitions to the original source and exact definition span. Generated propositions quantify the actual translated arguments, require successful execution and state the supplied pre/postconditions. Lean checks exact theorem types and transitive axioms. Unrelated rejected audit roots do not discard accepted peers; a shared compilation failure can still prevent their audit.
-- Kani accepts only native unrestricted, explicitly typed arbitrary-input harnesses calling the original independent primitive free function, with actual contract/safety checks executed. Limited/generic/method/helper cases remain partial or unsupported.
-- Creusot requires fresh Coma correspondence and a complete Why3 proof tree for the supported primitive free-function scope, using standard models/drivers. General type-invariant and trait-law generation is not implemented.
+Reuse is keyed by content hashes, selected package/features/target/backend,
+compiler and executable identities, inherited environment and Cargo configuration.
+Workspace manifest scanning detects new members selected by Cargo globs. Cached
+dependency manifests and local dependency sources participate in invalidation.
+Pre/post content observations reject input races. Full Cargo metadata is compared
+when rebuilding, rather than checking only package scope and cfg.
 
-Proposition obligations check the exact declared Lean proposition and axiom policy. They do not establish a Rust API contract merely by being associated with the same project. Semantic adequacy of any specification still requires judgment.
+Lean source files and native-only configuration can be separated from the Rust
+analysis key when a conservative source/metadata screen finds no build scripts,
+proc macros, macro invocations or custom module paths. This exemption never
+removes those files from native-command input fingerprints. Builds that can
+read arbitrary files retain the full input binding for analysis too. This is
+an optimization of advisory analysis, not a new proof-admission policy.
 
-## Incremental checking versus fresh audit
-
-For Aeneas, `check` has a persistent checker-owned workspace. Rust extraction and translation still run. A Lean module can reuse its own previously produced objects only when source, imported dependency provenance, tracked context/toolchain and object hashes match. A changed supporting module invalidates its dependents; unchanged independent modules can be reused. Missing local sources, unsupported import modifiers, cycles, source symlinks and shadowing generated/toolchain modules are rejected. Stale local products are pruned. Arbitrary objects from the author's proof tree are never copied in.
-
-Local metaprogramming/I/O indicators use a more conservative whole-input cache key. This does not claim complete dependency inference for arbitrary external I/O. Keep semantic inputs tracked; unrestricted external metaprogram inputs are outside the reproducibility guarantee. Import names currently use ASCII identifiers and ordinary single-line headers (`import` / `public import`, optionally `all`).
-
-The exact-type/transitive-axiom audit module runs on every check. Check evidence is labeled `check`, not `audit`. `audit` uses a new isolated build directory and recompiles all required modules independently, ignoring incremental project products. Kani/Creusot keep their native conservative checking paths rather than claiming the new Lean module cache applies to them.
-
-This cache is a correctness mechanism for ordinary development, not a security boundary against a process deliberately rewriting the checker cache, manifest and ledger. An independently fresh audit avoids relying on those incremental products.
-
-## Persistence and diagnostics
-
-One project lock serializes mutation/check operations. Read commands remain lock-free against atomic snapshot replacement. Original source files are never modified by the CLI. Durable run receipts contain scope, declarations, input-file hashes, result coverage, trusted base and backend decisions. Per-run logs and generated diagnostic sources are copied out of mutable build caches; deleting the cache does not erase them. Evidence is tied to inputs, not to an AI session identity.
-
-`show` provides the target location, generated Aeneas proposition name, saved results, phase and receipt. Historical failed results remain inspectable; newer failures are not hidden by an older success for the same operation/input. Review has its own accepted/needs-work/stale state and never erases a kernel result.
-
-## Planning
-
-`plan` derives a reachable local call graph from the saved inventory, collapses SCCs and joins it to saved obligation evidence without running tools. It provides dependency-first layers, selected-root sharing, inverse edges, source structure, native Aeneas contracts and explicit unresolved/external boundaries. Local Lean imports remain a separate graph, not theorem dependencies. See [planning semantics and limitations](planning.md). Planning never creates evidence or requires helper registration.
-
-## Operational notes and audit validity
-
-`.elicit/notes/` is the official operational-record directory; `init` and the explicit `notes` command create a guide there without overwriting an existing guide. It inherits the existing `.elicit` fingerprint exclusion. No Markdown wildcard or named-report exemption is introduced. This is a declared non-semantic boundary, not automatic dependency analysis or sandbox enforcement: build/proof code must never read notes. Notes need separate archival because `.elicit` is usually Git-ignored.
-
-New evidence summaries retain their exact input-file hash maps. Pure reads compare these against the saved snapshot, so audit invalidation paths are relative to the audit, not the immediately preceding refresh. No receipt I/O or file inspection is added to `status`, `list` or `show`. Existing summaries without hash maps remain readable and explicitly lack detailed invalidation reasons. A valid audit remains valid through operational-note edits; an explicit fresh audit still always recompiles. The workflow saves semantic artifacts before auditing and writes the final operational report afterward.
+Warm status/verify can therefore skip Cargo metadata and rust-analyzer startup.
+Proof import observations are still refreshed from current Lean sources. On a
+cache miss, source indexing runs first; rust-analyzer starts only if definition
+or alias queries are needed. Version observations and content checks remain
+current, and the normal saved-only status path still performs neither.

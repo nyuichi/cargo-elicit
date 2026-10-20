@@ -1,3 +1,5 @@
+> Historical design document. Superseded by the native-command interface in README.md; not current CLI behavior.
+
 > Historical v0.1 document. The incompatible v0.2 product is documented in [README](../README.md) and [architecture](implementation.md). This page does not describe the current CLI.
 
 # Goal-directed Aeneas verification

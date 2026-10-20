@@ -1,110 +1,113 @@
 # cargo-elicit
 
-A Rust CLI for people and external AI tools to organize verification work, inspect obligations, and preserve evidence tied to the original crate.
+A Rust CLI for people and AI tools to track native verification work across a
+crate. It records command results, changed inputs and dependency planning hints.
+It never starts an AI or decides whether a theorem proves an API correct.
 
-**cargo-elicit never starts an AI.** It does not choose proof strategies, dispatch tasks, generate helpers, or require submission/checkpoint protocols. Use your editor, native verifier and preferred assistant normally.
+## Three commands
 
-## Workflow
+| Command | Purpose |
+| --- | --- |
+| `init --api API --command PROGRAM ARG...` | Select goals, discover APIs and save the native verification command |
+| `status [API]` | Observe inputs and show remaining work, changes, diagnostics and saved results |
+| `verify [API ...]` | Run configured native commands and save input-bound results; reuse unchanged successful results |
 
 ```sh
 cargo install --git https://github.com/nyuichi/cargo-elicit
 cd your-crate
-cargo elicit init --tool aeneas --api identity
-cargo elicit list
-cargo elicit show identity
-cargo elicit plan identity
-# Write contracts and proofs using normal native tools.
-cargo elicit check
-cargo elicit audit
+cargo elicit init --api identity --directory verification --command lake build
+# Write specifications/proofs normally in your native project.
+cargo elicit verify
 cargo elicit status
 ```
 
-Rust 1.86+ builds the CLI. Explicit discovery requires Cargo, rustc and rust-analyzer; install the chosen verifier for checks. [Aeneas/Lean setup and proof format](docs/aeneas.md) describes the pinned toolchain. Kani 0.68 and Creusot 0.14 retain their native evidence adapters and narrower supported coverage.
+Put other init options before `--command`, whose remaining arguments are native
+command arguments. No dedicated contract comments, generated propositions,
+wrapper proofs, theorem registration, handoff files or approval commands are
+required. Existing native Aeneas, Lean, Kani and Creusot workflows can be invoked
+through their ordinary commands or a project script. `init` does not generate,
+translate or compile proofs.
 
-| Command | Behavior |
-| --- | --- |
-| `init` | Create configuration and explicitly discover the original Rust inventory |
-| `notes` | Create/locate `.elicit/notes/` for progress, handoff and final reports outside verification inputs |
-| `refresh` | Observe current scope, sources, declarations and tools; no proof compilation |
-| `plan [API ...]` | Show reachable call graph collapsed into dependency-first SCCs, shared callees, contracts, evidence and unresolved boundaries |
-| `status [--all]` | Show remaining work and a short candidate-SCC summary; hide audited and semantically reviewed items unless `--all` |
-| `list`, `show` | Read all saved obligations or details; no processes, hashing, reconciliation or writes |
-| `check [ID ...]` | Refresh inputs and validate obligations; Aeneas reuses matching checker-owned Lean products |
-| `audit [ID ...]` | Refresh inputs, independently rebuild in a fresh workspace and audit exact proof coverage |
-| `review [ID ...] --note REASON` | Record semantic judgment, separately from machine evidence |
+## Native command configuration
 
-[Dependency-first planning](docs/planning.md) explains candidate SCCs, caller requirements, proof reuse and the distinction between call edges and proof dependencies.
-
-Read commands explicitly identify their snapshot and observation time. **They do not assert that files or tools still match it.** Use `refresh`, `check` or `audit` to observe later changes. Successful incremental checks and fresh audits are separate columns; semantic review does not gate either.
-
-For frequent progress reads, `status` focuses on remaining work. A goal is hidden only when its saved fresh audit and semantic review are accepted and there is no current failed incremental check. Completed counts remain visible; `status --all` includes every goal. JSON applies the same filter and includes total/completed/remaining counts. Refreshed stale evidence or review makes a goal visible again. `list` and `plan` retain completed items so dependencies remain understandable.
-
-## Declare what you want established
-
-Edit `elicit.toml`; no revision tokens or submission commands are needed:
+`elicit.toml` uses schema 3:
 
 ```toml
-schema = 2
+schema = 3
 
 [verification]
-tool = "aeneas"
-
-[package]
-features = []
-all_features = false
-no_default_features = false
+tool = "aeneas" # inventory/backend label, not a pinned toolchain requirement
+command = ["lake", "build"]
+directory = "verification" # relative to the crate root; default "."
+# Add external libraries/scripts/toolchain files used by your command if needed.
+inputs = []
 
 [[obligations]]
 id = "identity"
 target = "identity"
-description = "Returns its argument for every input."
 
 [[obligations]]
-id = "supporting-fact"
-statement = "True"
-theorem = "Proofs.fact"
-description = "Replace this example with the mathematical fact you need."
+id = "other"
+target = "other"
+command = ["sh", "check-other.sh"] # optional per-goal override
+# directory = "." # otherwise inherits verification.directory
 ```
 
-A target selector may be an exact inventory ID, a unique function name or a method alias. A proposition obligation instead names an exact Lean statement and theorem. The example `True` is only a format demonstration, not a useful verification goal. Formal API predicates remain in native contract files. See [architecture and guarantees](docs/implementation.md).
+Commands are argv arrays, executed without an implicit shell. Use
+`["sh", "verify.sh"]` for a native script; use a fail-fast script when several
+steps must succeed. Configure what you would normally run without cargo-elicit.
+A shared command/directory runs once per request and its result is associated
+with all selected goals that use it. Those associations are user-declared; the
+CLI does not inspect whether the command actually covers each API. Missing
+commands are reported, never treated as successful verification.
 
-Omitting declarations selects discovered public function/method/trait-implementation obligations. Unsupported targets remain explicit; they do not become proved because another method passes. `list --inventory` also shows types, private helpers and discovery limitations. Passing every declared obligation does not establish unspecified invariants, trait laws, other features or whole-package correctness.
+Optional `statement`, `theorem` and `description` fields are user metadata.
+There is no required proposition shape, full-input coverage gate, Rust/theorem
+correspondence check, or axiom/`sorry` policy. A successful native command with
+`sorry` warnings is recorded as successful. Choose stricter native commands when
+that is the policy you want. The saved result means **this command exited zero
+on these observed inputs**, not that cargo-elicit established API correctness.
 
-`--package`, `--features`, `--all-features`, `--no-default-features` and `--target` select build scope at initialization. Edit the package section and refresh when changing scope. In a multi-package workspace, choose one package explicitly.
+## Daily use
 
-## Evidence and review
+- `status` refreshes inputs and shows unfinished selected goals. It never runs the verification command.
+- `status --saved` reads saved state immediately; current workspace freshness is unknown.
+- `status API` shows a goal's command, source, result, log and changed inputs.
+- `status --inventory` shows discovered APIs; `status [API ...] --plan` shows callee-first SCCs and shared dependencies. `--plan --details` expands the graph.
+- `status --all` includes goals with current successful command results.
+- `verify` reuses matching successful durable receipts. Failed, missing, corrupt or stale results run again.
+- `verify --fresh` forces the native command to run again. It does **not** clean native tool caches or impose an independent audit. Put clean-build policy in the command if desired.
 
-A backend exit code, an author's claim, and an accepted review cannot create a proof. API evidence requires original-source correspondence, complete native contract coverage and the adapter's scope/trust checks. Aeneas checks the actual translated signature and transitive axioms; only `propext`, `Classical.choice` and `Quot.sound` are allowed. Arbitrary proposition evidence is distinguished from Rust API coverage.
+Cargo discovery and Rust API/call-graph observations are cached on disk; no
+background process or daemon runs. Unchanged Rust observations reuse the cache
+while native proof inputs are still checked for freshness. Lean-only edits can
+reuse Rust analysis when build scripts, macros and custom module paths do not
+make their separation uncertain. Other cases retain conservative invalidation.
+Rust/configuration/dependency/environment changes rebuild the relevant saved
+observation. Sources needing no definition or alias queries skip rust-analyzer
+entirely, including after Rust edits. JSON `analysis_reused` describes the last
+input observation; a saved-only read does not perform new analysis.
 
-```sh
-cargo elicit review identity --note 'The predicate captures the intended arbitrary-input behavior.'
-cargo elicit review identity --verdict needs-work --note 'The specification needs clarification.'
-```
+Input checks cover crate/local-dependency files, configuration, the CLI binary,
+resolved command executables, Rust/native-tool observations, inherited
+environment hashes and explicit `verification.inputs`. Native build locations
+`target`, `.lake`, `.why3find`, and internal `.elicit` state are excluded.
+External scripts, toolchain installations and dependencies are not exhaustively
+inferred; list additional semantic inputs explicitly. A command that changes
+tracked inputs cannot produce a current successful result. Native caches remain
+owned by the native tools; cargo-elicit does not validate their contents.
 
-Review binds to the specification and its human description. Changing editorial description can stale review without discarding a machine proof. Changing a contract/model or formal declaration invalidates the corresponding bindings. A proof-only edit invalidates input freshness until explicitly checked. No command edits the Rust implementation or approves an implementation change.
+Command output is saved with the receipt under `.elicit/evidence/`. Automatic
+history records input observations and command outcomes. No notes feature exists.
+Use comments or Markdown as needed; memos outside the project tree do not
+invalidate evidence. Project-local comments and Markdown remain tracked. Build
+and proof code must not read untracked memos or internal CLI state. Archive
+`.elicit` explicitly when moving workspaces; it is normally Git-ignored.
 
-The versioned snapshot is `.elicit/snapshot.json`. Durable receipts, phase logs and diagnostic sources are under `.elicit/evidence/`; paths in receipts are project-relative. `.elicit/cache/` and `.elicit/runtime/` are regenerable and should be ignored by Git. Cache deletion preserves saved evidence and review summaries. Evidence is an audit trail, not a tamper-proof store against someone who can rewrite it under the same OS account.
-
-Read commands exit 0 on a successful read. `check`/`audit` exit 0 for successful requested evidence at that command's level, 1 for unresolved work, 2 for configuration/environment errors, and 130 for interruption. `--json` exposes the same saved facts.
-
-## Use with an AI assistant
-
-The optional [cargo-elicit skill](skills/cargo-elicit/SKILL.md) teaches external assistants these commands. It leaves planning and authoring to the assistant. Humans need no skill or AI credentials. There is no `run` command or built-in Codex integration.
-
-This is an incompatible 0.2 redesign. Old ledgers/configuration are not migrated. Historical experiments are preserved in [the experiment index](docs/experiments/README.md); they describe older products and do not demonstrate that this version speeds up proof authoring.
-
-Licensed under MIT OR Apache-2.0.
-
-## Operational records and final audit
-
-Use `cargo elicit notes` to create/locate `.elicit/notes/` (also created by `init`). Keep progress, handoff notes and final reports there. `.elicit/` was already excluded from fingerprints; this is an explicit workflow convention, not a broader exclusion rule. Other project files, including arbitrary Markdown and root-level reports, stay tracked.
-
-Never import or read operational notes from Rust, build scripts, proc macros, Lean or verifier code. Such dependencies are outside the reproducibility guarantee. Keep all specifications, models and proofs in tracked input locations. Archive notes explicitly when publishing/moving work: `.elicit` is normally Git-ignored.
-
-Save semantic inputs and reproduction scripts, run the final `audit`, then write the report in `.elicit/notes/`. Notes alone do not require another audit. After `refresh`, `status --all` identifies the current audit receipt and, for stale evidence, compares saved audit input hashes with the newly observed input hashes. `--json` exposes `audit_validity`, changed paths, formal-binding changes and whether a fresh audit is needed at the saved snapshot. Reasons survive repeated refreshes; older evidence without saved input hashes reports that details are unavailable. A plain `status` does not inspect current files. Explicit `audit` continues to rebuild from scratch every time.
-
-## Concise feedback
-
-Normal `check` and `audit` output includes requested outcomes, remaining-work counts and up to five structural candidate SCCs, so a separate status/plan round trip is usually unnecessary. `status` also uses a bounded summary; `--all` includes completed goals and removes the goal-row limit. `--verbose` expands the saved details. `plan` summarizes open SCCs (up to ten); `plan [API ...] --details` or `--verbose` includes accepted dependencies, contracts and the full graph. `show ID` remains the focused detail command. Limits and analysis uncertainties remain explicit; a structural candidate is not a guaranteed proof strategy.
-
-`--json` retains machine-readable facts and adds the requested-operation result summary. Routine status JSON no longer repeats the internal input hash map inside each last-evidence record; audit invalidation information, durable snapshots and receipts retain provenance. No evidence, contract, verification policy or audit behavior is removed. A saved snapshot identifier is not a `--since` checkpoint: differential status is deferred.
+Exit codes: 0 for successful requested commands/reads, 1 for command failure,
+timeout or changed inputs, 2 for configuration/environment errors, 130 for
+interruption. Rust 1.86+ builds the CLI. Discovery uses Cargo, rustc and
+rust-analyzer. See [implementation](docs/implementation.md),
+[planning](docs/planning.md), [testing](docs/testing.md), and the
+[Codex skill](skills/cargo-elicit/SKILL.md). Earlier experiment reports describe
+historical implementations, not this command-result interface.

@@ -1,11 +1,10 @@
-//! Model-independent project snapshots, obligations, reviews and evidence.
+//! Model-independent project snapshots, obligations and evidence.
 use crate::{
-    analysis::{self, Analyzer, Selection},
+    analysis::Selection,
     fingerprint,
     model::*,
     process,
     store::{self, Store},
-    verifier,
 };
 use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
@@ -35,6 +34,15 @@ pub struct Config {
 #[serde(deny_unknown_fields)]
 pub struct VerificationConfig {
     pub tool: Tool,
+    /// Native verification argv, executed directly without shell interpolation.
+    #[serde(default)]
+    pub command: Vec<String>,
+    /// Working directory relative to the project root.
+    #[serde(default)]
+    pub directory: Option<String>,
+    /// Additional input files/directories, including external proof libraries.
+    #[serde(default)]
+    pub inputs: Vec<String>,
 }
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -57,6 +65,10 @@ pub struct Obligation {
     pub theorem: Option<String>,
     #[serde(default)]
     pub description: String,
+    #[serde(default)]
+    pub command: Vec<String>,
+    #[serde(default)]
+    pub directory: Option<String>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Goal {
@@ -66,15 +78,9 @@ pub struct Goal {
     pub theorem: Option<String>,
     pub description: String,
     pub specification: String,
-    pub review_specification: String,
     pub limitation: Option<String>,
-}
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Review {
-    pub specification: String,
-    pub verdict: String,
-    pub note: String,
-    pub recorded_at: u64,
+    pub command: Vec<String>,
+    pub directory: String,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evidence {
@@ -102,49 +108,48 @@ pub struct Snapshot {
     pub tool_version: String,
     pub scope: Scope,
     pub inventory: Vec<Target>,
+    #[serde(default)]
+    pub analysis_reused: bool,
     pub limitations: Vec<String>,
     pub goals: Vec<Goal>,
     pub evidence: BTreeMap<String, Vec<Evidence>>,
-    pub reviews: BTreeMap<String, Review>,
     #[serde(default)]
     pub proof_modules: Option<serde_json::Value>,
 }
 pub fn config(store: &Store) -> Result<Config> {
     let c: Config = toml::from_str(&fs::read_to_string(store.root.join("elicit.toml"))?)?;
-    if c.schema != 2 {
-        bail!("unsupported configuration schema; use a new project configuration (schema = 2)");
+    if c.schema != 3 {
+        bail!("unsupported configuration schema; use a new project configuration (schema = 3)");
     }
     let mut ids = std::collections::BTreeSet::new();
     for goal in &c.obligations {
         if goal.id.is_empty() || !ids.insert(&goal.id) {
             bail!("obligation IDs must be nonempty and unique");
         }
-        if goal.target.is_some() == goal.statement.is_some() {
-            bail!(
-                "obligation {} needs either target or statement/theorem",
-                goal.id
-            );
+        if goal.command.first().is_some_and(|p| p.trim().is_empty()) {
+            bail!("command executable must not be empty for {}", goal.id);
         }
-        if goal.target.is_none()
-            && (goal.statement.as_ref().is_none_or(|s| s.trim().is_empty())
-                || goal
-                    .theorem
-                    .as_ref()
-                    .is_none_or(|s| !crate::lean_modules::lean_name(s)))
-        {
-            bail!("invalid proposition obligation {}", goal.id);
-        }
+    }
+    if c.verification
+        .command
+        .first()
+        .is_some_and(|p| p.trim().is_empty())
+    {
+        bail!("verification.command executable must not be empty");
     }
     Ok(c)
 }
 pub fn load(store: &Store) -> Result<Snapshot> {
-    let snapshot: Snapshot = serde_json::from_slice(
+    let value: serde_json::Value = serde_json::from_slice(
         &fs::read(store.root.join(".elicit/snapshot.json"))
-            .context("no project snapshot; run cargo elicit refresh")?,
+            .context("no project snapshot; run cargo elicit status")?,
     )?;
-    if snapshot.schema != 2 {
-        bail!("unsupported snapshot schema; existing data was preserved");
+    if value["schema"] != 3 {
+        bail!(
+            "unsupported snapshot schema; existing data was preserved (native-command projects use schema 3)"
+        );
     }
+    let snapshot: Snapshot = serde_json::from_value(value)?;
     Ok(snapshot)
 }
 fn save(store: &Store, s: &Snapshot) -> Result<()> {
@@ -171,34 +176,14 @@ pub fn resolve(targets: &[Target], selector: &str) -> Result<String> {
 pub fn init(root: &Path, c: Config) -> Result<Snapshot> {
     let path = root.join("elicit.toml");
     if path.exists() {
-        bail!("elicit.toml already exists; edit it and run refresh (no implicit migration)");
+        bail!("elicit.toml already exists; edit it and run status (no implicit migration)");
     }
     store::atomic_write(&path, toml::to_string_pretty(&c)?.as_bytes())?;
     let store = Store {
         root: root.to_path_buf(),
     };
     let _lock = store.lock("project")?;
-    notes(&store)?;
     refresh(&store)
-}
-/// Operational records are deliberately outside proof/build inputs.
-pub fn notes(store: &Store) -> Result<std::path::PathBuf> {
-    let path = store.root.join(".elicit/notes");
-    fs::create_dir_all(&path)?;
-    let guide = path.join("README.md");
-    match fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(guide)
-    {
-        Ok(mut file) => {
-            use std::io::Write;
-            file.write_all(b"# Operational notes\n\nKeep progress, handoff notes and final reports here. This directory is excluded from verification inputs. Never import or read it from Rust, build scripts, proc macros, Lean or verifier code; such dependencies are outside the reproducibility guarantee. Keep specifications, proofs and all semantic inputs in tracked source locations. Archive this directory separately when preserving work: .elicit is usually ignored by Git.\n")?;
-        }
-        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {}
-        Err(e) => return Err(e.into()),
-    }
-    Ok(path)
 }
 /// Explicit observation: Cargo/discovery and fingerprints; no verifier compilation.
 pub fn refresh(store: &Store) -> Result<Snapshot> {
@@ -211,15 +196,19 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
         no_default_features: config.package.no_default_features,
         target: config.package.target.clone(),
     };
-    let package = analysis::package(&store.root, &selection)?;
-    let version = fingerprint::tool_version(config.verification.tool)
-        .unwrap_or_else(|e| format!("unavailable: {e}"));
-    let before = fingerprint::inputs(&package.scope, config.verification.tool, &version);
-    let mut analyzer = Analyzer::default();
-    let (inventory, mut limitations) = analyzer.analyze(&package, config.verification.tool)?;
+    let observed = crate::observation::refresh(store, &config, &selection)?;
+    let package = observed.package;
+    let inventory = observed.inventory;
+    let limitations = observed.limitations;
+    let (input, context, input_files) = observed.inputs;
+    let version = observed.version;
     let proof_modules = if config.verification.tool == Tool::Aeneas {
         Some(
-            match crate::lean_modules::Modules::load(&crate::aeneas::proof_root(&package.scope)) {
+            match crate::lean_modules::Modules::load(
+                &store
+                    .root
+                    .join(config.verification.directory.as_deref().unwrap_or(".")),
+            ) {
                 Ok(modules) => modules.planning_view(),
                 Err(e) => serde_json::json!({"error":format!("{e:#}"),"modules":[]}),
             },
@@ -227,31 +216,10 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
     } else {
         None
     };
-    // Re-resolve Cargo metadata so mutations during initial scope discovery
-    // cannot attach old cfg/features/dependency resolution to a newer input.
-    let resolved = analysis::package(&store.root, &selection)?;
-    if resolved.scope != package.scope
-        || resolved.cfg != package.cfg
-        || config_identity != fingerprint::hash(fs::read(store.root.join("elicit.toml"))?)
-    {
-        bail!("configuration/build scope changed during refresh; retry on stable files");
-    }
-    let after = fingerprint::inputs(&package.scope, config.verification.tool, &version);
-    let (input, context, input_files) = match (before, after) {
-        (Ok(before), Ok(after)) => {
-            if before != after {
-                bail!("inputs changed during discovery; retry refresh");
-            }
-            after
-        }
-        (Err(error), Err(_)) => {
-            limitations.push(format!("tool/input inspection unavailable: {error}"));
-            let key =
-                fingerprint::hash(serde_json::to_vec(&(&package.scope, &inventory, &version))?);
-            (key.clone(), key, BTreeMap::new())
-        }
-        _ => bail!("input inspection changed during refresh; retry"),
-    };
+    anyhow::ensure!(
+        config_identity == fingerprint::hash(fs::read(store.root.join("elicit.toml"))?),
+        "configuration changed during refresh; retry on stable files"
+    );
     let definitions = if config.obligations.is_empty() {
         inventory
             .iter()
@@ -262,6 +230,8 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
                 statement: None,
                 theorem: None,
                 description: String::new(),
+                command: Vec::new(),
+                directory: None,
             })
             .collect::<Vec<_>>()
     } else {
@@ -274,22 +244,25 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
             .as_ref()
             .map(|t| resolve(&inventory, t))
             .transpose()?;
-        let subject = target
-            .as_ref()
-            .and_then(|id| inventory.iter().find(|t| &t.id == id));
+        let command = if goal.command.is_empty() {
+            config.verification.command.clone()
+        } else {
+            goal.command.clone()
+        };
+        let directory = goal
+            .directory
+            .clone()
+            .or_else(|| config.verification.directory.clone())
+            .unwrap_or_else(|| ".".into());
         let specification = fingerprint::hash(serde_json::to_vec(&(
+            "native-command-v1",
             &target,
-            subject.map(|t| &t.spec_hash),
             &goal.statement,
             &goal.theorem,
+            &command,
+            &directory,
         ))?);
-        let limitation=match subject {
-   Some(t) if !matches!(t.kind,Kind::Function|Kind::Method)=>Some("unsupported API mapping: only function/method contracts can establish API evidence".into()),
-   _ if target.is_none() && config.verification.tool!=Tool::Aeneas=>Some("proposition obligations currently require Aeneas/Lean".into()),
-   _=>None,
-  };
-        let review_specification =
-            fingerprint::hash(serde_json::to_vec(&(&specification, &goal.description))?);
+        let limitation = command.is_empty().then(|| "no verification command configured; set verification.command or obligations[].command in elicit.toml".into());
         goals.push(Goal {
             id: goal.id,
             target,
@@ -297,8 +270,9 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
             theorem: goal.theorem,
             description: goal.description,
             specification,
-            review_specification,
             limitation,
+            command,
+            directory,
         });
     }
     let old = if store.root.join(".elicit/snapshot.json").exists() {
@@ -319,7 +293,8 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
         input_files.keys().cloned().collect()
     };
     let snapshot = Snapshot {
-        schema: 2,
+        schema: 3,
+        analysis_reused: observed.reused,
         proof_modules,
         tool: config.verification.tool,
         observed_at: now(),
@@ -333,9 +308,14 @@ pub fn refresh(store: &Store) -> Result<Snapshot> {
         limitations,
         goals,
         evidence: old.as_ref().map(|s| s.evidence.clone()).unwrap_or_default(),
-        reviews: old.map(|s| s.reviews).unwrap_or_default(),
     };
     save(store, &snapshot)?;
+    if !snapshot.changed_inputs.is_empty() {
+        store.history(
+            "inputs_observed",
+            serde_json::json!({"input":snapshot.input,"changed_input_count":snapshot.changed_inputs.len(),"changed_inputs":snapshot.changed_inputs.iter().take(20).collect::<Vec<_>>()}),
+        )?;
+    }
     Ok(snapshot)
 }
 pub fn select<'a>(s: &'a Snapshot, selectors: &[String]) -> Result<Vec<&'a Goal>> {
@@ -369,50 +349,14 @@ pub fn select<'a>(s: &'a Snapshot, selectors: &[String]) -> Result<Vec<&'a Goal>
     Ok(goals)
 }
 fn machine_success(r: &Verification) -> bool {
-    r.outcome == Outcome::Success
-        && r.scope == Coverage::FullContract
-        && r.reusable
-        && r.assumptions.is_empty()
-        && r.restrictions.is_empty()
-        && !r.obligations.is_empty()
-        && !r.trusted_base.is_empty()
+    r.outcome == Outcome::Success && r.exit_code == Some(0)
 }
-pub fn evidence_status<'a>(s: &'a Snapshot, g: &Goal, kind: &str) -> Option<&'a Evidence> {
+pub fn current_evidence<'a>(s: &'a Snapshot, g: &Goal) -> Option<&'a Evidence> {
     s.evidence
         .get(&g.id)?
         .iter()
         .rev()
-        .find(|e| e.kind == kind && e.input == s.input && e.specification == g.specification)
-}
-fn audit_validity(s: &Snapshot, g: &Goal) -> serde_json::Value {
-    let current = evidence_status(s, g, "audit");
-    let latest = s
-        .evidence
-        .get(&g.id)
-        .into_iter()
-        .flatten()
-        .rev()
-        .find(|e| e.kind == "audit");
-    let reference = current.or(latest);
-    let state = match current {
-        Some(e) if e.accepted => "valid_at_snapshot",
-        Some(_) => "failed_at_snapshot",
-        None if latest.is_some() => "stale",
-        None => "missing",
-    };
-    let changes: Vec<_> = reference.into_iter().filter(|e|!e.input_files.is_empty()).flat_map(|e| {
-        e.input_files.keys().chain(s.input_files.keys()).collect::<std::collections::BTreeSet<_>>()
-            .into_iter().filter(|k|e.input_files.get(*k)!=s.input_files.get(*k)).map(|k| {
-                serde_json::json!({"path":k,"change":if !e.input_files.contains_key(k){"added"}else if !s.input_files.contains_key(k){"removed"}else{"modified"}})
-            }).collect::<Vec<_>>()
-    }).collect();
-    serde_json::json!({"state":state,"receipt":reference.map(|e|&e.receipt),
-        "recorded_at":reference.map(|e|e.recorded_at),"input_changes":changes,
-        "change_details_available":reference.is_some_and(|e|!e.input_files.is_empty()),
-        "specification_changed":reference.map(|e|e.specification != g.specification),
-        "audit_input":reference.map(|e|&e.input),"observed_input":s.input,
-        "fresh_audit_needed_at_snapshot":!current.is_some_and(|e|e.accepted),
-        "workspace_currentness":"not_observed_by_this_read; refresh to compare current files"})
+        .find(|e| e.input == s.input && e.specification == g.specification)
 }
 fn evidence_view(e: &Evidence) -> serde_json::Value {
     let mut value = serde_json::json!(e);
@@ -420,16 +364,19 @@ fn evidence_view(e: &Evidence) -> serde_json::Value {
     value
 }
 pub fn view(s: &Snapshot) -> serde_json::Value {
-    let goals=s.goals.iter().map(|g|{
-  let audit=evidence_status(s,g,"audit");let check=evidence_status(s,g,"check");
-  let review=s.reviews.get(&g.id);
-  let review_state=match review{None=>"unreviewed",Some(r) if r.specification!=g.review_specification=>"stale",Some(r)=>r.verdict.as_str()};
-  serde_json::json!({"id":g.id,"target":g.target,"description":g.description,"limitation":g.limitation,"audit":audit.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"check":check.map(|e|if e.accepted{"accepted"}else{"failed"}).unwrap_or("missing_or_stale"),"review":review_state,"audit_validity":audit_validity(s,g),"last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()).map(evidence_view),"next":if audit.is_some_and(|e|e.accepted){"inspect scope/semantic review as needed"}else{"author with native tools; check when useful; audit for final evidence"}})
- }).collect::<Vec<_>>();
+    let goals = s.goals.iter().map(|g| {
+        let current = current_evidence(s, g);
+        serde_json::json!({"id":g.id,"target":g.target,"description":g.description,
+            "command":g.command,"directory":g.directory,
+            "command_status":current.map(|e|if e.accepted{"succeeded"}else{"failed"}).unwrap_or("missing_or_stale"),
+            "limitation":g.limitation,
+            "last_evidence":s.evidence.get(&g.id).and_then(|e|e.last()).map(evidence_view),
+            "next":"work with native tools; verify at useful milestones"})
+    }).collect::<Vec<_>>();
     let complete = !s.goals.is_empty()
-        && s.goals.iter().all(|g| {
-            g.limitation.is_none() && evidence_status(s, g, "audit").is_some_and(|e| e.accepted)
-        });
+        && s.goals
+            .iter()
+            .all(|g| current_evidence(s, g).is_some_and(|e| e.accepted));
     let uncovered = s
         .inventory
         .iter()
@@ -439,38 +386,73 @@ pub fn view(s: &Snapshot) -> serde_json::Value {
         })
         .map(|t| t.id.clone())
         .collect::<Vec<_>>();
-    serde_json::json!({"schema":2,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run refresh or check/audit","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_obligations_audited_at_snapshot":complete,"whole_package_claim":false,"notes_directory":".elicit/notes","notes_policy":"operational only; never read from build or proof code; archive separately","uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"changed_inputs":s.changed_inputs,"goals":goals})
+    serde_json::json!({"schema":3,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"snapshot":s.input,"scope":s.scope,"declared_commands_succeeded_at_snapshot":complete,"whole_package_claim":false,"evidence_semantics":"native_command_result; no theorem, axiom or Rust correspondence checks","uncovered_public_inventory":uncovered,"analysis_limitations":s.limitations,"analysis_reused":s.analysis_reused,"changed_inputs":s.changed_inputs,"goals":goals})
 }
-pub fn review(store: &Store, selectors: &[String], verdict: &str, note: &str) -> Result<Snapshot> {
-    if note.trim().is_empty() {
-        bail!("a semantic review note is required");
+// A saved status bit alone is insufficient: require the durable receipt to agree
+// with the exact observed inputs, specification, scope and accepted native result.
+fn reusable_receipt(
+    store: &Store,
+    s: &Snapshot,
+    g: &Goal,
+    cache: &mut BTreeMap<String, Option<serde_json::Value>>,
+) -> bool {
+    if g.limitation.is_some() {
+        return false;
     }
-    let _lock = store.lock("project")?;
-    let mut s = refresh(store)?;
-    let goals = select(&s, selectors)?
-        .into_iter()
-        .cloned()
-        .collect::<Vec<_>>();
-    for goal in goals {
-        s.reviews.insert(
-            goal.id,
-            Review {
-                specification: goal.review_specification,
-                verdict: verdict.into(),
-                note: note.into(),
-                recorded_at: now(),
-            },
-        );
+    let e = current_evidence(s, g);
+    let Some(e) = e.filter(|e| e.accepted) else {
+        return false;
+    };
+    let path = Path::new(&e.receipt);
+    if path.is_absolute()
+        || path
+            .components()
+            .any(|p| !matches!(p, std::path::Component::Normal(_)))
+        || !e.receipt.starts_with(".elicit/evidence/")
+    {
+        return false;
     }
-    save(store, &s)?;
-    Ok(s)
+    let Some(receipt) = cache
+        .entry(e.receipt.clone())
+        .or_insert_with(|| {
+            fs::read(store.root.join(path))
+                .ok()
+                .and_then(|b| serde_json::from_slice::<serde_json::Value>(&b).ok())
+        })
+        .as_ref()
+    else {
+        return false;
+    };
+    if receipt["kind"] != e.kind
+        || receipt["input_files"] != serde_json::json!(s.input_files)
+        || receipt["scope"] != serde_json::json!(s.scope)
+        || receipt["report"]["stable"] != true
+        || receipt["report"]["input"] != s.input
+        || !receipt["goals"].as_array().is_some_and(|gs| {
+            gs.iter()
+                .any(|x| x["id"] == g.id && x["specification"] == g.specification)
+        })
+    {
+        return false;
+    }
+    let Some(result) = e.result.as_ref().filter(|r| machine_success(r)) else {
+        return false;
+    };
+    result.command == g.command
+        && result.directory == g.directory
+        && receipt["report"]["results"].as_array().is_some_and(|rs| {
+            rs.iter()
+                .any(|r| r["target"] == g.id && *r == serde_json::json!(result))
+        })
 }
+
 pub fn check(
     store: &Store,
     selectors: &[String],
     seconds: u64,
-    audit: bool,
-) -> Result<(Snapshot, i32)> {
+    fresh: bool,
+) -> Result<(Snapshot, i32, usize)> {
+    let started = std::time::Instant::now();
     if seconds == 0 {
         bail!("seconds must be positive");
     }
@@ -481,39 +463,42 @@ pub fn check(
         .cloned()
         .collect::<Vec<_>>();
     if goals.is_empty() {
-        bail!("no obligations; declare targets or propositions in elicit.toml");
+        bail!("no goals; declare obligations in elicit.toml");
     }
-    let tool = snapshot.tool;
-    let state = State {
-        revision: now(),
-        tool,
-        scope: snapshot.scope.clone(),
-        input: snapshot.input.clone(),
-        context_input: snapshot.context_input.clone(),
-        targets: snapshot
-            .inventory
-            .iter()
-            .map(|t| (t.id.clone(), t.clone()))
-            .collect(),
-        results: vec![],
-        claims: goals
-            .iter()
-            .filter(|g| g.target.is_none())
-            .map(|g| Claim {
-                id: g.id.clone(),
-                statement: g.statement.clone().unwrap(),
-                theorem: g.theorem.clone().unwrap(),
+    let mut receipt_cache = BTreeMap::new();
+    let mut reused = Vec::new();
+    let goals = if fresh {
+        goals
+    } else {
+        goals
+            .into_iter()
+            .filter(|g| {
+                let keep = !reusable_receipt(store, &snapshot, g, &mut receipt_cache);
+                if !keep {
+                    reused.push(g.id.clone());
+                }
+                keep
             })
-            .collect(),
+            .collect::<Vec<_>>()
     };
-    let ids = goals
-        .iter()
-        .filter_map(|g| g.target.clone())
-        .collect::<std::collections::BTreeSet<_>>()
-        .into_iter()
-        .collect::<Vec<_>>();
-    let mut report = verifier::verify(&state, &store.root, &ids, seconds, !audit)?;
-    let id = format!("{}-{}", if audit { "audit" } else { "check" }, now());
+    if goals.is_empty()
+        && (fingerprint::tool_version(snapshot.tool)? != snapshot.tool_version
+            || fingerprint::input(&snapshot.scope, snapshot.tool, &snapshot.tool_version)?
+                != snapshot.input)
+    {
+        bail!("inputs changed while validating saved evidence; retry on stable files");
+    }
+    if !reused.is_empty() {
+        store.history(
+            "evidence_reused",
+            serde_json::json!({"input":snapshot.input,"goals":reused,"elapsed_ms":started.elapsed().as_millis()}),
+        )?;
+    }
+    if goals.is_empty() {
+        return Ok((snapshot, 0, reused.len()));
+    }
+    let mut report = crate::runner::verify(&snapshot, &store.root, &goals, seconds)?;
+    let id = format!("{}-{}", if fresh { "rerun" } else { "run" }, now());
     let receipt_dir = store.root.join(".elicit/evidence");
     fs::create_dir_all(&receipt_dir)?;
     let receipt = receipt_dir.join(format!("{id}.json"));
@@ -556,55 +541,25 @@ pub fn check(
     store::atomic_write(
         &receipt,
         &serde_json::to_vec_pretty(
-            &serde_json::json!({"schema":2,"kind":if audit{"audit"}else{"check"},"recorded_at":now(),"scope":snapshot.scope,"input_files":snapshot.input_files,"goals":goals,"report":report}),
+            &serde_json::json!({"schema":3,"kind":if fresh{"rerun"}else{"run"},"recorded_at":now(),"scope":snapshot.scope,"input_files":snapshot.input_files,"goals":goals,"report":report}),
         )?,
     )?;
     let mut all = true;
     for goal in goals {
-        let result = goal
-            .target
-            .as_ref()
-            .and_then(|id| report.results.iter().find(|r| &r.target == id))
-            .cloned();
-        let claim = report
-            .backend_evidence
-            .as_ref()
-            .map(|e| &e["claims"][&goal.id]);
-        let accepted = goal.limitation.is_none()
-            && report.stable
-            && if goal.target.is_some() {
-                result.as_ref().is_some_and(machine_success)
-            } else {
-                claim.is_some_and(|c| c["checked"] == true)
-            };
+        let result = report.results.iter().find(|r| r.target == goal.id).cloned();
+        let accepted = report.stable && result.as_ref().is_some_and(machine_success);
         all &= accepted;
-        let phase = result
+        let phase = "command".to_string();
+        let reason = result
             .as_ref()
-            .and_then(|r| r.diagnostic.as_ref())
-            .map(|d| d.phase.clone())
-            .unwrap_or_else(|| {
-                report
-                    .backend_evidence
-                    .as_ref()
-                    .and_then(|e| e["phase"].as_str())
-                    .unwrap_or("proposition-audit")
-                    .into()
-            });
-        let reason = if let Some(reason) = &goal.limitation {
-            reason.clone()
-        } else if let Some(r) = &result {
-            r.summary.clone()
-        } else if accepted {
-            "exact proposition checked; standard axioms only".into()
-        } else {
-            "proposition not accepted; inspect the receipt and phase logs".into()
-        };
+            .map(|r| r.summary.clone())
+            .unwrap_or_else(|| "command was not executed".into());
         snapshot
             .evidence
             .entry(goal.id)
             .or_default()
             .push(Evidence {
-                kind: if audit { "audit" } else { "check" }.into(),
+                kind: if fresh { "rerun" } else { "run" }.into(),
                 recorded_at: now(),
                 input: report.input.clone(),
                 input_files: snapshot.input_files.clone(),
@@ -631,7 +586,9 @@ pub fn check(
     } else {
         1
     };
-    Ok((snapshot, code))
+    store.history("verification_finished", serde_json::json!({"input":snapshot.input,"fresh":fresh,"exit_code":code,"elapsed_ms":started.elapsed().as_millis(),
+        "goals":snapshot.evidence.iter().filter_map(|(goal_id,es)|es.last().filter(|e|e.receipt==receipt.strip_prefix(&store.root).unwrap().to_string_lossy()).map(|e|serde_json::json!({"id":goal_id,"accepted":e.accepted,"receipt":e.receipt,"phase":e.phase,"reason":e.reason}))).collect::<Vec<_>>() }))?;
+    Ok((snapshot, code, reused.len()))
 }
 pub fn show(s: &Snapshot, selector: &str) -> Result<serde_json::Value> {
     let goal = select(s, &[selector.into()])?[0];
@@ -640,6 +597,6 @@ pub fn show(s: &Snapshot, selector: &str) -> Result<serde_json::Value> {
         .as_ref()
         .and_then(|id| s.inventory.iter().find(|t| &t.id == id));
     Ok(
-        serde_json::json!({"schema":2,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run refresh or check/audit","observed_at_unix_ms":s.observed_at,"goal":goal,"target":target,"aeneas_contract":goal.target.as_ref().map(|id|crate::aeneas::contract_name(id)),"evidence":s.evidence.get(&goal.id),"review":s.reviews.get(&goal.id),"next":"Edit native contracts/proofs freely; check for iteration; audit for final evidence. No submission or revision token is required."}),
+        serde_json::json!({"schema":3,"observation":"saved_snapshot","workspace_currentness":"not_observed_by_this_read; run status or verify","observed_at_unix_ms":s.observed_at,"goal":goal,"target":target,"evidence":s.evidence.get(&goal.id),"next":"Work with native tools; verify at useful milestones; verify --fresh to rerun the configured command."}),
     )
 }

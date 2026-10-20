@@ -17,7 +17,7 @@ use syn::{
     visit::{self, Visit},
 };
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
 pub struct Selection {
     pub package: Option<String>,
     pub features: Vec<String>,
@@ -25,6 +25,7 @@ pub struct Selection {
     pub no_default_features: bool,
     pub target: Option<String>,
 }
+#[derive(Clone, serde::Serialize, serde::Deserialize, PartialEq)]
 pub struct Package {
     pub scope: Scope,
     pub entries: Vec<PathBuf>,
@@ -163,13 +164,6 @@ pub struct Analyzer {
 }
 impl Analyzer {
     pub fn analyze(&mut self, p: &Package, tool: Tool) -> Result<(Vec<Target>, Vec<String>)> {
-        // A changed build configuration needs a fresh semantic workspace.
-        if self.ra.as_ref().is_some_and(|r| r.scope != p.scope) {
-            self.ra = None;
-        }
-        if self.ra.is_none() {
-            self.ra = Some(Ra::start(&p.scope, tool)?);
-        }
         let mut ix = Index {
             package: p.scope.package.clone(),
             cfg: p.cfg.clone(),
@@ -263,52 +257,61 @@ impl Analyzer {
         for entry in &p.entries {
             ix.file(entry, &[], true)?;
         }
-        let ra = self.ra.as_mut().unwrap();
-        let files: BTreeSet<_> = ix.targets.iter().map(|t| t.file.clone()).collect();
-        for f in &files {
-            ra.open(Path::new(f))?;
-        }
-        ra.settle()?;
-        for (id, file, line, col) in &ix.calls {
-            let locations = ra.definition(file, *line, *col)?;
-            let matches: Vec<_> = ix
-                .targets
-                .iter()
-                .filter(|t| {
-                    locations.iter().any(|(f, l)| {
-                        f == &t.file && *l >= t.line.saturating_sub(1) && *l <= t.line
-                    })
-                })
-                .map(|t| t.id.clone())
-                .collect();
-            let external = !locations.is_empty()
-                && locations.iter().all(|(f, _)| {
-                    !p.scope
-                        .local_roots
-                        .iter()
-                        .any(|r| Path::new(f).starts_with(r))
-                });
-            if let Some(t) = ix.targets.iter_mut().find(|t| &t.id == id) {
-                if matches.is_empty() && !external {
-                    t.unresolved_calls
-                        .push(format!("{file}:{}:{}", line + 1, col + 1));
-                }
-                if external {
-                    t.external_calls.extend(
-                        locations.iter().map(|(f, l)| {
-                            format!("{file}:{}:{} -> {f}:{}", line + 1, col + 1, l + 1)
-                        }),
-                    );
-                }
-                t.calls.extend(matches);
+        // Parsing and source facts do not need a language server. Only actual
+        // definition/alias queries pay its cold workspace-loading cost.
+        if !ix.calls.is_empty() || !ix.aliases.is_empty() {
+            // A changed build configuration needs a fresh semantic workspace.
+            if self.ra.as_ref().is_some_and(|r| r.scope != p.scope) {
+                self.ra = None;
             }
-        }
-        for (alias, file, line, col) in &ix.aliases {
-            for (f, l) in ra.definition(file, *line, *col)? {
-                for t in &mut ix.targets {
-                    if t.file == f && l >= t.line.saturating_sub(1) && l <= t.line {
-                        t.visibility = Visibility::Public;
-                        t.aliases.push(alias.clone());
+            if self.ra.is_none() {
+                self.ra = Some(Ra::start(&p.scope, tool)?);
+            }
+            let ra = self.ra.as_mut().unwrap();
+            let files: BTreeSet<_> = ix.targets.iter().map(|t| t.file.clone()).collect();
+            for f in &files {
+                ra.open(Path::new(f))?;
+            }
+            ra.settle()?;
+            for (id, file, line, col) in &ix.calls {
+                let locations = ra.definition(file, *line, *col)?;
+                let matches: Vec<_> = ix
+                    .targets
+                    .iter()
+                    .filter(|t| {
+                        locations.iter().any(|(f, l)| {
+                            f == &t.file && *l >= t.line.saturating_sub(1) && *l <= t.line
+                        })
+                    })
+                    .map(|t| t.id.clone())
+                    .collect();
+                let external = !locations.is_empty()
+                    && locations.iter().all(|(f, _)| {
+                        !p.scope
+                            .local_roots
+                            .iter()
+                            .any(|r| Path::new(f).starts_with(r))
+                    });
+                if let Some(t) = ix.targets.iter_mut().find(|t| &t.id == id) {
+                    if matches.is_empty() && !external {
+                        t.unresolved_calls
+                            .push(format!("{file}:{}:{}", line + 1, col + 1));
+                    }
+                    if external {
+                        t.external_calls.extend(locations.iter().map(|(f, l)| {
+                            format!("{file}:{}:{} -> {f}:{}", line + 1, col + 1, l + 1)
+                        }));
+                    }
+                    t.calls.extend(matches);
+                }
+            }
+            for (alias, file, line, col) in &ix.aliases {
+                for (f, l) in ra.definition(file, *line, *col)? {
+                    for t in &mut ix.targets {
+                        if t.file == f && l >= t.line.saturating_sub(1) && l <= t.line {
+                            t.visibility = Visibility::Public;
+                            t.aliases.push(alias.clone());
+                        }
                     }
                 }
             }
@@ -321,9 +324,6 @@ impl Analyzer {
                     t.unresolved_calls.join(", ")
                 ));
             }
-        }
-        if tool == Tool::Aeneas {
-            crate::aeneas::attach_specs(&p.scope, &mut ix.targets)?;
         }
         ix.targets.sort_by(|a, b| a.id.cmp(&b.id));
         ix.incomplete.sort();
@@ -410,15 +410,6 @@ fn runtime_attrs(attrs: &[syn::Attribute]) -> String {
         .map(tokens)
         .collect::<Vec<_>>()
         .join(" ")
-}
-fn trusted(a: &[syn::Attribute]) -> bool {
-    a.iter().any(|a| {
-        a.path()
-            .segments
-            .last()
-            .is_some_and(|s| s.ident == "trusted")
-            || (a.path().is_ident("cfg_attr") && tokens(a).contains("trusted"))
-    })
 }
 fn known_attribute(meta: &syn::Meta) -> bool {
     let Some(name) = meta.path().segments.last().map(|s| s.ident.to_string()) else {
@@ -573,7 +564,6 @@ impl Index {
         body: String,
         line: usize,
         col: usize,
-        closed: bool,
     ) -> String {
         let id = format!(
             "{}::{}{}::{kind:?}",
@@ -606,22 +596,12 @@ impl Index {
             column: col,
             aliases: vec![],
             spec_hash: spec_hash.clone(),
-            model_base_hash: String::new(),
-            model_inputs: BTreeMap::new(),
             body_hash: body_hash.clone(),
             source_hash: hash(format!("{spec_hash}{body}")),
             calls: BTreeSet::new(),
             unresolved_calls: vec![],
             external_calls: Default::default(),
             source_facts: None,
-            native_contract: None,
-            required_units: if kind.proof() {
-                vec!["contract".into()]
-            } else {
-                vec![]
-            },
-            closed_primitive: closed,
-            trusted: trusted(attrs),
         });
         id
     }
@@ -670,7 +650,6 @@ impl Index {
                         format!("{} {}", tokens(&f.sig), tokens(&f.block)),
                         pos.line,
                         pos.column,
-                        closed_primitive(f),
                     );
                     self.calls(&id, file, &f.block);
                 }
@@ -687,7 +666,6 @@ impl Index {
                         format!("{} {}", tokens(&v.generics), tokens(&v.fields)),
                         p.line,
                         p.column,
-                        false,
                     );
                 }
                 syn::Item::Enum(v) => {
@@ -703,7 +681,6 @@ impl Index {
                         format!("{} {}", tokens(&v.generics), tokens(&v.variants)),
                         p.line,
                         p.column,
-                        false,
                     );
                 }
                 syn::Item::Trait(v) => {
@@ -727,7 +704,6 @@ impl Index {
                         String::new(),
                         p.line,
                         p.column,
-                        false,
                     );
                     let mut m = module.to_vec();
                     m.push(v.ident.to_string());
@@ -746,7 +722,6 @@ impl Index {
                                     format!("{} {}", tokens(&f.sig), tokens(b)),
                                     p.line,
                                     p.column,
-                                    false,
                                 );
                                 self.calls(&id, file, b);
                             }
@@ -779,7 +754,6 @@ impl Index {
                             String::new(),
                             p.line,
                             p.column,
-                            false,
                         );
                     }
                     for i in &v.items {
@@ -803,7 +777,6 @@ impl Index {
                                 format!("{} {}", tokens(&f.sig), tokens(&f.block)),
                                 p.line,
                                 p.column,
-                                false,
                             );
                             if let Some(t) = self.targets.iter_mut().find(|t| t.id == id) {
                                 t.aliases.push(format!(
@@ -954,130 +927,6 @@ impl Index {
         }
     }
 }
-// Deliberately narrow: complete evidence for an API is currently restricted to
-// closed primitive free functions. A successful tool run for anything else is retained as partial evidence.
-pub fn primitive(t: &syn::Type) -> bool {
-    match t {
-        syn::Type::Path(p) => {
-            p.qself.is_none()
-                && p.path.segments.len() == 1
-                && matches!(
-                    p.path.segments[0].ident.to_string().as_str(),
-                    "bool"
-                        | "char"
-                        | "u8"
-                        | "u16"
-                        | "u32"
-                        | "u64"
-                        | "u128"
-                        | "usize"
-                        | "i8"
-                        | "i16"
-                        | "i32"
-                        | "i64"
-                        | "i128"
-                        | "isize"
-                )
-        }
-        syn::Type::Tuple(t) => t.elems.is_empty(),
-        _ => false,
-    }
-}
-pub fn closed_primitive(f: &syn::ItemFn) -> bool {
-    if !f.sig.generics.params.is_empty()
-        || f.sig.asyncness.is_some()
-        || f.sig.unsafety.is_some()
-        || f.sig.abi.is_some()
-        || f.sig.variadic.is_some()
-    {
-        return false;
-    }
-    if let syn::ReturnType::Type(_, t) = &f.sig.output {
-        if !primitive(t) {
-            return false;
-        }
-    }
-    let mut names = BTreeSet::new();
-    for i in &f.sig.inputs {
-        if let syn::FnArg::Typed(p) = i {
-            if !primitive(&p.ty) {
-                return false;
-            }
-            if let syn::Pat::Ident(i) = p.pat.as_ref() {
-                names.insert(i.ident.to_string());
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-    struct Closed {
-        names: BTreeSet<String>,
-        ok: bool,
-    }
-    impl<'a> Visit<'a> for Closed {
-        fn visit_local(&mut self, l: &'a syn::Local) {
-            if let Some(i) = &l.init {
-                self.visit_expr(&i.expr);
-                if i.diverge.is_some() {
-                    self.ok = false;
-                }
-            }
-            match &l.pat {
-                syn::Pat::Ident(i) => {
-                    self.names.insert(i.ident.to_string());
-                }
-                syn::Pat::Type(t) if primitive(&t.ty) => {
-                    if let syn::Pat::Ident(i) = t.pat.as_ref() {
-                        self.names.insert(i.ident.to_string());
-                    } else {
-                        self.ok = false;
-                    }
-                }
-                _ => self.ok = false,
-            }
-        }
-        fn visit_expr(&mut self, e: &'a syn::Expr) {
-            if !match e {
-                syn::Expr::Binary(_)
-                | syn::Expr::Unary(_)
-                | syn::Expr::Paren(_)
-                | syn::Expr::Group(_)
-                | syn::Expr::Lit(_)
-                | syn::Expr::If(_)
-                | syn::Expr::Block(_)
-                | syn::Expr::Return(_)
-                | syn::Expr::Assign(_)
-                | syn::Expr::Loop(_)
-                | syn::Expr::While(_)
-                | syn::Expr::Break(_)
-                | syn::Expr::Continue(_) => true,
-                syn::Expr::Path(p) => {
-                    p.qself.is_none()
-                        && p.path.segments.len() == 1
-                        && self.names.contains(&p.path.segments[0].ident.to_string())
-                }
-                syn::Expr::Tuple(t) => t.elems.is_empty(),
-                syn::Expr::Cast(c) => primitive(&c.ty),
-                _ => false,
-            } {
-                self.ok = false;
-            }
-            visit::visit_expr(self, e);
-        }
-        fn visit_attribute(&mut self, _: &'a syn::Attribute) {
-            self.ok = false;
-        }
-        fn visit_item(&mut self, _: &'a syn::Item) {
-            self.ok = false;
-        }
-    }
-    let mut c = Closed { names, ok: true };
-    c.visit_block(&f.block);
-    c.ok
-}
-
 pub struct Ra {
     child: Child,
     input: ChildStdin,
