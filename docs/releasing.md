@@ -15,10 +15,10 @@ Prefer crates.io Trusted Publishing. Configure the publisher on crates.io for:
 - Workflow filename: `release.yml`
 - Environment: leave empty (this workflow does not use a GitHub environment)
 
-For an initial publication, configure a pending/new-crate trusted publisher if
-crates.io offers it for your account. Otherwise, create a crates.io API token
-permitted to create/publish `cargo-elicit` and save it as the GitHub repository
-Actions secret `CARGO_REGISTRY_TOKEN`. Do not commit credentials. The workflow
+The initial publication requires an API token because Trusted Publishing is
+configured on an existing crate. Create a crates.io API token permitted to
+create/publish `cargo-elicit` and save it as the GitHub repository Actions secret
+`CARGO_REGISTRY_TOKEN`. Do not commit credentials. The workflow
 uses this secret when present and Trusted Publishing otherwise. After initial
 publication, configure Trusted Publishing on the crate and remove the long-lived
 secret to switch to OIDC.
