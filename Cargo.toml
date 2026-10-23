@@ -5,7 +5,10 @@ edition = "2024"
 rust-version = "1.86"
 license = "MIT OR Apache-2.0"
 description = "Model-independent Rust verification workflow and evidence tracking"
-repository = "https://github.com/nyuichi/cargo-elicit"
+repository = "https://github.com/proofs-rs/cargo-elicit"
+
+readme = "README.md"
+include = ["src/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE-MIT", "LICENSE-APACHE", "skills/**"]
 
 [dependencies]
 anyhow = "1"

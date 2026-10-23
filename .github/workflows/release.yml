@@ -1,0 +1,69 @@
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: crates-io-release
+  cancel-in-progress: false
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+  publish:
+    needs: ci
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Check whether this version is already published
+        id: version
+        shell: python
+        run: |
+          import json, os, tomllib, urllib.error, urllib.request
+          with open("Cargo.toml", "rb") as f:
+              package = tomllib.load(f)["package"]
+          name, version = package["name"], package["version"]
+          url = f"https://crates.io/api/v1/crates/{name}/{version}"
+          request = urllib.request.Request(url, headers={"User-Agent": "cargo-elicit-release (https://github.com/proofs-rs/cargo-elicit)"})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  data = json.load(response)
+              assert data["version"]["num"] == version
+              published = True
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              published = False
+          print(f"{name} {version}: already published={published}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"published={str(published).lower()}\n")
+      - name: Verify the publishable package
+        run: cargo publish --dry-run --locked
+      - name: Select authentication method
+        id: credentials
+        if: steps.version.outputs.published == 'false'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          if [ -n "$CARGO_REGISTRY_TOKEN" ]; then
+            echo "method=token" >> "$GITHUB_OUTPUT"
+          else
+            echo "method=trusted" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Authenticate with crates.io Trusted Publishing
+        id: auth
+        if: steps.version.outputs.published == 'false' && steps.credentials.outputs.method == 'trusted'
+        uses: rust-lang/crates-io-auth-action@v1
+      - name: Publish to crates.io
+        if: steps.version.outputs.published == 'false'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || steps.auth.outputs.token }}
+        run: cargo publish --locked
