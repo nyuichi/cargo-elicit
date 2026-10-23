@@ -13,7 +13,7 @@ It never starts an AI or decides whether a theorem proves an API correct.
 | `verify [API ...]` | Run configured native commands and save input-bound results; reuse unchanged successful results |
 
 ```sh
-cargo install --git https://github.com/nyuichi/cargo-elicit
+cargo install cargo-elicit --locked
 cd your-crate
 cargo elicit init --api identity --directory verification --command lake build
 # Write specifications/proofs normally in your native project.
